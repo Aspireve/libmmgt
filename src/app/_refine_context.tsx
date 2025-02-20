@@ -1,6 +1,6 @@
 "use client";
 
-import { GitHubBanner, Refine, type AuthProvider } from "@refinedev/core";
+import { Refine, type AuthProvider } from "@refinedev/core";
 import { RefineKbar, RefineKbarProvider } from "@refinedev/kbar";
 import { SessionProvider, signIn, signOut, useSession } from "next-auth/react";
 import { usePathname } from "next/navigation";
@@ -8,8 +8,8 @@ import React from "react";
 
 import routerProvider from "@refinedev/nextjs-router";
 
-import { dataProvider } from "@providers/data-provider";
-import "@styles/global.css";
+import { dataProvider } from "../providers/data-provider";
+import "../styles/global.css";
 
 type RefineContextProps = {};
 
@@ -95,7 +95,7 @@ const App = (props: React.PropsWithChildren<AppProps>) => {
 
   return (
     <>
-      <GitHubBanner />
+     
       <RefineKbarProvider>
         <Refine
           routerProvider={routerProvider}

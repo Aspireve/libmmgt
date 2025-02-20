@@ -1,6 +1,10 @@
-import type { Metadata } from "next";
-import React, { Suspense } from "react";
+// app/layout.tsx
+import React from "react";
+import { Metadata } from "next";
 import { RefineContext } from "./_refine_context";
+import Sidebar from "../app/Sidebar/sidebar";
+import Navbar from "./Navbar/navbar";
+import Header from "./Header/header";
 
 export const metadata: Metadata = {
   title: "Refine",
@@ -12,15 +16,30 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="en">
       <body>
-        <Suspense>
-          <RefineContext>{children}</RefineContext>
-        </Suspense>
+        <div className="flex min-h-screen">
+          {/* Sidebar on the left */}
+          <Sidebar />
+
+          {/* Main content column */}
+          <div className="flex-1 flex flex-col">
+            {/* Navbar at the top */}
+            <Navbar />
+
+            {/* Header below Navbar */}
+            <Header />
+
+            {/* Main content area: scrollable if content overflows */}
+            <div className="flex-1 p-16 overflow-y-auto">
+              <RefineContext>{children}</RefineContext>
+            </div>
+          </div>
+        </div>
       </body>
     </html>
   );
