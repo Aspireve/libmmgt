@@ -26,7 +26,7 @@ interface MenuItem {
     ];
   
     return (
-        <div className="min-h-screen w-[15%] shadow-[0_4px_4px_0_rgba(0,0,0,0.25)] border-r border-r-[#d9d9d9] flex flex-col font-josefin">
+        <div className="max-h-screen w-[15%] shadow-[0_4px_4px_0_rgba(0,0,0,0.25)] border-r border-r-[#d9d9d9] flex flex-col font-josefin">
           {/* Logo Section */}
           <div className="p-4">
             <Image src={Logo} alt="VighnoTech Logo" className="w-full h-auto" />
