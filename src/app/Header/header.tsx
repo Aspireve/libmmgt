@@ -4,7 +4,7 @@ import Dropper from "../../images/Dropper.png";
 
 const header = () => {
   return (
-    <div className="flex items-center justify-between mt-6 mx-5 font-josefin">
+    <div className="flex items-center justify-between mx-5 font-josefin mt-7">
       <div className="flex-1">
         <h1 className="ml-[22px] text-black text-4xl font-bold">
           Library Management
@@ -14,9 +14,13 @@ const header = () => {
         </p>
       </div>
 
-      <div className="border border-blue-500 rounded-lg bg-white overflow-hidden w-[145px] h-[57px] flex items-center justify-between px-2 mb-[100px] mr-[50px]">
+      <div className="border-2 border-blue-500 rounded-xl bg-white overflow-hidden w-[145px] h-[57px] flex items-center justify-between px-2 mt-2 mr-[50px]">
         <div className="flex items-center -ml-[15px]">
-          <img src={TiaIcon.src} alt="logo" className="w-[45px] h-[45px] ml-4" />
+          <img
+            src={TiaIcon.src}
+            alt="logo"
+            className="w-[45px] h-[45px] ml-4"
+          />
           <div className="w-[1px] h-[24px] bg-blue mx-[8px]" />
           <span className="text-[blue] font-bold text-[16px]">TIA</span>
           <img

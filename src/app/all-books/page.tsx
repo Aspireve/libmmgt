@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import Addbook from '../../images/addbook.png'
 import Search from '../../images/search.png'
 import Image from 'next/image';
+import Tabbing from '../Tab/Tab';
 
 const BooksPage = () => {
   const { data, isLoading } = useList<Books>({ resource: 'view-books' });
@@ -15,6 +16,8 @@ const BooksPage = () => {
   return (
     <>
       <section className="border border-[#E0E2E7] rounded-[10px]">
+      <Tabbing/>
+
         <div className='container'>
           <div className="grid grid-cols-2 p-4">
             <div className='flex items-center gap-[10px]'>
@@ -22,10 +25,15 @@ const BooksPage = () => {
               <p className='bg-[#F9F5FF] rounded-2xl text-[#6941C6]'>100 <span>Enteries</span></p>
             </div>
             <div className="flex items-center justify-between py-4">
-      {/* Add Books Button */}
+              {/* Department Button */}
       <Button className="shadow-none border border-[#D5D7DA] rounded-[8px] text-[#BBBBBB] flex items-center px-4 py-2">
-        <Image src={Addbook} alt="Add button" className="mr-2" width={20} height={20} />
-        Add Books
+        {/* <Image src={Addbook} alt="Add button" className="mr-2" width={20} height={20} /> */}
+        Department
+      </Button>
+      {/* Filter Books Button */}
+      <Button className="shadow-none border border-[#1E40AF] text-[#1E40AF] rounded-[10px] w-[15%]">
+        {/* <Image src={Addbook} alt="Add button" className="mr-2" width={20} height={20} /> */}
+        Filter
       </Button>
 
       {/* Search Input with Icon */}

@@ -23,7 +23,6 @@ import {
 
 import { Button } from '@/components/ui/button'
 
-
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
   data: TData[]
@@ -85,7 +84,7 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
       </div>
 
       {/* Pagination */}
-      <div className='flex items-center justify-between space-x-2 py-2 m-4'>
+      <div className='flex items-center justify-end space-x-2 py-4'>
         <Button onClick={() => table.previousPage()} disabled={!table.getCanPreviousPage()}>
           Previous
         </Button>

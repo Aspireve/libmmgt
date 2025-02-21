@@ -4,7 +4,7 @@ import AddTab from "../../images/AddTab.png";
 
 const Navbar: React.FC = () => {
   return (
-    <div className="w-full shadow-[0_0_2px_0_#00000040] h-20 flex border-b border-b-[#d9d9d9] px-6 bg-white font-josefin">
+    <div className="w-full shadow-[0_0_2px_0_#00000040] h-16 flex border-b border-b-[#d9d9d9] px-6 bg-white font-josefin">
       <img
         src={Home.src}
         alt="Home Icon"
