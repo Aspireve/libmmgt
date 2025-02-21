@@ -87,7 +87,7 @@ const App = (props: React.PropsWithChildren<AppProps>) => {
           name: user.name,
           avatar: user.image,
         };
-      }
+      } 
 
       return null;
     },
@@ -106,6 +106,16 @@ const App = (props: React.PropsWithChildren<AppProps>) => {
             warnWhenUnsavedChanges: true,
             useNewQueryKeys: true,
           }}
+          resources={[
+            {
+              name: "issuebook",
+              list: "/issuebook", // Maps to the /issuebook route
+              create: "/issuebook/create", // Optional: for creating new book issues
+              edit: "/issuebook/edit/:id", // Optional: for editing
+              show: "/issuebook/show/:id", // Optional: for showing details
+            },
+            // Add other resources as needed
+          ]}
         >
           {props.children}
           <RefineKbar />

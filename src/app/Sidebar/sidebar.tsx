@@ -45,7 +45,7 @@ interface MenuItem {
                     transition-colors  text-[#1E40AF]
                     ${
                       isActive
-                        ? "bg-[#0066FF99]" 
+                        ? "bg-[#F0F6FF]" 
                         : "hover:bg-#EDF1FF"
                     }
                   `}
