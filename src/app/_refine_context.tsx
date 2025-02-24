@@ -1,6 +1,7 @@
 "use client";
 
 import { Refine, type AuthProvider } from "@refinedev/core";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { RefineKbar, RefineKbarProvider } from "@refinedev/kbar";
 import { SessionProvider, signIn, signOut, useSession } from "next-auth/react";
 import { usePathname } from "next/navigation";
@@ -8,8 +9,10 @@ import React from "react";
 
 import routerProvider from "@refinedev/nextjs-router";
 
-import { dataProvider } from "../providers/data-provider";
+import { dataProvider } from "../providers/data";
 import "../styles/global.css";
+
+const queryClient = new QueryClient();
 
 type RefineContextProps = {};
 
@@ -28,10 +31,6 @@ type AppProps = {};
 const App = (props: React.PropsWithChildren<AppProps>) => {
   const { data, status } = useSession();
   const to = usePathname();
-
-  if (status === "loading") {
-    return <span>loading...</span>;
-  }
 
   const authProvider: AuthProvider = {
     login: async () => {
@@ -87,7 +86,7 @@ const App = (props: React.PropsWithChildren<AppProps>) => {
           name: user.name,
           avatar: user.image,
         };
-      } 
+      }
 
       return null;
     },
@@ -95,32 +94,23 @@ const App = (props: React.PropsWithChildren<AppProps>) => {
 
   return (
     <>
-     
-      <RefineKbarProvider>
-        <Refine
-          routerProvider={routerProvider}
-          dataProvider={dataProvider}
-          authProvider={authProvider}
-          options={{
-            syncWithLocation: true,
-            warnWhenUnsavedChanges: true,
-            useNewQueryKeys: true,
-          }}
-          resources={[
-            {
-              name: "issuebook",
-              list: "/issuebook", // Maps to the /issuebook route
-              create: "/issuebook/create", // Optional: for creating new book issues
-              edit: "/issuebook/edit/:id", // Optional: for editing
-              show: "/issuebook/show/:id", // Optional: for showing details
-            },
-            // Add other resources as needed
-          ]}
-        >
-          {props.children}
-          <RefineKbar />
-        </Refine>
-      </RefineKbarProvider>
+      <QueryClientProvider client={queryClient}>
+        <RefineKbarProvider>
+          <Refine
+            routerProvider={routerProvider}
+            dataProvider={dataProvider}
+            authProvider={authProvider}
+            options={{
+              syncWithLocation: true,
+              warnWhenUnsavedChanges: true,
+              useNewQueryKeys: true,
+            }}
+          >
+            {props.children}
+            <RefineKbar />
+          </Refine>
+        </RefineKbarProvider>
+      </QueryClientProvider>
     </>
   );
 };
