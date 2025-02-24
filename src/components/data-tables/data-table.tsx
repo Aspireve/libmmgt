@@ -22,7 +22,6 @@ import {
 } from '@/components/ui/table'
 
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
 
 
 interface DataTableProps<TData, TValue> {
@@ -50,9 +49,9 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
     <>
 
       {/* Table */}
-      <div className='rounded-md border'>
-        <Table>
-          <TableHeader>
+      <div className='rounded-md border flex flex-col gap-4'>
+        <Table className="font-inter">
+          <TableHeader className='relative bottom-2'>
             {table.getHeaderGroups().map(headerGroup => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map(header => (
@@ -66,7 +65,7 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
           <TableBody>
             {table.getRowModel().rows.length ? (
               table.getRowModel().rows.map(row => (
-                <TableRow key={row.id}>
+                <TableRow key={row.id} className='p-4'>
                   {row.getVisibleCells().map(cell => (
                     <TableCell key={cell.id}>
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
@@ -86,7 +85,7 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
       </div>
 
       {/* Pagination */}
-      <div className='flex items-center justify-end space-x-2 py-4'>
+      <div className='flex items-center justify-between space-x-2 py-2 m-4'>
         <Button onClick={() => table.previousPage()} disabled={!table.getCanPreviousPage()}>
           Previous
         </Button>

@@ -1,6 +1,6 @@
 'use client';
 import { Books, columns } from './columns';
-import { DataTable } from '@/components/data-tables/books-data-table';
+import { DataTable } from '@/components/data-tables/data-table';
 import React from 'react';
 import { useList } from '@refinedev/core';
 import { Input } from '@/components/ui/input';

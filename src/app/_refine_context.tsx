@@ -137,8 +137,10 @@ import "../styles/global.css";
 
 // Import your pages
 // import Dashboard from "@/pages/dashboard";
-import AllBooks from "@/app/all-books/page";
+import BooksPage from "@/app/all-books/page";
 import IssuedBooks from "@/app/issued-books/page"
+import IssueBooks from "@/app/issue-books/page"
+
 
 const queryClient = new QueryClient();
 
@@ -241,13 +243,18 @@ const App = (props: React.PropsWithChildren<AppProps>) => {
               // },
               {
                 name: "all-books",
-                list: AllBooks,
+                list: BooksPage,
                 meta: { label: "All Books" },
               },
               {
                 name: "issued-books",
                 list: IssuedBooks,
                 meta: { label: "Issued Books" },
+              },
+              {
+                name: "issue-books",
+                list: IssueBooks,
+                meta: { label: "Issue Books" },
               },
             ]}
           >

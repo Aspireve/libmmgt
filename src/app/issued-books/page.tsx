@@ -1,6 +1,6 @@
 'use client';
 import { Issuedbooks, columns } from './columns';
-import { DataTable } from '@/components/data-tables/Issuedbook-data-table';
+import { DataTable } from '@/components/data-tables/data-table';
 import React from 'react';
 import { useList } from '@refinedev/core';
 import { Input } from '@/components/ui/input';
@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import Addbook from '../../images/addbook.png'
 import Search from '../../images/search.png'
 import Image from 'next/image';
+import Tabbing from '../Tab/Tab';
 
 const IssuedBooks = () => {
   const { data, isLoading } = useList<Issuedbooks>({ resource: 'view-books' });
@@ -15,6 +16,8 @@ const IssuedBooks = () => {
   return (
     <>
       <section className="border border-[#E0E2E7] rounded-[10px]">
+      <Tabbing/>
+
         <div className='container'>
           <div className="grid grid-cols-2 p-4">
             <div className='flex items-center gap-[10px]'>
