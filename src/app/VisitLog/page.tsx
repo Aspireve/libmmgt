@@ -1,9 +1,13 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import Header from '../Header/header';
+import Header from "../Header/header";
+import {
+  visitLogColumns,
+  fallbackVisitLogData,
+  VisitLog,
+} from "../VisitLog/columns";
 import { DataTable } from "@/components/data-tables/data-table";
-import { visitLogColumns, fallbackVisitLogData, VisitLog } from '../VisitLog/columns'; // Adjust the path as needed
 
 const Page = () => {
   const [visitLogs, setVisitLogs] = useState<VisitLog[]>([]);
@@ -13,8 +17,8 @@ const Page = () => {
     const fetchVisitLogs = async () => {
       try {
         const res = await fetch("/api/visitlogs");
+        // If response fails or data is empty, fallback to local data
         const data = !res.ok ? fallbackVisitLogData : await res.json();
-        // Ensure data is properly typed as VisitLog[]
         setVisitLogs(data?.length > 0 ? data : fallbackVisitLogData);
       } catch (error) {
         console.error("Error fetching visit logs:", error);

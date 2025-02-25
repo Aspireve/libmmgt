@@ -2,19 +2,19 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 
-export interface Student {
-  student_id: string;
-  student_name: string;
+interface Student {
+  id: string | number;
+  name: string;
   department: string;
 }
 
 export const studentColumns: ColumnDef<Student>[] = [
   {
-    accessorKey: "student_id",
+    accessorKey: "id",  // Changed from student_id to match interface
     header: "Student ID",
   },
   {
-    accessorKey: "student_name",
+    accessorKey: "name",  // Changed from student_name to match interface
     header: "Student Name",
   },
   {
@@ -26,28 +26,28 @@ export const studentColumns: ColumnDef<Student>[] = [
 // Static fallback data
 export const fallbackData: Student[] = [
   {
-    student_id: "#3066",
-    student_name: "Bhumi Jain",
+    id: "#3066",  // Changed from student_id
+    name: "Bhumi Jain",  // Changed from student_name
     department: "Electronics",
   },
   {
-    student_id: "#3065",
-    student_name: "Bhumi Jain",
+    id: "#3065",
+    name: "Bhumi Jain",
     department: "Electronics",
   },
   {
-    student_id: "#3064",
-    student_name: "Bhumi Jain",
+    id: "#3064",
+    name: "Bhumi Jain",
     department: "Electronics",
   },
   {
-    student_id: "#3063",
-    student_name: "Bhumi Jain",
+    id: "#3063",
+    name: "Bhumi Jain",
     department: "Electronics",
   },
   {
-    student_id: "#3062",
-    student_name: "Bhumi Jain",
+    id: "#3062",
+    name: "Bhumi Jain",
     department: "Electronics",
   },
 ];
