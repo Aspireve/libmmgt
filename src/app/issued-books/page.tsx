@@ -32,10 +32,9 @@ const IssuedBooks = () => {
             <div className="flex items-center justify-between py-4">
       {/* Add Books Button */}
       <Button 
-      onClick={() => router.push("/add-book")}
+      onClick={() => router.push("/issue-books")}
       className="shadow-none border border-[#D5D7DA] rounded-[8px] text-[#BBBBBB] flex items-center px-4 py-2">
-        <Image src={Addbook} alt="Add button" className="mr-2" width={20} height={20} />
-        Add Books
+        Issue Book
       </Button>
 
       {/* Search Input with Icon */}

@@ -114,11 +114,6 @@ const App = (props: React.PropsWithChildren<AppProps>) => {
               useNewQueryKeys: true,
             }}
             resources={[
-              // {
-              //   name: "dashboard",
-              //   list: Dashboard,
-              //   meta: { label: "Dashboard" },
-              // },
               {
                 name: "all-books",
                 list: BooksPage,
@@ -141,6 +136,7 @@ const App = (props: React.PropsWithChildren<AppProps>) => {
               }
             ]}
           >
+            {/* <LoginPage/> */}
             {props.children}
             <RefineKbar />
           </Refine>

@@ -25,8 +25,8 @@ const Sidebar = () => {
     { key: "dashboard", label: "Dashboard", icon: DashIcon, route: "/" },
     { key: "all-books", label: "All Books", icon: PenIcon, route: "/all-books" },
     { key: "student-directory", label: "Student Directory", icon: IssuedIcon, route: "/StudentDirectory" },
-    { key: "fees-penalties", label: "Fees & Penalities", icon: PenIcon, route: "/FeesPenalities" },
-    { key: "visit-log", label: "Visit Log", icon: PenIcon, route: "/visitLog" },
+    { key: "fees-penalties", label: "Fees & Penalities", icon: PenIcon, route: "/FeesPenalties" },
+    { key: "visit-log", label: "Visit Log", icon: PenIcon, route: "/VisitLog" },
   ];
 
   return (

@@ -49,7 +49,7 @@ const AddBook = () => {
     const formatDate = (dateString: string | undefined) => {
       if (!dateString) return null; // ✅ If empty, return null
       const date = new Date(dateString);
-      return isNaN(date.getTime()) ? null : date.toISOString().split("T")[0]; // ✅ Extract YYYY-MM-DD
+      return isNaN(date.getTime()) ? null : date.toISOString().split("T")[0];
     };
     const formattedData: BookData = {
       ...data,
@@ -58,11 +58,11 @@ const AddBook = () => {
       inventory_number: parseInt(data.inventory_number.toString(), 10),
       accession_number: parseInt(data.accession_number.toString(), 10),
       bill_no: parseInt(data.bill_no.toString(), 10),
-      year_of_publication: formatDate(data.year_of_publication), // ✅ Now in YYYY-MM-DD
+      year_of_publication: formatDate(data.year_of_publication),
       date_of_acquisition: formatDate(data.date_of_acquisition),
     };
     mutate(
-      { resource: "create", values: formattedData },  // Assuming 'books' is your API resource
+      { resource: "create", values: formattedData }, 
       {
         onSuccess: () => {
           alert("Book added successfully!")

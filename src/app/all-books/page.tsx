@@ -80,5 +80,4 @@ const BooksPage = () => {
   );
 };
 
-export default BooksPage;
-
+export default BooksPage;

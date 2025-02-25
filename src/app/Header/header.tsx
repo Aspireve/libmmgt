@@ -8,7 +8,6 @@ import Dropper from "../../images/Dropper.png";
 const Header = () => {
   const pathname = usePathname();
 
- 
   let heading = "Library Management System";
   let subheading = "Tanvir Chavan";
 
@@ -20,11 +19,19 @@ const Header = () => {
     heading = "Books List";
     subheading = "Tanvir Chavan";
   }
+  if (pathname === "/FeesPenalties") {
+    heading = "Fees&Penalities";
+    subheading = "Tanvir Chavan";
+  }
+  if (pathname === "/VisitLog") {
+    heading = "Visit Log";
+    subheading = "Tanvir Chavan";
+  }
 
   return (
     <div className="flex items-center justify-between mx-5 font-josefin mt-7">
       <div className="flex-1">
-        <h1 className="ml-[22px] text-black text-4xl font-bold">{heading}</h1>
+        <h1 className="ml-[22px] text-black text-3xl font-bold">{heading}</h1>
         <p className="ml-[22px] text-gray-500 mt-[5px] font-medium text-lg">
           {subheading}
         </p>
