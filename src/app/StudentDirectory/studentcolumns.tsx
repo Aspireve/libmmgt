@@ -32,12 +32,12 @@ export const fallbackData: Student[] = [
   },
   {
     id: "#3065",
-    name: "Bhumi Jain",
-    department: "Electronics",
+    name: "Tejas  k",
+    department: "Computer Science",
   },
   {
     id: "#3064",
-    name: "Bhumi Jain",
+    name: "Aditya",
     department: "Electronics",
   },
   {

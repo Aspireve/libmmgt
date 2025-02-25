@@ -15,11 +15,11 @@ interface Student {
   id: string | number; // Allowing both string and number for flexibility
   name: string;
   department: string;
-  // Add other fields as needed based on your API/data structure
+  
 }
 
 // Function to filter students based on search term
-const filterStudents = (students: Student[], term: string): Student[] => {
+ const filterStudents = (students: Student[], term: string): Student[] => {
   if (!term.trim()) return students; // Return full list if search term is empty
   const lowerTerm = term.toLowerCase().trim();
   return students.filter((student) =>
@@ -30,13 +30,13 @@ const filterStudents = (students: Student[], term: string): Student[] => {
 };
 
 const StudentDirectory = () => {
-  // State declarations with explicit typing
-  const [students, setStudents] = useState<Student[]>([]); // Full list of students
-  const [filteredStudents, setFilteredStudents] = useState<Student[]>([]); // Filtered list for display
-  const [searchTerm, setSearchTerm] = useState<string>(""); // Search term from input
-  const [loading, setLoading] = useState<boolean>(true); // Loading state
+  
+  const [students, setStudents] = useState<Student[]>([]); 
+  const [filteredStudents, setFilteredStudents] = useState<Student[]>([]); 
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(true); 
 
-  // Fetch students from API on component mount
+ 
   useEffect(() => {
     const fetchStudents = async () => {
       try {
@@ -44,11 +44,11 @@ const StudentDirectory = () => {
         const data = !res.ok ? fallbackData : await res.json();
         const studentData = data?.length > 0 ? data : fallbackData;
         setStudents(studentData);
-        setFilteredStudents(studentData); // Initialize filtered list with full data
+        setFilteredStudents(studentData);
       } catch (error) {
         console.error("Error fetching students:", error);
         setStudents(fallbackData);
-        setFilteredStudents(fallbackData); // Use fallback data on error
+        setFilteredStudents(fallbackData); 
       } finally {
         setLoading(false);
       }
@@ -62,7 +62,7 @@ const StudentDirectory = () => {
     setFilteredStudents(filterStudents(students, searchTerm));
   };
 
-  // Render loading state
+ 
   if (loading) {
     return <div className="p-4 text-center">Loading data...</div>;
   }
@@ -100,13 +100,13 @@ const StudentDirectory = () => {
               </div>
               <Button
                 className="bg-[#1E40AF] text-white rounded-[8px] w-[15%] p-4 hover:bg-[#1E40AF] hover:text-white"
-                onClick={handleSearch} // Trigger search on button click
+                onClick={handleSearch} 
               >
                 Search
               </Button>
             </div>
           </div>
-          <DataTable columns={studentColumns} data={filteredStudents} /> {/* Use filtered data */}
+          <DataTable columns={studentColumns} data={filteredStudents} /> 
         </div>
       </section>
     </>

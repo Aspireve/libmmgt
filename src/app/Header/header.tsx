@@ -27,6 +27,10 @@ const Header = () => {
     heading = "Visit Log";
     subheading = "Tanvir Chavan";
   }
+  if (pathname === "/available-books") {
+    heading = "Available Books";
+    subheading = "Tanvir Chavan";
+  }
 
   return (
     <div className="flex items-center justify-between mx-5 font-josefin mt-7">

@@ -9,21 +9,19 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import Search from '../../images/search.png'
 import Image from 'next/image';
-//import Tabbing from '../Tab/Tab';
+import Tabbing from '../Tab/Tab';
 import Header from '../Header/header';
 import Addbook from '../../images/addbook.png'
 import { useRouter } from "next/navigation";
 
 
-
 const BooksPage = () => {
   const { data, isLoading } = useList<Books>({ resource: 'all' });
   const router = useRouter();
-  console.log(data)
   return (
     <>
       <Header />
-      
+      <Tabbing />
 
       <section className="border border-[#E0E2E7] rounded-[10px] m-4">
 

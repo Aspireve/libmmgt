@@ -1,4 +1,3 @@
-
 "use client";
 
 import { Refine, type AuthProvider } from "@refinedev/core";
@@ -15,9 +14,10 @@ import "../styles/global.css";
 
 // Import your pages
 // import Dashboard from "@/pages/dashboard";
-import BooksPage from "@/app/all-books/page";
+
 import IssuedBooks from "@/app/issued-books/page"
 import IssueBooks from "@/app/issue-books/page"
+import BooksPage from "@/app/all-books/page";
 //import LoginPage from "./LoginPage/page";
 
 
@@ -130,6 +130,7 @@ const App = (props: React.PropsWithChildren<AppProps>) => {
                 list: IssueBooks,
                 meta: { label: "Issue Books" },
               },
+              
             ]}
           >
             {/* <LoginPage/> */}
