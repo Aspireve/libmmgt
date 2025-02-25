@@ -1,4 +1,5 @@
 'use client';
+import { useRouter } from "next/navigation";
 import { Issuedbooks, columns } from './columns';
 import { DataTable } from '@/components/data-tables/data-table';
 import React from 'react';
@@ -9,24 +10,30 @@ import Addbook from '../../images/addbook.png'
 import Search from '../../images/search.png'
 import Image from 'next/image';
 import Tabbing from '../Tab/Tab';
+import Header from '../Header/header';
 
 const IssuedBooks = () => {
   const { data, isLoading } = useList<Issuedbooks>({ resource: 'view-books' });
+  const router = useRouter();
 
   return (
     <>
-      <section className="border border-[#E0E2E7] rounded-[10px]">
+    <Header/>
       <Tabbing/>
+
+      <section className="border border-[#E0E2E7] rounded-[10px] m-4">
 
         <div className='container'>
           <div className="grid grid-cols-2 p-4">
             <div className='flex items-center gap-[10px]'>
-              <h1 className=' text-3xl font-bold'>Books</h1>
+              <h1 className=' text-3xl font-bold'>Issued Books</h1>
               <p className='bg-[#F9F5FF] rounded-2xl text-[#6941C6]'>100 <span>Enteries</span></p>
             </div>
             <div className="flex items-center justify-between py-4">
       {/* Add Books Button */}
-      <Button className="shadow-none border border-[#D5D7DA] rounded-[8px] text-[#BBBBBB] flex items-center px-4 py-2">
+      <Button 
+      onClick={() => router.push("/add-book")}
+      className="shadow-none border border-[#D5D7DA] rounded-[8px] text-[#BBBBBB] flex items-center px-4 py-2">
         <Image src={Addbook} alt="Add button" className="mr-2" width={20} height={20} />
         Add Books
       </Button>

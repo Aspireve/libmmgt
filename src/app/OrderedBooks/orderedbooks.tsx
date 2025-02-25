@@ -30,7 +30,7 @@ const OrderedBooks: React.FC = () => {
       <ul className="divide-y divide-gray-200">
         {data.map((item) => (
           <li key={item.id} className="flex items-start justify-between py-3">
-            <div className="border-l-4 border-[#7C3AED] h-12 pl-3 mr-3">
+            <div className="border-l-4 border-[#7C3AED] h-15 pl-3 mr-3">
               <span className="font-sm bg-[#F3ECFF] text-[#6427CB] rounded-full px-3 py-1">
                 {item.orderId}
               </span>
