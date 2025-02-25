@@ -26,7 +26,7 @@ const Tabbing: React.FC<TabbingProps> = ({
 }) => {
   const [activeTab, setActiveTab] = useState(defaultTab || tabs[0]?.key);
 
-  // If user clicks a tab, set it active & trigger callback if needed
+
   const handleTabClick = (key: string) => {
     setActiveTab(key);
     onTabChange?.(key);

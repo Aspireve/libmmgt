@@ -1,7 +1,7 @@
 import { DataProvider} from "@refinedev/core";
 import { fetchWrapper } from "./fetch-wrapper";
 
-export const API_URL = "http://localhost:3030/books";
+export const API_URL = "http://localhost:3030/book";
 
 export const dataProvider: DataProvider = {
     getList: async ({ resource, pagination, filters, sorters, meta }) => {

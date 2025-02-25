@@ -1,3 +1,4 @@
+
 "use client";
 
 import { Refine, type AuthProvider } from "@refinedev/core";
@@ -11,6 +12,14 @@ import routerProvider from "@refinedev/nextjs-router";
 
 import { dataProvider } from "../providers/data";
 import "../styles/global.css";
+
+// Import your pages
+// import Dashboard from "@/pages/dashboard";
+import BooksPage from "@/app/all-books/page";
+import IssuedBooks from "@/app/issued-books/page"
+import IssueBooks from "@/app/issue-books/page"
+//import LoginPage from "./LoginPage/page";
+
 
 const queryClient = new QueryClient();
 
@@ -105,7 +114,25 @@ const App = (props: React.PropsWithChildren<AppProps>) => {
               warnWhenUnsavedChanges: true,
               useNewQueryKeys: true,
             }}
+            resources={[
+              {
+                name: "all-books",
+                list: BooksPage,
+                meta: { label: "All Books" },
+              },
+              {
+                name: "issued-books",
+                list: IssuedBooks,
+                meta: { label: "Issued Books" },
+              },
+              {
+                name: "issue-books",
+                list: IssueBooks,
+                meta: { label: "Issue Books" },
+              },
+            ]}
           >
+            {/* <LoginPage/> */}
             {props.children}
             <RefineKbar />
           </Refine>
@@ -114,3 +141,5 @@ const App = (props: React.PropsWithChildren<AppProps>) => {
     </>
   );
 };
+
+export default RefineContext;
