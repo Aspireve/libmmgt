@@ -6,7 +6,7 @@ import {
   visitLogColumns,
   fallbackVisitLogData,
   VisitLog,
-} from "../VisitLog/columns";
+} from "./columns";
 import { DataTable } from "@/components/data-tables/data-table";
 
 const Page = () => {

@@ -76,11 +76,11 @@ const StudentDirectory = () => {
             <div className="flex items-center gap-4">
               <p className="text-sm font-semibold ml-4">Students</p>
               <span className="rounded-full bg-[#F9F5FF] px-3 py-1 text-sm font-medium text-[#6941C6]">
-                100 Entries
+                {students.length} Entries
               </span>
             </div>
             <div className="flex items-center justify-end gap-4 m-3">
-              <Link href="/ImportPage">
+              <Link href="/import-students">
                 <Button className="border border-[blue] rounded-[8px] text-blue-500 pl-5 pr-8">
                   Import
                 </Button>

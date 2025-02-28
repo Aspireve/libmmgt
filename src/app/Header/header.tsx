@@ -15,7 +15,11 @@ const Header = () => {
     heading = "Student Directory";
     subheading = "Tanvir Chavan";
   }
-  if (pathname === "/AllBooks") {
+  if (pathname === "/all-books") {
+    heading = "Books List";
+    subheading = "Tanvir Chavan";
+  }
+  if (pathname === "/all-books") {
     heading = "Books List";
     subheading = "Tanvir Chavan";
   }
@@ -26,6 +30,30 @@ const Header = () => {
   if (pathname === "/VisitLog") {
     heading = "Visit Log";
     subheading = "Tanvir Chavan";
+  }
+  if(pathname === "/available-books"){
+    heading= "Available Books";
+    subheading = "Tanvir Chavan"
+  }
+  if(pathname === "/issued-books"){
+    heading= "Issued Books";
+    subheading = "Tanvir Chavan"
+  }
+  if(pathname === "/issue-books"){
+    heading= "Issue Books";
+    subheading = "Tanvir Chavan"
+  }
+  if(pathname === "/add-book"){
+    heading="Add Book",
+    subheading="Tanvir Chavan"
+  }
+  if(pathname === "/add-journal"){
+    heading="Add Journal",
+    subheading="Tanvir Chavan"
+  }
+  if(pathname === "/edit-book"){
+    heading= "Edit Book"
+    subheading= "Tanvir Chavan"
   }
 
   return (

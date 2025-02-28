@@ -24,9 +24,9 @@ const Sidebar = () => {
   const menuItems: MenuItem[] = [
     { key: "dashboard", label: "Dashboard", icon: DashIcon, route: "/" },
     { key: "all-books", label: "All Books", icon: PenIcon, route: "/all-books" },
-    { key: "student-directory", label: "Student Directory", icon: IssuedIcon, route: "/StudentDirectory" },
-    { key: "fees-penalties", label: "Fees & Penalities", icon: PenIcon, route: "/FeesPenalties" },
-    { key: "visit-log", label: "Visit Log", icon: PenIcon, route: "/VisitLog" },
+    { key: "student-page", label: "Student Directory", icon: IssuedIcon, route: "/student-page" },
+    { key: "fees-penalties-page", label: "Fees & Penalities", icon: PenIcon, route: "/fees-penalties-page" },
+    { key: "visitlog-page", label: "Visit Log", icon: PenIcon, route: "/visitlog-page" },
   ];
 
   return (
@@ -56,11 +56,11 @@ const Sidebar = () => {
       <div className="p-4">
         <div className="flex justify-between mb-3 cursor-pointer p-2 rounded-md text-[#333333]">
           <span>Contact</span>
-          <Image src={TeleIcon} alt="telephone" width={20} height={20} />
+          <Image src={TeleIcon} alt="telephone" />
         </div>
         <div className="flex justify-between cursor-pointer p-2 rounded-md text-[#333333]">
           <span>Sign out</span>
-          <Image src={LogoutIcon} alt="logout" width={20} height={20} />
+          <Image src={LogoutIcon} alt="logout"  />
         </div>
       </div>
     </div>

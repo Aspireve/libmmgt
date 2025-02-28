@@ -114,7 +114,7 @@ export function DataTable<TData, TValue>({
                 {headerGroup.headers.map((header) => (
                   <TableHead
                     key={header.id}
-                    className="py-4 text-gray-500 text-sm font-normal"
+                    className="py-4 text-[#535862] text-center"
                   >
                     {flexRender(header.column.columnDef.header, header.getContext())}
                   </TableHead>
@@ -128,10 +128,10 @@ export function DataTable<TData, TValue>({
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
-                  className="border-b border-gray-300 last:border-b-0"
+                  className="border-b border-gray-300 last:border-b-0 text-center"
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id} className="py-4 text-gray-500 text-sm">
+                    <TableCell key={cell.id} className="py-4 text-[#535862] text-sm">
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </TableCell>
                   ))}

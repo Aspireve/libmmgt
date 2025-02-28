@@ -7,7 +7,7 @@ import {
   studentColumns,
   Student,
   fallbackData,
-} from "../FeesPenalties/columns";
+} from "./columns";
 
 const page = () => {
   const [students, setStudents] = useState<Student[]>([]);

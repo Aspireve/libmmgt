@@ -1,7 +1,7 @@
 import { DataProvider} from "@refinedev/core";
 import { fetchWrapper } from "./fetch-wrapper";
 
-export const API_URL = "https://c490-59-152-52-194.ngrok-free.app/book";
+export const API_URL = "https://lms-807p.onrender.com/book";
 
 export const dataProvider: DataProvider = {
     getList: async ({ resource, pagination, filters, sorters, meta }) => {
@@ -48,7 +48,7 @@ export const dataProvider: DataProvider = {
     },
 
     getOne: async ({ resource, id }) => {
-        const url = `/${resource}/${id}`;
+        const url = `/${resource}?book_id=${id}`
         const response = await fetchWrapper(url, {
             method: "GET",
         });

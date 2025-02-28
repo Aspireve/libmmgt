@@ -203,7 +203,7 @@ const Import_Books = () => {
   };
 
   return (
-    <div className="flex justify-center items-center w-full mt-6 min-h-screen">
+    <div className="flex justify-center items-center w-full h-4/5">
       <div className="p-6 w-full max-w-3xl">
         <h2 className="text-xl font-semibold mb-4">
           Library Management - Import Book Data

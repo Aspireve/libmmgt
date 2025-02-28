@@ -8,6 +8,8 @@ import { Label } from '@/components/ui/label';
 import { useForm } from "@refinedev/react-hook-form";
 import { useCreate } from '@refinedev/core';
 import { useRouter } from 'next/navigation';
+import Tabbing from '../Tab/Tab';
+import { routes } from '../add-book/page';
 
 const AddJournal = () => {
 
@@ -69,6 +71,8 @@ const AddJournal = () => {
   
   return (
     <>  
+    <Header/>
+    <Tabbing routes={routes} className='w-[30%]'/>
     <section className='p-10'>
         <div className="container">
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -149,9 +153,9 @@ const AddJournal = () => {
                 ))}
               </div>
             </div>
-            <div className='flex justify-center'>
+            <div className='flex justify-center gap-6'>
               <Button type='button' onClick={() => router.push("/all-books")}>Cancel</Button>
-              <Button type='submit' className='shadow-none border border-[#1E40AF] text-white bg-[#1E40AF] rounded-[10px] hover:bg-[#1E40AF]'>Add Book</Button>
+              <Button type='submit' className='shadow-none border border-[#1E40AF] text-white bg-[#1E40AF] rounded-[10px] hover:bg-[#1E40AF]'>Add Journal</Button>
             </div>
           </form>
 
