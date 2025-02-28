@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import * as XLSX from "xlsx";
 import { useCreate } from "@refinedev/core";
 
-// Final StudentData interface with only the specified fields.
 export interface StudentData {
   department: string;
   email: string;
@@ -13,11 +12,9 @@ export interface StudentData {
   phone_no: string;
 }
 
-
 type MappingType = {
   [key in keyof StudentData]?: string;
 };
-
 
 const initialMapping: MappingType = {
   full_name: "",
@@ -28,29 +25,24 @@ const initialMapping: MappingType = {
 };
 
 const Import_Students = () => {
-  // File and mapping state management.
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [error, setError] = useState<string>("");
-  const [dragActive, setDragActive] = useState<boolean>(false);
+  const [error, setError] = useState("");
+  const [dragActive, setDragActive] = useState(false);
   const [excelHeaders, setExcelHeaders] = useState<string[]>([]);
   const [excelData, setExcelData] = useState<any[]>([]);
   const [mapping, setMapping] = useState<MappingType>(initialMapping);
   const [mappedData, setMappedData] = useState<Partial<StudentData>[]>([]);
-  const [successMessage, setSuccessMessage] = useState<string>("");
-
+  const [successMessage, setSuccessMessage] = useState("");
   const allowedExtensions = [".xls", ".xlsx", ".csv"];
   const { mutate } = useCreate();
 
-  // ------------------------------
-  // File Handling & Parsing
-  // ------------------------------
-  const handleFileValidation = (file: File): void => {
-    if (!file) return;
-    const fileExtension = file.name.slice(file.name.lastIndexOf(".")).toLowerCase();
-    if (allowedExtensions.includes(fileExtension)) {
+  // File Validation & Parsing
+  const handleFileValidation = (file: File) => {
+    const ext = file.name.slice(file.name.lastIndexOf(".")).toLowerCase();
+    if (allowedExtensions.includes(ext)) {
       setSelectedFile(file);
       setError("");
-      parseExcelFile(file, fileExtension);
+      parseExcelFile(file, ext);
     } else {
       setSelectedFile(null);
       setExcelHeaders([]);
@@ -59,25 +51,20 @@ const Import_Students = () => {
     }
   };
 
-  const parseExcelFile = (file: File, fileExtension: string) => {
+  const parseExcelFile = (file: File, ext: string) => {
     const reader = new FileReader();
     reader.onload = (e) => {
       const result = e.target?.result;
       if (!result) return;
       try {
-        let workbook: XLSX.WorkBook;
-        if (fileExtension === ".csv") {
-          workbook = XLSX.read(result as string, { type: "string" });
-        } else {
-          workbook = XLSX.read(result as ArrayBuffer, { type: "array" });
-        }
-        const sheetName = workbook.SheetNames[0];
-        const worksheet = workbook.Sheets[sheetName];
+        const workbook: XLSX.WorkBook =
+          ext === ".csv"
+            ? XLSX.read(result as string, { type: "string" })
+            : XLSX.read(result as ArrayBuffer, { type: "array" });
+        const worksheet = workbook.Sheets[workbook.SheetNames[0]];
         const data = XLSX.utils.sheet_to_json(worksheet, { header: 1 }) as any[];
         if (data.length > 0) {
-          // First row is assumed to be the header.
           setExcelHeaders(data[0] as string[]);
-          // Remaining rows are the data.
           setExcelData(data.slice(1));
         }
       } catch (err) {
@@ -85,40 +72,28 @@ const Import_Students = () => {
         setError("Error reading file.");
       }
     };
-    fileExtension === ".csv" ? reader.readAsText(file) : reader.readAsArrayBuffer(file);
+    ext === ".csv" ? reader.readAsText(file) : reader.readAsArrayBuffer(file);
   };
 
-  // ------------------------------
-  // Drag and Drop Handlers
-  // ------------------------------
-  const handleDrop = (e: React.DragEvent<HTMLDivElement>): void => {
+  // Drag & Drop Handlers (combined)
+  const handleDragEvent = (e: React.DragEvent<HTMLDivElement>, active: boolean) => {
     e.preventDefault();
     e.stopPropagation();
-    setDragActive(false);
-    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+    setDragActive(active);
+  };
+
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    handleDragEvent(e, false);
+    if (e.dataTransfer.files?.[0]) {
       handleFileValidation(e.dataTransfer.files[0]);
     }
   };
 
-  const handleDragOver = (e: React.DragEvent<HTMLDivElement>): void => {
-    e.preventDefault();
-    e.stopPropagation();
-    setDragActive(true);
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.target.files?.[0] && handleFileValidation(e.target.files[0]);
   };
 
-  const handleDragLeave = (e: React.DragEvent<HTMLDivElement>): void => {
-    e.preventDefault();
-    e.stopPropagation();
-    setDragActive(false);
-  };
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    if (e.target.files && e.target.files[0]) {
-      handleFileValidation(e.target.files[0]);
-    }
-  };
-
-  const handleRemoveFile = (): void => {
+  const handleRemoveFile = () => {
     setSelectedFile(null);
     setExcelHeaders([]);
     setExcelData([]);
@@ -128,70 +103,46 @@ const Import_Students = () => {
     setSuccessMessage("");
   };
 
-  // ------------------------------
   // Mapping Logic
-  // ------------------------------
   const handleMappingChange = (field: keyof StudentData, value: string) => {
-    setMapping((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
+    setMapping((prev) => ({ ...prev, [field]: value }));
   };
 
   const handleMapData = () => {
     setError("");
     setSuccessMessage("");
 
-    // Validate that every field is mapped.
-    // for (const field in mapping) {
-    //   if (!mapping[field as keyof StudentData]) {
-    //     setError("Please map all fields before proceeding.");
-    //     return;
-    //   }
-    // }
-
-    if (excelData.length === 0) {
+    if (!excelData.length) {
       setError("No data to map. Please upload a file with data.");
       return;
     }
 
     try {
-      const mapped: Partial<StudentData>[] = [];
-      // Process each row from the Excel data.
-      for (const row of excelData) {
-        const studentEntry: Partial<StudentData> = {};
-        for (const [field, excelColumn] of Object.entries(mapping)) {
-          if (excelColumn) {
-            const columnIndex = excelHeaders.indexOf(excelColumn);
-            if (columnIndex !== -1 && row[columnIndex] !== undefined) {
-              const value = String(row[columnIndex]).trim();
-              studentEntry[field as keyof StudentData] = value;
+      const mapped = excelData
+        .map((row) => {
+          const studentEntry: Partial<StudentData> = {};
+          Object.entries(mapping).forEach(([field, col]) => {
+            const colIndex = excelHeaders.indexOf(col);
+            if (col && colIndex !== -1 && row[colIndex] !== undefined) {
+              studentEntry[field as keyof StudentData] = String(row[colIndex]).trim();
             }
-          }
-        }
-        if (Object.keys(studentEntry).length > 0) {
-          mapped.push(studentEntry);
-        }
-      }
+          });
+          return studentEntry;
+        })
+        .filter((entry) => Object.keys(entry).length > 0);
+
       setMappedData(mapped);
       setSuccessMessage(`Successfully mapped ${mapped.length} records`);
+
       mapped.forEach((record) => {
-        const recordWithInstitute = {
-          ...record,
-          institute_id: "828f0d33-258f-4a92-a235-9c1b30d8882b"
-        };
         mutate(
           {
             resource: "create",
-            values: recordWithInstitute,
+            values: { ...record, institute_id: "828f0d33-258f-4a92-a235-9c1b30d8882b" },
           },
           {
-            onSuccess: (data) => {
-              console.log("Book created successfully:", data);
-            },
-            onError: (error) => {
-              console.error("Error creating book:", error);
-            },
+            onSuccess: (data) => console.log("Book created successfully:", data),
+            onError: (error) => console.error("Error creating book:", error),
           }
         );
       });
@@ -201,21 +152,10 @@ const Import_Students = () => {
     }
   };
 
-  // ------------------------------
-  // Import Logic
-  // ------------------------------
   const handleImportData = () => {
-    if (mappedData.length === 0) {
-      handleMapData();
-      return;
-    }
-
-
+    if (!mappedData.length) handleMapData();
   };
 
-  // ------------------------------
-  // Render Component
-  // ------------------------------
   return (
     <div className="flex justify-center items-center w-full mt-6 min-h-screen">
       <div className="p-6 w-full max-w-3xl">
@@ -229,12 +169,10 @@ const Import_Students = () => {
         {/* File Upload Section */}
         <div
           className={`border-2 rounded-lg p-6 text-center mb-6 transition-colors ${
-            dragActive
-              ? "border-blue-500 border-dashed bg-blue-50"
-              : "border-dashed border-gray-300"
+            dragActive ? "border-blue-500 border-dashed bg-blue-50" : "border-dashed border-gray-300"
           }`}
-          onDragOver={handleDragOver}
-          onDragLeave={handleDragLeave}
+          onDragOver={(e) => handleDragEvent(e, true)}
+          onDragLeave={(e) => handleDragEvent(e, false)}
           onDrop={handleDrop}
         >
           {selectedFile ? (
@@ -243,10 +181,7 @@ const Import_Students = () => {
               <p className="text-green-600 font-medium mt-2">
                 {selectedFile.name} uploaded successfully!
               </p>
-              <p
-                className="text-blue-500 text-sm cursor-pointer mt-1"
-                onClick={handleRemoveFile}
-              >
+              <p className="text-blue-500 text-sm cursor-pointer mt-1" onClick={handleRemoveFile}>
                 Upload a different file
               </p>
             </div>
@@ -258,19 +193,12 @@ const Import_Students = () => {
               <p className="text-sm text-gray-500 mb-2">OR</p>
               <label className="bg-blue-500 text-white px-4 py-2 rounded cursor-pointer">
                 Select File
-                <input
-                  type="file"
-                  accept=".xls, .xlsx, .csv"
-                  onChange={handleChange}
-                  className="hidden"
-                />
+                <input type="file" accept=".xls, .xlsx, .csv" onChange={handleChange} className="hidden" />
               </label>
             </div>
           )}
           {error && <p className="text-red-500 mt-2">{error}</p>}
-          {successMessage && (
-            <p className="text-green-500 mt-2">{successMessage}</p>
-          )}
+          {successMessage && <p className="text-green-500 mt-2">{successMessage}</p>}
         </div>
 
         {/* Column Mapping Section */}
@@ -288,9 +216,7 @@ const Import_Students = () => {
                   <select
                     className="border border-gray-300 rounded p-2"
                     value={mapping[field as keyof StudentData] || ""}
-                    onChange={(e) =>
-                      handleMappingChange(field as keyof StudentData, e.target.value)
-                    }
+                    onChange={(e) => handleMappingChange(field as keyof StudentData, e.target.value)}
                   >
                     <option value="">Select Excel Column</option>
                     {excelHeaders.map((header, index) => (
@@ -302,8 +228,6 @@ const Import_Students = () => {
                 </div>
               ))}
             </div>
-
-            {/* Action Buttons */}
             <div className="flex gap-4 mt-6">
               <button
                 className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"

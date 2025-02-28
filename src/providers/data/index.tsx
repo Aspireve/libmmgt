@@ -1,19 +1,21 @@
 import { DataProvider} from "@refinedev/core";
 import { fetchWrapper } from "./fetch-wrapper";
 
-export const API_URL = "https://frh3x6wc-4000.inc1.devtunnels.ms/book";
+export const API_URL = "https://lms-807p.onrender.com/student";
+
 
 export const dataProvider: DataProvider = {
     getList: async ({ resource, pagination, filters, sorters, meta }) => {
-        const url = `/${resource}`;
+        const url = `${API_URL}/${resource}`; // ✅ Corrected URL format
         const response = await fetchWrapper(url, {
             method: "GET",
         });
         return {
             data: response,
-            total: response.length,
+            total: response.length || 0, // ✅ Avoids undefined issue
         };
     },
+    
 
     create: async ({ resource, variables }) => {
         const url = `/${resource}`;

@@ -6,11 +6,13 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 
 import Logo from "../../images/Logo.png";
-import DashIcon from "../../images/Dash.png";
-import PenIcon from "../../images/penicon.png";
-import IssuedIcon from "../../images/IssuedBooks.png";
+import DashLogo from "../../images/DashLogo.png";
+import StudentDirectory from "../../images/StudentDirectory.png";
+import FeesPenaltiesLogo from "../../images/FeesPenaltiesLogo.png";
 import TeleIcon from "../../images/telephone.png";
 import LogoutIcon from "../../images/logout.png";
+import VisitLogo from "../../images/VisitLogo.png"
+import BooksLogo from "../../images/BooksLogo.png"
 
 interface MenuItem {
   key: string;
@@ -22,11 +24,11 @@ interface MenuItem {
 const Sidebar = () => {
   const pathname = usePathname();
   const menuItems: MenuItem[] = [
-    { key: "dashboard", label: "Dashboard", icon: DashIcon, route: "/" },
-    { key: "all-books", label: "All Books", icon: PenIcon, route: "/all-books" },
-    { key: "student-directory", label: "Student Directory", icon: IssuedIcon, route: "/StudentDirectory" },
-    { key: "fees-penalties", label: "Fees & Penalities", icon: PenIcon, route: "/FeesPenalties" },
-    { key: "visit-log", label: "Visit Log", icon: PenIcon, route: "/VisitLog" },
+    { key: "dashboard", label: "Dashboard", icon: DashLogo, route: "/" },
+    { key: "all-books", label: "All Books", icon: BooksLogo, route: "/all-books" },
+    { key: "student-page", label: "Student Directory", icon: StudentDirectory, route: "/student-page" },
+    { key: "fees-penalties", label: "Fees & Penalities", icon: FeesPenaltiesLogo, route: "/fees-penalties-page" },
+    { key: "visit-log", label: "Visit Log", icon: VisitLogo, route: "/visitlog-page" },
   ];
 
   return (

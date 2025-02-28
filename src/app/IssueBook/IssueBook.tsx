@@ -30,13 +30,13 @@ export default function IssueBook() {
   };
 
   return (
-    <div className="border border-[#E9EAEB] shadow-md max-w-[90%] h-[190px] rounded-[10px] bg-slate-50 ml-10 mt-5 p-6">
+    <div className="border border-[#AEB1B9] shadow-[#AEB1B9] max-w-[90%] h-[190px] rounded-[12px] bg-[#F3F4F6] ml-10 mt-5 p-6">
       <div className="flex items-center mb-4">
         <h2 className="text-3xl font-semibold text-black">Issue Books</h2>
         <select
           value={action}
           onChange={(e) => setAction(e.target.value)}
-          className="bg-white border border-gray-300 rounded p-2 text-black ml-5"
+          className="bg-[#DBDDE2] border border-gray-300 rounded p-2 ml-5 text-[#717680] w-[189px] h-[40px]"
         >
           <option>Check In</option>
           <option>Check Out</option>
@@ -44,7 +44,7 @@ export default function IssueBook() {
       </div>
       <form onSubmit={handleSubmit} className="flex flex-wrap gap-4">
         <div className="flex-1 min-w-[200px]">
-          <Label htmlFor="bookId" className="text-black mb-1">
+          <Label htmlFor="bookId" className="text-[#1F2937] mb-1">
             Book ID
           </Label>
           <Input
@@ -52,12 +52,12 @@ export default function IssueBook() {
             placeholder="Enter book id"
             value={bookId}
             onChange={(e) => setBookId(e.target.value)}
-            className="bg-white border border-gray-300 rounded"
+            className="bg-white border border-[#D5D7DA] rounded-[8px]"
           />
         </div>
 
         <div className="flex-1 min-w-[200px]">
-          <Label htmlFor="bookName" className="text-black mb-1">
+          <Label htmlFor="bookName" className="text-[#1F2937] mb-1">
             Name of the Book
           </Label>
           <Input
@@ -65,12 +65,12 @@ export default function IssueBook() {
             placeholder="Enter book name"
             value={bookName}
             onChange={(e) => setBookName(e.target.value)}
-            className="bg-white border border-gray-300 rounded"
+             className="bg-white border border-[#D5D7DA] rounded-[8px]"
           />
         </div>
 
         <div className="flex-1 min-w-[200px]">
-          <Label htmlFor="studentId" className="text-black mb-1">
+          <Label htmlFor="studentId" className="text-[#1F2937] mb-1">
             Student ID
           </Label>
           <Input
@@ -78,7 +78,7 @@ export default function IssueBook() {
             placeholder="Enter student id"
             value={studentId}
             onChange={(e) => setStudentId(e.target.value)}
-            className="bg-white border border-gray-300 rounded"
+             className="bg-white border border-[#D5D7DA] rounded-[8px]"
           />
         </div>
 
@@ -87,7 +87,7 @@ export default function IssueBook() {
             type="button"
             onClick={handleCancel}
             className={`
-              px-8
+              pt-3 pr-5 pb-3 pl-5
               mt-5
               rounded-[5px]
               border
@@ -103,7 +103,7 @@ export default function IssueBook() {
           <Button
             type="submit"
             className={`
-              px-8
+              pt-3 pr-5 pb-3 pl-5
               mt-5
               rounded-[5px]
               border

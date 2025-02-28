@@ -16,7 +16,7 @@ import { useRouter } from "next/navigation";
 
 
 const BooksPage = () => {
-  const { data, isLoading } = useList<Books>({ resource: 'all' });
+  const { data, isLoading } = useList<Books>({ resource: 'book/all' });
   const router = useRouter();
   return (
     <>

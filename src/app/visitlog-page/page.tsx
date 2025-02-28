@@ -2,12 +2,9 @@
 
 import React, { useState, useEffect } from "react";
 import Header from "../Header/header";
-import {
-  visitLogColumns,
-  fallbackVisitLogData,
-  VisitLog,
-} from "../VisitLog/columns";
+import { visitLogColumns, fallbackVisitLogData, VisitLog } from "../visitlog-page/columns";
 import { DataTable } from "@/components/data-tables/data-table";
+import { dataProvider } from "../../providers/data-provider"; // Adjust path as necessary
 
 const Page = () => {
   const [visitLogs, setVisitLogs] = useState<VisitLog[]>([]);
@@ -16,9 +13,15 @@ const Page = () => {
   useEffect(() => {
     const fetchVisitLogs = async () => {
       try {
-        const res = await fetch("/api/visitlogs");
-        // If response fails or data is empty, fallback to local data
-        const data = !res.ok ? fallbackVisitLogData : await res.json();
+        const result = await dataProvider.getList({
+          resource: "visitlogs", // Adjust resource name if needed
+          pagination: { current: 1, pageSize: 100 },
+          filters: [],
+          sorters: [],
+          meta: {},
+        });
+        // Cast result.data to VisitLog[]
+        const data = result.data as VisitLog[];
         setVisitLogs(data?.length > 0 ? data : fallbackVisitLogData);
       } catch (error) {
         console.error("Error fetching visit logs:", error);

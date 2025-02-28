@@ -8,6 +8,7 @@ import { RefineContext } from "./_refine_context";
 import Sidebar from "./Sidebar/sidebar";
 import Navbar from "./Navbar/navbar";
 import "../styles/global.css";
+import { Toaster } from "sonner";
 //import LoginPage from "./LoginPage/page";
 
 export default function RootLayout({
@@ -25,6 +26,7 @@ export default function RootLayout({
               <div className="flex flex-1 flex-col">
                 <Navbar />
                 <div className="flex-1 overflow-y-auto">{children}</div>
+                <Toaster/>
               </div>
             </div>
           </RefineContext>
