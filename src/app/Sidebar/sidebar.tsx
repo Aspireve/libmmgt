@@ -27,6 +27,7 @@ const Sidebar = () => {
     { key: "student-page", label: "Student Directory", icon: IssuedIcon, route: "/student-page" },
     { key: "fees-penalties-page", label: "Fees & Penalities", icon: PenIcon, route: "/fees-penalties-page" },
     { key: "visitlog-page", label: "Visit Log", icon: PenIcon, route: "/visitlog-page" },
+    {key:"book-activities", label:"Book Activities", icon:PenIcon, route:'/book-activities'}
   ];
 
   return (

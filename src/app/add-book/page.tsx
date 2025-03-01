@@ -9,8 +9,8 @@
   import { useCreate } from '@refinedev/core';
   import { useRouter } from 'next/navigation';
   import Tabbing from '../Tab/Tab';
-  import { bibliographic,cataloging,acquisition,inventory} from './data'
-import { toast } from 'sonner';
+  import { bibliographic,cataloging,acquisition,inventory } from './data'
+  import { toast } from 'sonner';
 
   export const routes = [
       { key: "add-book", label: "Add Book", path: "/add-book" },
@@ -80,12 +80,10 @@ import { toast } from 'sonner';
         { resource: "create", values: formattedData }, 
         {
           onSuccess: () => {
-            toast.success("Book added successfully!",{
-              position:'top-left'
-            })
+            toast.success("Book added successfully!",{position:'top-left'})
             router.push("/all-books")
           },
-          onError: (error) => alert("Error adding book: " + error.message),
+          onError: (error) => toast.error("Error adding book: " + error.message,{position:'top-left'}),
         }
       );
     };
@@ -108,11 +106,13 @@ import { toast } from 'sonner';
                     <div key={field.name}>
                       <Label>{field.label}</Label>
                       <Input
+                      className='text-[#343232]'
                       type={field.type}
                         {...register(field.name, { required: field.required })}
                         placeholder={field.placeholder}
+                        max={field.type === "date" ? new Date().toISOString().split("T")[0] : undefined}
                       />
-                       {errors[field.name] && <p className="text-red-500 text-sm">{typeof errors[field.name]}</p>}
+                       {errors[field.name] && <p className="text-red-500 text-sm">{[field.required]}</p>}
                 
                     </div>
                   ))}
@@ -126,10 +126,13 @@ import { toast } from 'sonner';
                     <div key={field.name}>
                       <Label>{field.label}</Label>
                       <Input
+                      className='text-[#343232]'
                       type={field.type}
                         {...register(field.name, { required: field.required })}
                         placeholder={field.placeholder}
+                        max={field.type === "date" ? new Date().toISOString().split("T")[0] : undefined}
                       />
+                       {errors[field.name] && <p className="text-red-500 text-sm">{[field.required]}</p>}
                     </div>
                   ))}
                 </div>
@@ -143,10 +146,13 @@ import { toast } from 'sonner';
                     <div key={field.name}>
                       <Label>{field.label}</Label>
                       <Input
+                      className='text-[#343232]'
                       type={field.type}
                         {...register(field.name, { required: field.required })}
                         placeholder={field.placeholder}
+                        max={field.type === "date" ? new Date().toISOString().split("T")[0] : undefined}
                       />
+                       {errors[field.name] && <p className="text-red-500 text-sm">{[field.required]}</p>}
                     </div>
                   ))}
                 </div>
@@ -159,10 +165,13 @@ import { toast } from 'sonner';
                     <div key={field.name}>
                       <Label>{field.label}</Label>
                       <Input
+                      className='text-[#343232]'
                       type={field.type}
                         {...register(field.name, { required: field.required })}
                         placeholder={field.placeholder}
+                        max={field.type === "date" ? new Date().toISOString().split("T")[0] : undefined}
                       />
+                       {errors[field.name] && <p className="text-red-500 text-sm">{[field.required]}</p>}
                     </div>
                   ))}
                 </div>

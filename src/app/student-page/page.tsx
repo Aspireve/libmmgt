@@ -34,7 +34,7 @@ const StudentDirectory = () => {
   const [students, setStudents] = useState<Student[]>([]); // Full list of students
   const [filteredStudents, setFilteredStudents] = useState<Student[]>([]); // Filtered list for display
   const [searchTerm, setSearchTerm] = useState<string>(""); // Search term from input
-  const [loading, setLoading] = useState<boolean>(true); // Loading state
+  
 
   // Fetch students from API on component mount
   useEffect(() => {
@@ -49,8 +49,6 @@ const StudentDirectory = () => {
         console.error("Error fetching students:", error);
         setStudents(fallbackData);
         setFilteredStudents(fallbackData); // Use fallback data on error
-      } finally {
-        setLoading(false);
       }
     };
 
@@ -61,12 +59,6 @@ const StudentDirectory = () => {
   const handleSearch = () => {
     setFilteredStudents(filterStudents(students, searchTerm));
   };
-
-  // Render loading state
-  if (loading) {
-    return <div className="p-4 text-center">Loading data...</div>;
-  }
-
   return (
     <>
       <Header />

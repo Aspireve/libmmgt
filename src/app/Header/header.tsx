@@ -11,7 +11,7 @@ const Header = () => {
   let heading = "Library Management System";
   let subheading = "Tanvir Chavan";
 
-  if (pathname === "/StudentDirectory") {
+  if (pathname === "/student-page") {
     heading = "Student Directory";
     subheading = "Tanvir Chavan";
   }
@@ -19,15 +19,11 @@ const Header = () => {
     heading = "Books List";
     subheading = "Tanvir Chavan";
   }
-  if (pathname === "/all-books") {
-    heading = "Books List";
+  if (pathname === "/fees-penalties-page") {
+    heading = "Fees & Penalities";
     subheading = "Tanvir Chavan";
   }
-  if (pathname === "/FeesPenalties") {
-    heading = "Fees&Penalities";
-    subheading = "Tanvir Chavan";
-  }
-  if (pathname === "/VisitLog") {
+  if (pathname === "/visitlog-page") {
     heading = "Visit Log";
     subheading = "Tanvir Chavan";
   }

@@ -9,6 +9,8 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import Header from "../Header/header";
 import { bibliographic, cataloging, acquisition, inventory } from "../add-book/data";
+import { toast } from 'sonner';
+
 
 interface BookData {
   book_id: string;
@@ -52,6 +54,7 @@ const EditBook = () => {
     register,
     handleSubmit,
     setValue,
+    formState:{errors}
   } = useForm<BookData>();
 
 
@@ -59,7 +62,14 @@ const EditBook = () => {
     console.log("Updated Book ID:", bookId);
     if (bookData?.data) {
       Object.keys(bookData.data).forEach((key) => {
-        setValue(key as keyof BookData, bookData.data[key as keyof BookData]);
+        let value = bookData.data[key as keyof BookData];
+  
+      
+        if (key === "year_of_publication" || key === "date_of_acquisition") {
+          value = value ? new Date(value).toISOString().split("T")[0] : "";
+        }
+  
+        setValue(key as keyof BookData, value as never);
       });
     }
   }, [bookData, setValue]);
@@ -88,12 +98,12 @@ const EditBook = () => {
       },
       {
         onSuccess: () => {
-          alert("Book updated successfully!");
+          toast.success("Book Updated successfully!",{position:'top-left'})
           router.push("/all-books");
         },
+        onError: (error) => toast.error("Error adding book: " + error.message,{position:'top-left'}),
       }
     );
-    console.log("edited")
   };
 
   return (
@@ -112,11 +122,13 @@ const EditBook = () => {
                   {bibliographic.map((field) => (
                     <div key={field.name}>
                       <Label>{field.label}</Label>
-                      <Input
+                      <Input 
+                      className='text-[#343232]'
                         type={field.type}
                         {...register(field.name)}
                         placeholder={field.placeholder}
                       />
+                       {errors[field.name] && <p className="text-red-500 text-sm">{[field.required]}</p>}
                     </div>
                   ))}
                 </div>
@@ -130,10 +142,12 @@ const EditBook = () => {
                     <div key={field.name}>
                       <Label>{field.label}</Label>
                       <Input
+                      className='text-[#343232]'
                         type={field.type}
                         {...register(field.name)}
                         placeholder={field.placeholder}
                       />
+                       {errors[field.name] && <p className="text-red-500 text-sm">{[field.required]}</p>}
                     </div>
                   ))}
                 </div>
@@ -147,10 +161,12 @@ const EditBook = () => {
                     <div key={field.name}>
                       <Label>{field.label}</Label>
                       <Input
+                      className='text-[#343232]'
                         type={field.type}
                         {...register(field.name)}
                         placeholder={field.placeholder}
                       />
+                       {errors[field.name] && <p className="text-red-500 text-sm">{[field.required]}</p>}
                     </div>
                   ))}
                 </div>
@@ -164,10 +180,12 @@ const EditBook = () => {
                     <div key={field.name}>
                       <Label>{field.label}</Label>
                       <Input
+                      className='text-[#343232]'
                         type={field.type}
                         {...register(field.name)}
                         placeholder={field.placeholder}
                       />
+                       {errors[field.name] && <p className="text-red-500 text-sm">{[field.required]}</p>}
                     </div>
                   ))}
                 </div>
@@ -177,13 +195,13 @@ const EditBook = () => {
               <div className="flex justify-center gap-4">
                 <Button
                   onClick={() => router.push("/all-books")}
-                  className="border border-gray-400 text-gray-600 rounded-md px-6 py-2"
+                  className="border-none text-gray-600 rounded-md px-6 py-2"
                 >
                   Cancel
                 </Button>
                 <Button
                   type="submit"
-                  className="bg-blue-600 text-white rounded-md px-6 py-2"
+                  className="bg-blue-600 text-white px-6 py-2 hover:bg-blue-600"
                   disabled={isUpdating}
                 >
                   {isUpdating ? "Updating..." : "Update Book"}

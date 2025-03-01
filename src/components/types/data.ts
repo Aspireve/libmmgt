@@ -1,5 +1,4 @@
 export interface BookData {
-    forEach(arg0: (record: any) => void): unknown;
     book_title: string;
     book_author: string;
     name_of_publisher: string;

@@ -176,26 +176,25 @@ const Import_Books = () => {
       setSuccessMessage(`Successfully mapped ${mapped.length} records`);
       console.log("Mapped data:", mapped);
 
-      mapped.forEach((record) => {
-        const recordWithInstitute = {
-          ...record,
-          institute_id: "828f0d33-258f-4a92-a235-9c1b30d8882b"
-        };
-        mutate(
-          {
-            resource: "create",
-            values: recordWithInstitute,
+      const recordsWithInstitute = mapped.map((record) => ({
+        ...record,
+        institute_id: "828f0d33-258f-4a92-a235-9c1b30d8882b",
+      }));
+      
+      mutate(
+        {
+          resource: "create",
+          values: recordsWithInstitute,
+        },
+        {
+          onSuccess: (data) => {
+            console.log("Books created successfully:", data);
           },
-          {
-            onSuccess: (data) => {
-              console.log("Book created successfully:", data);
-            },
-            onError: (error) => {
-              console.error("Error creating book:", error);
-            },
-          }
-        );
-      });
+          onError: (error) => {
+            console.error("Error creating books:", error);
+          },
+        }
+      );
     } catch (err) {
       console.error("Error mapping data:", err);
       setError("Error occurred while mapping data.");
@@ -203,7 +202,7 @@ const Import_Books = () => {
   };
 
   return (
-    <div className="flex justify-center items-center w-full h-4/5">
+    <div className="flex justify-center items-center w-full ">
       <div className="p-6 w-full max-w-3xl">
         <h2 className="text-xl font-semibold mb-4">
           Library Management - Import Book Data
