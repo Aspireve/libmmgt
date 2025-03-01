@@ -1,48 +1,17 @@
-# client
+# Node Express template project
 
-<div align="center" style="margin: 30px;">
-    <a href="https://refine.dev">
-    <img alt="refine logo" src="https://refine.ams3.cdn.digitaloceanspaces.com/readme/refine-readme-banner.png">
-    </a>
-</div>
-<br/>
+This project is based on a GitLab [Project Template](https://docs.gitlab.com/ee/user/project/#create-a-project-from-a-built-in-template).
 
-This [Refine](https://github.com/refinedev/refine) project was generated with [create refine-app](https://github.com/refinedev/refine/tree/master/packages/create-refine-app).
+Improvements can be proposed in the [original project](https://gitlab.com/gitlab-org/project-templates/express).
 
-## Getting Started
+## CI/CD with Auto DevOps
 
-A React Framework for building internal tools, admin panels, dashboards & B2B apps with unmatched flexibility ✨
+This template is compatible with [Auto DevOps](https://docs.gitlab.com/ee/topics/autodevops/).
 
-Refine's hooks and components simplifies the development process and eliminates the repetitive tasks by providing industry-standard solutions for crucial aspects of a project, including authentication, access control, routing, networking, state management, and i18n.
+If Auto DevOps is not already enabled for this project, you can [turn it on](https://docs.gitlab.com/ee/topics/autodevops/#enable-or-disable-auto-devops) in the project settings.
 
-## Available Scripts
+### Developing with Gitpod
 
-### Running the development server.
+This template has a fully-automated dev setup for [Gitpod](https://docs.gitlab.com/ee/integration/gitpod.html).
 
-```bash
-    npm run dev
-```
-
-### Building for production.
-
-```bash
-    npm run build
-```
-
-### Running the production server.
-
-```bash
-    npm run start
-```
-
-## Learn More
-
-To learn more about **Refine**, please check out the [Documentation](https://refine.dev/docs)
-
-- **REST Data Provider** [Docs](https://refine.dev/docs/core/providers/data-provider/#overview)
-- **Tailwind CSS** [Docs](https://refine.dev/docs/guides-concepts/general-concepts/#headless-concept)
-- **Custom Auth Provider** [Docs](https://refine.dev/docs/core/providers/auth-provider/)
-
-## License
-
-MIT
+If you open this project in Gitpod, you'll get all Node dependencies pre-installed.
