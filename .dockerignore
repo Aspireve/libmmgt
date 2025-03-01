@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 **/node_modules/
 **/dist
 .git
@@ -5,3 +6,6 @@ npm-debug.log
 .coverage
 .coverage.*
 .env
+=======
+node_modules
+>>>>>>> 451d11f8285b8a43cd344674bee085149f97724b

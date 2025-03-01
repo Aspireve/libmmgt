@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
   "name": "client",
   "version": "0.1.0",
   "private": true,
@@ -64,5 +65,22 @@
   },
   "refine": {
     "projectId": "kUwht6-vx7UUB-Zci9Vs"
+=======
+  "name": "demo",
+  "version": "0.0.0",
+  "private": "true",
+  "main": "server.js",
+  "scripts": {
+    "test": "mocha --exit tests/*",
+    "start": "node server.js"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "mocha": "^10.2.0",
+    "supertest": "^6.3.4"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+>>>>>>> 451d11f8285b8a43cd344674bee085149f97724b
   }
 }
