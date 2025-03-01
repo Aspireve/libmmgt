@@ -11,19 +11,23 @@ const Header = () => {
   let heading = "Library Management System";
   let subheading = "Tanvir Chavan";
 
-  if (pathname === "/StudentDirectory") {
+  if (pathname === "/student-page") {
     heading = "Student Directory";
     subheading = "Tanvir Chavan";
   }
-  if (pathname === "/AllBooks") {
+  if (pathname === "/all-books") {
     heading = "Books List";
     subheading = "Tanvir Chavan";
   }
-  if (pathname === "/FeesPenalties") {
+  if(pathname === "/available-books"){
+    heading= "Available Books";
+    subheading = "Tanvir Chavan"
+  }
+  if (pathname === "/fees-penalties-page") {
     heading = "Fees&Penalities";
     subheading = "Tanvir Chavan";
   }
-  if (pathname === "/VisitLog") {
+  if (pathname === "/visitlog-page") {
     heading = "Visit Log";
     subheading = "Tanvir Chavan";
   }
@@ -31,6 +35,11 @@ const Header = () => {
     heading = "Available Books";
     subheading = "Tanvir Chavan";
   }
+  if(pathname === "/available-books"){
+    heading= "Available Books";
+    subheading = "Tanvir Chavan"
+  }
+
 
   return (
     <div className="flex items-center justify-between mx-5 font-josefin mt-7">
