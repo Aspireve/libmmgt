@@ -6,21 +6,21 @@ import DeleteBtn from "../../images/DeleteBtn.png";
 import { useRouter } from "next/navigation";
 
 export interface Student {
-  student_id: string; 
+  student_id: string;
   student_name: string;
   department: string | null;
   email: string;
   phone_no: string;
   address: string;
   institute_id: string;
-  institute_name: string; // Institute name added for payload purposes
+  institute_name: string;
   is_archived: boolean;
-  dob: string; 
-  gender: string; 
-  roll_no: string; 
-  year_of_admission: string; 
-  password: string; // For form purposes, not displayed in table
-  confirm_password?: string; // Optional for form validation
+  date_of_birth: string; // Updated to be required for creation
+  gender: "male" | "female" | ""; // Enum-like restriction
+  roll_no: number; // Kept as string unless backend requires number
+  year_of_admission: string;
+  password: string;
+  confirm_password?: string;
 }
 
 export const studentColumns: ColumnDef<Student>[] = [
@@ -95,9 +95,9 @@ export const fallbackData: Student[] = [
     institute_name: "Thakur Institute of Aviation",
     is_archived: false,
     department: null,
-    dob: "1995-05-15",
-    gender: "Male",
-    roll_no: "R001",
+    date_of_birth: "1995-05-15",
+    gender: "male",
+    roll_no: 25,
     year_of_admission: "2015",
     password: "password123",
   },
@@ -111,11 +111,11 @@ export const fallbackData: Student[] = [
     institute_name: "Some Other Institute",
     is_archived: false,
     department: null,
-    dob: "1998-12-01",
-    gender: "Male",
-    roll_no: "R002",
+    date_of_birth: "1998-12-01",
+    gender: "male",
+    roll_no: 45,
     year_of_admission: "2018",
     password: "leonpass",
   },
-  // ... other fallback student objects
+  
 ];

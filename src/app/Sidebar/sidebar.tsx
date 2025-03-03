@@ -70,11 +70,11 @@ const Sidebar = () => {
       <div className="p-4">
         <div className="flex justify-between mb-3 cursor-pointer p-3 rounded-lg text-[#333333] hover:bg-gray-100 text-sm md:text-base">
           <span>Contact</span>
-          <Image src={TeleIcon} alt="telephone" width={20} height={20} />
+          <Image src={TeleIcon} alt="telephone" />
         </div>
         <div className="flex justify-between cursor-pointer p-3 rounded-lg text-[#333333] hover:bg-gray-100 text-sm md:text-base">
           <span>Sign out</span>
-          <Image src={LogoutIcon} alt="logout" width={20} height={20} />
+          <Image src={LogoutIcon} alt="logout"  />
         </div>
       </div>
     </div>

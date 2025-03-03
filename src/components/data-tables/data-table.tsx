@@ -164,32 +164,9 @@ export function DataTable<TData, TValue>({
         </Button>
 
         {/* Page Numbers */}
-        <div className="flex items-center gap-2">
-          {pageNumbers.map((page, i) => {
-            if (typeof page === "number") {
-              return (
-                <Button
-                  key={i}
-                  onClick={() => table.setPageIndex(page - 1)}
-                  className={`h-8 w-8 rounded-[5px] text-sm transition-colors ${
-                    currentPage === page
-                      ? ""
-                      : ""
-                  }`}
-                >
-                  {page}
-                </Button>
-              );
-            } else {
-              // Ellipsis
-              return (
-                <span key={i} className="px-2 text-gray-500">
-                  {page}
-                </span>
-              );
-            }
-          })}
-        </div>
+        <span className="text-[#535862]">
+        {table.getState().pagination.pageIndex + 1} ... {table.getPageCount()}
+        </span>
 
         {/* Next Button */}
         <Button

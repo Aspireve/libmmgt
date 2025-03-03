@@ -3,58 +3,8 @@
 import { useCreate } from "@refinedev/core";
 import React, { useState } from "react";
 import * as XLSX from "xlsx";
-
-interface BookData {
-  book_title: string;
-  book_author: string;
-  name_of_publisher: string;
-  place_of_publication: string;
-  year_of_publication: string;
-  language: string;
-  edition: string;
-  isbn: string;
-  no_of_pages: number;
-  no_of_preliminary_pages: number;
-  subject: string;
-  department: string;
-  call_number: string;
-  author_mark: string;
-  source_of_acquisition?: string;
-  date_of_acquisition?: string;
-  inventory_number: number;
-  accession_number: number;
-  barcode?: string;
-  item_type?: string;
-  bill_no: number;
-}
-
-type MappingType = {
-  [key in keyof BookData]?: string;
-};
-
-const initialMapping: MappingType = {
-  book_title: "",
-  book_author: "",
-  name_of_publisher: "",
-  place_of_publication: "",
-  year_of_publication: "",
-  language: "",
-  edition: "",
-  isbn: "",
-  no_of_pages: "",
-  no_of_preliminary_pages: "",
-  subject: "",
-  department: "",
-  call_number: "",
-  author_mark: "",
-  source_of_acquisition: "",
-  date_of_acquisition: "",
-  inventory_number: "",
-  accession_number: "",
-  barcode: "",
-  item_type: "",
-  bill_no: "",
-};
+import { BookData } from '../../components/types/data'
+import {initialMapping, MappingType} from './mapdata'
 
 const Import_Books = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -183,34 +133,33 @@ const Import_Books = () => {
   };
 
   const handleImportData = () => {
-    // Check if mapping has been configured
-    const hasMappings = Object.values(mapping).some(value => value !== "");
-    
-    if (!hasMappings) {
-      setError("Please map at least one column before proceeding.");
+    const allMapped = Object.values(mapping).every((value) => value !== "");
+    if (!allMapped) {
+      setError("Please map every column before proceeding.");
+      
       return;
     }
-    
+    for (const [field, header] of Object.entries(mapping)) {
+      if (!excelHeaders.includes(header)) {
+        setError(`Error: The mapped header for ${field.replace(/_/g, " ")} does not match any header in the file.`);
+        return;
+      }
+    }
     if (excelData.length === 0) {
       setError("No data to map. Please upload a file with data.");
       return;
     }
     
     try {
-      // Create an array to store mapped data
-      const mapped: Partial<BookData>[] = [];
       
-      // Process each row in the Excel data
+      const mapped: Partial<BookData>[] = [];
       excelData.forEach(row => {
         const bookEntry: Partial<BookData> = {};
-        
-        // For each field in our mapping
+ 
         Object.entries(mapping).forEach(([field, excelColumn]) => {
           if (excelColumn) {
-            // Find the index of the mapped Excel column
             const columnIndex = excelHeaders.indexOf(excelColumn);
             if (columnIndex !== -1 && row[columnIndex] !== undefined) {
-              // Add the data with proper type conversion
               bookEntry[field as keyof BookData] = convertToProperType(
                 row[columnIndex], 
                 field as keyof BookData
@@ -226,6 +175,26 @@ const Import_Books = () => {
       setMappedData(mapped);
       setSuccessMessage(`Successfully mapped ${mapped.length} records`);
       console.log("Mapped data:", mapped);
+
+      const recordsWithInstitute = mapped.map((record) => ({
+        ...record,
+        institute_id: "828f0d33-258f-4a92-a235-9c1b30d8882b",
+      }));
+      
+      mutate(
+        {
+          resource: "create",
+          values: recordsWithInstitute,
+        },
+        {
+          onSuccess: (data) => {
+            console.log("Books created successfully:", data);
+          },
+          onError: (error) => {
+            console.error("Error creating books:", error);
+          },
+        }
+      );
     } catch (err) {
       console.error("Error mapping data:", err);
       setError("Error occurred while mapping data.");
@@ -233,7 +202,7 @@ const Import_Books = () => {
   };
 
   return (
-    <div className="flex justify-center items-center w-full mt-6 min-h-screen">
+    <div className="flex justify-center items-center w-full ">
       <div className="p-6 w-full max-w-3xl">
         <h2 className="text-xl font-semibold mb-4">
           Library Management - Import Book Data
@@ -279,6 +248,7 @@ const Import_Books = () => {
                   accept=".xls, .xlsx, .csv"
                   onChange={handleChange}
                   className="hidden"
+                  required
                 />
               </label>
             </div>
@@ -332,5 +302,4 @@ const Import_Books = () => {
     </div>
   );
 };
-
 export default Import_Books;

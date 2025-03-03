@@ -23,12 +23,13 @@ const formatTime = (timeValue: string): string => {
     return timeValue;
   }
 
-  // Create a Date object for "today" with those hours/minutes
   const date = new Date();
   date.setHours(hours, minutes, 0, 0);
 
-  // Format as "hh:mm AM/PM"
-  return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+  // Consistent formatting with 'en-US' and lowercase
+  return date
+    .toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" })
+    .toLowerCase();
 };
 
 // Column definitions for VisitLog table

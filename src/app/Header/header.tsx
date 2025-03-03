@@ -19,27 +19,38 @@ const Header = () => {
     heading = "Books List";
     subheading = "Tanvir Chavan";
   }
-  if(pathname === "/available-books"){
-    heading= "Available Books";
-    subheading = "Tanvir Chavan"
-  }
   if (pathname === "/fees-penalties-page") {
-    heading = "Fees&Penalities";
+    heading = "Fees & Penalities";
     subheading = "Tanvir Chavan";
   }
   if (pathname === "/visitlog-page") {
     heading = "Visit Log";
     subheading = "Tanvir Chavan";
   }
-  if (pathname === "/available-books") {
-    heading = "Available Books";
-    subheading = "Tanvir Chavan";
-  }
   if(pathname === "/available-books"){
     heading= "Available Books";
     subheading = "Tanvir Chavan"
   }
-
+  if(pathname === "/issued-books"){
+    heading= "Issued Books";
+    subheading = "Tanvir Chavan"
+  }
+  if(pathname === "/issue-books"){
+    heading= "Issue Books";
+    subheading = "Tanvir Chavan"
+  }
+  if(pathname === "/add-book"){
+    heading="Add Book",
+    subheading="Tanvir Chavan"
+  }
+  if(pathname === "/add-journal"){
+    heading="Add Journal",
+    subheading="Tanvir Chavan"
+  }
+  if(pathname === "/edit-book"){
+    heading= "Edit Book"
+    subheading= "Tanvir Chavan"
+  }
 
   return (
     <div className="flex items-center justify-between mx-5 font-josefin mt-7">

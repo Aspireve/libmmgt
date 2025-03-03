@@ -5,7 +5,7 @@ type ErrorResponse = {
 const customFetch = async (url: string, options: RequestInit) => {
     const headers = options.headers as Record<string, string>;
     
-    const fullUrl = url.startsWith('https') ? url : `https://lms-807p.onrender.com/student${url.startsWith('/') ? url : `/${url}`}`;
+    const fullUrl = url.startsWith('https') ? url : `https://lms-807p.onrender.com${url.startsWith('/') ? url : `/${url}`}`;
 
     return fetch(fullUrl, {
         ...options,

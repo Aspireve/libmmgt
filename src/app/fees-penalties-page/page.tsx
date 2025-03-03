@@ -1,51 +1,77 @@
 "use client";
 
 import React, { useState } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
+import { useQueryClient, useMutation } from "@tanstack/react-query";
+import { useList, useDelete, GetListResponse } from "@refinedev/core";
 import Header from "../Header/header";
 import { DataTable } from "@/components/data-tables/data-table";
 import { studentColumns as originalStudentColumns, Student, fallbackData } from "../fees-penalties-page/columns";
-
-// Fetch fees and penalties data from API
-const fetchFeesPenalties = async (): Promise<Student[]> => {
-  const response = await axios.get("https://your-api-endpoint/feespenalties", {
-    params: { page: 1, pageSize: 100 },
-  });
-  return response.data;
-};
-
-// Delete student from API
-const deleteStudent = async (id: string): Promise<void> => {
-  await axios.delete(`https://your-api-endpoint/feespenalties/${id}`);
-};
+import { Button } from "@/components/ui/button"; // Assuming you have this component
+import { toast } from "sonner"; // Assuming you have toast notifications
 
 const FeesPenaltiesPage = () => {
   const queryClient = useQueryClient();
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [studentToDelete, setStudentToDelete] = useState<string | null>(null);
 
-  const { data: students = fallbackData, isLoading } = useQuery({
-    queryKey: ["feespenalties"],
-    queryFn: fetchFeesPenalties,
-    initialData: fallbackData,
+  // Fetch fees and penalties data using Refine's useList hook
+  const { data: studentsResponse, isLoading } = useList<Student>({
+    resource: "feespenalties",
+    pagination: { current: 1, pageSize: 100 },
+    queryOptions: {
+      queryKey: ["feespenalties"],
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      cacheTime: 10 * 60 * 1000, // 10 minutes
+      initialData: { 
+        data: fallbackData, 
+        total: fallbackData.length 
+      } as GetListResponse<Student>,
+    },
   });
 
+  const students = studentsResponse?.data ?? fallbackData;
+
+  // Delete mutation using Refine's useDelete hook
+  const { mutate: deleteStudent } = useDelete();
+
   const deleteMutation = useMutation({
-    mutationFn: deleteStudent,
+    mutationFn: (id: string) =>
+      new Promise<void>((resolve, reject) => {
+        deleteStudent(
+          { resource: "feespenalties", id },
+          {
+            onSuccess: () => resolve(),
+            onError: (error) => reject(error),
+          }
+        );
+      }),
     onMutate: async (id: string) => {
       await queryClient.cancelQueries({ queryKey: ["feespenalties"] });
-      const previousStudents = queryClient.getQueryData<Student[]>(["feespenalties"]) || [];
-      const updatedStudents = previousStudents.filter((student) => student.student_id !== id);
-      queryClient.setQueryData(["feespenalties"], updatedStudents);
+      const previousStudents = queryClient.getQueryData<GetListResponse<Student>>(["feespenalties"]) || 
+        { data: students, total: students.length };
+      const optimisticStudents = previousStudents.data.filter((student) => student.student_id !== id);
+      queryClient.setQueryData(["feespenalties"], { 
+        ...previousStudents, 
+        data: optimisticStudents,
+        total: optimisticStudents.length 
+      });
       return { previousStudents };
     },
-    onError: (err) => {
-      queryClient.setQueryData(["feespenalties"], (context: any) => context?.previousStudents);
-      console.error("Error deleting student:", err);
+    onError: (err, id, context) => {
+      queryClient.setQueryData(["feespenalties"], context?.previousStudents);
+      toast.error("Error deleting student: " + (err instanceof Error ? err.message : "Unknown error"), {
+        position: "top-center",
+      });
+      setShowConfirmModal(false);
+      setStudentToDelete(null);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["feespenalties"] });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["feespenalties"] });
+      toast.success("Student deleted successfully!", { position: "top-center" });
+      setShowConfirmModal(false);
+      setStudentToDelete(null);
     },
   });
 
@@ -57,8 +83,6 @@ const FeesPenaltiesPage = () => {
   const handleConfirmDelete = () => {
     if (!studentToDelete) return;
     deleteMutation.mutate(studentToDelete);
-    setShowConfirmModal(false);
-    setStudentToDelete(null);
   };
 
   const handleCancelDelete = () => {
@@ -74,7 +98,10 @@ const FeesPenaltiesPage = () => {
           const student: Student = row.original;
           return (
             <div className="flex gap-2">
-              <button onClick={() => confirmDelete(student.student_id)}>
+              <button
+                onClick={() => confirmDelete(student.student_id)}
+                aria-label="Delete student"
+              >
                 Delete
               </button>
             </div>
@@ -101,8 +128,15 @@ const FeesPenaltiesPage = () => {
             <h3 className="text-xl font-semibold mb-4">Confirm Delete</h3>
             <p className="mb-6">Are you sure you want to delete this student?</p>
             <div className="flex justify-end gap-4">
-              <button onClick={handleCancelDelete}>Cancel</button>
-              <button onClick={handleConfirmDelete}>Delete</button>
+              <Button onClick={handleCancelDelete} variant="outline">
+                Cancel
+              </Button>
+              <Button 
+                onClick={handleConfirmDelete} 
+                className="bg-red-600 text-white hover:bg-red-600"
+              >
+                Delete
+              </Button>
             </div>
           </div>
         </div>

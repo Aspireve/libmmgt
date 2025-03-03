@@ -1,5 +1,3 @@
-// app/layout.tsx
-
 "use client";
 import React from "react";
 import { Provider } from "react-redux";
@@ -9,7 +7,6 @@ import Sidebar from "./Sidebar/sidebar";
 import Navbar from "./Navbar/navbar";
 import "../styles/global.css";
 import { Toaster } from "sonner";
-// import LoginPage from "./LoginPage/page";
 
 export default function RootLayout({
   children,
@@ -17,7 +14,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="h-full">
+    <html lang="en" className="h-full" suppressHydrationWarning>
       <body className="h-full m-0 p-0">
         <Provider store={store}>
           <RefineContext>
@@ -27,14 +24,13 @@ export default function RootLayout({
               </div>
               <div className="flex-1 flex flex-col w-full">
                 <Navbar />
-                <main className="flex-1 overflow-y-auto  ">
+                <main className="flex-1 overflow-y-auto">
                   {children}
                 </main>
-                <Toaster />
+                <Toaster richColors/>
               </div>
             </div>
           </RefineContext>
-          {/* <LoginPage/> */}
         </Provider>
       </body>
     </html>

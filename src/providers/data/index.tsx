@@ -1,12 +1,12 @@
 import { DataProvider} from "@refinedev/core";
 import { fetchWrapper } from "./fetch-wrapper";
 
-export const API_URL = "https://lms-807p.onrender.com/student";
+export const API_URL = "https://lms-807p.onrender.com";
 
 
 export const dataProvider: DataProvider = {
     getList: async ({ resource, pagination, filters, sorters, meta }) => {
-        const url = `${API_URL}/${resource}`; // ✅ Corrected URL format
+        const url = `${resource}`; // ✅ Corrected URL format
         const response = await fetchWrapper(url, {
             method: "GET",
         });
@@ -18,7 +18,7 @@ export const dataProvider: DataProvider = {
     
 
     create: async ({ resource, variables }) => {
-        const url = `/${resource}`;
+        const url = `${resource}`;
         const response = await fetchWrapper(url, {
             method: "POST",
             body: JSON.stringify(variables),
@@ -29,7 +29,7 @@ export const dataProvider: DataProvider = {
     },
 
     update: async ({ resource, id, variables }) => {
-        const url = `/${resource}/${id}`;
+        const url = `${resource}/${id}`;
         const response = await fetchWrapper(url, {
             method: "PUT",
             body: JSON.stringify(variables),
@@ -40,7 +40,7 @@ export const dataProvider: DataProvider = {
     },
 
     deleteOne: async ({ resource, id }) => {
-        const url = `/${resource}/${id}`;
+        const url = `${resource}/${id}`;
         const response = await fetchWrapper(url, {
             method: "DELETE",
         });
@@ -50,7 +50,7 @@ export const dataProvider: DataProvider = {
     },
 
     getOne: async ({ resource, id }) => {
-        const url = `/${resource}/${id}`;
+        const url = `${resource}?book_id=${id}`
         const response = await fetchWrapper(url, {
             method: "GET",
         });

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import Header from "../Header/header";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -16,14 +16,17 @@ const EditStudent: React.FC = () => {
   const searchParams = useSearchParams();
   const studentId = searchParams.get("id");
 
-  // Parse initial data from the URL. Use try-catch to avoid errors if the parsing fails.
-  const parsedStudent = searchParams.get("student");
-  let initialData: Student = {} as Student;
-  try {
-    initialData = parsedStudent ? JSON.parse(parsedStudent) as Student : {} as Student;
-  } catch (error) {
-    console.error("Failed to parse student data from URL", error);
-  }
+  // Memoize initialData to prevent re-computation on every render
+  const initialData = useMemo(() => {
+    const parsedStudent = searchParams.get("student");
+    let data: Student = {} as Student;
+    try {
+      data = parsedStudent ? (JSON.parse(parsedStudent) as Student) : ({} as Student);
+    } catch (error) {
+      console.error("Failed to parse student data from URL", error);
+    }
+    return data;
+  }, [searchParams]);
 
   const {
     register,
@@ -47,11 +50,11 @@ const EditStudent: React.FC = () => {
       year_of_admission: "",
       current_password: "",
       new_password: "",
-      confirm_new_password: "",
+      confirm_password: "",
     },
   });
 
-  // Update form values when initialData is available.
+  // Update form values when initialData changes
   useEffect(() => {
     if (initialData && initialData.student_id) {
       reset({
@@ -64,7 +67,7 @@ const EditStudent: React.FC = () => {
         year_of_admission: initialData.year_of_admission || "",
         current_password: "",
         new_password: "",
-        confirm_new_password: "",
+        confirm_password: "",
       });
     }
   }, [initialData, reset]);
@@ -73,20 +76,18 @@ const EditStudent: React.FC = () => {
 
   const onSubmit = (data: FieldValues) => {
     const hardcodedInstituteId = "828f0d33-258f-4a92-a235-9c1b30d8882b";
+    const hardcodedStudentId = "828f0d33-258f-4a92-a235-9c1b30d8882b"; // Hardcoded UUID for testing
 
-    // Build the payload using the existing fields.
     const studentData: Partial<Student> = {
       ...data,
-      student_id: studentId || initialData.student_id,
+      student_id: studentId || initialData.student_id || hardcodedStudentId, // Fallback to hardcoded UUID
       institute_id: hardcodedInstituteId,
     };
 
-    // Remove extra password fields that are not part of the Student interface.
     delete (studentData as any).current_password;
     delete (studentData as any).new_password;
     delete (studentData as any).confirm_new_password;
 
-    // If new password is provided, validate and update the password.
     const newPassword = (data as any).new_password;
     const confirmNewPassword = (data as any).confirm_new_password;
     if (newPassword) {
@@ -99,18 +100,22 @@ const EditStudent: React.FC = () => {
 
     mutate(
       {
-        resource: "edit",
-        id: studentId || initialData.student_id,
+        resource: "student/edit",
+        id: hardcodedStudentId, // Use hardcoded UUID for testing
         values: studentData,
       },
       {
         onSuccess: () => {
           toast.success("Student updated successfully!", { position: "top-center" });
-          router.push("/student-page");
-          
+          setTimeout(() => router.push("/student-page"), 500);
         },
-        onError: (error: any) =>
-          toast.error("Error updating student. Please try again later.", { position: "top-center" }),
+        onError: (error: any) => {
+          console.error("Update error:", error); // Log the error for debugging
+          toast.error(
+            `Error updating student: ${error.message || "Please try again later."}`,
+            { position: "top-center" }
+          );
+        },
       }
     );
   };
