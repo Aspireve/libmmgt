@@ -1,53 +1,121 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
+import EditBtn from "../../images/EditBtn.png";
+import DeleteBtn from "../../images/DeleteBtn.png";
+import { useRouter } from "next/navigation";
 
-interface Student {
-  id: string | number;
-  name: string;
-  department: string;
+export interface Student {
+  student_id: string;
+  student_name: string;
+  department: string | null;
+  email: string;
+  phone_no: string;
+  address: string;
+  institute_id: string;
+  institute_name: string;
+  is_archived: boolean;
+  date_of_birth: string; // Updated to be required for creation
+  gender: "male" | "female" | ""; // Enum-like restriction
+  roll_no: number; // Kept as string unless backend requires number
+  year_of_admission: string;
+  password: string;
+  confirm_password?: string;
 }
 
 export const studentColumns: ColumnDef<Student>[] = [
   {
-    accessorKey: "id",  // Changed from student_id to match interface
-    header: "Student ID",
-  },
-  {
-    accessorKey: "name",  // Changed from student_name to match interface
+    accessorKey: "student_name",
     header: "Student Name",
   },
   {
     accessorKey: "department",
     header: "Department",
   },
+  {
+    accessorKey: "email",
+    header: "Email",
+  },
+  {
+    accessorKey: "phone_no",
+    header: "Phone Number",
+  },
+  {
+    accessorKey: "address",
+    header: "Address",
+  },
+  {
+    accessorKey: "roll_no",
+    header: "Roll No.",
+  },
+  {
+    accessorKey: "year_of_admission",
+    header: "Year of Admission",
+  },
+  {
+    id: "actions",
+    header: "Actions",
+    cell: ({ row }) => {
+      const student = row.original;
+      const router = useRouter();
+      return (
+        <div className="flex gap-2 ml-10">
+          <button onClick={() => handleEdit(student, router)} aria-label="Edit student">
+            <img src={EditBtn.src} alt="Edit" />
+          </button>
+          <button onClick={() => handleDelete(student.student_id)} aria-label="Delete student">
+            <img src={DeleteBtn.src} alt="Delete" />
+          </button>
+        </div>
+      );
+    },
+  },
 ];
 
-// Static fallback data
+const handleEdit = (student: Student, router: any) => {
+  router.push(
+    `/EditStudent?id=${student.student_id}&student=${encodeURIComponent(
+      JSON.stringify(student)
+    )}`
+  );
+};
+
+const handleDelete = (id: string) => {
+  console.log(`Delete student with ID: ${id}`);
+};
+
 export const fallbackData: Student[] = [
   {
-    id: "#3066",  // Changed from student_id
-    name: "Bhumi Jain",  // Changed from student_name
-    department: "Electronics",
+    email: "john.doe@example.com",
+    address: "123 Main St, Springfield",
+    student_name: "John Doe",
+    student_id: "9eac618e-77ec-44e4-b50c-fe488ceb7737",
+    phone_no: "9137058635",
+    institute_id: "828f0d33-258f-4a92-a235-9c1b30d8882b",
+    institute_name: "Thakur Institute of Aviation",
+    is_archived: false,
+    department: null,
+    date_of_birth: "1995-05-15",
+    gender: "male",
+    roll_no: 25,
+    year_of_admission: "2015",
+    password: "password123",
   },
   {
-    id: "#3065",
-    name: "Tejas  k",
-    department: "Computer Science",
+    email: "leon1@gmail.com",
+    address: "Malad",
+    student_name: "Leon Mendonca",
+    student_id: "614cabeb-82c4-4084-8779-3e43a5841c84",
+    phone_no: "0987654321",
+    institute_id: "94f55255-3f0f-4ac4-9c60-235f4fe8a849",
+    institute_name: "Some Other Institute",
+    is_archived: false,
+    department: null,
+    date_of_birth: "1998-12-01",
+    gender: "male",
+    roll_no: 45,
+    year_of_admission: "2018",
+    password: "leonpass",
   },
-  {
-    id: "#3064",
-    name: "Aditya",
-    department: "Electronics",
-  },
-  {
-    id: "#3063",
-    name: "Bhumi Jain",
-    department: "Electronics",
-  },
-  {
-    id: "#3062",
-    name: "Bhumi Jain",
-    department: "Electronics",
-  },
+  
 ];

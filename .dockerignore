@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> e20ee1cc140f3122886c32f77ba951caa9c11190
 **/node_modules/
 **/dist
 .git
@@ -5,3 +9,9 @@ npm-debug.log
 .coverage
 .coverage.*
 .env
+<<<<<<< HEAD
+=======
+=======
+node_modules
+>>>>>>> 451d11f8285b8a43cd344674bee085149f97724b
+>>>>>>> e20ee1cc140f3122886c32f77ba951caa9c11190

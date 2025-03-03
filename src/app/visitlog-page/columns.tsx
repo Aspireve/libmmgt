@@ -12,24 +12,25 @@ export interface VisitLog {
   outTime: string;
 }
 
-// const formatTime = (timeValue: string): string => {
-//   if (!timeValue) return "";
+const formatTime = (timeValue: string): string => {
+  if (!timeValue) return "";
 
-//   const [hoursStr, minutesStr] = timeValue.split(":");
-//   const hours = Number(hoursStr);
-//   const minutes = Number(minutesStr);
+  const [hoursStr, minutesStr] = timeValue.split(":");
+  const hours = Number(hoursStr);
+  const minutes = Number(minutesStr);
 
-//   if (isNaN(hours) || isNaN(minutes)) {
-//     return timeValue;
-//   }
+  if (isNaN(hours) || isNaN(minutes)) {
+    return timeValue;
+  }
 
-//   // Create a Date object for "today" with those hours/minutes
-//   const date = new Date();
-//   date.setHours(hours, minutes, 0, 0);
+  const date = new Date();
+  date.setHours(hours, minutes, 0, 0);
 
-//   // Format as "hh:mm AM/PM"
-//   return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-// };
+  // Consistent formatting with 'en-US' and lowercase
+  return date
+    .toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" })
+    .toLowerCase();
+};
 
 // Column definitions for VisitLog table
 export const visitLogColumns: ColumnDef<VisitLog>[] = [
@@ -52,10 +53,18 @@ export const visitLogColumns: ColumnDef<VisitLog>[] = [
   {
     accessorKey: "inTime",
     header: "In Time",
+    cell: ({ row }) => {
+      const timeValue = row.getValue<string>("inTime");
+      return formatTime(timeValue);
+    },
   },
   {
     accessorKey: "outTime",
     header: "Out Time",
+    cell: ({ row }) => {
+      const timeValue = row.getValue<string>("outTime");
+      return formatTime(timeValue);
+    },
   },
 ];
 
