@@ -1,0 +1,28 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@100..700&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html,
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: "Inter", sans-serif;
+  }
+  Label{
+    color: #717680;
+    
+  }
+  Input{
+    border-radius: 5px!important;
+    color: #717680;
+
+  }
+  h2{
+    font-weight: 700;
+  }
+}
+
