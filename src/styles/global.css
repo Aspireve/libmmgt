@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@100..700&display=swap");
 
 @tailwind base;
@@ -12,21 +12,22 @@
     padding: 0;
     font-family: "Inter", sans-serif;
   }
-  Label{
+  Label {
     color: #717680;
-    
   }
-  Input{
-    border-radius: 5px!important;
+  Input {
+    border-radius: 5px !important;
     color: #717680;
+  }
 
+  select {
+    color: #717680;
   }
-  h2{
+
+  h2 {
     font-weight: 700;
   }
 }
-
-
 
 @layer base {
   * {

@@ -7,7 +7,6 @@ import { useList, useDelete, GetListResponse } from "@refinedev/core";
 import Header from "../Header/header";
 import { DataTable } from "@/components/data-tables/data-table";
 import { studentColumns as originalStudentColumns, fallbackData, Student } from "./studentcolumns";
-
 import Search from "../../images/search.png";
 import Image from "next/image";
 import Link from "next/link";
@@ -34,25 +33,28 @@ const StudentDirectory = () => {
             staleTime: 5 * 60 * 1000,
             cacheTime: 10 * 60 * 1000,
             initialData: { data: fallbackData, total: fallbackData.length } as GetListResponse<Student>,
+            refetchOnMount: "always",
         },
     });
 
     const students = studentsResponse?.data ?? fallbackData;
+    console.log("Fetched students:", studentsResponse?.data); // Debug fetched data
+    console.log("Students used for table:", students); // Debug final students
 
     const { mutate: deleteStudent } = useDelete();
 
     const deleteMutation = useMutation({
-        mutationFn: (id: string) =>
+        mutationFn: (uuid: string) =>
             new Promise<void>((resolve, reject) => {
                 deleteStudent(
-                    { resource: "student/delete", id }, 
+                    { resource: "student/delete", id: uuid }, // Use student_uuid
                     {
                         onSuccess: () => resolve(),
                         onError: (error: any) => reject(error.response?.data?.message || error.message),
                     }
                 );
             }),
-        onMutate: async (id: string) => {
+        onMutate: async (uuid: string) => {
             await queryClient.cancelQueries({ queryKey: ["students"] });
             const previousStudents =
                 queryClient.getQueryData<GetListResponse<Student>>(["students"]) || {
@@ -60,7 +62,7 @@ const StudentDirectory = () => {
                     total: students.length,
                 };
             const optimisticStudents = previousStudents.data.filter(
-                (student) => student.student_id !== id
+                (student) => student.student_uuid !== uuid // Filter by student_uuid
             );
             queryClient.setQueryData(["students"], {
                 ...previousStudents,
@@ -69,7 +71,7 @@ const StudentDirectory = () => {
             });
             return { previousStudents };
         },
-        onError: (err, id, context) => {
+        onError: (err, uuid, context) => {
             queryClient.setQueryData(["students"], context?.previousStudents);
             toast.error(`Error deleting student: ${err}`, { position: "top-center" });
             setShowConfirmModal(false);
@@ -87,7 +89,7 @@ const StudentDirectory = () => {
 
     const filteredStudents = searchTerm.trim()
         ? students.filter((student) =>
-              ["student_id", "student_name", "department", "email", "phone_no", "roll_no"]
+              ["student_uuid", "student_id", "student_name", "department", "email", "phone_no", "roll_no"]
                   .some((key) =>
                       (student[key as keyof Student]?.toString().toLowerCase() || "").includes(
                           searchTerm.toLowerCase()
@@ -96,8 +98,8 @@ const StudentDirectory = () => {
           )
         : students;
 
-    const confirmDelete = (id: string) => {
-        setStudentToDelete(id);
+    const confirmDelete = (uuid: string) => {
+        setStudentToDelete(uuid);
         setShowConfirmModal(true);
     };
 
@@ -123,7 +125,7 @@ const StudentDirectory = () => {
                             <button
                                 onClick={() =>
                                     router.push(
-                                        `/EditStudent?id=${student.student_id}&student=${encodeURIComponent(
+                                        `/EditStudent?id=${student.student_uuid}&student=${encodeURIComponent(
                                             JSON.stringify(student)
                                         )}`
                                     )
@@ -133,7 +135,7 @@ const StudentDirectory = () => {
                                 <img src={EditBtn.src} alt="Edit" />
                             </button>
                             <button
-                                onClick={() => confirmDelete(student.student_id)}
+                                onClick={() => confirmDelete(student.student_uuid)}
                                 aria-label="Delete student"
                             >
                                 <img src={DeleteBtn.src} alt="Delete" />

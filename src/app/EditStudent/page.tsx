@@ -14,14 +14,17 @@ import { toast } from "sonner";
 const EditStudent: React.FC = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const studentId = searchParams.get("id");
+  const studentUuid = searchParams.get("id"); // Should be student_uuid from URL
 
   // Memoize initialData to prevent re-computation on every render
   const initialData = useMemo(() => {
     const parsedStudent = searchParams.get("student");
     let data: Student = {} as Student;
     try {
-      data = parsedStudent ? (JSON.parse(parsedStudent) as Student) : ({} as Student);
+      if (parsedStudent) {
+        data = JSON.parse(decodeURIComponent(parsedStudent)) as Student;
+        console.log("Parsed initialData:", data);
+      }
     } catch (error) {
       console.error("Failed to parse student data from URL", error);
     }
@@ -46,29 +49,31 @@ const EditStudent: React.FC = () => {
       email: "",
       phone_no: "",
       address: "",
-      roll_no: "",
+      roll_no: 0,
       year_of_admission: "",
       current_password: "",
       new_password: "",
-      confirm_password: "",
+      confirm_new_password: "",
     },
   });
 
   // Update form values when initialData changes
   useEffect(() => {
-    if (initialData && initialData.student_id) {
+    if (initialData && initialData.student_uuid) {
       reset({
         student_name: initialData.student_name || "",
         department: initialData.department || "",
         email: initialData.email || "",
         phone_no: initialData.phone_no || "",
         address: initialData.address || "",
-        roll_no: initialData.roll_no || "",
+        roll_no: initialData.roll_no || 0,
         year_of_admission: initialData.year_of_admission || "",
         current_password: "",
         new_password: "",
-        confirm_password: "",
+        confirm_new_password: "",
       });
+    } else {
+      console.warn("No valid student_uuid in initialData:", initialData);
     }
   }, [initialData, reset]);
 
@@ -76,32 +81,52 @@ const EditStudent: React.FC = () => {
 
   const onSubmit = (data: FieldValues) => {
     const hardcodedInstituteId = "828f0d33-258f-4a92-a235-9c1b30d8882b";
-    const hardcodedStudentId = "828f0d33-258f-4a92-a235-9c1b30d8882b"; // Hardcoded UUID for testing
+
+    // Use studentUuid from URL, falling back to initialData.student_uuid
+    const validStudentUuid = studentUuid && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(studentUuid)
+      ? studentUuid
+      : initialData.student_uuid;
+    
+    console.log("studentUuid from URL:", studentUuid);
+    console.log("initialData.student_uuid:", initialData.student_uuid);
+    console.log("validStudentUuid:", validStudentUuid);
+
+    if (!validStudentUuid || !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(validStudentUuid)) {
+      toast.error("Invalid student UUID format. A valid UUID is required.", { position: "top-center" });
+      return;
+    }
 
     const studentData: Partial<Student> = {
-      ...data,
-      student_id: studentId || initialData.student_id || hardcodedStudentId, // Fallback to hardcoded UUID
+      student_id: initialData.student_id,
+      student_uuid: validStudentUuid,
+      student_name: data.student_name,
+      department: data.department,
+      email: data.email,
+      phone_no: data.phone_no,
+      address: data.address,
+      roll_no: Number(data.roll_no),
+      year_of_admission: data.year_of_admission,
       institute_id: hardcodedInstituteId,
     };
 
-    delete (studentData as any).current_password;
-    delete (studentData as any).new_password;
-    delete (studentData as any).confirm_new_password;
-
-    const newPassword = (data as any).new_password;
-    const confirmNewPassword = (data as any).confirm_new_password;
-    if (newPassword) {
+    // Handle password update only if new_password is provided
+    const newPassword = data.new_password;
+    const confirmNewPassword = data.confirm_new_password;
+    if (newPassword && newPassword.trim() !== "") {
       if (newPassword !== confirmNewPassword) {
         toast.error("New password and confirm password do not match.", { position: "top-center" });
         return;
       }
       studentData.password = newPassword;
+      studentData.confirm_password = confirmNewPassword;
     }
+
+    console.log("Payload:", studentData);
 
     mutate(
       {
         resource: "student/edit",
-        id: hardcodedStudentId, // Use hardcoded UUID for testing
+        id: validStudentUuid,
         values: studentData,
       },
       {
@@ -110,7 +135,7 @@ const EditStudent: React.FC = () => {
           setTimeout(() => router.push("/student-page"), 500);
         },
         onError: (error: any) => {
-          console.error("Update error:", error); // Log the error for debugging
+          console.error("Update error:", error);
           toast.error(
             `Error updating student: ${error.message || "Please try again later."}`,
             { position: "top-center" }
@@ -137,11 +162,7 @@ const EditStudent: React.FC = () => {
                   placeholder="Enter Student Name"
                 />
                 {errors.student_name && (
-                  <p className="text-red-500 text-sm">
-                    {typeof errors.student_name.message === "string"
-                      ? errors.student_name.message
-                      : "An error occurred"}
-                  </p>
+                  <p className="text-red-500 text-sm">{errors.student_name.message}</p>
                 )}
               </div>
               {/* Department */}
@@ -153,11 +174,7 @@ const EditStudent: React.FC = () => {
                   placeholder="Enter Department"
                 />
                 {errors.department && (
-                  <p className="text-red-500 text-sm">
-                    {typeof errors.department.message === "string"
-                      ? errors.department.message
-                      : "An error occurred"}
-                  </p>
+                  <p className="text-red-500 text-sm">{errors.department.message}</p>
                 )}
               </div>
               {/* Email */}
@@ -169,11 +186,7 @@ const EditStudent: React.FC = () => {
                   placeholder="Enter Email"
                 />
                 {errors.email && (
-                  <p className="text-red-500 text-sm">
-                    {typeof errors.email.message === "string"
-                      ? errors.email.message
-                      : "An error occurred"}
-                  </p>
+                  <p className="text-red-500 text-sm">{errors.email.message}</p>
                 )}
               </div>
               {/* Phone Number */}
@@ -185,32 +198,34 @@ const EditStudent: React.FC = () => {
                   placeholder="Enter Phone Number"
                 />
                 {errors.phone_no && (
-                  <p className="text-red-500 text-sm">
-                    {typeof errors.phone_no.message === "string"
-                      ? errors.phone_no.message
-                      : "An error occurred"}
-                  </p>
+                  <p className="text-red-500 text-sm">{errors.phone_no.message}</p>
                 )}
               </div>
               {/* Address */}
               <div>
                 <Label>Address</Label>
-                <Input type="text" {...register("address")} placeholder="Enter Address" />
+                <Input
+                  type="text"
+                  {...register("address", { required: "Address is required" })}
+                  placeholder="Enter Address"
+                />
+                {errors.address && (
+                  <p className="text-red-500 text-sm">{errors.address.message}</p>
+                )}
               </div>
               {/* Roll No. */}
               <div>
                 <Label>Roll No.</Label>
                 <Input
-                  type="text"
-                  {...register("roll_no", { required: "Roll No. is required" })}
+                  type="number"
+                  {...register("roll_no", {
+                    required: "Roll No. is required",
+                    valueAsNumber: true,
+                  })}
                   placeholder="Enter Roll No."
                 />
                 {errors.roll_no && (
-                  <p className="text-red-500 text-sm">
-                    {typeof errors.roll_no.message === "string"
-                      ? errors.roll_no.message
-                      : "An error occurred"}
-                  </p>
+                  <p className="text-red-500 text-sm">{errors.roll_no.message}</p>
                 )}
               </div>
               {/* Year of Admission */}
@@ -222,16 +237,12 @@ const EditStudent: React.FC = () => {
                   placeholder="Enter Year of Admission (e.g., 2023)"
                 />
                 {errors.year_of_admission && (
-                  <p className="text-red-500 text-sm">
-                    {typeof errors.year_of_admission.message === "string"
-                      ? errors.year_of_admission.message
-                      : "An error occurred"}
-                  </p>
+                  <p className="text-red-500 text-sm">{errors.year_of_admission.message}</p>
                 )}
               </div>
               {/* Current Password */}
               <div>
-                <Label>Current Password</Label>
+                <Label>Current Password (optional)</Label>
                 <Input
                   type="password"
                   {...register("current_password")}
@@ -240,7 +251,7 @@ const EditStudent: React.FC = () => {
               </div>
               {/* New Password */}
               <div>
-                <Label>New Password</Label>
+                <Label>New Password (optional)</Label>
                 <Input
                   type="password"
                   {...register("new_password")}
@@ -249,7 +260,7 @@ const EditStudent: React.FC = () => {
               </div>
               {/* Confirm New Password */}
               <div>
-                <Label>Confirm New Password</Label>
+                <Label>Confirm New Password (optional)</Label>
                 <Input
                   type="password"
                   {...register("confirm_new_password")}

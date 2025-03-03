@@ -12,6 +12,7 @@ import { Student } from "../student-page/studentcolumns";
 import { toast } from "sonner";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store/store";
+import Link from "next/link";
 
 const AddStudent: React.FC = () => {
   const router = useRouter();
@@ -233,9 +234,11 @@ const AddStudent: React.FC = () => {
               </div>
             </div>
             <div className="flex justify-center gap-4">
-              <Button variant="outline" onClick={() => router.push("/student-page")}>
+              <Link href="/student-page"> 
+              <Button variant="outline">
                 Cancel
               </Button>
+              </Link>
               <Button type="submit" className="bg-[#1E40AF] text-white rounded-[10px] hover:bg-[#1E40AF]">
                 Add Student
               </Button>
