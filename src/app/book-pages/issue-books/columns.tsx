@@ -95,8 +95,6 @@ export const columns: ColumnDef<Issue_Books>[] = [
     )
   }
 ]
-
-
 const handleEdit = (issuebooks: Issue_Books) => {
   console.log('Edit book:', issuebooks)
 }

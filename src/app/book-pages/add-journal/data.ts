@@ -1,4 +1,4 @@
-export const General_info = [
+  export const General_info = [
     { label: "Name of the Journal", name: "journal_name", required: "Journal Name is required", placeholder: "Enter Journal Name" },
     { label: "Name of Publisher", name: "publisher_name", required: "Publisher Name is required", placeholder: "Enter Publisher Name" },
     { label: "Place of Publisher", name: "publisher_place", required: "Place of Publisher is required", placeholder: "Enter Place of Publisher" },

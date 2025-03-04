@@ -8,12 +8,12 @@ import { Button } from '@/components/ui/button';
 import { DataTable } from '@/components/data-tables/data-table';
 import { Input } from '@/components/ui/input';
 import Image from 'next/image';
-import { images } from "../images"; 
+import Link from 'next/link';
 import { useRouter } from "next/navigation";
 import { toast } from 'sonner';
 import Header from '@/app/Header/header';
 import Tabbing from '@/app/Tab/Tab';
-import Link from 'next/link';
+import { images } from "../images"; 
 
 const BooksPage = () => {
   const { data } = useList<BookData>({ resource: 'book/all' });
@@ -30,7 +30,7 @@ const BooksPage = () => {
   };
 
   const handleEdit = (book: BookData) => {
-    router.push(`/edit-book?book_id=${book.book_id}`);
+    router.push(`/book-pages/edit-book?book_uuid=${book.book_uuid}`);
   };
 
   const handleDeleteClick = (bookId: string) => {
@@ -62,7 +62,7 @@ const BooksPage = () => {
   };
 
   const columns: ColumnDef<BookData>[] = [
-    { accessorKey: 'book_id',header: 'Sr no'},
+    { accessorKey: 'book_uuid',header: 'Sr no'},
     { accessorKey: 'book_title',header: 'Name of Book'},
     { accessorKey: 'book_author',header: 'Name of Author',},
     { accessorKey: 'name_of_publisher',header: 'Book Publisher'},
@@ -76,7 +76,7 @@ const BooksPage = () => {
           <Button variant="ghost" size="icon" onClick={() => handleEdit(row.original)}>
             <Image src={images.edit} alt='Edit button' />
           </Button>
-          <Button variant="ghost" size="icon" onClick={() => handleDeleteClick(row.original.book_id)}>
+          <Button variant="ghost" size="icon" onClick={() => handleDeleteClick(row.original.book_uuid)}>
             <Image src={images.delete} alt='Delete button' />
           </Button>
         </div>

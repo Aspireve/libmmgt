@@ -7,6 +7,7 @@ import Sidebar from "./Sidebar/sidebar";
 import Navbar from "./Navbar/navbar";
 import "../styles/global.css";
 import { Toaster } from "@/components/ui/sonner";
+import { TabProvider } from "./context/TabContext";
 //import LoginPage from "./LoginPage/page";
 
 export default function RootLayout({
@@ -19,6 +20,7 @@ export default function RootLayout({
       <body className="h-full m-0 p-0">
        
           <RefineContext>
+            <TabProvider>
             <div className="flex h-screen">
               <Sidebar />
               <div className="flex flex-1 flex-col">
@@ -28,6 +30,7 @@ export default function RootLayout({
                 <Toaster richColors position="top-center"/>
               </div>
             </div>
+            </TabProvider>
           </RefineContext>
           {/* <LoginPage/> */}
        

@@ -12,7 +12,7 @@
   import Header from '@/app/Header/header';
   import Tabbing from '@/app/Tab/Tab';
   import { addbookRoutes, BookData } from '../types/data';
-import Link from 'next/link';
+  import Link from 'next/link';
 
   const AddBook = () => {
     const router = useRouter();
@@ -152,6 +152,3 @@ import Link from 'next/link';
     )
   }
   export default AddBook
-
-
-

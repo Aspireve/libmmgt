@@ -11,12 +11,10 @@ const IssueBook = () => {
 
     // const { data, isLoading } = useList<Issue_Books>({ resource: 'view-books' });
     const [data, setData] = useState<Issue_Books[]>([]);
-        const [isLoading, setIsLoading] = useState(true);
       
         useEffect(() => {
           setTimeout(() => {
             setData(issueBooksData);
-            setIsLoading(false);
           }, 1000);
         }, []);
   return (
@@ -24,14 +22,9 @@ const IssueBook = () => {
     <Header/>
 
     <section className='border border-[#E0E2E7] rounded-[10px] m-10'>
-
-      {isLoading ? (
-                  <p>Loading...</p>
-                ) : (
-                  // <DataTable columns={columns} data={data?.data || []} />
+                  {/* <DataTable columns={columns} data={data?.data || []} /> */}
                   <DataTable columns={columns} data={data} />
 
-                )}
     </section>
     </>
   );

@@ -34,13 +34,13 @@ const IssuedBooks = () => {
 <div className='container'>
   <div className="grid grid-cols-[30%_70%] p-4">
     <div className='flex items-center gap-[10px]'>
-      <h1 className=' text-3xl font-bold'>Books</h1>
+      <h1 className=' text-3xl font-bold'>Issued Books</h1>
       <p className='bg-[#F9F5FF] rounded-2xl text-[#6941C6]'>{data.length}<span> Enteries</span></p>
     </div>
     <div className="flex items-center justify-end py-4 gap-3">
       {/* Issue Book */}
       <Button
-        onClick={() => router.push("/issue-books")}
+        onClick={() => router.push("/book-pages/issue-books")}
         className="shadow-none border border-[#989CA4] rounded-[8px] text-[#BBBBBB] flex items-center px-4 py-2">
         {/* <Image src={Addbook} alt="Add button" /> */}
         Issue Books

@@ -26,16 +26,3 @@
   }
 }
 
-<<<<<<< HEAD
-=======
-
-
-@layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
-}
->>>>>>> e20ee1cc140f3122886c32f77ba951caa9c11190

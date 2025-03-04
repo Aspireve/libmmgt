@@ -6,7 +6,8 @@ import DeleteBtn from "../../images/DeleteBtn.png";
 import { useRouter } from "next/navigation";
 
 export interface Student {
-  student_id: string;
+  student_id: string; 
+  student_uuid: string; 
   student_name: string;
   department: string | null;
   email: string;
@@ -15,9 +16,9 @@ export interface Student {
   institute_id: string;
   institute_name: string;
   is_archived: boolean;
-  date_of_birth: string; // Updated to be required for creation
-  gender: "male" | "female" | ""; // Enum-like restriction
-  roll_no: number; // Kept as string unless backend requires number
+  date_of_birth: string;
+  gender: "male" | "female" | "";
+  roll_no: number;
   year_of_admission: string;
   password: string;
   confirm_password?: string;
@@ -63,7 +64,7 @@ export const studentColumns: ColumnDef<Student>[] = [
           <button onClick={() => handleEdit(student, router)} aria-label="Edit student">
             <img src={EditBtn.src} alt="Edit" />
           </button>
-          <button onClick={() => handleDelete(student.student_id)} aria-label="Delete student">
+          <button onClick={() => handleDelete(student.student_uuid)} aria-label="Delete student">
             <img src={DeleteBtn.src} alt="Delete" />
           </button>
         </div>
@@ -72,29 +73,34 @@ export const studentColumns: ColumnDef<Student>[] = [
   },
 ];
 
+// studentcolumns.ts
+// studentcolumns.ts
 const handleEdit = (student: Student, router: any) => {
+  console.log("Navigating with student_uuid:", student.student_uuid); // Debug
   router.push(
-    `/EditStudent?id=${student.student_id}&student=${encodeURIComponent(
+    `/EditStudent?id=${student.student_uuid}&student=${encodeURIComponent(
       JSON.stringify(student)
     )}`
   );
 };
 
-const handleDelete = (id: string) => {
-  console.log(`Delete student with ID: ${id}`);
+
+const handleDelete = (uuid: string) => {
+  console.log(`Delete student with UUID: ${uuid}`);
 };
 
 export const fallbackData: Student[] = [
   {
-    email: "john.doe@example.com",
-    address: "123 Main St, Springfield",
+    student_id: "tia-00001-2025", // Custom format matching backend
+    student_uuid: "9eac618e-77ec-44e4-b50c-fe488ceb7737", // UUID
     student_name: "John Doe",
-    student_id: "9eac618e-77ec-44e4-b50c-fe488ceb7737",
+    department: null,
+    email: "john.doe@example.com",
     phone_no: "9137058635",
+    address: "123 Main St, Springfield",
     institute_id: "828f0d33-258f-4a92-a235-9c1b30d8882b",
     institute_name: "Thakur Institute of Aviation",
     is_archived: false,
-    department: null,
     date_of_birth: "1995-05-15",
     gender: "male",
     roll_no: 25,
@@ -102,20 +108,20 @@ export const fallbackData: Student[] = [
     password: "password123",
   },
   {
-    email: "leon1@gmail.com",
-    address: "Malad",
+    student_id: "tia-00002-2025", // Custom format
+    student_uuid: "614cabeb-82c4-4084-8779-3e43a5841c84", // UUID
     student_name: "Leon Mendonca",
-    student_id: "614cabeb-82c4-4084-8779-3e43a5841c84",
+    department: null,
+    email: "leon1@gmail.com",
     phone_no: "0987654321",
+    address: "Malad",
     institute_id: "94f55255-3f0f-4ac4-9c60-235f4fe8a849",
     institute_name: "Some Other Institute",
     is_archived: false,
-    department: null,
     date_of_birth: "1998-12-01",
     gender: "male",
     roll_no: 45,
     year_of_admission: "2018",
     password: "leonpass",
   },
-  
 ];

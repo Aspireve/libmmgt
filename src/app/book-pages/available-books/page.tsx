@@ -15,46 +15,20 @@ import { FaEdit, FaTrash } from 'react-icons/fa'
 
 
 const AvaBooks = () => {
+  const formatDate = (dateString: string) => {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    return date.toISOString().split('T')[0];
+  };
   const columns: ColumnDef<BookData>[] = [
-    {
-      accessorKey: 'book_id',
-      header: 'Sr no'
+    { accessorKey: 'book_id',header: 'Sr no'},
+    { accessorKey: 'book_title',header: 'Name of Book'},
+    { accessorKey: 'book_author',header: 'Name of Author',},
+    { accessorKey: 'name_of_publisher',header: 'Book Publisher'},
+    { accessorKey: 'total_count',header: 'Book Count'},
+    { accessorKey: 'year_of_publication',header: 'Year of Publication',
+      cell: ({ row }) => <span>{formatDate(row.original.year_of_publication)}</span>
     },
-    {
-      accessorKey: 'book_title',
-      header: 'Name of Book'
-    },
-    {
-      accessorKey: 'book_author',
-      header: 'Name of Author',
-    },
-    {
-      accessorKey: 'name_of_publisher',
-      header: 'Book Publisher'
-    },
-    {
-      accessorKey: 'book_count',
-      header: 'Book Count'
-    },
-    {
-      accessorKey: 'year_of_publication',
-      header: 'Year of Publication'
-    },
-    {
-      id: 'actions',
-      header: '',
-      cell: ({ row }) => (
-        <div className="flex gap-2">
-          <Button variant="ghost" size="icon" onClick={() => handleDelete(row.original.book_id)}>
-            <FaTrash />
-          </Button>
-          <Button variant="ghost" size="icon" onClick={() => handleEdit(row.original)}>
-            <FaEdit />
-          </Button>
-          
-        </div>
-      )
-    }
   ]
   
   const handleEdit = (book: BookData) => {
@@ -64,14 +38,14 @@ const AvaBooks = () => {
   const handleDelete = (bookId: string) => {
     console.log('Delete book with ID:', bookId)
   }
-  // const { data, isLoading } = useList<Books>({ resource: 'all' });
-  const [data, setData] = useState<BookData[]>([]);
+  const { data } = useList<BookData>({ resource: 'book/all' });
+  // const [data, setData] = useState<BookData[]>([]);
 
-  useEffect(() => {
-    setTimeout(() => {
-      setData(dummyBooks);
-    }, 1000);
-  }, []);
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     setData(dummyBooks);
+  //   }, 1000);
+  // }, []);
   return (
     <>
       <Header />
@@ -82,7 +56,7 @@ const AvaBooks = () => {
           <div className="grid grid-cols-[30%_70%] p-4">
             <div className='flex items-center gap-[10px]'>
               <h1 className=' text-3xl font-bold'>Available Books</h1>
-              <p className='bg-[#F9F5FF] rounded-2xl text-[#6941C6]'>{data.length}<span> Enteries</span></p>
+              <p className='bg-[#F9F5FF] rounded-2xl text-[#6941C6]'>{data?.data.length || 0}<span> Enteries</span></p>
             </div>
             <div className="flex items-center justify-end py-4 gap-3">
               {/* Add Book */}
@@ -113,8 +87,8 @@ const AvaBooks = () => {
             </div>
           </div>
           
-            {/* <DataTable columns={columns} data={data?.data || []} /> */}
-            <DataTable columns={columns} data={data} />
+            <DataTable columns={columns} data={data?.data || []} />
+            {/* <DataTable columns={columns} data={data} /> */}
         </div>
         </section>
     </>

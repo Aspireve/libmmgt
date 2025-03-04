@@ -1,5 +1,5 @@
 export interface BookData {
-    book_id:string
+    book_uuid:string
     book_title: string;
     book_author: string;
     total_count:number;
@@ -23,7 +23,8 @@ export interface BookData {
     barcode?: string;
     item_type?: string;
     bill_no: number;
-    institute_uuid: string
+    institute_uuid: string;
+    // is_archived:Boolean;
   }
 
     // Routes 
@@ -41,7 +42,7 @@ export interface BookData {
 // Dummy Data 
 export const dummyBooks: BookData[] = [
   {
-    book_id: "B001",
+    book_uuid: "B001",
     book_title: "The Art of Programming",
     book_author: "Donald Knuth",
     available_count:3,
@@ -69,7 +70,7 @@ export const dummyBooks: BookData[] = [
 
   },
   {
-    book_id: "B002",
+    book_uuid: "B002",
     book_title: "Introduction to Algorithms",
     book_author: "Cormen, Leiserson, Rivest, Stein",
     available_count:3,
@@ -97,7 +98,7 @@ export const dummyBooks: BookData[] = [
 
   },
   {
-    book_id: "B003",
+    book_uuid: "B003",
     book_title: "Clean Code",
     book_author: "Robert C. Martin",
     available_count:3,

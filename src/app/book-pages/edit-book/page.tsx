@@ -11,42 +11,18 @@ import { bibliographic, cataloging, acquisition, inventory } from "../add-book/d
 import { toast } from 'sonner';
 import Header from "@/app/Header/header";
 import Link from "next/link";
+import { BookData } from "../types/data";
 
 
-interface BookData {
-  book_id: string;
-  book_title: string;
-  book_author: string;
-  name_of_publisher: string;
-  place_of_publication: string;
-  year_of_publication: string;
-  language: string;
-  edition: string;
-  isbn: string;
-  no_of_pages: number;
-  no_of_preliminary_pages: number;
-  subject: string;
-  department: string;
-  call_number: string;
-  author_mark: string;
-  source_of_acquisition?: string;
-  date_of_acquisition?: string;
-  inventory_number: number;
-  accession_number: number;
-  barcode?: string;
-  item_type?: string;
-  bill_no: number;
-  book_count: number;
-}
 
 const EditBook = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const bookId = searchParams.get("book_id");
+  const book_uuid = searchParams.get("book_uuid");
 
   const { data: bookData, isLoading } = useOne<BookData>({
     resource: "book/search",
-    id: bookId || ""
+    id: book_uuid || ""
   });
 
   const { mutate, isLoading: isUpdating } = useUpdate();
@@ -60,7 +36,7 @@ const EditBook = () => {
 
 
   useEffect(() => {
-    console.log("Updated Book ID:", bookId);
+    console.log("Updated Book ID:", book_uuid);
     if (bookData?.data) {
       Object.keys(bookData.data).forEach((key) => {
         let value = bookData.data[key as keyof BookData];
@@ -72,6 +48,9 @@ const EditBook = () => {
   
         setValue(key as keyof BookData, value as never);
       });
+    }else{
+      router.push("/book-pages/all-books");
+      toast.error("Something went wrong, Please try again")
     }
   }, [bookData, setValue]);
 
@@ -94,7 +73,7 @@ const EditBook = () => {
     mutate(
       {
         resource: 'book/edit',
-        id: bookId || "",
+        id: book_uuid || "",
         values: formattedData,
       },
       {
@@ -102,7 +81,8 @@ const EditBook = () => {
           toast.success("Book Updated successfully!",{position:'top-left'})
           router.push("/book-pages/all-books");
         },
-        onError: (error) => toast.error("Error adding book: " + error.message,{position:'top-left'}),
+        onError: (error) => toast.error("Something went wrong, Please try again")
+
       }
     );
   };
@@ -112,9 +92,6 @@ const EditBook = () => {
       <Header />
       <section className="p-10">
         <div className="container">
-          {isLoading ? (
-            <p>Loading book details...</p>
-          ) : (
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
               {/* Bibliographic Information */}
               <div>
@@ -211,7 +188,6 @@ const EditBook = () => {
                 </Button>
               </div>
             </form>
-          )}
         </div>
       </section>
     </>

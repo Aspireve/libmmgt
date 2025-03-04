@@ -4,6 +4,7 @@ import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
+import { useTabs } from "../context/TabContext";
 
 import Logo from "../../images/Logo.png";
 import DashIcon from "../../images/Dash.png";
@@ -21,6 +22,8 @@ interface MenuItem {
 
 const Sidebar = () => {
   const pathname = usePathname();
+  const { addTab } = useTabs();
+
   const menuItems: MenuItem[] = [
     { key: "dashboard", label: "Dashboard", icon: DashIcon, route: "/" },
     { key: "all-books", label: "All Books", icon: PenIcon, route: "/book-pages/all-books" },
@@ -39,8 +42,8 @@ const Sidebar = () => {
         {menuItems.map((item) => {
           const isActive = pathname === item.route;
           return (
-            <Link href={item.route} key={item.key}>
-              <div
+            <Link href={item.route} key={item.key}
+              onClick={() => addTab(item.label, item.route)}
                 className={`
                   flex justify-between items-center cursor-pointer rounded-[8px] p-2 transition-colors text-[#1E40AF]
                   ${isActive ? "bg-[#F0F6FF]" : "hover:bg-[#EDF1FF]"}
@@ -48,8 +51,8 @@ const Sidebar = () => {
               >
                 <span>{item.label}</span>
                 <Image src={item.icon} alt={item.label} width={20} height={20} />
-              </div>
-            </Link>
+              
+              </Link>
           );
         })}
       </div>
