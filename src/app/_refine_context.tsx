@@ -16,12 +16,11 @@ import "../styles/global.css";
 // Import your pages
 // import Dashboard from "@/pages/dashboard";
 
-import IssuedBooks from "@/app/issued-books/page"
-import IssueBooks from "@/app/issue-books/page"
-// import BooksPage from "@/app/all-books/page";
+import IssuedBooks from "@/app/book-pages/issued-books/page"
+import IssueBooks from "@/app/book-pages/issue-books/page"
+import AddBook from "@/app/book-pages/add-book/page"
+import BooksPage from "@/app/book-pages/all-books/page";
 //import LoginPage from "./LoginPage/page";
-
-import BooksPage from "@/app/all-books/page";
 
 
 const queryClient = new QueryClient();

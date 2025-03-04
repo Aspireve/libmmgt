@@ -3,19 +3,17 @@ import { fetchWrapper } from "./fetch-wrapper";
 
 export const API_URL = "https://lms-807p.onrender.com";
 
-
 export const dataProvider: DataProvider = {
     getList: async ({ resource, pagination, filters, sorters, meta }) => {
-        const url = `${resource}`; // ✅ Corrected URL format
+        const url = `${resource}`;
         const response = await fetchWrapper(url, {
             method: "GET",
         });
         return {
             data: response,
-            total: response.length || 0, // ✅ Avoids undefined issue
+            total: response.length,
         };
     },
-    
 
     create: async ({ resource, variables }) => {
         const url = `${resource}`;

@@ -6,8 +6,8 @@ import DeleteBtn from "../../images/DeleteBtn.png";
 import { useRouter } from "next/navigation";
 
 export interface Student {
-  student_id: string; 
-  student_uuid: string; 
+  student_id: string;
+  student_uuid: string;
   student_name: string;
   department: string | null;
   email: string;
@@ -21,7 +21,8 @@ export interface Student {
   roll_no: number;
   year_of_admission: string;
   password: string;
-  confirm_password?: string;
+  current_password?: string; // Optional, used only during password update
+  confirm_password?: string; // Optional, used only during password update
 }
 
 export const studentColumns: ColumnDef<Student>[] = [
@@ -61,10 +62,16 @@ export const studentColumns: ColumnDef<Student>[] = [
       const router = useRouter();
       return (
         <div className="flex gap-2 ml-10">
-          <button onClick={() => handleEdit(student, router)} aria-label="Edit student">
+          <button
+            onClick={() => handleEdit(student, router)}
+            aria-label="Edit student"
+          >
             <img src={EditBtn.src} alt="Edit" />
           </button>
-          <button onClick={() => handleDelete(student.student_uuid)} aria-label="Delete student">
+          <button
+            onClick={() => handleDelete(student.student_uuid)}
+            aria-label="Delete student"
+          >
             <img src={DeleteBtn.src} alt="Delete" />
           </button>
         </div>
@@ -73,10 +80,8 @@ export const studentColumns: ColumnDef<Student>[] = [
   },
 ];
 
-// studentcolumns.ts
-// studentcolumns.ts
 const handleEdit = (student: Student, router: any) => {
-  console.log("Navigating with student_uuid:", student.student_uuid); // Debug
+  console.log("Navigating with student_uuid:", student.student_uuid);
   router.push(
     `/EditStudent?id=${student.student_uuid}&student=${encodeURIComponent(
       JSON.stringify(student)
@@ -84,15 +89,15 @@ const handleEdit = (student: Student, router: any) => {
   );
 };
 
-
 const handleDelete = (uuid: string) => {
   console.log(`Delete student with UUID: ${uuid}`);
+  // Implement delete logic here (e.g., API call with useDelete from @refinedev/core)
 };
 
 export const fallbackData: Student[] = [
   {
-    student_id: "tia-00001-2025", // Custom format matching backend
-    student_uuid: "9eac618e-77ec-44e4-b50c-fe488ceb7737", // UUID
+    student_id: "tia-00001-2025",
+    student_uuid: "9eac618e-77ec-44e4-b50c-fe488ceb7737",
     student_name: "John Doe",
     department: null,
     email: "john.doe@example.com",
@@ -108,8 +113,8 @@ export const fallbackData: Student[] = [
     password: "password123",
   },
   {
-    student_id: "tia-00002-2025", // Custom format
-    student_uuid: "614cabeb-82c4-4084-8779-3e43a5841c84", // UUID
+    student_id: "tia-00002-2025",
+    student_uuid: "614cabeb-82c4-4084-8779-3e43a5841c84",
     student_name: "Leon Mendonca",
     department: null,
     email: "leon1@gmail.com",

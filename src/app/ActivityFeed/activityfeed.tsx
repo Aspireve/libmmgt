@@ -12,7 +12,7 @@ export default function Activities() {
   }));
 
   return (
-    <div className="border border-[#AEB1B9] shadow-[#AEB1B9] max-w-[90%] h-110 rounded-[12px] bg-[#F3F4F6] ml-10 mt-5 p-6">
+    <div className="border border-[#E9EAEB] shadow-md max-w-[90%] h-110 rounded-[10px] bg-slate-50 ml-10 mt-5 p-6">
       <h2 className="text-2xl font-semibold mb-4">Activities</h2>
       <div className="space-y-3 rounded-[5px]">
         {items.map((item, i) => (

@@ -1,4 +1,7 @@
 <<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> e20ee1cc140f3122886c32f77ba951caa9c11190
 FROM refinedev/node:18 AS base
 
 FROM base AS deps
@@ -42,6 +45,8 @@ ENV PORT 3000
 ENV HOSTNAME "0.0.0.0"
 
 CMD ["node", "server.js"]
+<<<<<<< HEAD
+=======
 =======
 FROM node:21-alpine
 WORKDIR /usr/src/app
@@ -50,3 +55,4 @@ RUN npm install
 EXPOSE 80
 CMD [ "npm", "start" ]
 >>>>>>> 451d11f8285b8a43cd344674bee085149f97724b
+>>>>>>> e20ee1cc140f3122886c32f77ba951caa9c11190

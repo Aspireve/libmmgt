@@ -1,4 +1,7 @@
 <<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> e20ee1cc140f3122886c32f77ba951caa9c11190
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
@@ -22,16 +25,22 @@
 *.pem
 
 # debug
+<<<<<<< HEAD
+=======
 =======
 # Logs
 logs
 *.log
 >>>>>>> 451d11f8285b8a43cd344674bee085149f97724b
+>>>>>>> e20ee1cc140f3122886c32f77ba951caa9c11190
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
 <<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> e20ee1cc140f3122886c32f77ba951caa9c11190
 # local env files
 .env*.local
 
@@ -40,6 +49,9 @@ yarn-error.log*
 
 # typescript
 *.tsbuildinfo
+<<<<<<< HEAD
+next-env.d.ts
+=======
 next-env.d.ts
 =======
 # Runtime data
@@ -97,3 +109,4 @@ typings/
 # next.js build output
 .next
 >>>>>>> 451d11f8285b8a43cd344674bee085149f97724b
+>>>>>>> e20ee1cc140f3122886c32f77ba951caa9c11190

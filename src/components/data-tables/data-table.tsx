@@ -1,21 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
-import arrowLeft from "../../images/arrow-left.png";
-import arrowRight from "../../images/arrow-right.png";
-
 import {
   ColumnDef,
   flexRender,
   SortingState,
   getCoreRowModel,
   getSortedRowModel,
-  getFilteredRowModel,
   getPaginationRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-
 import {
   Table,
   TableBody,
@@ -24,99 +18,99 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-
 import { Button } from "@/components/ui/button";
-
-
-function getPaginationNumbers(current: number, total: number): (number | string)[] {
-  const delta = 2; // how many pages before/after current page
-  const range: (number | string)[] = [];
-
-
-  for (let i = Math.max(1, current - delta); i <= Math.min(total, current + delta); i++) {
-    range.push(i);
-  }
-
-  
-  if (typeof range[0] === "number" && range[0] > 1) {
-    range.unshift(1);
-    if (typeof range[2] === "number" && range[2] > 2) {
-      range.splice(1, 0, "...");
-    }
-  }
-
-
-  if (
-    range.length > 0 &&
-    typeof range[range.length - 1] === "number" &&
-    (range[range.length - 1] as number) < total
-  ) {
-    range.push(total);
-
-    if (
-      range.length > 2 &&
-      typeof range[range.length - 3] === "number" &&
-      (range[range.length - 3] as number) < total - 1
-    ) {
-      range.splice(range.length - 2, 0, "...");
-    }
-  }
-
-  return range;
-}
-
+import { Skeleton } from "@/components/ui/skeleton";
+import Image from "next/image";
+import Previous from '../../images/arrow-left.png'
+import Next from '../../images/arrow-right.png'
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  isLoading?: boolean;
 }
 
-export function DataTable<TData, TValue>({
-  columns,
-  data,
+export function DataTable<TData, TValue>({ 
+  columns, 
+  data, 
+  isLoading = false 
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
-
 
   const table = useReactTable({
     data,
     columns,
-    initialState: {
-      pagination: {
-        pageSize: 5,
-      },
-    },
+    initialState: { pagination: { pageSize: 5 } },
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
-    state: {
-      sorting,
-    },
+    state: { sorting },
     onSortingChange: setSorting,
   });
 
-  // Calculate current page (1-based) and total pages
-  const currentPage = table.getState().pagination.pageIndex + 1;
-  const totalPages = table.getPageCount();
-
-
-  const pageNumbers = getPaginationNumbers(currentPage, totalPages);
+  const SkeletonRow = ({ index }: { index: number }) => (
+    <TableRow 
+      className="animate-fade-in"
+      style={{ animationDelay: `${index * 100}ms` }}
+    >
+      {columns.map((_, colIndex) => (
+        <TableCell key={colIndex} className="py-4">
+          <Skeleton 
+            className="h-4 w-full animate-pulse bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 bg-[length:200%_100%]"
+          />
+        </TableCell>
+      ))}
+    </TableRow>
+  );
 
   return (
     <>
-      {/* Table */}
+      <style jsx>{`
+        @keyframes fadeIn {
+          from {
+            opacity: 0;
+            transform: translateY(10px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        
+        .animate-fade-in {
+          animation: fadeIn 0.5s ease-out forwards;
+        }
+        
+        .animate-pulse {
+          animation: pulse 2s infinite;
+          background-size: 200% 100%;
+          animation: pulseGradient 2s ease-in-out infinite;
+        }
+        
+        @keyframes pulseGradient {
+          0% {
+            background-position: 200% 0;
+          }
+          100% {
+            background-position: -200% 0;
+          }
+        }
+      `}</style>
+
       <div className="rounded-md flex flex-col gap-4">
         <Table className="font-inter w-full">
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id} className="border-b border-gray-300">
                 {headerGroup.headers.map((header) => (
-                  <TableHead
-                    key={header.id}
-                    className="py-4 text-[#535862] text-center"
-                  >
-                    {flexRender(header.column.columnDef.header, header.getContext())}
+                  <TableHead key={header.id} className="py-4 text-[#535862] text-center">
+                    {isLoading ? (
+                      <Skeleton 
+                        className="h-4 w-20 mx-auto animate-pulse bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 bg-[length:200%_100%]"
+                      />
+                    ) : (
+                      flexRender(header.column.columnDef.header, header.getContext())
+                    )}
                   </TableHead>
                 ))}
               </TableRow>
@@ -124,11 +118,15 @@ export function DataTable<TData, TValue>({
           </TableHeader>
 
           <TableBody>
-            {table.getRowModel().rows.length ? (
+            {isLoading ? (
+              Array(5).fill(null).map((_, index) => (
+                <SkeletonRow key={index} index={index} />
+              ))
+            ) : table.getRowModel().rows.length ? (
               table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  className="border-b border-gray-300 last:border-b-0 text-center"
+                <TableRow 
+                  key={row.id} 
+                  className="border-b border-gray-300 text-center transition-opacity duration-300 hover:bg-gray-50"
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id} className="py-4 text-[#535862] text-sm">
@@ -139,9 +137,9 @@ export function DataTable<TData, TValue>({
               ))
             ) : (
               <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="text-center py-4 text-gray-500"
+                <TableCell 
+                  colSpan={columns.length} 
+                  className="text-center py-4 text-gray-500 animate-fade-in"
                 >
                   No data available
                 </TableCell>
@@ -151,31 +149,35 @@ export function DataTable<TData, TValue>({
         </Table>
       </div>
 
-      {/* Pagination */}
       <div className="flex items-center justify-between py-4">
-        {/* Previous Button */}
-        <Button
-          onClick={() => table.previousPage()}
-          disabled={!table.getCanPreviousPage()}
-          className="flex items-center gap-2 px-4 ml-5 py-2 border border-gray-300 rounded-[8px] text-gray-700 hover:bg-gray-100"
+        <Button 
+          onClick={() => table.previousPage()} 
+          disabled={!table.getCanPreviousPage() || isLoading}
+          className="transition-all duration-200 hover:scale-105 disabled:opacity-50"
         >
-          <Image src={arrowLeft} alt="Previous" width={16} height={16} />
-          <span>Previous</span>
+          <Image src={Previous} alt="Previous Icon"/>
+          Previous
         </Button>
 
-        {/* Page Numbers */}
         <span className="text-[#535862]">
-        {table.getState().pagination.pageIndex + 1} ... {table.getPageCount()}
-        </span>
+          {isLoading ? (
+            <Skeleton 
+              className="h-4 w-20 animate-pulse bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 bg-[length:200%_100%]"
+            />
+          ) : (
+            <span className="animate-fade-in">
+              {table.getState().pagination.pageIndex + 1} ... {table.getPageCount()}
+            </span>
+          )}
+        </span>
 
-        {/* Next Button */}
-        <Button
-          onClick={() => table.nextPage()}
-          disabled={!table.getCanNextPage()}
-          className="flex items-center gap-2 mr-5 px-4 py-2 border border-gray-300 rounded-[8px] text-gray-700 hover:bg-gray-100"
+        <Button 
+          onClick={() => table.nextPage()} 
+          disabled={!table.getCanNextPage() || isLoading}
+          className="transition-all duration-200 hover:scale-105 disabled:opacity-50"
         >
-          <span>Next</span>
-          <Image src={arrowRight} alt="Next" width={16} height={16} />
+          Next
+          <Image src={Next} alt="Next Icon"/>
         </Button>
       </div>
     </>

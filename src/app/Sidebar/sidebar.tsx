@@ -6,13 +6,13 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 
 import Logo from "../../images/Logo.png";
-import DashLogo from "../../images/DashLogo.png";
-import StudentDirectory from "../../images/StudentDirectory.png";
-import FeesPenaltiesLogo from "../../images/FeesPenaltiesLogo.png";
+import DashIcon from "../../images/DashLogo.png";
+import PenIcon from "../../images/penicon.png";
+import IssuedIcon from "../../images/IssuedBooks.png";
 import TeleIcon from "../../images/telephone.png";
 import LogoutIcon from "../../images/logout.png";
-import VisitLogo from "../../images/VisitLogo.png";
-import BooksLogo from "../../images/BooksLogo.png";
+import FessPenaltiesIcon from "../../images/FeesPenaltiesLogo.png"
+import VisitLogo from "../../images/VisitLogo.png"
 
 interface MenuItem {
   key: string;
@@ -24,35 +24,28 @@ interface MenuItem {
 const Sidebar = () => {
   const pathname = usePathname();
   const menuItems: MenuItem[] = [
-    { key: "dashboard", label: "Dashboard", icon: DashLogo, route: "/" },
-    { key: "all-books", label: "All Books", icon: BooksLogo, route: "/all-books" },
-    { key: "student-page", label: "Student Directory", icon: StudentDirectory, route: "/student-page" },
-    { key: "fees-penalties", label: "Fees & Penalties", icon: FeesPenaltiesLogo, route: "/fees-penalties-page" },
-    { key: "visit-log", label: "Visit Log", icon: VisitLogo, route: "/visitlog-page" },
+    { key: "dashboard", label: "Dashboard", icon: DashIcon, route: "/" },
+    { key: "all-books", label: "All Books", icon: PenIcon, route: "/book-pages/all-books" },
+    { key: "student-page", label: "Student Directory", icon: IssuedIcon, route: "/student-page" },
+    { key: "fees-penalties-page", label: "Fees & Penalities", icon: PenIcon, route: "/fees-penalties-page" },
+    { key: "visitlog-page", label: "Visit Log", icon: PenIcon, route: "/visitlog-page" },
+    {key:"book-activities", label:"Book Activities", icon:PenIcon, route:'/book-activities'}
   ];
 
   return (
-    <div className="w-full md:w-56 lg:w-64 min-h-screen shadow-lg md:shadow-none border-r border-r-[#d9d9d9] flex flex-col font-josefin bg-white">
-      {/* Logo */}
-      <div className="p-4 md:p-6">
-        <Image 
-          src={Logo} 
-          alt="VighnoTech Logo" 
-          className="w-full h-auto max-w-[150px] md:max-w-[180px] mx-auto" 
-        />
+    <div className="min-h-screen w-[15%] shadow-[0_4px_4px_0_rgba(0,0,0,0.25)] border-r border-r-[#d9d9d9] flex flex-col font-josefin">
+      <div className="p-4">
+        <Image src={Logo} alt="VighnoTech Logo" className="w-full h-auto" />
       </div>
-
-      {/* Menu Items */}
-      <div className="p-4 space-y-2 md:space-y-3">
+      <div className="p-4 space-y-2">
         {menuItems.map((item) => {
           const isActive = pathname === item.route;
           return (
             <Link href={item.route} key={item.key}>
               <div
                 className={`
-                  flex justify-between items-center cursor-pointer rounded-lg p-3 transition-colors text-[#1E40AF]
+                  flex justify-between items-center cursor-pointer rounded-[8px] p-2 transition-colors text-[#1E40AF]
                   ${isActive ? "bg-[#F0F6FF]" : "hover:bg-[#EDF1FF]"}
-                  text-sm md:text-base
                 `}
               >
                 <span>{item.label}</span>
@@ -62,17 +55,13 @@ const Sidebar = () => {
           );
         })}
       </div>
-
-      {/* Spacer */}
       <div className="flex-grow" />
-
-      {/* Bottom Section */}
       <div className="p-4">
-        <div className="flex justify-between mb-3 cursor-pointer p-3 rounded-lg text-[#333333] hover:bg-gray-100 text-sm md:text-base">
+        <div className="flex justify-between mb-3 cursor-pointer p-2 rounded-md text-[#333333]">
           <span>Contact</span>
           <Image src={TeleIcon} alt="telephone" />
         </div>
-        <div className="flex justify-between cursor-pointer p-3 rounded-lg text-[#333333] hover:bg-gray-100 text-sm md:text-base">
+        <div className="flex justify-between cursor-pointer p-2 rounded-md text-[#333333]">
           <span>Sign out</span>
           <Image src={LogoutIcon} alt="logout"  />
         </div>
