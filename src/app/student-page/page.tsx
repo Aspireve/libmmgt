@@ -6,7 +6,10 @@ import { useRouter } from "next/navigation";
 import { useList, useDelete } from "@refinedev/core";
 import Header from "../Header/header";
 import { DataTable } from "@/components/data-tables/data-table";
-import { studentColumns as originalStudentColumns, Student } from "./studentcolumns";
+import {
+  studentColumns as originalStudentColumns,
+  Student,
+} from "./studentcolumns";
 import Search from "../../images/search.png";
 import Image from "next/image";
 import Link from "next/link";
@@ -17,23 +20,62 @@ import EditBtn from "../../images/EditBtn.png";
 import DeleteBtn from "../../images/DeleteBtn.png";
 import addBook from "../../images/addbook.png";
 import { toast } from "sonner";
+import { images } from "../book-pages/images";
 
 const StudentDirectory = () => {
   const router = useRouter();
   const queryClient = useQueryClient();
   const [searchTerm, setSearchTerm] = useState("");
+  // States for filter values
+  const [departmentFilter, setDepartmentFilter] = useState("");
+  const [yearFilter, setYearFilter] = useState("");
+  // State to toggle filter dropdown visibility
+  const [showFilterDropdown, setShowFilterDropdown] = useState(false);
+  // State for delete confirmation modal
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [studentToDelete, setStudentToDelete] = useState<string | null>(null);
 
+  // Fallback hardcoded data in case the API endpoints are not available
+  const fallbackDepartments = ["Computer Science", "Mathematics", "Physics", "Chemistry"];
+  const fallbackYears = ["2021", "2020", "2019", "2018"];
+
+  // Disable fetching departments and years by setting enabled: false
+  const { data: departmentResponse } = useList<{ department: string }>({
+    resource: "student/departments",
+    pagination: { current: 1, pageSize: 100 },
+    queryOptions: { enabled: false }, // disabled because endpoint is not available
+  });
+  const availableDepartments =
+    departmentResponse?.data.map((item) => item.department) || fallbackDepartments;
+
+  const { data: yearResponse } = useList<{ year: string }>({
+    resource: "student/years",
+    pagination: { current: 1, pageSize: 100 },
+    queryOptions: { enabled: false }, // disabled because endpoint is not available
+  });
+  const availableYears = yearResponse?.data.map((item) => item.year) || fallbackYears;
+
+  // Use refine’s useList hook to fetch students with filters applied.
   const {
     data: studentsResponse,
     isLoading,
     error,
+    refetch,
   } = useList<Student>({
     resource: "student/all",
     pagination: { current: 1, pageSize: 1000 },
+    filters: [
+      ...(departmentFilter
+        ? [{ field: "department", operator: "eq" as const, value: departmentFilter }]
+        : []),
+      ...(yearFilter
+        ? [
+            { field: "year_of_admission", operator: "eq" as const, value: yearFilter },
+          ]
+        : []),
+    ],
     queryOptions: {
-      queryKey: ["students"],
+      queryKey: ["students", departmentFilter, yearFilter],
       staleTime: 5 * 60 * 1000,
       cacheTime: 10 * 60 * 1000,
       refetchOnMount: "always",
@@ -42,7 +84,6 @@ const StudentDirectory = () => {
 
   const students = studentsResponse?.data ?? [];
   console.log("Fetched students:", studentsResponse?.data);
-  console.log("Students used for table:", students);
 
   const { mutate: deleteStudent } = useDelete();
 
@@ -59,25 +100,41 @@ const StudentDirectory = () => {
         );
       }),
     onMutate: async (uuid: string) => {
-      await queryClient.cancelQueries({ queryKey: ["students"] });
-      const previousStudents = queryClient.getQueryData(["students"]);
+      await queryClient.cancelQueries({
+        queryKey: ["students", departmentFilter, yearFilter],
+      });
+      const previousStudents = queryClient.getQueryData([
+        "students",
+        departmentFilter,
+        yearFilter,
+      ]);
       const optimisticStudents = students.filter(
         (student) => student.student_uuid !== uuid
       );
-      queryClient.setQueryData(["students"], {
-        data: optimisticStudents,
-        total: optimisticStudents.length,
-      });
+      queryClient.setQueryData(
+        ["students", departmentFilter, yearFilter],
+        {
+          data: optimisticStudents,
+          total: optimisticStudents.length,
+        }
+      );
       return { previousStudents };
     },
     onError: (err, uuid, context) => {
-      queryClient.setQueryData(["students"], context?.previousStudents);
-      toast.error(`Error deleting student: ${err}`, { position: "top-center" });
+      queryClient.setQueryData(
+        ["students", departmentFilter, yearFilter],
+        context?.previousStudents
+      );
+      toast.error(`Error deleting student: ${err}`, {
+        position: "top-center",
+      });
       setShowConfirmModal(false);
       setStudentToDelete(null);
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["students"] });
+      queryClient.invalidateQueries({
+        queryKey: ["students", departmentFilter, yearFilter],
+      });
     },
     onSuccess: () => {
       toast.success("Student deleted successfully!", {
@@ -88,6 +145,7 @@ const StudentDirectory = () => {
     },
   });
 
+  // Client-side search filter on already retrieved data (optional)
   const filteredStudents = searchTerm.trim()
     ? students.filter((student) =>
         [
@@ -99,9 +157,9 @@ const StudentDirectory = () => {
           "phone_no",
           "roll_no",
         ].some((key) =>
-          (
-            student[key as keyof Student]?.toString().toLowerCase() || ""
-          ).includes(searchTerm.toLowerCase())
+          (student[key as keyof Student]?.toString().toLowerCase() || "").includes(
+            searchTerm.toLowerCase()
+          )
         )
       )
     : students;
@@ -121,6 +179,7 @@ const StudentDirectory = () => {
     setStudentToDelete(null);
   };
 
+  // Update the columns to include action buttons.
   const studentColumns = originalStudentColumns.map((col) => {
     if (col.id === "actions") {
       return {
@@ -133,9 +192,9 @@ const StudentDirectory = () => {
               <button
                 onClick={() =>
                   router.push(
-                    `/student-page/EditStudent?id=${
-                      student.student_uuid
-                    }&student=${encodeURIComponent(JSON.stringify(student))}`
+                    `/student-page/EditStudent?id=${student.student_uuid}&student=${encodeURIComponent(
+                      JSON.stringify(student)
+                    )}`
                   )
                 }
                 aria-label="Edit student"
@@ -156,6 +215,12 @@ const StudentDirectory = () => {
     return col;
   });
 
+  // When Apply Filters is clicked, hide the dropdown.
+  const handleFilterApply = () => {
+    setShowFilterDropdown(false);
+    refetch();
+  };
+
   if (error) {
     return <div className="p-4 text-center">Error: {error.message}</div>;
   }
@@ -164,7 +229,7 @@ const StudentDirectory = () => {
     <>
       <Header />
       <section className="border border-[#E0E2E7] rounded-[10px] w-[90%] ml-10 mt-6">
-        <div>
+        <div className="p-4">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-4">
               <p className="text-sm font-semibold ml-4">Students</p>
@@ -172,15 +237,69 @@ const StudentDirectory = () => {
                 {filteredStudents.length} Entries
               </span>
             </div>
-            <div className="flex items-center justify-end gap-4 m-3">
+            <div className="flex items-center gap-4">
               <Link href="/student-page/import-students">
-                <Button className="border border-[#1E40AF] rounded-[8px] text-[#1E40AF] pt-2.5 pr-[18px] pb-2.5 pl-[18px]">
-                  <img src={importdrop.src} alt="" /> Import
+                <Button className="border border-[#1E40AF] rounded-[8px] text-[#1E40AF]">
+                  <img src={importdrop.src} alt="Import" /> Import
                 </Button>
               </Link>
+              {/* Filter Button with dropdown for both filters */}
+              <div className="relative">
+                <Button
+                  onClick={() => setShowFilterDropdown(!showFilterDropdown)}
+                  className="shadow-none border border-[#1E40AF] text-[#1E40AF] rounded-[10px]"
+                >
+                  <Image src={images.filter} alt="Filter button" />
+                  Filter
+                </Button>
+                {showFilterDropdown && (
+                  <div className="absolute right-0 mt-2 w-64 bg-white border border-gray-200 rounded shadow-lg p-4 z-10">
+                    <div className="mb-4">
+                      <label className="block text-sm font-medium mb-1">
+                        Department
+                      </label>
+                      <select
+                        value={departmentFilter}
+                        onChange={(e) => setDepartmentFilter(e.target.value)}
+                        className="w-full border border-gray-300 rounded px-2 py-1"
+                      >
+                        <option value="">All</option>
+                        {availableDepartments.map((dept) => (
+                          <option key={dept} value={dept}>
+                            {dept}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className="mb-4">
+                      <label className="block text-sm font-medium mb-1">
+                        Year of Admission
+                      </label>
+                      <select
+                        value={yearFilter}
+                        onChange={(e) => setYearFilter(e.target.value)}
+                        className="w-full border border-gray-300 rounded px-2 py-1"
+                      >
+                        <option value="">All</option>
+                        {availableYears.map((year) => (
+                          <option key={year} value={year}>
+                            {year}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <Button
+                      onClick={handleFilterApply}
+                      className="w-full bg-[#1E40AF] text-white hover:bg-blue-950"
+                    >
+                      Apply Filters
+                    </Button>
+                  </div>
+                )}
+              </div>
               <Link href="/student-page/AddStudent">
-                <Button className="border border-[#989CA4] rounded-[8px] text-[#BBBBBB] pt-2.5 pr-[18px] pb-2.5 pl-[18px]">
-                  <img src={addBook.src} alt="" /> Add Student
+                <Button className="border border-[#989CA4] rounded-[8px] text-[#BBBBBB]">
+                  <img src={addBook.src} alt="Add Student" /> Add Student
                 </Button>
               </Link>
               <div className="relative w-72">
@@ -196,14 +315,14 @@ const StudentDirectory = () => {
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
               </div>
-              <Button className="bg-[#1E40AF] text-white rounded-[8px] w-[15%] p-4">
+              <Button className="bg-[#1E40AF] text-white rounded-[8px] w-[15%]">
                 Search
               </Button>
             </div>
           </div>
-          <DataTable 
-            columns={studentColumns} 
-            data={filteredStudents} 
+          <DataTable
+            columns={studentColumns}
+            data={filteredStudents}
             isLoading={isLoading}
           />
         </div>

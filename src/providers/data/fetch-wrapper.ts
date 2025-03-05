@@ -4,17 +4,21 @@ type ErrorResponse = {
 };
 const customFetch = async (url: string, options: RequestInit) => {
     const headers = options.headers as Record<string, string>;
-    
-    const fullUrl = url.startsWith('https') ? url : `https://lms-807p.onrender.com${url.startsWith('/') ? url : `/${url}`}`;
-
+    // Log the URL to check if it's being formed correctly
+    const fullUrl = url.startsWith('https')
+      ? url
+      : `https://lms-807p.onrender.com${url.startsWith('/') ? url : `/${url}`}`;
+    console.log("Fetching URL:", fullUrl);
+  
     return fetch(fullUrl, {
-        ...options,
-        headers: {
-            ...headers,
-            "Content-Type": "application/json",
-        },
+      ...options,
+      headers: {
+        ...headers,
+        "Content-Type": "application/json",
+      },
     });
-};
+  };
+  
 
 export const fetchWrapper = async (url: string, options: RequestInit) => {
     try {

@@ -1,46 +1,39 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React from "react";
 import Header from "../Header/header";
 import { DataTable } from "@/components/data-tables/data-table";
-import {
-  studentColumns,
-  Student,
-  fallbackData,
-} from "./columns";
+import { studentColumns, Student, fallbackData } from "./columns";
+import { useList } from "@refinedev/core";
 
-const page = () => {
-  const [students, setStudents] = useState<Student[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-
-  useEffect(() => {
-    const fetchStudents = async () => {
-      try {
-        const res = await fetch("/api/students");
-        const data = !res.ok ? fallbackData : await res.json();
-        setStudents(data?.length > 0 ? data : fallbackData);
-      } catch (error) {
+const Page = () => {
+  const { data, isLoading } = useList<Student>({
+    resource: "students",
+    pagination: { current: 1, pageSize: 1000 }, 
+    queryOptions: {
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      cacheTime: 10 * 60 * 1000, // 10 minutes
+      onError: (error) => {
         console.error("Error fetching students:", error);
-        setStudents(fallbackData);
-      } finally {
-        setLoading(false);
-      }
-    };
+      },
+    },
+  });
 
-    fetchStudents();
-  }, []);
+  // Use fetched data if available and valid, otherwise use fallbackData
+  const students = data?.data && data.data.length > 0 ? data.data : fallbackData;
 
-  if (loading) {
-    return <div className="p-4 text-center">Loading data...</div>;
-  }
   return (
     <>
       <Header />
       <div className="border border-[#E0E2E7] rounded-[10px] w-[90%] ml-10 mt-6">
-      <DataTable columns={studentColumns} data={students} />
+        <DataTable
+          columns={studentColumns}
+          data={students}
+          isLoading={isLoading}
+        />
       </div>
     </>
   );
 };
 
-export default page;
+export default Page;

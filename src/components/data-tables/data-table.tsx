@@ -149,11 +149,11 @@ export function DataTable<TData, TValue>({
         </Table>
       </div>
 
-      <div className="flex items-center justify-between py-4">
+      <div className="flex items-center justify-between py-4 cursor-pointer">
         <Button 
           onClick={() => table.previousPage()} 
           disabled={!table.getCanPreviousPage() || isLoading}
-          className="transition-all duration-200 hover:scale-105 disabled:opacity-50"
+          className="transition-all duration-200 hover:scale-105 disabled:opacity-50 ml-10"
         >
           <Image src={Previous} alt="Previous Icon"/>
           Previous
@@ -174,7 +174,7 @@ export function DataTable<TData, TValue>({
         <Button 
           onClick={() => table.nextPage()} 
           disabled={!table.getCanNextPage() || isLoading}
-          className="transition-all duration-200 hover:scale-105 disabled:opacity-50"
+          className="transition-all duration-200 hover:scale-105 disabled:opacity-50 mr-10"
         >
           Next
           <Image src={Next} alt="Next Icon"/>
