@@ -17,7 +17,7 @@ import Link from 'next/link';
 
 const BooksPage = () => {
   const [url, setUrl] = useState("all")
-  const [title,setTitle] = useState("Books")
+  const [title,setTitle] = useState("Magzine")
   const { data } = useList<BookData>({ resource: `book/${url}` });
   const { mutate } = useDelete()
   const invalidate = useInvalidate();
@@ -110,11 +110,11 @@ const BooksPage = () => {
                   Import
                 </Button>
               </Link>
-              <Link href={"/book-pages/add-book"}>
+              <Link href={"/book-pages/add-journal"}>
                 <Button
                   className="shadow-none border border-[#989CA4] rounded-[8px] text-[#BBBBBB] flex items-center px-4 py-2">
                   <Image src={images.addBook} alt="Add button" />
-                  Add Books
+                  Add Magzine
                 </Button>
               </Link>
               <div className="relative">
@@ -125,24 +125,25 @@ const BooksPage = () => {
                   Filter By
                 </Button>
                 {isFilterOpen && (
-                  <div className="absolute right-0 mt-2 w-64 bg-white border border-gray-200 rounded shadow-lg z-10">
-                    <div className=" flex flex-col items-center gap-2 py-2 text-gray-700">
+                  <div className="absolute right-0 mt-2 w-48 border border-gray-300 rounded-md shadow-lg">
+                    <ul className="py-2 text-gray-700">
                     <Button 
-                      onClick={()=>{setUrl("all"); setTitle("Books")}}
-                      className="bg-[#1E40AF] text-[#fff] hover:bg-[#1E40AF] cursor-pointer rounded-[5px] w-[70%]"
-                      >Books
+                      onClick={()=>{setUrl("all"); setTitle("Magzines")}}
+                      className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                      >Magzines
                       </Button>
                       <Button 
-                      onClick={()=>{setUrl("available"); setTitle("Available Books")}}
-                      className="bg-[#1E40AF] text-[#fff] hover:bg-[#1E40AF] cursor-pointer rounded-[5px] w-[70%]"
-                      >Available Books
+                      onClick={()=>{setUrl("available"); setTitle("Available Magzines")}}
+                      className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                      >Available Magzines
                       </Button>
+                      <br/>
                       <Button
-                      onClick={()=>{setUrl("issued"); setTitle("Issued Books")}}
-                      className="bg-[#1E40AF] text-[#fff] hover:bg-[#1E40AF] cursor-pointer rounded-[5px] w-[70%]">
-                      Issued Books
+                      onClick={()=>{setUrl("issued"); setTitle("Issued Magzines")}}
+                      className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                      Issued Magzines
                       </Button>
-                    </div>
+                    </ul>
                   </div>
                 )}
               </div>

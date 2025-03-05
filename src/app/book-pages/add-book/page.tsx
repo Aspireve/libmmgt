@@ -82,7 +82,7 @@
               </div>
               {/* Cateloging */}
               <div>
-                <h2>Cateloging and Classification</h2>
+                <h2>Cataloging and Classification</h2>
                 <div className='grid grid-cols-4 gap-4 p-4'>
                   {cataloging.map((field) => (
                     <div key={field.name}>

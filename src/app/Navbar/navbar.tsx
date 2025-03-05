@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useTabs } from "../context/TabContext";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
 
 type Tab = {
   id: string;
@@ -15,65 +16,59 @@ const Navbar: React.FC = () => {
   const { tabs, activeTab, setActiveTab, closeTab } = useTabs();
   const router = useRouter()
 
-
   return (
     <div className="w-full shadow-[0_0_2px_0_#00000040] h-16 flex border-b border-b-[#d9d9d9] px-6 bg-white font-josefin">
       <Link href={"/"}>
-      <Image
-        src={Home}
-        alt="Home Icon"
-        className="w-5 h-5 mt-[20px] cursor-pointer "
-      />
+        <Image
+          src={Home}
+          alt="Home Icon"
+          className="w-5 h-5 mt-[20px] cursor-pointer"
+        />
       </Link>
-      <div className="flex items-center rounded px-3 h-10 mt-[10px] gap-4">
+      <div className="flex items-center px-3 h-10 mt-[10px] gap-4">
 
         {tabs.map((tab) => (
           <div
             key={tab.id}
-            className={`px-4 py-2 flex items-center rounded-md cursor-pointer
+            className={`px-4 py-2 flex items-center rounded-3xl cursor-pointer
                ${activeTab === tab.id ? "bg-blue-300" : "hover:bg-blue-200"
               }`}
             onClick={() => setActiveTab(tab.id)}
           >
-            <Link href={tab.route}>
-              {tab.title}
-            </Link>
+           
+              <Link href={tab.route}>
+                {tab.title}
+              </Link>
 
-            <button className="ml-2" onClick={(e) => {
-              e.stopPropagation();
-              const currentIndex = tabs.findIndex((t) => t.id === tab.id);
-              closeTab(tab.id);
-              if (activeTab === tab.id) {
-                let nextActiveTab;
+                <button className=" ml-2 border-none" onClick={(e) => {
+                  e.stopPropagation();
+                  const currentIndex = tabs.findIndex((t) => t.id === tab.id);
+                  closeTab(tab.id);
+                  if (activeTab === tab.id) {
+                    let nextActiveTab;
 
-                if (tabs.length > 1) {
-                  if (currentIndex === tabs.length - 1) {
-                    nextActiveTab = tabs[currentIndex - 1];
-                  } else {
-                    nextActiveTab = tabs[currentIndex + 1];
+                    if (tabs.length > 1) {
+                      if (currentIndex === tabs.length - 1) {
+                        nextActiveTab = tabs[currentIndex - 1];
+                      } else {
+                        nextActiveTab = tabs[currentIndex + 1];
+                      }
+                    }
+                    if (nextActiveTab) {
+                      setActiveTab(nextActiveTab.id);
+                      router.push(nextActiveTab.route);
+                    } else {
+                      router.push("/");
+                    }
                   }
-                }
-                if (nextActiveTab) {
-                  setActiveTab(nextActiveTab.id);
-                  router.push(nextActiveTab.route);
-                } else {
-                  router.push("/");
-                }
-              }
-            }}
-            >
-              ✕</button>
-
+                }}
+                >
+                  ✕</button>
           </div>
+
         ))}
 
       </div>
-
-      {/* <Image
-        src={AddTab}
-        alt="AddTab Icon"
-        className="w-[52px] h-10 mt-[9px] cursor-pointer"
-      /> */}
     </div>
   );
 };

@@ -16,12 +16,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="h-full">
-      <body className="h-full m-0 p-0">
+    <html lang="en" className="">
+      <body className="m-0 p-0">
        
           <RefineContext>
             <TabProvider>
-            <div className="flex h-screen">
+            <div className="flex h-[100vh]">
               <Sidebar />
               <div className="flex flex-1 flex-col">
                 <Navbar />

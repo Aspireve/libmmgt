@@ -28,6 +28,14 @@ const Header = () => {
     heading = "Books List";
     subheading = "Tanvir Chavan";
   }
+  if (pathname === "/book-pages/journal-page") {
+    heading = "Jouranls List";
+    subheading = "Tanvir Chavan";
+  }
+  if (pathname === "/book-pages/magzine-page") {
+    heading = "Magzine List";
+    subheading = "Tanvir Chavan";
+  }
   if(pathname === "/book-pages/available-books"){
     heading= "Available Books";
     subheading = "Tanvir Chavan"
