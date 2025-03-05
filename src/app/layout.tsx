@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Provider } from "react-redux";
 import { store } from "../redux/store/store";
 import { RefineContext } from "./_refine_context";
@@ -8,15 +8,21 @@ import Sidebar from "./Sidebar/sidebar";
 import Navbar from "./Navbar/navbar";
 import "../styles/global.css";
 import { Toaster } from "@/components/ui/sonner";
-//import LoginPage from "./LoginPage/page";
 
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const [isHydrated, setIsHydrated] = useState(false);
+
+  // Set hydrated state after mounting on the client
+  useEffect(() => {
+    setIsHydrated(true);
+  }, []);
+
   return (
-    <html lang="en" className="h-full">
+    <html lang="en" className={`h-full ${isHydrated ? "hydrated" : ""}`}>
       <body className="h-full m-0 p-0">
         <Provider store={store}>
           <RefineContext>
@@ -30,7 +36,6 @@ export default function RootLayout({
             </div>
           </RefineContext>
         </Provider>
-        {/* <LoginPage/> */}
       </body>
     </html>
   );
