@@ -65,9 +65,9 @@ const BooksPage = () => {
   };
  
   const columns: ColumnDef<BookData>[] = [
-    { accessorKey: 'book_uuid', header: 'Sr no' },
-    { accessorKey: 'book_title', header: 'Name of Book' },
-    { accessorKey: 'book_author', header: 'Name of Author', },
+    { accessorKey: 'book_uuid', header: 'Book ID' },
+    { accessorKey: 'book_title', header: 'Book Name' },
+    { accessorKey: 'book_author', header: 'Book Author', },
     { accessorKey: 'name_of_publisher', header: 'Book Publisher' },
     { accessorKey: 'total_count', header: 'Book Count' },
     {
