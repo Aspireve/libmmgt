@@ -1,9 +1,9 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
+import { useRouter } from "next/navigation";
 import EditBtn from "../../images/EditBtn.png";
 import DeleteBtn from "../../images/DeleteBtn.png";
-import { useRouter } from "next/navigation";
 
 export interface Student {
   student_id: string;
@@ -21,14 +21,70 @@ export interface Student {
   roll_no: number;
   year_of_admission: string;
   password: string;
-  current_password?: string; // Optional, used only during password update
-  confirm_password?: string; // Optional, used only during password update
+  current_password?: string;
+  confirm_password?: string;
 }
+
+// ✅ Component for ID Column
+const StudentIDCell = ({ student }: { student: Student }) => {
+  const router = useRouter();
+  return (
+    <div
+      className="relative group cursor-pointer"
+      onClick={() => router.push(
+        `/student-page/student-profile?id=${student.student_uuid}&student=${encodeURIComponent(
+          JSON.stringify(student)
+        )}`
+      )}
+    >
+      {student.student_id}
+      {/* Chat bubble tooltip */}
+      <div className="absolute left-1/2 transform -translate-x-1/2 bottom-full mb-2 hidden group-hover:flex items-center justify-center bg-gray-800 text-white text-xs rounded-lg px-3 py-1 shadow-md whitespace-nowrap
+      after:content-[''] after:absolute after:top-full after:left-1/2 after:-translate-x-1/2 after:border-4 after:border-transparent after:border-t-gray-800">
+        Student Profile
+      </div>
+    </div>
+  );
+};
+
+
+// ✅ Component for Name Column
+const StudentNameCell = ({ student }: { student: Student }) => {
+  const router = useRouter();
+  return (
+    <div
+      className="relative group cursor-pointer"
+      onClick={() => router.push(
+        `/student-page/student-profile?id=${student.student_uuid}&student=${encodeURIComponent(
+          JSON.stringify(student)
+        )}`
+      )}
+    >
+      {student.student_name}
+      {/* Chat bubble tooltip */}
+      <div className="absolute left-1/2 transform -translate-x-1/2 bottom-full mb-2 hidden group-hover:flex items-center justify-center bg-gray-800 text-white text-xs rounded-lg px-3 py-1 shadow-md whitespace-nowrap
+      after:content-[''] after:absolute after:top-full after:left-1/2 after:-translate-x-1/2 after:border-4 after:border-transparent after:border-t-gray-800">
+        Student Profile
+      </div>
+    </div>
+  );
+};
+
 
 export const studentColumns: ColumnDef<Student>[] = [
   {
+    accessorKey: "student_id",
+    header: "ID",
+    cell: ({ row }) => <StudentIDCell student={row.original} />,
+  },
+  {
     accessorKey: "student_name",
-    header: "Student Name",
+    header: "Name",
+    cell: ({ row }) => <StudentNameCell student={row.original} />,
+  },
+  {
+    accessorKey: "roll_no",
+    header: "Roll no",
   },
   {
     accessorKey: "department",
@@ -37,18 +93,6 @@ export const studentColumns: ColumnDef<Student>[] = [
   {
     accessorKey: "email",
     header: "Email",
-  },
-  {
-    accessorKey: "phone_no",
-    header: "Phone Number",
-  },
-  {
-    accessorKey: "address",
-    header: "Address",
-  },
-  {
-    accessorKey: "roll_no",
-    header: "Roll No.",
   },
   {
     accessorKey: "year_of_admission",
@@ -80,7 +124,7 @@ export const studentColumns: ColumnDef<Student>[] = [
   },
 ];
 
-const handleEdit = (student: Student, router: any) => {
+const handleEdit = (student: Student, router: ReturnType<typeof useRouter>) => {
   console.log("Navigating with student_uuid:", student.student_uuid);
   router.push(
     `/EditStudent?id=${student.student_uuid}&student=${encodeURIComponent(
@@ -91,42 +135,4 @@ const handleEdit = (student: Student, router: any) => {
 
 const handleDelete = (uuid: string) => {
   console.log(`Delete student with UUID: ${uuid}`);
-  // Implement delete logic here (e.g., API call with useDelete from @refinedev/core)
 };
-
-export const fallbackData: Student[] = [
-  {
-    student_id: "tia-00001-2025",
-    student_uuid: "9eac618e-77ec-44e4-b50c-fe488ceb7737",
-    student_name: "John Doe",
-    department: null,
-    email: "john.doe@example.com",
-    phone_no: "9137058635",
-    address: "123 Main St, Springfield",
-    institute_id: "828f0d33-258f-4a92-a235-9c1b30d8882b",
-    institute_name: "Thakur Institute of Aviation",
-    is_archived: false,
-    date_of_birth: "1995-05-15",
-    gender: "male",
-    roll_no: 25,
-    year_of_admission: "2015",
-    password: "password123",
-  },
-  {
-    student_id: "tia-00002-2025",
-    student_uuid: "614cabeb-82c4-4084-8779-3e43a5841c84",
-    student_name: "Leon Mendonca",
-    department: null,
-    email: "leon1@gmail.com",
-    phone_no: "0987654321",
-    address: "Malad",
-    institute_id: "94f55255-3f0f-4ac4-9c60-235f4fe8a849",
-    institute_name: "Some Other Institute",
-    is_archived: false,
-    date_of_birth: "1998-12-01",
-    gender: "male",
-    roll_no: 45,
-    year_of_admission: "2018",
-    password: "leonpass",
-  },
-];
