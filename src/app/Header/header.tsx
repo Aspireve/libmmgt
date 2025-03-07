@@ -10,8 +10,8 @@ const Header = () => {
   const searchParams = useSearchParams();
 
   // ✅ States for Header
-  const [heading, setHeading] = useState("Library Management System");
-  const [subheading, setSubheading] = useState("Tanvir Chavan");
+  const [heading, setHeading] = useState("");
+  const [subheading, setSubheading] = useState("");
 
   useEffect(() => {
     // ✅ Get "student" parameter and parse JSON
@@ -34,7 +34,7 @@ const Header = () => {
 
     if (pathname === "/student-page") newHeading = "Student Directory";
     if (pathname === "/fees-penalties-page") newHeading = "Fees & Penalities";
-    if (pathname === "/visitlog-page") newHeading = "Visit Log";
+    if (pathname === "/visitlog-page") newHeading = "Visit Activities";
     if (pathname === "/book-pages/all-books") newHeading = "Books List";
     if (pathname === "/book-pages/available-books") newHeading = "Available Books";
     if (pathname === "/book-pages/issued-books") newHeading = "Issued Books";

@@ -27,7 +27,7 @@ const Sidebar = () => {
     { key: "all-books", label: "All Books", icon: PenIcon, route: "/book-pages/all-books" },
     { key: "student-page", label: "Student Directory", icon: IssuedIcon, route: "/student-page" },
     { key: "fees-penalties-page", label: "Fees & Penalties", icon: FessPenaltiesIcon, route: "/fees-penalties-page" },
-    { key: "visitlog-page", label: "Visit Log", icon: VisitLogo, route: "/visitlog-page" },
+    { key: "visitlog-page", label: "Visit Activities", icon: VisitLogo, route: "/visitlog-page" },
     { key: "book-activities", label: "Book Activities", icon: PenIcon, route: "/book-activities" },
   ];
 

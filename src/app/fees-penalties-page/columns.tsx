@@ -2,16 +2,19 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 
-export interface Student {
+export interface Penalties {
   student_id: string;
   student_name: string;
   department: string;
+  book_id: string; // Added Book_id to the interface
   book_category: string;
+  Issued_date: Date;
   return_date: Date;
   penalties: string;
+  student_uuid?: string; // Optional, used for edit/delete actions
 }
-
-export const studentColumns: ColumnDef<Student>[] = [
+ 
+export const PenaltiesColumns: ColumnDef<Penalties>[] = [
   {
     accessorKey: "student_id",
     header: "Student ID",
@@ -25,8 +28,26 @@ export const studentColumns: ColumnDef<Student>[] = [
     header: "Department",
   },
   {
+    accessorKey: "book_id", // Corrected to match the interface
+    header: "Book ID",
+  },
+  {
     accessorKey: "book_category",
     header: "Book Category",
+  },
+  {
+    accessorKey: "Issued_date",
+    header: "Issued Date",
+    cell: ({ row }) => {
+      const dateValue = row.getValue("Issued_date");
+      if (!dateValue) return "";
+      const date =
+        typeof dateValue === "string" ? new Date(dateValue) : dateValue;
+      if (date instanceof Date && !isNaN(date.getTime())) {
+        return date.toLocaleDateString();
+      }
+      return "";
+    },
   },
   {
     accessorKey: "return_date",
@@ -46,47 +67,67 @@ export const studentColumns: ColumnDef<Student>[] = [
     accessorKey: "penalties",
     header: "Penalties",
   },
+  {
+    id: "actions",
+    header: "",
+    cell: () => null, 
+  }
 ];
 
-export const fallbackData: Student[] = [
+export const fallbackData: Penalties[] = [
   {
     student_id: "#3066",
     student_name: "Bhumi Jain",
     department: "Electronics",
+    book_id: "B001", // Added Book_id
     book_category: "Fiction",
+    Issued_date: new Date("2023-12-10"),
     return_date: new Date("2023-12-15"),
     penalties: "₹100",
+    student_uuid: "uuid-3066",
   },
   {
     student_id: "#3065",
     student_name: "Bhumi Jain",
     department: "Electronics",
+    book_id: "B002",
     book_category: "Non-Fiction",
+    Issued_date: new Date("2023-12-07"),
     return_date: new Date("2023-12-20"),
     penalties: "₹100",
+    student_uuid: "uuid-3065",
   },
   {
     student_id: "#3064",
     student_name: "Bhumi Jain",
     department: "Electronics",
+    book_id: "B003",
     book_category: "Science",
+    Issued_date: new Date("2023-11-25"),
     return_date: new Date("2023-11-30"),
     penalties: "₹100",
+    student_uuid: "uuid-3064",
   },
   {
     student_id: "#3063",
     student_name: "Bhumi Jain",
     department: "Electronics",
+    book_id: "B004",
     book_category: "History",
+    Issued_date: new Date("2023-12-05"),
     return_date: new Date("2023-12-10"),
     penalties: "₹100",
+    student_uuid: "uuid-3063",
   },
   {
     student_id: "#3062",
     student_name: "Bhumi Jain",
     department: "Electronics",
+    book_id: "B005",
     book_category: "Fiction",
+    Issued_date: new Date("2023-12-01"),
     return_date: new Date("2023-12-05"),
     penalties: "₹100",
+    student_uuid: "uuid-3062",
   },
 ];
