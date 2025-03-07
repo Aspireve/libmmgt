@@ -38,6 +38,11 @@ export interface BookData {
     { key: "add-book", label: "Add Book", path: "/book-pages/add-book" },
     { key: "add-journal", label: "Add journal/Magzine", path: "/book-pages/add-journal" }, 
 ]
+
+export const bookdetailsRoutes = [
+  { key: "book-borrowed", label: "Book Borrowed By", path: "/book-pages/book-borrowed" },
+  { key: "book-activites", label: "Book Activites", path: "/book-pages/book-activites" }, 
+]
   
 // Dummy Data 
 export const dummyBooks: BookData[] = [

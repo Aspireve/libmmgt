@@ -14,7 +14,6 @@ import Link from "next/link";
 import { BookData } from "../types/data";
 
 
-
 const EditBook = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -22,7 +21,7 @@ const EditBook = () => {
 
   const { data: bookData, isLoading } = useOne<BookData>({
     resource: "book/search",
-    id: book_uuid || ""
+    id: `book_uuid=${book_uuid}` || ""
   });
 
   const { mutate, isLoading: isUpdating } = useUpdate();
@@ -34,24 +33,20 @@ const EditBook = () => {
     formState:{errors}
   } = useForm<BookData>();
 
-
-  useEffect(() => {
-    console.log("Updated Book ID:", book_uuid);
+  const UpdateFeilds  = ()=> {
     if (bookData?.data) {
       Object.keys(bookData.data).forEach((key) => {
         let value = bookData.data[key as keyof BookData];
-  
-      
         if (key === "year_of_publication" || key === "date_of_acquisition") {
           value = value ? new Date(value).toISOString().split("T")[0] : "";
         }
-  
         setValue(key as keyof BookData, value as never);
       });
-    }else{
-      router.push("/book-pages/all-books");
-      toast.error("Something went wrong, Please try again")
     }
+  }
+
+  useEffect(() => {
+    UpdateFeilds();
   }, [bookData, setValue]);
 
   const onSubmit = (data: any) => {

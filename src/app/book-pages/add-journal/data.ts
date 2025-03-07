@@ -5,7 +5,7 @@
     { label: "Editor Name", name: "editor_name", required: "Editor Name is required", placeholder: "Enter Editor Name" }
   ];
 
- export const Subscription_deatils = [
+ export const Subscription_details = [
     { label: "Subscription Price", name: "subscription_price", required: "Subscription Price is required", placeholder: "Enter Subscription Price" },
     { label: "Subscription Start Date", name: "subscription_start_date", required: "Start Date is required", placeholder: "Enter Subscription Start Date" },
     { label: "Subscription End Date", name: "subscription_end_date", required: "End Date is required", placeholder: "Enter Subscription End Date" }

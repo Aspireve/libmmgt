@@ -60,6 +60,10 @@ const Header = () => {
     heading= "Edit Book"
     subheading= "Tanvir Chavan"
   }
+  if(pathname === "/book-pages/book-details"){
+    heading= "Book Details"
+    subheading= "book-id"
+  }
 
   return (
     <div className="flex items-center justify-between mx-5 font-josefin mt-7">

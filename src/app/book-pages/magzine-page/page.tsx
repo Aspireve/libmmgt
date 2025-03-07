@@ -15,6 +15,8 @@ import Tabbing from '@/app/Tab/Tab';
 import { images } from "../images";
 import Link from 'next/link';
 
+import { formatDate } from '../hooks/formatDate'
+
 const BooksPage = () => {
   const [url, setUrl] = useState("all")
   const [title,setTitle] = useState("Magzine")
@@ -26,11 +28,6 @@ const BooksPage = () => {
   const [isFilterOpen,setIsFilterOpen] = useState(false)
   const [selectedBookId, setSelectedBookId] = useState<string | null>(null);
 
-  const formatDate = (dateString: string) => {
-    if (!dateString) return '';
-    const date = new Date(dateString);
-    return date.toISOString().split('T')[0];
-  };
 
   const handleEdit = (book: BookData) => {
     router.push(`/book-pages/edit-book?book_uuid=${book.book_uuid}`);

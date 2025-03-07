@@ -15,6 +15,8 @@ import Tabbing from '@/app/Tab/Tab';
 import { images } from "../images";
 import Link from 'next/link';
 
+import { formatDate } from '../hooks/formatDate'
+
 const BooksPage = () => {
   const [url, setUrl] = useState("all")
   const [title,setTitle] = useState("Books")
@@ -26,11 +28,7 @@ const BooksPage = () => {
   const [isFilterOpen,setIsFilterOpen] = useState(false)
   const [selectedBookId, setSelectedBookId] = useState<string | null>(null);
 
-  const formatDate = (dateString: string) => {
-    if (!dateString) return '';
-    const date = new Date(dateString);
-    return date.toISOString().split('T')[0];
-  };
+  
 
   const handleEdit = (book: BookData) => {
     router.push(`/book-pages/edit-book?book_uuid=${book.book_uuid}`);
@@ -66,7 +64,24 @@ const BooksPage = () => {
  
   const columns: ColumnDef<BookData>[] = [
     { accessorKey: 'book_uuid', header: 'Book ID' },
-    { accessorKey: 'book_title', header: 'Book Name' },
+    { accessorKey: 'book_title', header: 'Book Name',
+      cell:({row}) =>{
+        const book = row.original 
+        return(
+      <div
+        className="relative group cursor-pointer"
+        onClick={() => router.push(`/book-pages/book-details?name=${book.book_uuid}`
+        )}
+      >
+        {book.book_title}
+        <div className="absolute left-1/2 transform -translate-x-1/2 bottom-full mb-2 hidden group-hover:flex items-center justify-center bg-gray-800 text-white text-xs rounded-lg px-3 py-1 shadow-md whitespace-nowrap
+        after:content-[''] after:absolute after:top-full after:left-1/2 after:-translate-x-1/2 after:border-4 after:border-transparent after:border-t-gray-800">
+        Book Details
+        </div>
+      </div>
+        )
+      }
+     },
     { accessorKey: 'book_author', header: 'Book Author', },
     { accessorKey: 'name_of_publisher', header: 'Book Publisher' },
     { accessorKey: 'total_count', header: 'Book Count' },
@@ -74,12 +89,12 @@ const BooksPage = () => {
       accessorKey: 'year_of_publication', header: 'Year of Publication',
       cell: ({ row }) => <span>{formatDate(row.original.year_of_publication)}</span>
     },
-    {accessorKey:"status", header:"Status"},
+    { accessorKey:"status", header:"Status" },
     {
       id: 'actions', header: '',
       cell: ({ row }) => (
         <div className="flex gap-2">
-          <Button variant="ghost" size="icon" onClick={() => handleEdit(row.original)}>
+          <Button variant="ghost" size="icon" onClick={() => handleEdit(row.original  )}>
             <Image src={images.edit} alt='Edit button' />
           </Button>
           <Button variant="ghost" size="icon" onClick={() => handleDeleteClick(row.original.book_uuid)}>
@@ -129,17 +144,17 @@ const BooksPage = () => {
                     <div className=" flex flex-col items-center gap-2 py-2 text-gray-700">
                     <Button 
                       onClick={()=>{setUrl("all"); setTitle("Books")}}
-                      className="bg-[#1E40AF] text-[#fff] hover:bg-[#1E40AF] cursor-pointer rounded-[5px] w-[70%]"
+                      className="text-[#000] justify-start border border-[#fff]  cursor-pointer shadow-none w-[70%]"
                       >Books
                       </Button>
                       <Button 
                       onClick={()=>{setUrl("available"); setTitle("Available Books")}}
-                      className="bg-[#1E40AF] text-[#fff] hover:bg-[#1E40AF] cursor-pointer rounded-[5px] w-[70%]"
+                      className="text-[#000] justify-start border border-[#fff]  cursor-pointer shadow-none w-[70%]"
                       >Available Books
                       </Button>
                       <Button
                       onClick={()=>{setUrl("issued"); setTitle("Issued Books")}}
-                      className="bg-[#1E40AF] text-[#fff] hover:bg-[#1E40AF] cursor-pointer rounded-[5px] w-[70%]">
+                      className="text-[#000] justify-start border border-[#fff]  cursor-pointer shadow-none w-[70%]">
                       Issued Books
                       </Button>
                     </div>

@@ -40,7 +40,6 @@ const AvaBooks = () => {
   }
   const { data } = useList<BookData>({ resource: 'book/all' });
   // const [data, setData] = useState<BookData[]>([]);
-
   // useEffect(() => {
   //   setTimeout(() => {
   //     setData(dummyBooks);
