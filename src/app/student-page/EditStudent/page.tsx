@@ -11,6 +11,8 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Student } from "../studentcolumns";
 import { toast } from "sonner";
 
+
+
 const EditStudent: React.FC = () => {
   const router = useRouter();
   const searchParams = useSearchParams();

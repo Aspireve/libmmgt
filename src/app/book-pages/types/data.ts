@@ -1,5 +1,5 @@
 export interface BookData {
-    book_id:string
+    book_uuid:string
     book_title: string;
     book_author: string;
     total_count:number;
@@ -23,25 +23,31 @@ export interface BookData {
     barcode?: string;
     item_type?: string;
     bill_no: number;
-    institute_uuid: string
+    institute_uuid: string;
+    // is_archived:Boolean;
   }
 
     // Routes 
   export const bookRoutes = [
     { key: "all-books", label: "All Books", path: "/book-pages/all-books" },
-    { key: "available-books", label: "Available Books", path: "/book-pages/available-books" },
-    { key: "issued-books", label: "Issued Books", path: "/book-pages/issued-books" },
+    { key: "journal-page", label: "Journals", path: "/book-pages/journal-page" },
+    { key: "magzine-page", label: "Magzines", path: "/book-pages/magzine-page" },
   ];
 
   export const addbookRoutes = [
     { key: "add-book", label: "Add Book", path: "/book-pages/add-book" },
     { key: "add-journal", label: "Add journal/Magzine", path: "/book-pages/add-journal" }, 
 ]
+
+export const bookdetailsRoutes = [
+  { key: "book-borrowed", label: "Book Borrowed By", path: "/book-pages/book-borrowed" },
+  { key: "book-activites", label: "Book Activites", path: "/book-pages/book-activites" }, 
+]
   
 // Dummy Data 
 export const dummyBooks: BookData[] = [
   {
-    book_id: "B001",
+    book_uuid: "B001",
     book_title: "The Art of Programming",
     book_author: "Donald Knuth",
     available_count:3,
@@ -69,7 +75,7 @@ export const dummyBooks: BookData[] = [
 
   },
   {
-    book_id: "B002",
+    book_uuid: "B002",
     book_title: "Introduction to Algorithms",
     book_author: "Cormen, Leiserson, Rivest, Stein",
     available_count:3,
@@ -97,7 +103,7 @@ export const dummyBooks: BookData[] = [
 
   },
   {
-    book_id: "B003",
+    book_uuid: "B003",
     book_title: "Clean Code",
     book_author: "Robert C. Martin",
     available_count:3,

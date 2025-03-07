@@ -48,7 +48,7 @@ export const dataProvider: DataProvider = {
     },
 
     getOne: async ({ resource, id }) => {
-        const url = `${resource}?book_id=${id}`
+        const url = `${resource}?${id}`
         const response = await fetchWrapper(url, {
             method: "GET",
         });

@@ -16,8 +16,8 @@ interface BookLog {
   student_id: string,
   date: string,
   department: string,
-  borrowed_by: string,
-  book_status: string
+  student_name: string,
+  book_status: string,
 }
 const bookLogs: BookLog[] = [
   {
@@ -27,7 +27,7 @@ const bookLogs: BookLog[] = [
     student_id: "stu-001",
     date: "2024-02-25",
     department: "Computer Science",
-    borrowed_by: "John Doe",
+    student_name: "John Doe",
     book_status: "Borrowed",
   }
 ];
@@ -41,7 +41,7 @@ for (let i = 2; i <= 30; i++) {
     department: ["Computer Science", "Software Engineering", "AI", "IT", "Mathematics"][
       Math.floor(Math.random() * 5)
     ],
-    borrowed_by: `Student ${i}`,
+    student_name: `Student ${i}`,
     book_status: ["Borrowed", "Returned", "Overdue"][Math.floor(Math.random() * 3)],
   });
 }
@@ -109,7 +109,7 @@ const BookActivities = () => {
                 className="flex items-center justify-between gap-3 p-3 rounded-[5px] border border-gray-200 bg-white"
               >
                 <p className="text-sm text-black">
-                  <span className="font-bold">{item.book_title}</span> | {item.book_status} |{' '}
+                  <span className="font-bold">{item.student_name} | {item.book_title}</span> |{' '}
                   {item.date}
                 </p>
                 <p className="text-right">{item.book_status}</p>

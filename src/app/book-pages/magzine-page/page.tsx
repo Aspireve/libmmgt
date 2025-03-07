@@ -19,7 +19,7 @@ import { formatDate } from '../hooks/formatDate'
 
 const BooksPage = () => {
   const [url, setUrl] = useState("all")
-  const [title,setTitle] = useState("Books")
+  const [title,setTitle] = useState("Magzine")
   const { data } = useList<BookData>({ resource: `book/${url}` });
   const { mutate } = useDelete()
   const invalidate = useInvalidate();
@@ -28,7 +28,6 @@ const BooksPage = () => {
   const [isFilterOpen,setIsFilterOpen] = useState(false)
   const [selectedBookId, setSelectedBookId] = useState<string | null>(null);
 
-  
 
   const handleEdit = (book: BookData) => {
     router.push(`/book-pages/edit-book?book_uuid=${book.book_uuid}`);
@@ -63,46 +62,29 @@ const BooksPage = () => {
   };
  
   const columns: ColumnDef<BookData>[] = [
-    { accessorKey: 'book_uuid', header: 'Book ID' },
-    { accessorKey: 'book_title', header: 'Book Name',
-      cell:({row}) =>{
-        const book = row.original 
-        return(
-      <div
-        className="relative group cursor-pointer"
-        onClick={() => router.push(`/book-pages/book-details?name=${book.book_uuid}`
-        )}
-      >
-        {book.book_title}
-        <div className="absolute left-1/2 transform -translate-x-1/2 bottom-full mb-2 hidden group-hover:flex items-center justify-center bg-gray-800 text-white text-xs rounded-lg px-3 py-1 shadow-md whitespace-nowrap
-        after:content-[''] after:absolute after:top-full after:left-1/2 after:-translate-x-1/2 after:border-4 after:border-transparent after:border-t-gray-800">
-        Book Details
-        </div>
-      </div>
-        )
-      }
-     },
-    { accessorKey: 'book_author', header: 'Book Author', },
+    { accessorKey: 'book_uuid', header: 'Sr no' },
+    { accessorKey: 'book_title', header: 'Name of Book' },
+    { accessorKey: 'book_author', header: 'Name of Author', },
     { accessorKey: 'name_of_publisher', header: 'Book Publisher' },
     { accessorKey: 'total_count', header: 'Book Count' },
     {
       accessorKey: 'year_of_publication', header: 'Year of Publication',
       cell: ({ row }) => <span>{formatDate(row.original.year_of_publication)}</span>
     },
-    { accessorKey:"status", header:"Status" },
+    {accessorKey:"status", header:"Status"},
     {
       id: 'actions', header: '',
       cell: ({ row }) => (
         <div className="flex gap-2">
-          <Button variant="ghost" size="icon" onClick={() => handleEdit(row.original  )}>
+          <Button variant="ghost" size="icon" onClick={() => handleEdit(row.original)}>
             <Image src={images.edit} alt='Edit button' />
           </Button>
           <Button variant="ghost" size="icon" onClick={() => handleDeleteClick(row.original.book_uuid)}>
             <Image src={images.delete} alt='Delete button' />
           </Button>
         </div>
-      ),
-    },
+      )
+    }
   ];
 
   return (
@@ -111,7 +93,7 @@ const BooksPage = () => {
       <Tabbing routes={bookRoutes} className="w-[30%]" />
 
       <section className="border border-[#E0E2E7] rounded-[10px] m-4">
-        <div className="container">
+        <div className='container'>
           <div className="grid grid-cols-[30%_70%] p-4">
             <div className='flex items-center gap-[10px]'>
               <h1 className='text-3xl font-bold'>{title}</h1>
@@ -125,11 +107,11 @@ const BooksPage = () => {
                   Import
                 </Button>
               </Link>
-              <Link href={"/book-pages/add-book"}>
+              <Link href={"/book-pages/add-journal"}>
                 <Button
                   className="shadow-none border border-[#989CA4] rounded-[8px] text-[#BBBBBB] flex items-center px-4 py-2">
                   <Image src={images.addBook} alt="Add button" />
-                  Add Books
+                  Add Magzine
                 </Button>
               </Link>
               <div className="relative">
@@ -140,40 +122,37 @@ const BooksPage = () => {
                   Filter By
                 </Button>
                 {isFilterOpen && (
-                  <div className="absolute right-0 mt-2 w-64 bg-white border border-gray-200 rounded shadow-lg z-10">
-                    <div className=" flex flex-col items-center gap-2 py-2 text-gray-700">
+                  <div className="absolute right-0 mt-2 w-48 border border-gray-300 rounded-md shadow-lg">
+                    <ul className="py-2 text-gray-700">
                     <Button 
-                      onClick={()=>{setUrl("all"); setTitle("Books")}}
-                      className="text-[#000] justify-start border border-[#fff]  cursor-pointer shadow-none w-[70%]"
-                      >Books
+                      onClick={()=>{setUrl("all"); setTitle("Magzines")}}
+                      className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                      >Magzines
                       </Button>
                       <Button 
-                      onClick={()=>{setUrl("available"); setTitle("Available Books")}}
-                      className="text-[#000] justify-start border border-[#fff]  cursor-pointer shadow-none w-[70%]"
-                      >Available Books
+                      onClick={()=>{setUrl("available"); setTitle("Available Magzines")}}
+                      className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                      >Available Magzines
                       </Button>
+                      <br/>
                       <Button
-                      onClick={()=>{setUrl("issued"); setTitle("Issued Books")}}
-                      className="text-[#000] justify-start border border-[#fff]  cursor-pointer shadow-none w-[70%]">
-                      Issued Books
+                      onClick={()=>{setUrl("issued"); setTitle("Issued Magzines")}}
+                      className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                      Issued Magzines
                       </Button>
-                    </div>
+                    </ul>
                   </div>
                 )}
               </div>
 
               <div className="relative max-w-sm w-72">
-                <Image
-                  src={images.search}
-                  alt="search-icon"
-                  className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"
-                />
+                <Image src={images.search} alt='search-icon' className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
                 <Input
                   placeholder="Search"
                   className="pl-10 rounded-[8px] border border-[#D5D7DA] text-[#BBBBBB]"
                 />
               </div>
-              <Button className="bg-[#1E40AF] text-white rounded-[8px] w-[10%] p-4 hover:bg-[#1E40AF] hover:text-white">
+              <Button className='bg-[#1E40AF] text-white rounded-[8px] w-[10%] p-4 hover:bg-[#1E40AF] hover:text-white'>
                 Search
               </Button>
             </div>
@@ -185,17 +164,10 @@ const BooksPage = () => {
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white p-6 rounded-lg shadow-lg w-96">
             <h2 className="text-xl font-bold mb-4">Are you sure?</h2>
-            <p className="text-gray-600">
-              Do you really want to delete this book? This action cannot be undone.
-            </p>
+            <p className="text-gray-600">Do you really want to delete this book? This action cannot be undone.</p>
             <div className="flex justify-end gap-3 mt-6">
               <Button onClick={() => setIsModalOpen(false)}>Cancel</Button>
-              <Button
-                className="bg-red-600 text-white hover:bg-red-800 rounded-lg"
-                onClick={confirmDelete}
-              >
-                Delete
-              </Button>
+              <Button className='bg-red-600 text-white hover:bg-red-800 rounded-lg' onClick={confirmDelete}>Delete</Button>
             </div>
           </div>
         </div>

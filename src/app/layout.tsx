@@ -8,6 +8,8 @@ import Sidebar from "./Sidebar/sidebar";
 import Navbar from "./Navbar/navbar";
 import "../styles/global.css";
 import { Toaster } from "@/components/ui/sonner";
+import { TabProvider } from "./context/TabContext";
+//import LoginPage from "./LoginPage/page";
 
 export default function RootLayout({
   children,
@@ -26,14 +28,16 @@ export default function RootLayout({
       <body className="h-full m-0 p-0">
         <Provider store={store}>
           <RefineContext>
-            <div className="flex h-screen">
-              <Sidebar />
-              <div className="flex flex-1 flex-col">
-                <Navbar />
-                <div className="flex-1 overflow-y-auto">{children}</div>
-                <Toaster richColors position="top-center" />
+            <TabProvider>
+              <div className="flex h-[100vh]">
+                <Sidebar />
+                <div className="flex flex-1 flex-col">
+                  <Navbar />
+                  <div className="flex-1 overflow-y-auto">{children}</div>
+                  <Toaster richColors position="top-center" />
+                </div>
               </div>
-            </div>
+            </TabProvider>
           </RefineContext>
         </Provider>
       </body>

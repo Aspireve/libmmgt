@@ -9,7 +9,7 @@ import { useCreate } from '@refinedev/core';
 import { useRouter } from 'next/navigation';
 import { addbookRoutes, BookData } from '../types/data';
 import { toast } from 'sonner';
-import { General_info,Subscription_deatils,Volume,Publication,Library_info } from './data'
+import { General_info,Subscription_details,Volume,Publication,Library_info } from './data'
 import Header from '@/app/Header/header';
 import Tabbing from '@/app/Tab/Tab';
 
@@ -66,9 +66,9 @@ const AddJournal = () => {
             </div>
             {/* Subscription_deatils */}
             <div>
-              <h2>Subscription deatils</h2>
+              <h2>Subscription details</h2>
               <div className='grid grid-cols-4 gap-4 p-4'>
-                {Subscription_deatils.map((field) => (
+                {Subscription_details.map((field) => (
                   <div key={field.name}>
                     <Label>{field.label}</Label>
                     <Input
