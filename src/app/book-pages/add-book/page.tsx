@@ -14,6 +14,7 @@ import Tabbing from '@/app/Tab/Tab';
 import { addbookRoutes, BookData } from '../types/data';
 import Link from 'next/link';
 
+
 const AddBook = () => {
   const router = useRouter();
   const [isbn, setIsbn] = useState("");
@@ -30,13 +31,6 @@ const AddBook = () => {
     }
   });
 
-  const handleIsbnNumber = () => {
-    if (isbn.length !== 10) {
-      toast.error("ISBN must be exactly 10 digits.");
-      return;
-    }
-    
-  };
   const {
     register,
     handleSubmit,
