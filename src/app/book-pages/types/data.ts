@@ -59,12 +59,12 @@ export interface BookData {
   export const bookRoutes = [
     { key: "all-books", label: "All Books", path: "/book-pages/all-books" },
     { key: "journal-page", label: "Journals", path: "/book-pages/journal-page" },
-    { key: "magzine-page", label: "Magzines", path: "/book-pages/magzine-page" },
+    { key: "magazine-page", label: "Magazines", path: "/book-pages/magazine-page" },
   ];
 
   export const addbookRoutes = [
     { key: "add-book", label: "Add Book", path: "/book-pages/add-book" },
-    { key: "add-journal", label: "Add journal/Magzine", path: "/book-pages/add-journal" }, 
+    { key: "add-journal", label: "Add Journal/Magazine", path: "/book-pages/add-journal" }, 
 ]
 
 export const bookdetailsRoutes = [

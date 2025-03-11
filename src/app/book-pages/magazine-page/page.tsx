@@ -19,7 +19,7 @@ import { formatDate } from '../hooks/formatDate'
 
 const BooksPage = () => {
   const [url, setUrl] = useState("all")
-  const [title,setTitle] = useState("Magzine")
+  const [title,setTitle] = useState("Magazine")
   const { data } = useList<BookData>({ resource: `book/${url}` });
   const { mutate } = useDelete()
   const invalidate = useInvalidate();
@@ -111,7 +111,7 @@ const BooksPage = () => {
                 <Button
                   className="shadow-none border border-[#989CA4] rounded-[8px] text-[#BBBBBB] flex items-center px-4 py-2">
                   <Image src={images.addBook} alt="Add button" />
-                  Add Magzine
+                  Add Magazine
                 </Button>
               </Link>
               <div className="relative">
@@ -125,20 +125,20 @@ const BooksPage = () => {
                   <div className="absolute right-0 mt-2 w-48 border border-gray-300 rounded-md shadow-lg">
                     <ul className="py-2 text-gray-700">
                     <Button 
-                      onClick={()=>{setUrl("all"); setTitle("Magzines")}}
+                      onClick={()=>{setUrl("all"); setTitle("Magazines")}}
                       className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                      >Magzines
+                      >Magazines
                       </Button>
                       <Button 
-                      onClick={()=>{setUrl("available"); setTitle("Available Magzines")}}
+                      onClick={()=>{setUrl("available"); setTitle("Available Magazines")}}
                       className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                      >Available Magzines
+                      >Available Magazines
                       </Button>
                       <br/>
                       <Button
-                      onClick={()=>{setUrl("issued"); setTitle("Issued Magzines")}}
+                      onClick={()=>{setUrl("issued"); setTitle("Issued Magazines")}}
                       className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
-                      Issued Magzines
+                      Issued Magazines
                       </Button>
                     </ul>
                   </div>

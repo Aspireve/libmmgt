@@ -73,7 +73,6 @@ export const dataProvider: DataProvider = {
         };
     },
 
-    
 
     getApiUrl: () => API_URL,
     

@@ -1,4 +1,4 @@
-// src/store/store.ts
+// src/redux/store/store.ts
 "use client";
 
 import { configureStore } from '@reduxjs/toolkit';

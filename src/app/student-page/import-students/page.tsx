@@ -3,49 +3,68 @@
 import React, { useState, useRef } from "react";
 import * as XLSX from "xlsx";
 import { useCreate } from "@refinedev/core";
+import { parse, format } from "date-fns";
 
 export interface StudentData {
-  full_name: string;
+  student_name: string;
   department: string;
   email: string;
-  phone_number: string;
+  phone_no: string;
   address: string;
-  roll_no: string;
+  roll_no: number; // This is a number
   year_of_admission: string;
   password: string;
   confirm_password: string;
   date_of_birth: string;
   gender: string;
+  institute_name: string;
+  institute_id: string;
 }
 
+// Adjust MappingType to match StudentData types
 type MappingType = { [K in keyof StudentData]?: string };
 
 const initialMapping: MappingType = {
-  full_name: "",
+  student_name: "",
   department: "",
   email: "",
-  phone_number: "",
+  phone_no: "",
   address: "",
-  roll_no: "",
+  roll_no: "", // Changed from 0 to "" (string) since mapping deals with column names
   year_of_admission: "",
   password: "",
   confirm_password: "",
   date_of_birth: "",
   gender: "",
+  institute_id: "",
+  institute_name: "",
 };
 
 const fieldLabels: Record<keyof StudentData, string> = {
-  full_name: "Full Name",
+  student_name: "Student Name",
   department: "Department",
   email: "Email",
-  phone_number: "Phone Number",
+  phone_no: "Phone Number",
   address: "Address",
-  roll_no: "Roll No.",
+  roll_no: "Roll Number", // Updated label from 0 to a string
   year_of_admission: "Year of Admission",
   password: "Password",
   confirm_password: "Confirm Password",
   date_of_birth: "Date of Birth",
   gender: "Gender",
+  institute_id: "Institute ID",
+  institute_name: "Institute Name",
+};
+
+const formatDate = (dateString: string) => {
+  try {
+    const parsedDate = parse(dateString, "MM/dd/yyyy", new Date());
+    console.log(parsedDate)
+    return format(parsedDate, "yyyy-MM-dd");
+
+  } catch (error) {
+    return "Invalid Date";
+  }
 };
 
 const ImportStudents = () => {
@@ -66,23 +85,23 @@ const ImportStudents = () => {
 
   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
-    setError(""); // Clear error on new drop
+    setError("");
     const file = e.dataTransfer.files[0];
     if (file) {
       dropRef.current?.classList.add("border-blue-500");
-      setTimeout(() => dropRef.current?.classList.remove("border-blue-500"), 500); // Visual feedback
+      setTimeout(() => dropRef.current?.classList.remove("border-blue-500"), 500);
       processFile(file);
     }
   };
 
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
-    dropRef.current?.classList.add("border-blue-500"); // Highlight on drag over
+    dropRef.current?.classList.add("border-blue-500");
   };
 
   const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
-    dropRef.current?.classList.remove("border-blue-500"); // Remove highlight when leaving
+    dropRef.current?.classList.remove("border-blue-500");
   };
 
   const processFile = (file: File) => {
@@ -102,7 +121,7 @@ const ImportStudents = () => {
           setExcelData(sheetData.slice(1));
           setSelectedFile(file);
           setError("");
-          setMapping(initialMapping); // Reset mapping on new file
+          setMapping(initialMapping);
         } else {
           setError("No data found in the file.");
         }
@@ -118,33 +137,61 @@ const ImportStudents = () => {
   };
 
   const handleMapData = () => {
-    const mapped = excelData.map((row) => {
-      const studentEntry: Partial<StudentData> = {};
-      Object.entries(mapping).forEach(([field, column]) => {
-        const fieldKey = field as keyof StudentData;
-        const colIndex = excelHeaders.indexOf(column);
-        if (column && colIndex !== -1 && row[colIndex] !== undefined) {
-          studentEntry[fieldKey] = String(row[colIndex]).trim();
-        }
-      });
-      return studentEntry;
-    }).filter((entry) => Object.keys(entry).length > 0);
+    const mapped = excelData
+      .map((row) => {
+        const studentEntry: Partial<StudentData> = {};
+  
+        Object.entries(mapping).forEach(([field, column]) => {
+          const fieldKey = field as keyof StudentData;
+          const colIndex = excelHeaders.indexOf(column);
+          if (column && colIndex !== -1 && row[colIndex] !== undefined) {
+            let value: any = row[colIndex];
+  
+            // ✅ Convert date_of_birth to YYYY-MM-DD
+            if (fieldKey === "date_of_birth") {
+              const parsedDate = new Date(value);
+              if (!isNaN(parsedDate.getTime())) {
+                value = parsedDate.toISOString().split("T")[0]; // Convert to YYYY-MM-DD
+              } else {
+                console.warn(`Invalid Date: ${value}`);
+                value = ""; // Set empty or handle error case
+              }
+            }
+  
+            // ✅ Convert roll_no to number
+            if (fieldKey === "roll_no") {
+              value = Number(value);
+              if (isNaN(value)) value = 0; // Fallback for invalid numbers
+            }
+  
+            // ✅ Assign the value only if it's not undefined
+            (studentEntry as any)[fieldKey] = value;
+          }
+        });
+  
+        return studentEntry;
+      })
+      .filter((entry) => Object.keys(entry).length > 0);
+  
     setMappedData(mapped);
-    console.log(mapped)
+    console.log(mapped);
     setSuccessMessage(`Successfully mapped ${mapped.length} records.`);
   };
+  
+  
 
   const handleImportData = () => {
     if (mappedData.length === 0) {
       setError("No data to import.");
       return;
     }
-    // mappedData.forEach((record) => {
-      mutate(
-        { resource: "student/bulk-create", values: mappedData },
-        { onSuccess: () => setSuccessMessage("Data imported successfully!"), onError: () => setError("Import failed.") }
-      );
-    // });
+    mutate(
+      { resource: "student/bulk-create", values: mappedData },
+      {
+        onSuccess: () => setSuccessMessage("Data imported successfully!"),
+        onError: () => setError("Import failed."),
+      }
+    );
   };
 
   return (
@@ -161,7 +208,9 @@ const ImportStudents = () => {
         {selectedFile ? (
           <div className="flex flex-col items-center">
             <p className="text-green-600 font-medium mt-2">{selectedFile.name} uploaded!</p>
-            <button onClick={() => setSelectedFile(null)} className="text-blue-500 text-sm mt-1">Change file</button>
+            <button onClick={() => setSelectedFile(null)} className="text-blue-500 text-sm mt-1">
+              Change file
+            </button>
           </div>
         ) : (
           <div className="flex flex-col items-center justify-center h-24">
