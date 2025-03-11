@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import isbn3 from 'isbn3';
 
 const allowedExtensions = [".xls", ".xlsx", ".csv"];
 
@@ -60,6 +61,16 @@ const Import_Books = () => {
   };
   const convertToProperType = (value: any, field: keyof BookData): any => {
     if (!value || value === "") return null;
+
+    if (field === 'isbn') {
+      const cleanedISBN = String(value).replace(/[-\s]/g, "");
+      const isbnData = isbn3.parse(cleanedISBN);
+
+      if (!isbnData || !isbnData.isValid) {
+        console.warn(`Invalid ISBN detected: ${value}`);
+        return null;
+      }
+    }
     if (
       ["no_of_pages", "no_of_preliminary_pages", "inventory_number", "accession_number", "bill_no"].includes(field)
     ) {
@@ -90,8 +101,6 @@ const Import_Books = () => {
     return String(value);
   };
 
-
-
   const handleImport = () => {
     if (!Object.values(mapping).every((v) => v) || data.length === 0) {
       toast.error("Ensure all fields are mapped and data is available.");
@@ -103,17 +112,22 @@ const Import_Books = () => {
         const index = headers.indexOf(column);
         if (index !== -1) entry[field as keyof BookData] = convertToProperType(row[index], field as keyof BookData);
       });
+      if (!entry.isbn) {
+        toast.error(`Removing row due to invalid ISBN of Book Name ${entry.book_title}`)
+        console.log("Removing row due to invalid ISBN:", entry.book_title)
+        return null
+      }
       return { ...entry, institute_id: "828f0d33-258f-4a92-a235-9c1b30d8882b" };
-    });
+    }).filter((row) => row !== null)
     console.log(mappedData);
     mutate(
       { resource: "book/create", values: mappedData },
       {
         onSuccess: () => toast.success("Import successful."),
-          onError:() => {
-            toast.error("Import failed.")
-            router.push("/book-pages/all-books");
-           }
+        onError: () => {
+          toast.error("Import failed.")
+          // router.push("/book-pages/all-books");
+        }
       }
     );
   };
@@ -170,9 +184,9 @@ const Import_Books = () => {
                 Import Data</Button>
 
               <Link href={"/book-pages/all-books"}>
-              <Button>
-                Cancel 
-              </Button>
+                <Button>
+                  Cancel
+                </Button>
               </Link>
             </div>
           </>

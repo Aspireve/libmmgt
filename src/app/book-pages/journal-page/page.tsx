@@ -1,7 +1,7 @@
 'use client';
 import React, { useState } from 'react';
 import { useDelete, useList, useInvalidate } from '@refinedev/core';
-import { bookRoutes, BookData } from '../types/data';
+import { bookRoutes, JournalData } from '../types/data';
 
 import { ColumnDef } from '@tanstack/react-table';
 import { Button } from '@/components/ui/button';
@@ -21,7 +21,7 @@ const JournalPage = () => {
 
     const [url, setUrl] = useState("all")
     const [title,setTitle] = useState("Journal")
-    const { data } = useList<BookData>({ resource: `book/${url}` });
+    const { data } = useList<JournalData>({ resource: `book/${url}` });
     const { mutate } = useDelete()
     const invalidate = useInvalidate();
     const router = useRouter();
@@ -30,8 +30,8 @@ const JournalPage = () => {
     const [selectedBookId, setSelectedBookId] = useState<string | null>(null);
   
   
-    const handleEdit = (book: BookData) => {
-      router.push(`/book-pages/edit-book?book_uuid=${book.book_uuid}`);
+    const handleEdit = (journal: JournalData) => {
+      router.push(`/book-pages/edit-journal?journal_id=${journal.journal_id}`);
     };
   
     const handleDeleteClick = (bookId: string) => {
@@ -62,15 +62,19 @@ const JournalPage = () => {
       setSelectedBookId(null);
     };
    
-    const columns: ColumnDef<BookData>[] = [
-      { accessorKey: 'book_uuid', header: 'Sr no' },
-      { accessorKey: 'book_title', header: 'Name of Book' },
-      { accessorKey: 'book_author', header: 'Name of Author', },
+    const columns: ColumnDef<JournalData>[] = [
+      { accessorKey: 'journal_id', header: 'Sr no' },
+      { accessorKey: 'name_of_journal', header: 'Name' },
+      { accessorKey: 'editor_name', header: 'Name of Editor', },
       { accessorKey: 'name_of_publisher', header: 'Book Publisher' },
-      { accessorKey: 'total_count', header: 'Book Count' },
+      { accessorKey: 'total_count', header: 'Total Count' },
       {
-        accessorKey: 'year_of_publication', header: 'Year of Publication',
-        cell: ({ row }) => <span>{formatDate(row.original.year_of_publication)}</span>
+        accessorKey: 'subscription_start_date', header: 'Start Date',
+        cell: ({ row }) => <span>{formatDate(row.original.subscription_start_date)}</span>
+      },
+      {
+        accessorKey: 'subscription_end_date', header: 'End Date',
+        cell: ({ row }) => <span>{formatDate(row.original.subscription_end_date)}</span>
       },
       {accessorKey:"status", header:"Status"},
       {
@@ -80,7 +84,7 @@ const JournalPage = () => {
             <Button variant="ghost" size="icon" onClick={() => handleEdit(row.original)}>
               <Image src={images.edit} alt='Edit button' />
             </Button>
-            <Button variant="ghost" size="icon" onClick={() => handleDeleteClick(row.original.book_uuid)}>
+            <Button variant="ghost" size="icon" onClick={() => handleDeleteClick(row.original.journal_id)}>
               <Image src={images.delete} alt='Delete button' />
             </Button>
           </div>

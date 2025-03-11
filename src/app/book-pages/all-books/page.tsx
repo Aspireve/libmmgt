@@ -1,6 +1,6 @@
 'use client';
 import React, { useState } from 'react';
-import { useDelete, useList, useInvalidate } from '@refinedev/core';
+import { useDelete, useList, useInvalidate, useDeleteMany } from '@refinedev/core';
 import { bookRoutes, BookData } from '../types/data';
 
 import { ColumnDef } from '@tanstack/react-table';
@@ -19,16 +19,19 @@ import { formatDate } from '../hooks/formatDate'
 
 const BooksPage = () => {
   const [url, setUrl] = useState("all")
-  const [title,setTitle] = useState("Books")
-  const { data } = useList<BookData>({ resource: `book/${url}` });
+  const [title, setTitle] = useState("Books")
   const { mutate } = useDelete()
+  const {mutateAsync} = useDeleteMany()
   const invalidate = useInvalidate();
   const router = useRouter();
+  const [DeleteIds, setDeleteIds] = useState<string[]>([])
+  const [isshowDeleteButton, setIsShowDeleteButton] = useState(false)
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isFilterOpen,setIsFilterOpen] = useState(false)
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [isDepartementOpen, setIsDepartmentOpen] = useState(false)
   const [selectedBookId, setSelectedBookId] = useState<string | null>(null);
 
-  
+  const { data, isLoading } = useList<BookData>({ resource: `book/${url}`});
 
   const handleEdit = (book: BookData) => {
     router.push(`/book-pages/edit-book?book_uuid=${book.book_uuid}`);
@@ -39,6 +42,32 @@ const BooksPage = () => {
     setIsModalOpen(true);
   };
 
+
+  const handleChangeDelete = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value =e.target.value
+    setIsShowDeleteButton(true);
+    setDeleteIds((prevIds) => {
+      if (prevIds.includes(value)) {
+        return prevIds.filter((id) => id !== value);
+      } else {
+        return [...prevIds, value];
+      }
+    });
+  };
+  const handleMultipleDelete = async () =>{
+    try {
+      const response = await mutateAsync({
+        resource: "books/deleteMany",
+        ids: DeleteIds,
+      });
+  
+      console.log("Deleted successfully:", response);
+      toast.success("Selected records deleted successfully!");
+    } catch (error) {
+      console.error("DeleteMany Error:",error);
+      toast.error("Failed to delete selected items.");
+    }
+  }
   const confirmDelete = () => {
     if (selectedBookId) {
       mutate({
@@ -61,27 +90,40 @@ const BooksPage = () => {
     setIsModalOpen(false);
     setSelectedBookId(null);
   };
- 
+
   const columns: ColumnDef<BookData>[] = [
+    { id:'action', header:" ",cell:({row})=>{
+      const book = row.original
+      return(
+        <Input 
+        type='checkbox' 
+        checked={DeleteIds.includes(book.book_uuid)}
+        value={book.book_uuid} 
+        onChange={handleChangeDelete}/>
+      )
+    }
+
+    },
     { accessorKey: 'book_uuid', header: 'Book ID' },
-    { accessorKey: 'book_title', header: 'Book Name',
-      cell:({row}) =>{
-        const book = row.original 
-        return(
-      <div
-        className="relative group cursor-pointer"
-        onClick={() => router.push(`/book-pages/book-details?name=${book.book_uuid}`
-        )}
-      >
-        {book.book_title}
-        <div className="absolute left-1/2 transform -translate-x-1/2 bottom-full mb-2 hidden group-hover:flex items-center justify-center bg-gray-800 text-white text-xs rounded-lg px-3 py-1 shadow-md whitespace-nowrap
+    {
+      accessorKey: 'book_title', header: 'Book Name',
+      cell: ({ row }) => {
+        const book = row.original
+        return (
+          <div
+            className="relative group cursor-pointer"
+            onClick={() => router.push(`/book-pages/book-details?name=${book.book_uuid}`
+            )}
+          >
+            {book.book_title}
+            <div className="absolute left-1/2 transform -translate-x-1/2 bottom-full mb-2 hidden group-hover:flex items-center justify-center bg-gray-800 text-white text-xs rounded-lg px-3 py-1 shadow-md whitespace-nowrap
         after:content-[''] after:absolute after:top-full after:left-1/2 after:-translate-x-1/2 after:border-4 after:border-transparent after:border-t-gray-800">
-        Book Details
-        </div>
-      </div>
+              Book Details
+            </div>
+          </div>
         )
       }
-     },
+    },
     { accessorKey: 'book_author', header: 'Book Author', },
     { accessorKey: 'name_of_publisher', header: 'Book Publisher' },
     { accessorKey: 'total_count', header: 'Book Count' },
@@ -89,12 +131,12 @@ const BooksPage = () => {
       accessorKey: 'year_of_publication', header: 'Year of Publication',
       cell: ({ row }) => <span>{formatDate(row.original.year_of_publication)}</span>
     },
-    { accessorKey:"status", header:"Status" },
+    { accessorKey: "status", header: "Status" },
     {
       id: 'actions', header: '',
       cell: ({ row }) => (
         <div className="flex gap-2">
-          <Button variant="ghost" size="icon" onClick={() => handleEdit(row.original  )}>
+          <Button variant="ghost" size="icon" onClick={() => handleEdit(row.original)}>
             <Image src={images.edit} alt='Edit button' />
           </Button>
           <Button variant="ghost" size="icon" onClick={() => handleDeleteClick(row.original.book_uuid)}>
@@ -118,6 +160,45 @@ const BooksPage = () => {
               <p className='bg-[#F9F5FF] rounded-2xl text-[#6941C6] p-1'>{data?.data.length || 0}<span> Entries</span></p>
             </div>
             <div className="flex items-center justify-end py-4 gap-3">
+            {isshowDeleteButton && (
+                  <Button
+                  onClick={handleMultipleDelete}
+                  className="bg-red-600 text-white rounded-[8px] px-4 py-2 hover:bg-red-700 hover:text-white">
+                  Delete
+                </Button>
+                )}
+              <div className="relative">
+                <Button
+                  className="bg-[#1E40AF] text-white rounded-[8px] px-4 py-2 hover:bg-[#1E40AF] hover:text-white"
+                  onClick={() => setIsDepartmentOpen(!isDepartementOpen)}
+                >
+                  Department
+                </Button>
+                {isDepartementOpen && (
+                  <div className="absolute right-0 mt-2 w-64 bg-white border border-gray-200 rounded shadow-lg p-4 z-10">
+                    <div className="mb-4">
+                      <label className="block text-sm font-medium mb-1">
+                        Department
+                      </label>
+                      <select className="w-full border border-gray-300 rounded px-2 py-1">
+                        {/* <option value="">All</option>
+                        {availableDepartments.map((dept) => (
+                          <option key={dept} value={dept}>
+                            {dept}
+                          </option>
+                        ))} */}
+                      </select>
+                    </div>
+                    <Button
+
+                      className="w-full bg-[#1E40AF] text-white hover:bg-blue-950"
+                    >
+                      Apply Filters
+                    </Button>
+                  </div>
+                )}
+
+              </div>
               <Link href={"/book-pages/import-book"}>
                 <Button
                   className="shadow-none border border-[#1E40AF] text-[#1E40AF] rounded-[10px]">
@@ -142,20 +223,20 @@ const BooksPage = () => {
                 {isFilterOpen && (
                   <div className="absolute right-0 mt-2 w-64 bg-white border border-gray-200 rounded shadow-lg z-10">
                     <div className=" flex flex-col items-center gap-2 py-2 text-gray-700">
-                    <Button 
-                      onClick={()=>{setUrl("all"); setTitle("Books")}}
-                      className="text-[#000] justify-start border border-[#fff]  cursor-pointer shadow-none w-[70%]"
+                      <Button
+                        onClick={() => { setUrl("all"); setTitle("Books"); setIsFilterOpen(false) }}
+                        className="text-[#000] justify-start border border-[#fff]  cursor-pointer shadow-none w-[70%]"
                       >Books
                       </Button>
-                      <Button 
-                      onClick={()=>{setUrl("available"); setTitle("Available Books")}}
-                      className="text-[#000] justify-start border border-[#fff]  cursor-pointer shadow-none w-[70%]"
+                      <Button
+                        onClick={() => { setUrl("available"); setTitle("Available Books"); setIsFilterOpen(false) }}
+                        className="text-[#000] justify-start border border-[#fff]  cursor-pointer shadow-none w-[70%]"
                       >Available Books
                       </Button>
                       <Button
-                      onClick={()=>{setUrl("issued"); setTitle("Issued Books")}}
-                      className="text-[#000] justify-start border border-[#fff]  cursor-pointer shadow-none w-[70%]">
-                      Issued Books
+                        onClick={() => { setUrl("unavailable"); setTitle("Issued Books"); setIsFilterOpen(false) }}
+                        className="text-[#000] justify-start border border-[#fff]  cursor-pointer shadow-none w-[70%]">
+                        Issued Books
                       </Button>
                     </div>
                   </div>
@@ -178,7 +259,7 @@ const BooksPage = () => {
               </Button>
             </div>
           </div>
-          <DataTable columns={columns} data={data?.data || []} />
+          <DataTable columns={columns} data={data?.data || []} isLoading={isLoading} />
         </div>
       </section>
       {isModalOpen && (

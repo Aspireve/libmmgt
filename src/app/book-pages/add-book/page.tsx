@@ -7,58 +7,93 @@ import { Label } from '@/components/ui/label';
 import { useForm } from "@refinedev/react-hook-form";
 import { useCreate, useOne } from '@refinedev/core';
 import { useRouter } from 'next/navigation';
-import { bibliographic, cataloging, acquisition, inventory } from './data'
 import { toast } from 'sonner';
 import Header from '@/app/Header/header';
 import Tabbing from '@/app/Tab/Tab';
 import { addbookRoutes, BookData } from '../types/data';
 import Link from 'next/link';
-
+import { Skeleton } from '@/components/ui/skeleton';
+import isbn3 from 'isbn3';
+import { inputFields } from '../types/inputFields-title';
 
 const AddBook = () => {
   const router = useRouter();
   const [isbn, setIsbn] = useState("");
   const [isReadOnly, setIsReadOnly] = useState(false);
   const [isDisabled, setIsDisabled] = useState(true)
+  const [isLoading, setIsLoading] = useState(false);
   const { mutate } = useCreate();
-  
+  const [isLoadingInput, setIsLoadingInput] = useState(false)
+
   const { data: bookData, refetch } = useOne<BookData>({
-    resource: "book/search",
+    resource: "book_v2/isbn",
     id: `isbn=${isbn}`,
     queryOptions: {
-      retry:1,
-        enabled: false,
+      retry: 1,
+      enabled: false,
     }
   });
-
   const {
     register,
     handleSubmit,
     setValue,
     formState: { errors }
   } = useForm();
-  
+
   useEffect(() => {
-    if (isbn.length === 10) {
-      refetch();
-        if (bookData?.data) {
-          setIsReadOnly(true)
-          Object.keys(bookData.data).forEach((key) => {
-            let value = bookData.data[key as keyof BookData];
+    if (isbn.length === 10 || isbn.length === 13 || isbn.length === 17) {
+      const sortedIsbn = isbn.replace(/-/g, "").toUpperCase();
+      const parsedISBN = isbn3.parse(sortedIsbn);
+
+      console.log("Start fetching ISBN:", sortedIsbn);
+
+      if (!parsedISBN) {
+        toast.error("Invalid ISBN format. Please enter a valid ISBN-10 or ISBN-13.");
+        return;
+      }
+
+      setIsLoadingInput(true);
+
+      const fetchData = async () => {
+        try {
+          const resource = await refetch();
+          console.log("Full API Response:", resource);
+
+          const isbnResp = resource?.data?.data;
+          console.log("Extracted Book Data:", isbnResp);
+
+
+          if (!isbnResp || typeof isbnResp !== "object" || Object.keys(isbnResp).length === 0) {
+            console.error("API Error: No data returned (Potential 404)");
+            toast.error("No book found for this ISBN.");
+            setIsDisabled(false);
+            return;
+          }
+          setIsReadOnly(true);
+          Object.keys(isbnResp).forEach((key) => {
+            let value = isbnResp[key as keyof BookData];
             if (key === "year_of_publication" || key === "date_of_acquisition") {
               value = value ? new Date(value).toISOString().split("T")[0] : "";
             }
             setValue(key as keyof BookData, value as never);
           });
-          toast.success("Book data mapped successfully!");
-          setIsReadOnly(true)
-        } else{
-          setIsDisabled(false);
-        }
-      }
-  }, [bookData, setValue,isbn]);
 
-  
+          toast.success("Book data mapped successfully!");
+        } catch (error) {
+          setIsReadOnly(false);
+          setIsDisabled(false);
+          toast.error("No ISBN is found.");
+          console.error("Network/Fetch Error:", error);
+          toast.error("Failed to fetch book data. Please check your internet connection.");
+        } finally {
+          setIsLoadingInput(false);
+        }
+      };
+
+      fetchData();
+    }
+  }, [isbn, refetch, setValue]);
+
   const onSubmit = (data: any) => {
     const formatDate = (dateString: string | undefined) => {
       if (!dateString) return null;
@@ -83,10 +118,38 @@ const AddBook = () => {
           toast.success("Book added successfully!")
           router.push("/book-pages/all-books")
         },
-        onError: (error) => toast.error("Error adding book"),
+        onError: () => toast.error("Error adding book"),
       }
     );
   };
+
+
+  const FormSection = ({ title, fields }: { title: string; fields: any[] }) => (
+    <div>
+      <h2>{title}</h2>
+      <div className="grid grid-cols-4 gap-4 p-4">
+        {fields.map((field) => (
+          <div key={field.name}>
+            <Label>{field.label}</Label>
+            {isLoadingInput ? (
+              <Skeleton className="h-4 w-[100%] animate-pulse bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 bg-[length:200%_100%]" />
+            ) : (
+              <Input
+                className="text-[#343232]"
+                type={field.type}
+                readOnly={isReadOnly}
+                disabled={isDisabled}
+                {...register(field.name, { required: field.required })}
+                placeholder={field.placeholder}
+                max={field.type === "date" ? new Date().toISOString().split("T")[0] : undefined}
+              />
+            )}
+            {errors[field.name] && <p className="text-red-500 text-sm">{[field.required]}</p>}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
   return (
     <>
       <Header />
@@ -113,101 +176,19 @@ const AddBook = () => {
             </div>
           </div>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-            {/* Bibliographic_info */}
-            <div>
-              <h2>Bibliographic Information</h2>
-              <div className="grid grid-cols-4 gap-4 p-4">
-                {bibliographic.map((field) => (
-                  <div key={field.name}>
-                    <Label>{field.label}</Label>
-                    <Input
-                      className='text-[#343232]'
-                      required
-                      type={field.type}
-                      readOnly={isReadOnly}
-                      disabled={isDisabled}
-                      {...register(field.name, { required: field.required })}
-                      placeholder={field.placeholder}
-                      max={field.type === "date" ? new Date().toISOString().split("T")[0] : undefined}
-                    />
-                    {errors[field.name] && <p className="text-red-500 text-sm">{[field.required]}</p>}
+            {inputFields.map((section) => (
+              <FormSection key={section.title} title={section.title} fields={section.fields} />
+            ))}
 
-                  </div>
-                ))}
-              </div>
-            </div>
-            {/* Cateloging */}
-            <div>
-              <h2>Cataloging and Classification</h2>
-              <div className='grid grid-cols-4 gap-4 p-4'>
-                {cataloging.map((field) => (
-                  <div key={field.name}>
-                    <Label>{field.label}</Label>
-                    <Input
-                      className='text-[#343232]'
-                      type={field.type}
-                      readOnly={isReadOnly}
-                      disabled={isDisabled}
-                      {...register(field.name, { required: field.required })}
-                      placeholder={field.placeholder}
-                      max={field.type === "date" ? new Date().toISOString().split("T")[0] : undefined}
-                    />
-                    {errors[field.name] && <p className="text-red-500 text-sm">{[field.required]}</p>}
-                  </div>
-                ))}
-              </div>
-            </div>
-            {/* Acquisition */}
-            <div>
-              <h2>Acquisition Details</h2>
-
-              <div className='grid grid-cols-4 gap-4 p-4'>
-                {acquisition.map((field) => (
-                  <div key={field.name}>
-                    <Label>{field.label}</Label>
-                    <Input
-                      className='text-[#343232]'
-                      type={field.type}
-                      readOnly={isReadOnly}
-                      disabled={isDisabled}
-                      {...register(field.name, { required: field.required })}
-                      placeholder={field.placeholder}
-                      max={field.type === "date" ? new Date().toISOString().split("T")[0] : undefined}
-                    />
-                    {errors[field.name] && <p className="text-red-500 text-sm">{[field.required]}</p>}
-                  </div>
-                ))}
-              </div>
-            </div>
-            {/* Inventory */}
-            <div>
-              <h2>Inventory and Identification</h2>
-              <div className='grid grid-cols-4 gap-4 p-4'>
-                {inventory.map((field) => (
-                  <div key={field.name}>
-                    <Label>{field.label}</Label>
-                    <Input
-                      className='text-[#343232]'
-                      type={field.type}
-                      readOnly={isReadOnly}
-                      disabled={isDisabled}
-                      {...register(field.name, { required: field.required })}
-                      placeholder={field.placeholder}
-                      max={field.type === "date" ? new Date().toISOString().split("T")[0] : undefined}
-                    />
-                    {errors[field.name] && <p className="text-red-500 text-sm">{[field.required]}</p>}
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div className='flex justify-center'>
+            <div className="flex justify-center">
               <Link href={"/book-pages/all-books"}>
                 <Button>Cancel</Button>
               </Link>
-              <Button type='submit'
-                className='shadow-none border border-[#1E40AF] text-white bg-[#1E40AF] rounded-[10px] hover:bg-[#1E40AF]'>Add Book</Button>
+              <Button type="submit" className="shadow-none border border-[#1E40AF] text-white bg-[#1E40AF] rounded-[10px] hover:bg-[#1E40AF]">
+                Add Book
+              </Button>
             </div>
-          </form>
+          </form>;
         </div>
       </section>
     </>

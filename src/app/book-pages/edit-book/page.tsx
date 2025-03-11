@@ -1,24 +1,49 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "@refinedev/react-hook-form";
 import { useOne, useUpdate } from "@refinedev/core";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { bibliographic, cataloging, acquisition, inventory } from "../add-book/data";
 import { toast } from 'sonner';
 import Header from "@/app/Header/header";
 import Link from "next/link";
 import { BookData } from "../types/data";
-
+import { Skeleton } from "@/components/ui/skeleton";
+import { inputFields } from "../types/inputFields-title";
 
 const EditBook = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const book_uuid = searchParams.get("book_uuid");
+  const [isLoadingInput, setIsLoadingInput] = useState(true)
 
+   const FormSection = ({ title, fields }: { title: string; fields: any[] }) => (
+      <div>
+        <h2>{title}</h2>
+        <div className="grid grid-cols-4 gap-4 p-4">
+          {fields.map((field) => (
+            <div key={field.name}>
+              <Label>{field.label}</Label>
+              {isLoadingInput ? (
+                <Skeleton className="h-4 w-[100%] animate-pulse bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 bg-[length:200%_100%]" />
+              ) : (
+                <Input
+                  className="text-[#343232]"
+                  type={field.type}
+                  {...register(field.name, { required: field.required })}
+                  placeholder={field.placeholder}
+                  max={field.type === "date" ? new Date().toISOString().split("T")[0] : undefined}
+                />
+              )}
+              {errors[field.name] && <p className="text-red-500 text-sm">{[field.required]}</p>}
+            </div>
+          ))}
+        </div>
+      </div>
+    );
   const { data: bookData, isLoading } = useOne<BookData>({
     resource: "book/search",
     id: `book_uuid=${book_uuid}` || ""
@@ -30,10 +55,10 @@ const EditBook = () => {
     register,
     handleSubmit,
     setValue,
-    formState:{errors}
+    formState: { errors }
   } = useForm<BookData>();
 
-  const UpdateFeilds  = ()=> {
+  const UpdateFields = () => {
     if (bookData?.data) {
       Object.keys(bookData.data).forEach((key) => {
         let value = bookData.data[key as keyof BookData];
@@ -41,12 +66,13 @@ const EditBook = () => {
           value = value ? new Date(value).toISOString().split("T")[0] : "";
         }
         setValue(key as keyof BookData, value as never);
+        setIsLoadingInput(false)
       });
     }
   }
 
   useEffect(() => {
-    UpdateFeilds();
+    UpdateFields();
   }, [bookData, setValue]);
 
   const onSubmit = (data: any) => {
@@ -73,10 +99,10 @@ const EditBook = () => {
       },
       {
         onSuccess: () => {
-          toast.success("Book Updated successfully!",{position:'top-left'})
+          toast.success("Book Updated successfully!", { position: 'top-left' })
           router.push("/book-pages/all-books");
         },
-        onError: (error) => toast.error("Something went wrong, Please try again")
+        onError: () => toast.error("Something went wrong, Please try again")
 
       }
     );
@@ -87,102 +113,30 @@ const EditBook = () => {
       <Header />
       <section className="p-10">
         <div className="container">
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-              {/* Bibliographic Information */}
-              <div>
-                <h2 className="text-xl font-semibold">Bibliographic Information</h2>
-                <div className="grid grid-cols-4 gap-4 p-4">
-                  {bibliographic.map((field) => (
-                    <div key={field.name}>
-                      <Label>{field.label}</Label>
-                      <Input 
-                      className='text-[#343232]'
-                        type={field.type}
-                        {...register(field.name)}
-                        placeholder={field.placeholder}
-                      />
-                       {errors[field.name] && <p className="text-red-500 text-sm">{[field.required]}</p>}
-                    </div>
-                  ))}
-                </div>
-              </div>
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+            {inputFields.map((section)=>(
+                  <FormSection key={section.title} title={section.title} fields={section.fields} />
+            ))}
 
-              {/* Cataloging Information */}
-              <div>
-                <h2 className="text-xl font-semibold">Cataloging and Classification</h2>
-                <div className="grid grid-cols-4 gap-4 p-4">
-                  {cataloging.map((field) => (
-                    <div key={field.name}>
-                      <Label>{field.label}</Label>
-                      <Input
-                      className='text-[#343232]'
-                        type={field.type}
-                        {...register(field.name)}
-                        placeholder={field.placeholder}
-                      />
-                       {errors[field.name] && <p className="text-red-500 text-sm">{[field.required]}</p>}
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Acquisition Details */}
-              <div>
-                <h2 className="text-xl font-semibold">Acquisition Details</h2>
-                <div className="grid grid-cols-4 gap-4 p-4">
-                  {acquisition.map((field) => (
-                    <div key={field.name}>
-                      <Label>{field.label}</Label>
-                      <Input
-                      className='text-[#343232]'
-                        type={field.type}
-                        {...register(field.name)}
-                        placeholder={field.placeholder}
-                      />
-                       {errors[field.name] && <p className="text-red-500 text-sm">{[field.required]}</p>}
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Inventory Details */}
-              <div>
-                <h2 className="text-xl font-semibold">Inventory and Identification</h2>
-                <div className="grid grid-cols-4 gap-4 p-4">
-                  {inventory.map((field) => (
-                    <div key={field.name}>
-                      <Label>{field.label}</Label>
-                      <Input
-                      className='text-[#343232]'
-                        type={field.type}
-                        {...register(field.name)}
-                        placeholder={field.placeholder}
-                      />
-                       {errors[field.name] && <p className="text-red-500 text-sm">{[field.required]}</p>}
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Action Buttons */}
-              <div className="flex justify-center gap-4">
-                <Link href="/book-pages/all-books">
+            {/* Action Buttons */}
+            <div className="flex justify-center gap-4">
+              <Link href="/book-pages/all-books">
                 <Button
                   className="border-none text-gray-600 rounded-md px-6 py-2"
                 >
-                Cancel
+                  Cancel
                 </Button>
-                </Link>
+              </Link>
 
-                <Button
-                  type="submit"
-                  className="bg-blue-600 text-white px-6 py-2 hover:bg-blue-600"
-                  disabled={isUpdating}
-                >
-                  {isUpdating ? "Updating..." : "Update Book"}
-                </Button>
-              </div>
-            </form>
+              <Button
+                type="submit"
+                className="bg-blue-600 text-white px-6 py-2 hover:bg-blue-600"
+                disabled={isUpdating}
+              >
+                {isUpdating ? "Updating..." : "Update Book"}
+              </Button>
+            </div>
+          </form>
         </div>
       </section>
     </>

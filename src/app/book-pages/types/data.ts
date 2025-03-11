@@ -27,6 +27,34 @@ export interface BookData {
     // is_archived:Boolean;
   }
 
+  export interface JournalData{
+    journal_id:string;
+    name_of_journal:string;
+    name_of_publisher:string;
+    place_of_publisher:string;
+    editor_name:string;
+    year_of_publication:string; //frontend
+    language:string; //frontend
+    department:string; //frontend
+    subscription_price:number;
+    subscription_start_date:string;
+    subscription_end_date:string;
+    volume_number:number;
+    issue_number:number;
+    is_archived:boolean; //frontend
+    total_count:number; //frontend
+    available_count:number; //frontend
+    frequency:number;
+    item_type:string;
+    issn:string;
+    call_number:string;
+    created_at:string; //frontend
+    updated_at:string; //frontend
+    vendor_name:string;
+    library_name:string;
+    acquistion_date:string; //frontend
+  }
+
     // Routes 
   export const bookRoutes = [
     { key: "all-books", label: "All Books", path: "/book-pages/all-books" },
@@ -43,90 +71,3 @@ export const bookdetailsRoutes = [
   { key: "book-borrowed", label: "Book Borrowed By", path: "/book-pages/book-borrowed" },
   { key: "book-activites", label: "Book Activites", path: "/book-pages/book-activites" }, 
 ]
-  
-// Dummy Data 
-export const dummyBooks: BookData[] = [
-  {
-    book_uuid: "B001",
-    book_title: "The Art of Programming",
-    book_author: "Donald Knuth",
-    available_count:3,
-    name_of_publisher: "Addison-Wesley",
-    place_of_publication: "USA",
-    year_of_publication: "1968",
-    language: "English",
-    edition: "3rd",
-    isbn: "978-0201896831",
-    no_of_pages: 672,
-    no_of_preliminary_pages: 12,
-    subject: "Computer Science",
-    department: "Engineering",
-    call_number: "QA76.6.K64",
-    author_mark: "KN",
-    source_of_acquisition: "Library Fund",
-    date_of_acquisition: "2023-01-15",
-    inventory_number: 1001,
-    accession_number: 5001,
-    barcode: "1234567890123",
-    item_type: "Hardcover",
-    bill_no: 202301,
-    institute_uuid: "INS-12345",
-    total_count:3
-
-  },
-  {
-    book_uuid: "B002",
-    book_title: "Introduction to Algorithms",
-    book_author: "Cormen, Leiserson, Rivest, Stein",
-    available_count:3,
-    name_of_publisher: "MIT Press",
-    place_of_publication: "Cambridge, MA",
-    year_of_publication: "2009",
-    language: "English",
-    edition: "3rd",
-    isbn: "978-0262033848",
-    no_of_pages: 1312,
-    no_of_preliminary_pages: 20,
-    subject: "Algorithms",
-    department: "Computer Science",
-    call_number: "QA76.6.C66",
-    author_mark: "CLRS",
-    source_of_acquisition: "University Grant",
-    date_of_acquisition: "2023-05-10",
-    inventory_number: 1002,
-    accession_number: 5002,
-    barcode: "9876543210987",
-    item_type: "Paperback",
-    bill_no: 202302,
-    institute_uuid: "INS-12345",
-    total_count:3
-
-  },
-  {
-    book_uuid: "B003",
-    book_title: "Clean Code",
-    book_author: "Robert C. Martin",
-    available_count:3,
-    name_of_publisher: "Prentice Hall",
-    place_of_publication: "New Jersey",
-    year_of_publication: "2008",
-    language: "English",
-    edition: "1st",
-    isbn: "978-0132350884",
-    no_of_pages: 464,
-    no_of_preliminary_pages: 8,
-    subject: "Software Engineering",
-    department: "IT",
-    call_number: "QA76.76.M34",
-    author_mark: "RCM",
-    source_of_acquisition: "Donation",
-    date_of_acquisition: "2023-07-22",
-    inventory_number: 1003,
-    accession_number: 5003,
-    barcode: "4567890123456",
-    item_type: "Hardcover",
-    bill_no: 202303,
-    institute_uuid: "INS-12345",
-    total_count:3
-  }
-];

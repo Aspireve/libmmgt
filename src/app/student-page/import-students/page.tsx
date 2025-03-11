@@ -139,12 +139,12 @@ const ImportStudents = () => {
       setError("No data to import.");
       return;
     }
-    mappedData.forEach((record) => {
+    // mappedData.forEach((record) => {
       mutate(
-        { resource: "student/create", values: { ...record } },
+        { resource: "student/bulk-create", values: mappedData },
         { onSuccess: () => setSuccessMessage("Data imported successfully!"), onError: () => setError("Import failed.") }
       );
-    });
+    // });
   };
 
   return (

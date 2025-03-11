@@ -9,7 +9,7 @@ const customFetch = async (url: string, options: RequestInit) => {
   const fullUrl = url.startsWith('https')
     ? url
     : `https://lms-807p.onrender.com${url.startsWith('/') ? url : `/${url}`}`;
-  console.log("Fetching URL:", fullUrl);
+
 
   return fetch(fullUrl, {
       ...options,
@@ -27,7 +27,6 @@ export const fetchWrapper = async (url: string, options: RequestInit) => {
       // If resource is not found, return a fallback (empty data) instead of throwing an error
       if (!response.ok) {
           if (response.status === 404) {
-              console.warn(`Resource not found at ${url} - returning fallback data.`);
               // Return an empty object or any other fallback structure your app expects
               return {};
           }
@@ -44,7 +43,6 @@ export const fetchWrapper = async (url: string, options: RequestInit) => {
 
       return response;
   } catch (error) {
-      console.error("Fetch Error:", error);
       throw error;
   }
 };
