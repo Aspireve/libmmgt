@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useList, useDelete } from "@refinedev/core";
+import { useDeleteMany } from "@refinedev/core";
 import Header from "../Header/header";
 import { DataTable } from "@/components/data-tables/data-table";
 import {
@@ -34,6 +35,8 @@ const StudentDirectory = () => {
   // State for delete confirmation modal
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [studentToDelete, setStudentToDelete] = useState<string | null>(null);
+
+  const [selectedStudents, setSelectedStudents] = useState<string[]>([]);
 
   // Fallback hardcoded data in case the API endpoints are not available
   const fallbackDepartments = ["Computer Science", "Mathematics", "Physics", "Chemistry"];
@@ -143,7 +146,56 @@ const StudentDirectory = () => {
       setShowConfirmModal(false);
       setStudentToDelete(null);
     },
-  });
+  }); 
+
+
+  const { mutate: bulkDeleteMutation } = useDeleteMany();
+
+  // Toggle row selection
+  const toggleStudentSelection = (uuid: string) => {
+    setSelectedStudents((prevSelected) =>
+      prevSelected.includes(uuid)
+        ? prevSelected.filter((id) => id !== uuid)
+        : [...prevSelected, uuid]
+    );
+  };
+
+  // Bulk delete handler
+  const handleBulkDelete = async () => {
+    console.log(selectedStudents);
+  
+    if (selectedStudents.length === 0) return;
+  
+    try {
+      const response = await fetch("https://lms-807p.onrender.com/student/bulk-delete", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(selectedStudents), // Sending `ids` in body
+      });
+  
+      if (!response.ok) {
+        throw new Error("Failed to delete students");
+      }
+  
+      toast.success("Students deleted successfully!", {
+        position: "top-center",
+      });
+  
+      setSelectedStudents([]);
+      queryClient.invalidateQueries({
+        queryKey: ["students", departmentFilter, yearFilter],
+      });
+  
+    } catch (error: any) {
+      toast.error(`Error deleting students: ${error.message}`, {
+        position: "top-center",
+      });
+    }
+  };
+  
+  
 
   // Client-side search filter on already retrieved data (optional)
   const filteredStudents = searchTerm.trim()
@@ -180,40 +232,56 @@ const StudentDirectory = () => {
   };
 
   // Update the columns to include action buttons.
-  const studentColumns = originalStudentColumns.map((col) => {
-    if (col.id === "actions") {
-      return {
-        ...col,
-        header: "",
-        cell: ({ row }: any) => {
-          const student: Student = row.original;
-          return (
-            <div className="flex gap-2 ml-10">
-              <button
-                onClick={() =>
-                  router.push(
-                    `/student-page/EditStudent?id=${student.student_uuid}&student=${encodeURIComponent(
-                      JSON.stringify(student)
-                    )}`
-                  )
-                }
-                aria-label="Edit student"
-              >
-                <img src={EditBtn.src} alt="Edit" />
-              </button>
-              <button
-                onClick={() => confirmDelete(student.student_uuid)}
-                aria-label="Delete student"
-              >
-                <img src={DeleteBtn.src} alt="Delete" />
-              </button>
-            </div>
-          );
-        },
-      };
-    }
-    return col;
-  });
+  const studentColumns = [
+    // Add a checkbox column for selecting students for bulk delete
+    {
+      id: "select",
+      header: "",
+      cell: ({ row }: any) => (
+        <input
+          type="checkbox"
+          checked={selectedStudents.includes(row.original.student_uuid)}
+          onChange={() => toggleStudentSelection(row.original.student_uuid)}
+        />
+      ),
+    },
+    // Map the original columns and update the actions column
+    ...originalStudentColumns.map((col) => {
+      if (col.id === "actions") {
+        return {
+          ...col,
+          header: "",
+          cell: ({ row }: any) => {
+            const student: Student = row.original;
+            return (
+              <div className="flex gap-2 ml-10">
+                <button
+                  onClick={() =>
+                    router.push(
+                      `/student-page/EditStudent?id=${student.student_uuid}&student=${encodeURIComponent(
+                        JSON.stringify(student)
+                      )}`
+                    )
+                  }
+                  aria-label="Edit student"
+                >
+                  <img src={EditBtn.src} alt="Edit" />
+                </button>
+                <button
+                  onClick={() => confirmDelete(student.student_uuid)}
+                  aria-label="Delete student"
+                >
+                  <img src={DeleteBtn.src} alt="Delete" />
+                </button>
+              </div>
+            );
+          },
+        };
+      }
+      return col;
+    }),
+  ];
+  
 
   // When Apply Filters is clicked, hide the dropdown.
   const handleFilterApply = () => {
@@ -238,6 +306,14 @@ const StudentDirectory = () => {
               </span>
             </div>
             <div className="flex items-center gap-4">
+              {selectedStudents.length > 0 && (
+                <Button
+                  className="bg-red-600 text-white hover:bg-red-900"
+                  onClick={handleBulkDelete}
+                >
+                  Delete All
+                </Button>
+              )}
               <Link href="/student-page/import-students">
                 <Button className="border border-[#1E40AF] rounded-[8px] text-[#1E40AF]">
                   <img src={importdrop.src} alt="Import" /> Import
@@ -327,7 +403,7 @@ const StudentDirectory = () => {
           />
         </div>
       </section>
-
+  
       {showConfirmModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white rounded-lg p-6 w-80">
@@ -351,6 +427,7 @@ const StudentDirectory = () => {
       )}
     </>
   );
+  
 };
 
 export default StudentDirectory;

@@ -1,5 +1,4 @@
-// src/store/authSlice.ts
-
+// src/redux/authSlice.ts
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface AuthState {
@@ -12,7 +11,7 @@ interface AuthState {
   email: string | null;
   phone: string | null;
   logo: string | null;
-  header: string | null;
+  header_image: string | null; 
 }
 
 const initialState: AuthState = {
@@ -25,7 +24,7 @@ const initialState: AuthState = {
   email: null,
   phone: null,
   logo: null,
-  header: null,
+  header_image: null, // ✅ Updated key
 };
 
 const authSlice = createSlice({

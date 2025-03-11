@@ -58,6 +58,18 @@ export const dataProvider: DataProvider = {
     },
 
 
+    deleteMany: async ({ resource, ids }) => {
+        const url = `${resource}/${ids}`; 
+        const response = await fetchWrapper(url, {
+            method: "DELETE",
+            body: JSON.stringify({ ids }), 
+        });
+        return {
+            data: response, 
+        };
+    },
+
+
     getApiUrl: () => API_URL,
     
    
