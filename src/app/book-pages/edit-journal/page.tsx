@@ -1,42 +1,61 @@
-import Header from '@/app/Header/header'
-import { Button } from '@/components/ui/button'
-import Link from 'next/link'
-import React, { useState } from 'react'
-import { inputJournalFields } from '../types/inputFields-title'
-import { Label } from '@/components/ui/label'
-import { Input } from '@/components/ui/input'
-import { Skeleton } from "@/components/ui/skeleton";
+"use client";
 
-import { JournalData } from '../types/data'
-import { useForm } from '@refinedev/react-hook-form'
-import { useOne, useUpdate } from '@refinedev/core'
-import { toast } from 'sonner'
-import { useSearchParams } from 'next/navigation'
+import React, { useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useForm } from "@refinedev/react-hook-form";
+import { useOne, useUpdate } from "@refinedev/core";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { toast } from 'sonner';
+import Header from "@/app/Header/header";
+import Link from "next/link";
+import { JournalData } from "../types/data";
+import { Skeleton } from "@/components/ui/skeleton";
+import { inputJournalFields } from "../types/inputFields-title";
 
 const EditJournal = () => {
     const [isLoadingInput, setIsLoadingInput] = useState(true)
-    const journal_id = useSearchParams().get("journal_id")
+    const searchParams = useSearchParams();
+    const journal_uuid = searchParams.get("journal_uuid")
+     const router = useRouter();
     
-    const { mutate, isLoading: isUpdating } = useUpdate();
-
-    const { data: journalData } = useOne<JournalData>({
-        resource:"book/search",
-        id:`journal_id=${journal_id}`
-    })
-    const {register,handleSubmit,setValue,formState: { errors }} = useForm<JournalData>();
-
-    // const UpdateFields = () =>{
-    //     if(journalData?.data){
-    //         Object.keys(journalData.data).forEach((key)=>{
-    //             let value = journalData.data[key as keyof JournalData];
-    //             if(key === 'subscription_start_date' || key === "subscription_end_date"){
-    //                 value = value ? new Date(value).toISOString.split("T")[0]:"",
-    //             }
-    //             setValue(key as keyof BookData, value as never);
-    //             setIsLoadingInput(false)
-    //         })
-    //     }
-    // }
+      
+      const { data: journalData, isLoading } = useOne<JournalData>({
+        resource: "journals/search",
+        id: `journal_uuid=${journal_uuid}` || ""
+      });
+    
+      const { mutate, isLoading: isUpdating } = useUpdate();
+    
+      const {
+        register,
+        handleSubmit,
+        setValue,
+        formState: { errors }
+      } = useForm<JournalData>();
+    
+      const UpdateFields = () => {
+        if (journalData?.data) {
+          Object.keys(journalData.data).forEach((key) => {
+            let value = journalData.data[key as keyof JournalData];
+            if (key === "subscription_end_date" || key === "subscription_start_date") {
+                if (typeof value === "string" || typeof value === "number") {
+                    const date = new Date(value);
+                    value = isNaN(date.getTime()) ? "" : date.toISOString().split("T")[0];
+                  } else {
+                    value = "";
+                  }
+            }
+            setValue(key as keyof JournalData, value as never);
+            setIsLoadingInput(false)
+          });
+        }
+      }
+    
+      useEffect(() => {
+        UpdateFields();
+      }, [journalData, setValue]);
     const FormSection = ({ title, fields }: { title: string; fields: any[] }) => (
         <div>
             <h2>{title}</h2>
@@ -66,8 +85,8 @@ const EditJournal = () => {
         const formattedData: JournalData = {
             ...data,
             subscription_price: parseInt(data.subscription_price.toString(), 10),
-            volume_number: parseInt(data.volume_number.toString(), 10),
-            issue_number: parseInt(data.issue_number.toString(), 10),
+            // volume_number: parseInt(data.volume_number.toString(), 10),
+            // issue_number: parseInt(data.issue_number.toString(), 10),
             frequency: parseInt(data.frequency.toString(), 10),
             year_of_publication: "2023-10-04",
             language: "english",
@@ -81,8 +100,8 @@ const EditJournal = () => {
         }
         mutate(
             {
-              resource: 'book/edit',
-              id: journal_id || "",
+              resource: 'journals/update-journal',
+              id: journal_uuid || "",
               values: formattedData,
             },
             {

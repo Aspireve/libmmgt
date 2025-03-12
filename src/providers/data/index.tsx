@@ -1,29 +1,26 @@
 import { DataProvider} from "@refinedev/core";
-import { fetchWrapper } from "./fetch-wrapper";
+import { fetchWrapper, API_URL } from "./fetch-wrapper";
 
-// Siddhesh URL 
-// export const API_URL = "https://lms-o9sv.onrender.com"; 
 
-//Leon Url
-export const API_URL = "https://lms-807p.onrender.com"
 
-//Jigisha Url
+interface CustomDataProvider extends DataProvider {
+    putArchive: (params: { resource: string; value: any; }) => Promise<{ data: any }>;
+    patchUpdate: (params: { resource: string; value: any; }) => Promise<{ data: any }>;
+  }
 
-// export const API_URL = " "
-
-export const dataProvider: DataProvider = {
+export const dataProvider:  CustomDataProvider = {
     getList: async ({ resource, pagination, filters, sorters, meta }) => {
         const url = `${resource}`;
         const response = await fetchWrapper(url, {
             method: "GET",
         });
         return {
-            data: response,
+            data: response.data,
             total: response.length,
         };
     },
     getOne: async ({ resource, id }) => {
-        const url = `${resource}?${id}`
+        const url = `${resource}?${id}`;
         const response = await fetchWrapper(url, {
             method: "GET",
         });
@@ -53,16 +50,47 @@ export const dataProvider: DataProvider = {
             data: response,
         };
     },
-    deleteMany:async ({resource, ids}) =>{
+
+    putArchive: async ({ resource, value }) => {
         const url = `${resource}`;
-        const response = await fetchWrapper(url,{
-            method:"DELETE",
-            body:JSON.stringify(ids)
+        const response = await fetchWrapper(url, {
+            method: 'PUT',
+            body: JSON.stringify({ value })
         });
         return {
-            data:response,
-        }
+            data: response,
+        };
     },
+    patchUpdate: async({resource ,value})=>{
+            const url = `${resource}`;
+            const response = await fetchWrapper(url,{
+                method:"PATCH",
+                body:JSON.stringify({value})
+            });
+            return{
+                data: response,
+            }
+    },
+    deleteMany: async ({ resource, ids }) => {
+        const url = `${resource}`;
+        const response = await fetchWrapper(url, {
+            method: "DELETE",
+            body: JSON.stringify(ids)
+        });
+        return {
+            data: response,
+        };
+    },
+    // deleteOne: async ({ resource, id }) => {
+    //     const url = `${resource}`;
+    //     const response = await fetchWrapper(url, {
+    //         method: "DELETE",
+    //         body:JSON.stringify(id)
+    //     });
+    //     return {
+    //         data: response,
+    //     };
+    // },
     deleteOne: async ({ resource, id }) => {
         const url = `${resource}/${id}`;
         const response = await fetchWrapper(url, {
@@ -73,8 +101,6 @@ export const dataProvider: DataProvider = {
         };
     },
 
-
     getApiUrl: () => API_URL,
-    
-   
+
 };

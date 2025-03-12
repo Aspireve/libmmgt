@@ -21,7 +21,7 @@ const JournalPage = () => {
 
     const [url, setUrl] = useState("all")
     const [title,setTitle] = useState("Journal")
-    const { data } = useList<JournalData>({ resource: `book/${url}` });
+    const { data } = useList<JournalData>({ resource: `journals/${url}` });
     const { mutate } = useDelete()
     const invalidate = useInvalidate();
     const router = useRouter();
@@ -31,10 +31,11 @@ const JournalPage = () => {
   
   
     const handleEdit = (journal: JournalData) => {
-      router.push(`/book-pages/edit-journal?journal_id=${journal.journal_id}`);
+      router.push(`/book-pages/edit-journal?journal_uuid=${journal.journal_uuid}`);
     };
   
     const handleDeleteClick = (bookId: string) => {
+      console.log(bookId)
       setSelectedBookId(bookId);
       setIsModalOpen(true);
     };
@@ -42,7 +43,7 @@ const JournalPage = () => {
     const confirmDelete = () => {
       if (selectedBookId) {
         mutate({
-          resource: 'book/delete',
+          resource: 'journals/delete-journal',
           id: selectedBookId
         },
           {
@@ -52,7 +53,7 @@ const JournalPage = () => {
             onSuccess: () => {
               toast.success("Student deleted sucessfuly!!!")
               invalidate({
-                resource: 'all', invalidates: ["list"]
+                resource: `journals/${url}`, invalidates: ["list"]
               });
             },
           },
@@ -63,7 +64,7 @@ const JournalPage = () => {
     };
    
     const columns: ColumnDef<JournalData>[] = [
-      { accessorKey: 'journal_id', header: 'Sr no' },
+      { accessorKey: 'journal_uuid', header: 'Sr no' },
       { accessorKey: 'name_of_journal', header: 'Name' },
       { accessorKey: 'editor_name', header: 'Name of Editor', },
       { accessorKey: 'name_of_publisher', header: 'Book Publisher' },
@@ -84,7 +85,7 @@ const JournalPage = () => {
             <Button variant="ghost" size="icon" onClick={() => handleEdit(row.original)}>
               <Image src={images.edit} alt='Edit button' />
             </Button>
-            <Button variant="ghost" size="icon" onClick={() => handleDeleteClick(row.original.journal_id)}>
+            <Button variant="ghost" size="icon" onClick={() => handleDeleteClick(row.original.journal_uuid)}>
               <Image src={images.delete} alt='Delete button' />
             </Button>
           </div>

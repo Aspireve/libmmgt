@@ -13,6 +13,7 @@ import Link from "next/link";
 import { BookData } from "../types/data";
 import { Skeleton } from "@/components/ui/skeleton";
 import { inputFields } from "../types/inputFields-title";
+import { dataProvider } from "@/providers/data";
 
 const EditBook = () => {
   const router = useRouter();
@@ -20,36 +21,35 @@ const EditBook = () => {
   const book_uuid = searchParams.get("book_uuid");
   const [isLoadingInput, setIsLoadingInput] = useState(true)
 
-   const FormSection = ({ title, fields }: { title: string; fields: any[] }) => (
-      <div>
-        <h2>{title}</h2>
-        <div className="grid grid-cols-4 gap-4 p-4">
-          {fields.map((field) => (
-            <div key={field.name}>
-              <Label>{field.label}</Label>
-              {isLoadingInput ? (
-                <Skeleton className="h-4 w-[100%] animate-pulse bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 bg-[length:200%_100%]" />
-              ) : (
-                <Input
-                  className="text-[#343232]"
-                  type={field.type}
-                  {...register(field.name, { required: field.required })}
-                  placeholder={field.placeholder}
-                  max={field.type === "date" ? new Date().toISOString().split("T")[0] : undefined}
-                />
-              )}
-              {errors[field.name] && <p className="text-red-500 text-sm">{[field.required]}</p>}
-            </div>
-          ))}
-        </div>
+  const FormSection = ({ title, fields }: { title: string; fields: any[] }) => (
+    <div>
+      <h2>{title}</h2>
+      <div className="grid grid-cols-4 gap-4 p-4">
+        {fields.map((field) => (
+          <div key={field.name}>
+            <Label>{field.label}</Label>
+            {isLoadingInput ? (
+              <Skeleton className="h-4 w-[100%] animate-pulse bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 bg-[length:200%_100%]" />
+            ) : (
+              <Input
+                className="text-[#343232]"
+                type={field.type}
+                {...register(field.name, { required: field.required })}
+                placeholder={field.placeholder}
+                max={field.type === "date" ? new Date().toISOString().split("T")[0] : undefined}
+              />
+            )}
+            {errors[field.name] && <p className="text-red-500 text-sm">{[field.required]}</p>}
+          </div>
+        ))}
       </div>
-    );
+    </div>
+  );
   const { data: bookData, isLoading } = useOne<BookData>({
-    resource: "book/search",
+    resource: "book_v2/get_book_tile_details",
     id: `book_uuid=${book_uuid}` || ""
   });
 
-  const { mutate, isLoading: isUpdating } = useUpdate();
 
   const {
     register,
@@ -75,7 +75,7 @@ const EditBook = () => {
     UpdateFields();
   }, [bookData, setValue]);
 
-  const onSubmit = (data: any) => {
+  const onSubmit = async (data: any) => {
     const formatDate = (dateString: string | undefined) => {
       if (!dateString) return null;
       const date = new Date(dateString);
@@ -91,21 +91,17 @@ const EditBook = () => {
       year_of_publication: formatDate(data.year_of_publication),
       date_of_acquisition: formatDate(data.date_of_acquisition),
     };
-    mutate(
-      {
-        resource: 'book/edit',
-        id: book_uuid || "",
-        values: formattedData,
-      },
-      {
-        onSuccess: () => {
-          toast.success("Book Updated successfully!", { position: 'top-left' })
-          router.push("/book-pages/all-books");
-        },
-        onError: () => toast.error("Something went wrong, Please try again")
-
-      }
-    );
+    try {
+      const response = await dataProvider.patchUpdate({
+        resource: 'book_v2/update_book_title',
+        value: formattedData,
+      })
+      console.log("PATCH Update successful:", response);
+      toast.success("Book title updated successfully!");
+    } catch (error: any) {
+      console.error("PATCH Update Error:", error.message);
+      toast.error(error.message);
+    }
   };
 
   return (
@@ -114,8 +110,8 @@ const EditBook = () => {
       <section className="p-10">
         <div className="container">
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-            {inputFields.map((section)=>(
-                  <FormSection key={section.title} title={section.title} fields={section.fields} />
+            {inputFields.map((section) => (
+              <FormSection key={section.title} title={section.title} fields={section.fields} />
             ))}
 
             {/* Action Buttons */}
@@ -131,9 +127,9 @@ const EditBook = () => {
               <Button
                 type="submit"
                 className="bg-blue-600 text-white px-6 py-2 hover:bg-blue-600"
-                disabled={isUpdating}
+
               >
-                {isUpdating ? "Updating..." : "Update Book"}
+                Update Book
               </Button>
             </div>
           </form>

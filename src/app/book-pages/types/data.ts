@@ -28,6 +28,7 @@ export interface BookData {
   }
 
   export interface JournalData{
+    journal_uuid:string;
     journal_id:string;
     name_of_journal:string;
     name_of_publisher:string;
@@ -36,11 +37,11 @@ export interface BookData {
     year_of_publication:string; //frontend
     language:string; //frontend
     department:string; //frontend
-    subscription_price:number;
+    subscription_price:string;
     subscription_start_date:string;
     subscription_end_date:string;
-    volume_number:number;
-    issue_number:number;
+    volume_number:string; //Changes
+    issue_number:string;
     is_archived:boolean; //frontend
     total_count:number; //frontend
     available_count:number; //frontend
@@ -52,7 +53,7 @@ export interface BookData {
     updated_at:string; //frontend
     vendor_name:string;
     library_name:string;
-    acquistion_date:string; //frontend
+    acquisition_date:string; //frontend
   }
 
     // Routes 
@@ -70,4 +71,9 @@ export interface BookData {
 export const bookdetailsRoutes = [
   { key: "book-borrowed", label: "Book Borrowed By", path: "/book-pages/book-borrowed" },
   { key: "book-activites", label: "Book Activites", path: "/book-pages/book-activites" }, 
+]
+
+export const dashboardRoutes = [
+  { key: "issue-book", label: "Issue Book", path: "" },
+  { key: "request-book", label: "Request", path: "" }, 
 ]

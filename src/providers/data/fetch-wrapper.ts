@@ -1,48 +1,68 @@
 type ErrorResponse = {
   errors?: { message: string }[];
   error?: string;
+  message?: string;
 };
 
-const customFetch = async (url: string, options: RequestInit) => {
-  const headers = options.headers as Record<string, string>;
-  // Log the URL to check if it's being formed correctly
-  const fullUrl = url.startsWith('https')
-    ? url
-    : `https://lms-807p.onrender.com${url.startsWith('/') ? url : `/${url}`}`;
+// Siddhesh URL 
+export const API_URL = "https://lms-o9sv.onrender.com"; 
 
+//Leon Url
+//  export const API_URL = "https://lms-807p.onrender.com"
+
+//Jigisha Url
+
+// export const API_URL = "https://lms-q8fb.onrender.com"
+
+const customFetch = async (url: string, options: RequestInit) => {
+  const fullUrl = url.startsWith("https") ? url : `${API_URL}${url.startsWith("/") ? url : `/${url}`}`;
 
   return fetch(fullUrl, {
-      ...options,
-      headers: {
-          ...headers,
-          "Content-Type": "application/json",
-      },
+    ...options,
+    headers: {
+      ...(options.headers || {}), // Ensure headers exist
+      "Content-Type": "application/json",
+    },
   });
 };
 
 export const fetchWrapper = async (url: string, options: RequestInit) => {
   try {
-      const response = await customFetch(url, options);
+    const response = await customFetch(url, options);
 
-      // If resource is not found, return a fallback (empty data) instead of throwing an error
-      if (!response.ok) {
-          if (response.status === 404) {
-              // Return an empty object or any other fallback structure your app expects
-              return {};
-          }
-          // For other errors, try to extract error message and throw error.
-          const errorData = await response.json() as ErrorResponse;
-          throw new Error(errorData.error || `HTTP error! Status: ${response.status}`);
+    if (response.status === 404) {
+      console.warn(`⚠️ API returned 404 for ${url}`);
+      return null;
+    }
+
+    // ✅ Handle other non-200 responses
+    if (!response.ok) {
+      let errorMessage = `HTTP error! Status: ${response.status}`;
+
+      try {
+        const errorData = (await response.json()) as ErrorResponse;
+        errorMessage = errorData.error || errorData.message || errorMessage;
+      } catch (jsonError) {
+        console.error("Error parsing JSON error response:", jsonError);
       }
 
-      const contentType = response.headers.get("content-type");
-      if (contentType && contentType.includes("application/json")) {
-          const data = await response.json();
-          return data;
-      }
+      throw new Error(errorMessage);
+    }
 
-      return response;
+    // ✅ Handle JSON responses properly
+    const contentType = response.headers.get("content-type");
+    if (contentType && contentType.includes("application/json")) {
+      try {
+        return await response.json();
+      } catch (jsonError) {
+        console.warn(`⚠️ Empty JSON response from ${url}`);
+        return null; // ✅ Prevents crashes on empty responses
+      }
+    }
+
+    return response; // ✅ Return raw response for non-JSON data
   } catch (error) {
-      throw error;
+    console.error("🚨 FetchWrapper Error:", error);
+    throw error;
   }
 };

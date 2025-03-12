@@ -1,6 +1,6 @@
 'use client';
 import React, { useState } from 'react';
-import { useDelete, useList, useInvalidate, useDeleteMany } from '@refinedev/core';
+import { useList, useInvalidate, useDeleteMany, useUpdate } from '@refinedev/core';
 import { bookRoutes, BookData } from '../types/data';
 
 import { ColumnDef } from '@tanstack/react-table';
@@ -20,7 +20,7 @@ import { formatDate } from '../hooks/formatDate'
 const BooksPage = () => {
   const [url, setUrl] = useState("all")
   const [title, setTitle] = useState("Books")
-  const { mutate } = useDelete()
+  const { mutate } = useUpdate()
   const {mutateAsync} = useDeleteMany()
   const invalidate = useInvalidate();
   const router = useRouter();
@@ -31,20 +31,21 @@ const BooksPage = () => {
   const [isDepartementOpen, setIsDepartmentOpen] = useState(false)
   const [selectedBookId, setSelectedBookId] = useState<string | null>(null);
 
-  const { data, isLoading } = useList<BookData>({ resource: `book/${url}`});
+  const { data, isLoading } = useList<BookData>({ resource: `book_v2/${url}`});
 
   const handleEdit = (book: BookData) => {
     router.push(`/book-pages/edit-book?book_uuid=${book.book_uuid}`);
   };
 
   const handleDeleteClick = (bookId: string) => {
+    console.log(typeof bookId)
     setSelectedBookId(bookId);
     setIsModalOpen(true);
   };
 
 
   const handleChangeDelete = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value =e.target.value
+    const value = e.target.value
     setIsShowDeleteButton(true);
     setDeleteIds((prevIds) => {
       if (prevIds.includes(value)) {
@@ -69,10 +70,13 @@ const BooksPage = () => {
     }
   }
   const confirmDelete = () => {
+    console.log('started');
+    console.log("selected book id",selectedBookId)
+    
     if (selectedBookId) {
       mutate({
-        resource: 'book/delete',
-        id: selectedBookId
+        resource: 'book_v2/uparchive',
+        values:`book_uuid:${selectedBookId}`,
       },
         {
           onError: () => {
@@ -81,7 +85,7 @@ const BooksPage = () => {
           onSuccess: () => {
             toast.success("Student deleted sucessfuly!!!")
             invalidate({
-              resource: 'all', invalidates: ["list"]
+              resource: `book_v2/${url}`, invalidates: ["list"]
             });
           },
         },
@@ -131,7 +135,7 @@ const BooksPage = () => {
       accessorKey: 'year_of_publication', header: 'Year of Publication',
       cell: ({ row }) => <span>{formatDate(row.original.year_of_publication)}</span>
     },
-    { accessorKey: "status", header: "Status" },
+    { accessorKey: "is_archived", header: "Status" },
     {
       id: 'actions', header: '',
       cell: ({ row }) => (
@@ -208,8 +212,8 @@ const BooksPage = () => {
               </Link>
               <Link href={"/book-pages/add-book"}>
                 <Button
-                  className="shadow-none border border-[#989CA4] rounded-[8px] text-[#BBBBBB] flex items-center px-4 py-2">
-                  <Image src={images.addBook} alt="Add button" />
+                  className="shadow-none border border-[#1E40AF] rounded-[8px] text-[#1E40AF] flex items-center px-4 py-2">
+                  {/* <Image src={images.addBook} alt="Add button" /> */}
                   Add Books
                 </Button>
               </Link>
@@ -229,12 +233,12 @@ const BooksPage = () => {
                       >Books
                       </Button>
                       <Button
-                        onClick={() => { setUrl("available"); setTitle("Available Books"); setIsFilterOpen(false) }}
+                        onClick={() => { setUrl("get_all_available"); setTitle("Available Books"); setIsFilterOpen(false) }}
                         className="text-[#000] justify-start border border-[#fff]  cursor-pointer shadow-none w-[70%]"
                       >Available Books
                       </Button>
                       <Button
-                        onClick={() => { setUrl("unavailable"); setTitle("Issued Books"); setIsFilterOpen(false) }}
+                        onClick={() => { setUrl("get_all_unavailable"); setTitle("Issued Books"); setIsFilterOpen(false) }}
                         className="text-[#000] justify-start border border-[#fff]  cursor-pointer shadow-none w-[70%]">
                         Issued Books
                       </Button>

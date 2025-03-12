@@ -56,8 +56,8 @@ const AddJournal = () => {
    const formattedData: JournalData ={
       ...data,
       subscription_price: parseInt(data.subscription_price.toString(), 10),
-      volume_number: parseInt(data.volume_number.toString(), 10),
-      issue_number:parseInt(data.issue_number.toString(),10),
+      // volume_number: parseInt(data.volume_number.toString(), 10),
+      // issue_number:parseInt(data.issue_number.toString(),10),
       frequency: parseInt(data.frequency.toString(),10),
       year_of_publication:"2023-10-04",
       language:"english",
@@ -67,11 +67,11 @@ const AddJournal = () => {
       available_count:10,
       created_at:"2024-06-11",
       updated_at:"2024-06-11",
-      acquistion_date:"2024-06-11"
+      acquisition_date:"2024-06-11"
    }
    console.log(formattedData)
     mutate(
-      { resource: "book/create", values: formattedData },
+      { resource: "journals/create-journal", values: formattedData },
       {
         onSuccess: () => {
           toast.success("Journal added successfully!", { position: 'top-left' })
