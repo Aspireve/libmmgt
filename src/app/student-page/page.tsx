@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useList, useDelete } from "@refinedev/core";
@@ -22,6 +22,8 @@ import DeleteBtn from "../../images/DeleteBtn.png";
 import addBook from "../../images/addbook.png";
 import { toast } from "sonner";
 import { images } from "../book-pages/images";
+import { useUpdate } from "@refinedev/core";
+import {useSearchParams } from "next/navigation";
 
 const StudentDirectory = () => {
   const router = useRouter();
@@ -35,6 +37,10 @@ const StudentDirectory = () => {
   // State for delete confirmation modal
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [studentToDelete, setStudentToDelete] = useState<string | null>(null);
+
+  const searchParams = useSearchParams();
+  const [validStudentUuid, setValidStudentUuid] = useState<string | null>(null);
+ 
 
   const [selectedStudents, setSelectedStudents] = useState<string[]>([]);
 
@@ -148,6 +154,60 @@ const StudentDirectory = () => {
     },
   }); 
 
+  const studentUuid = searchParams.get("id");
+  console.log("🔍 Retrieved studentUuid from URL:", studentUuid);
+
+  useEffect(() => {
+    if (
+        studentUuid &&
+        /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(studentUuid)
+    ) {
+        setValidStudentUuid(studentUuid);
+        console.log("✅ Valid student UUID:", studentUuid);
+    } else {
+        console.error("❌ Invalid or missing student UUID:", studentUuid);
+    }
+}, [studentUuid]);
+
+console.log("🌍 Full searchParams object:", searchParams.toString());
+console.log("🔍 Retrieved studentUuid from URL:", studentUuid);
+
+// Function to archive a student
+const archiveStudent = () => {
+    if (!validStudentUuid) {
+        console.error("❌ Invalid student UUID. Cannot archive.");
+        return;
+    }
+
+    console.log("📤 Sending archive request for student UUID:", validStudentUuid);
+    const { mutate } = useUpdate();
+    mutate(
+        {
+            resource: "student/archive",
+            id: "", // No ID needed
+            values: { student_uuid: validStudentUuid }, // Send UUID in the body
+        },
+        {
+            onSuccess: (data) => {
+                console.log("✅ Student archived successfully:", data);
+                setShowConfirmModal(false); // Close modal after success
+            },
+            onError: (error) => console.error("❌ Failed to archive student:", error.message),
+        }
+    );
+};
+
+// Function to open the confirmation modal
+const handleArchiveConfirm = () => {
+    setShowConfirmModal(true);
+};
+
+// Function to close the confirmation modal
+const handleCancelArchive = () => {
+    setShowConfirmModal(false);
+};
+  
+
 
   const { mutate: bulkDeleteMutation } = useDeleteMany();
 
@@ -221,10 +281,10 @@ const StudentDirectory = () => {
     setShowConfirmModal(true);
   };
 
-  const handleConfirmDelete = () => {
-    if (!studentToDelete) return;
-    deleteMutation.mutate(studentToDelete);
-  };
+  // const handleConfirmDelete = () => {
+  //   if (!studentToDelete) return;
+  //   deleteMutation.mutate(studentToDelete);
+  // };
 
   const handleCancelDelete = () => {
     setShowConfirmModal(false);
@@ -405,29 +465,29 @@ const StudentDirectory = () => {
       </section>
   
       {showConfirmModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white rounded-lg p-6 w-80">
-            <h3 className="text-xl font-semibold mb-4">Confirm Delete</h3>
-            <p className="mb-6">
-              Are you sure you want to delete this student?
-            </p>
-            <div className="flex justify-end gap-4">
-              <Button onClick={handleCancelDelete} variant="outline">
-                Cancel
-              </Button>
-              <Button
-                onClick={handleConfirmDelete}
-                className="bg-red-600 text-white hover:bg-red-600"
-              >
-                Delete
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                    <div className="bg-white rounded-lg p-6 w-80">
+                        <h3 className="text-xl font-semibold mb-4">Confirm Archive</h3>
+                        <p className="mb-6">
+                            Are you sure you want to archive this student?
+                        </p>
+                        <div className="flex justify-end gap-4">
+                            <Button onClick={handleCancelArchive} variant="outline">
+                                Cancel
+                            </Button>
+                            <Button
+                                onClick={archiveStudent} // Corrected function call
+                                className="bg-red-600 text-white hover:bg-red-700"
+                            >
+                                Confirm
+                            </Button>
+                        </div>
+                    </div>
+                </div>
+            )}
     </>
   );
-  
+
 };
 
 export default StudentDirectory;

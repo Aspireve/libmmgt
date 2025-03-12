@@ -10,7 +10,7 @@ export const dataProvider: DataProvider = {
             method: "GET",
         });
         return {
-            data: response,
+            data: response.data,
             total: response.length,
         };
     },
