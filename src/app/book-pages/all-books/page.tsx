@@ -32,7 +32,7 @@ const BooksPage = () => {
   const [selectedBookId, setSelectedBookId] = useState<string | null>(null);
 
   const { data, isLoading } = useList<BookData>({ resource: `book_v2/${url}`});
-   const books = data?.Arrdata || [];
+   const books = data?.data || [];
 
   useEffect(()=>{
     console.log("books:",books)
@@ -157,7 +157,8 @@ const BooksPage = () => {
 
   return (
     <>
-      <Header />
+      <Header heading="Book List" subheading="Tanvir Chavan"/>
+      
       <Tabbing routes={bookRoutes} className="w-[30%]" />
 
       <section className="border border-[#E0E2E7] rounded-[10px] m-4">

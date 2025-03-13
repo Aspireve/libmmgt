@@ -89,7 +89,7 @@ const BooksPage = () => {
 
   return (
     <>
-      <Header />
+      <Header heading="Student Directory" subheading="Tanvir Chavan"/>
       <Tabbing routes={bookRoutes} className="w-[30%]" />
 
       <section className="border border-[#E0E2E7] rounded-[10px] m-4">

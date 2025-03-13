@@ -106,7 +106,8 @@ const EditBook = () => {
 
   return (
     <>
-      <Header />
+            <Header heading="Edit Book" subheading="Tanvir Chavan"/>
+
       <section className="p-10">
         <div className="container">
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">

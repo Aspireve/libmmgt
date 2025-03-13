@@ -19,7 +19,8 @@ const IssueBook = () => {
         }, []);
   return (
     <>
-    <Header/>
+          <Header heading="Issue Books" subheading="Tanvir Chavan"/>
+    
 
     <section className='border border-[#E0E2E7] rounded-[10px] m-10'>
                   {/* <DataTable columns={columns} data={data?.data || []} /> */}

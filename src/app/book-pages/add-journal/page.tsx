@@ -84,7 +84,8 @@ const AddJournal = () => {
 
   return (
     <>
-      <Header />
+            <Header heading="Add Journal" subheading="Tanvir Chavan"/>
+
       <Tabbing routes={addbookRoutes} className='w-[30%]' />
       <section className='p-10'>
         <div className="container">
