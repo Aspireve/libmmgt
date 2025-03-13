@@ -23,7 +23,7 @@ import addBook from "../../images/addbook.png";
 import { toast } from "sonner";
 import { images } from "../book-pages/images";
 import { useUpdate } from "@refinedev/core";
-import { useSearchParams } from "next/navigation";
+import {useSearchParams } from "next/navigation";
 
 const StudentDirectory = () => {
   const router = useRouter();
@@ -40,16 +40,12 @@ const StudentDirectory = () => {
 
   const searchParams = useSearchParams();
   const [validStudentUuid, setValidStudentUuid] = useState<string | null>(null);
+ 
 
   const [selectedStudents, setSelectedStudents] = useState<string[]>([]);
 
   // Fallback hardcoded data in case the API endpoints are not available
-  const fallbackDepartments = [
-    "Computer Science",
-    "Mathematics",
-    "Physics",
-    "Chemistry",
-  ];
+  const fallbackDepartments = ["Computer Science", "Mathematics", "Physics", "Chemistry"];
   const fallbackYears = ["2021", "2020", "2019", "2018"];
 
   // Disable fetching departments and years by setting enabled: false
@@ -91,11 +87,7 @@ const StudentDirectory = () => {
         : []),
       ...(yearFilter
         ? [
-            {
-              field: "year_of_admission",
-              operator: "eq" as const,
-              value: yearFilter,
-            },
+            { field: "year_of_admission", operator: "eq" as const, value: yearFilter },
           ]
         : []),
     ],
@@ -108,7 +100,7 @@ const StudentDirectory = () => {
   });
 
   const students = studentsResponse?.data ?? [];
-  console.log(students[0]);
+  console.log(students[0])
   console.log("Fetched students:", studentsResponse?.data);
 
   const { mutate: deleteStudent } = useDelete();
@@ -166,66 +158,62 @@ const StudentDirectory = () => {
       setShowConfirmModal(false);
       setStudentToDelete(null);
     },
-  });
+  }); 
 
   const studentUuid = searchParams.get("id");
   console.log("🔍 Retrieved studentUuid from URL:", studentUuid);
 
   useEffect(() => {
     if (
-      studentUuid &&
-      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
-        studentUuid
-      )
+        studentUuid &&
+        /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(studentUuid)
     ) {
-      setValidStudentUuid(studentUuid);
-      console.log("✅ Valid student UUID:", studentUuid);
+        setValidStudentUuid(studentUuid);
+        console.log("✅ Valid student UUID:", studentUuid);
     } else {
-      console.error("❌ Invalid or missing student UUID:", studentUuid);
+        console.error("❌ Invalid or missing student UUID:", studentUuid);
     }
-  }, [studentUuid]);
+}, [studentUuid]);
 
-  console.log("🌍 Full searchParams object:", searchParams.toString());
-  console.log("🔍 Retrieved studentUuid from URL:", studentUuid);
+console.log("🌍 Full searchParams object:", searchParams.toString());
+console.log("🔍 Retrieved studentUuid from URL:", studentUuid);
 
-  // Function to archive a student
-  const archiveStudent = () => {
+// Function to archive a student
+const archiveStudent = () => {
     if (!validStudentUuid) {
-      console.error("❌ Invalid student UUID. Cannot archive.");
-      return;
+        console.error("❌ Invalid student UUID. Cannot archive.");
+        return;
     }
 
-    console.log(
-      "📤 Sending archive request for student UUID:",
-      validStudentUuid
-    );
+    console.log("📤 Sending archive request for student UUID:", validStudentUuid);
     const { mutate } = useUpdate();
     mutate(
-      {
-        resource: "student/archive",
-        id: "", // No ID needed
-        values: { student_uuid: validStudentUuid }, // Send UUID in the body
-      },
-      {
-        onSuccess: (data) => {
-          console.log("✅ Student archived successfully:", data);
-          setShowConfirmModal(false); // Close modal after success
+        {
+            resource: "student/archive",
+            id: "", // No ID needed
+            values: { student_uuid: validStudentUuid }, // Send UUID in the body
         },
-        onError: (error) =>
-          console.error("❌ Failed to archive student:", error.message),
-      }
+        {
+            onSuccess: (data) => {
+                console.log("✅ Student archived successfully:", data);
+                setShowConfirmModal(false); // Close modal after success
+            },
+            onError: (error) => console.error("❌ Failed to archive student:", error.message),
+        }
     );
-  };
+};
 
-  // Function to open the confirmation modal
-  const handleArchiveConfirm = () => {
+// Function to open the confirmation modal
+const handleArchiveConfirm = () => {
     setShowConfirmModal(true);
-  };
+};
 
-  // Function to close the confirmation modal
-  const handleCancelArchive = () => {
+// Function to close the confirmation modal
+const handleCancelArchive = () => {
     setShowConfirmModal(false);
-  };
+};
+  
+
 
   const { mutate: bulkDeleteMutation } = useDeleteMany();
 
@@ -241,39 +229,39 @@ const StudentDirectory = () => {
   // Bulk delete handler
   const handleBulkDelete = async () => {
     console.log(selectedStudents);
-
+  
     if (selectedStudents.length === 0) return;
-
+  
     try {
-      const response = await fetch(
-        "https://lms-807p.onrender.com/student/bulk-delete",
-        {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(selectedStudents), // Sending `ids` in body
-        }
-      );
-
+      const response = await fetch("https://lms-807p.onrender.com/student/bulk-delete", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(selectedStudents), // Sending `ids` in body
+      });
+  
       if (!response.ok) {
         throw new Error("Failed to delete students");
       }
-
+  
       toast.success("Students deleted successfully!", {
         position: "top-center",
       });
-
+  
       setSelectedStudents([]);
       queryClient.invalidateQueries({
         queryKey: ["students", departmentFilter, yearFilter],
       });
+  
     } catch (error: any) {
       toast.error(`Error deleting students: ${error.message}`, {
         position: "top-center",
       });
     }
   };
+  
+  
 
   // Client-side search filter on already retrieved data (optional)
   const filteredStudents = searchTerm.trim()
@@ -357,6 +345,7 @@ const StudentDirectory = () => {
       return col;
     }),
   ];
+  
 
   // When Apply Filters is clicked, hide the dropdown.
   const handleFilterApply = () => {
@@ -450,7 +439,7 @@ const StudentDirectory = () => {
               </div>
               <Link href="/student-page/AddStudent">
                 <Button className="border border-[#1E40AF] rounded-[8px] text-[#1E40AF]">
-                  Add Student
+                   Add Student
                 </Button>
               </Link>
               <div className="relative w-72">
@@ -478,30 +467,31 @@ const StudentDirectory = () => {
           />
         </div>
       </section>
-
+  
       {showConfirmModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white rounded-lg p-6 w-80">
-            <h3 className="text-xl font-semibold mb-4">Confirm Archive</h3>
-            <p className="mb-6">
-              Are you sure you want to archive this student?
-            </p>
-            <div className="flex justify-end gap-4">
-              <Button onClick={handleCancelArchive} variant="outline">
-                Cancel
-              </Button>
-              <Button
-                onClick={archiveStudent} // Corrected function call
-                className="bg-red-600 text-white hover:bg-red-700"
-              >
-                Confirm
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                    <div className="bg-white rounded-lg p-6 w-80">
+                        <h3 className="text-xl font-semibold mb-4">Confirm Archive</h3>
+                        <p className="mb-6">
+                            Are you sure you want to archive this student?
+                        </p>
+                        <div className="flex justify-end gap-4">
+                            <Button onClick={handleCancelArchive} variant="outline">
+                                Cancel
+                            </Button>
+                            <Button
+                                onClick={archiveStudent} // Corrected function call
+                                className="bg-red-600 text-white hover:bg-red-700"
+                            >
+                                Confirm
+                            </Button>
+                        </div>
+                    </div>
+                </div>
+            )}
     </>
   );
+
 };
 
 export default StudentDirectory;
