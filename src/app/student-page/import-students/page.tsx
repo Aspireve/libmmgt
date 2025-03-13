@@ -4,6 +4,7 @@ import React, { useState, useRef } from "react";
 import * as XLSX from "xlsx";
 import { useCreate } from "@refinedev/core";
 import { parse, format } from "date-fns";
+import { Loader2 } from "lucide-react";
 
 export interface StudentData {
   student_name: string;
@@ -59,9 +60,8 @@ const fieldLabels: Record<keyof StudentData, string> = {
 const formatDate = (dateString: string) => {
   try {
     const parsedDate = parse(dateString, "MM/dd/yyyy", new Date());
-    console.log(parsedDate)
+    console.log(parsedDate);
     return format(parsedDate, "yyyy-MM-dd");
-
   } catch (error) {
     return "Invalid Date";
   }
@@ -75,7 +75,7 @@ const ImportStudents = () => {
   const [excelData, setExcelData] = useState<any[]>([]);
   const [mapping, setMapping] = useState<MappingType>(initialMapping);
   const [mappedData, setMappedData] = useState<Partial<StudentData>[]>([]);
-  const { mutate } = useCreate();
+  const { mutate, isLoading } = useCreate();
   const dropRef = useRef<HTMLDivElement>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -89,7 +89,10 @@ const ImportStudents = () => {
     const file = e.dataTransfer.files[0];
     if (file) {
       dropRef.current?.classList.add("border-blue-500");
-      setTimeout(() => dropRef.current?.classList.remove("border-blue-500"), 500);
+      setTimeout(
+        () => dropRef.current?.classList.remove("border-blue-500"),
+        500
+      );
       processFile(file);
     }
   };
@@ -115,7 +118,9 @@ const ImportStudents = () => {
       try {
         const workbook = XLSX.read(data, { type: "array" });
         const sheet = workbook.Sheets[workbook.SheetNames[0]];
-        const sheetData = XLSX.utils.sheet_to_json(sheet, { header: 1 }) as any[];
+        const sheetData = XLSX.utils.sheet_to_json(sheet, {
+          header: 1,
+        }) as any[];
         if (sheetData.length > 0) {
           setExcelHeaders(sheetData[0] as string[]);
           setExcelData(sheetData.slice(1));
@@ -126,7 +131,11 @@ const ImportStudents = () => {
           setError("No data found in the file.");
         }
       } catch (err) {
-        setError(`Error processing file: ${err instanceof Error ? err.message : "Unknown error"}`);
+        setError(
+          `Error processing file: ${
+            err instanceof Error ? err.message : "Unknown error"
+          }`
+        );
       }
     };
     reader.readAsArrayBuffer(file);
@@ -140,13 +149,13 @@ const ImportStudents = () => {
     const mapped = excelData
       .map((row) => {
         const studentEntry: Partial<StudentData> = {};
-  
+
         Object.entries(mapping).forEach(([field, column]) => {
           const fieldKey = field as keyof StudentData;
           const colIndex = excelHeaders.indexOf(column);
           if (column && colIndex !== -1 && row[colIndex] !== undefined) {
             let value: any = row[colIndex];
-  
+
             // ✅ Convert date_of_birth to YYYY-MM-DD
             if (fieldKey === "date_of_birth") {
               const parsedDate = new Date(value);
@@ -157,28 +166,26 @@ const ImportStudents = () => {
                 value = ""; // Set empty or handle error case
               }
             }
-  
+
             // ✅ Convert roll_no to number
             if (fieldKey === "roll_no") {
               value = Number(value);
               if (isNaN(value)) value = 0; // Fallback for invalid numbers
             }
-  
+
             // ✅ Assign the value only if it's not undefined
             (studentEntry as any)[fieldKey] = value;
           }
         });
-  
+
         return studentEntry;
       })
       .filter((entry) => Object.keys(entry).length > 0);
-  
+
     setMappedData(mapped);
     console.log(mapped);
     setSuccessMessage(`Successfully mapped ${mapped.length} records.`);
   };
-  
-  
 
   const handleImportData = () => {
     if (mappedData.length === 0) {
@@ -197,32 +204,51 @@ const ImportStudents = () => {
   return (
     <div className="container mx-auto p-6">
       <h2 className="text-xl font-semibold mb-4">Import Student Data</h2>
-      <p className="text-gray-600 text-sm mb-4">Upload an Excel or CSV file and map columns.</p>
+      <p className="text-gray-600 text-sm mb-4">
+        Upload an Excel or CSV file and map columns.
+      </p>
       <div
         ref={dropRef}
-        className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center mb-6 transition-colors duration-300"
+        className="border-2 border-dashed border-[#0066FF99] rounded-xl p-6 text-center mb-6 bg-[#0066FF11] transition-all duration-300 hover:shadow-md"
         onDrop={handleDrop}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
       >
         {selectedFile ? (
           <div className="flex flex-col items-center">
-            <p className="text-green-600 font-medium mt-2">{selectedFile.name} uploaded!</p>
-            <button onClick={() => setSelectedFile(null)} className="text-blue-500 text-sm mt-1">
+            <p className="text-[#1E40AF] font-bold mt-2">
+              {selectedFile.name} uploaded!
+            </p>
+            <button
+              onClick={() => setSelectedFile(null)}
+              className="text-gray-500 text-sm mt-1 hover:text-black transition-all duration-100"
+            >
               Change file
             </button>
           </div>
         ) : (
           <div className="flex flex-col items-center justify-center h-24">
-            <p className="text-gray-500 text-sm mb-2">Drag and drop file here or</p>
-            <label className="bg-blue-500 text-white px-4 py-2 rounded cursor-pointer">
-              Select File
-              <input type="file" accept=".xls,.xlsx,.csv" onChange={handleFileChange} className="hidden" />
+            <p className="text-gray-500 text-sm mb-2">
+              Drag and drop file here or,{" "}
+              <span className="text-[#1E40AF]">browse local files.</span>
+            </p>
+            <label className="bg-[#0066FF33] font-bold px-4 py-2 rounded-xl cursor-pointer text-[#1E40AF] mt-2">
+              Browse Files
+              <input
+                type="file"
+                accept=".xls,.xlsx,.csv"
+                onChange={handleFileChange}
+                className="hidden"
+              />
             </label>
           </div>
         )}
-        {error && <p className="text-red-500 mt-2 whitespace-pre-line">{error}</p>}
-        {successMessage && <p className="text-green-500 mt-2">{successMessage}</p>}
+        {error && (
+          <p className="text-red-500 mt-2 whitespace-pre-line">{error}</p>
+        )}
+        {successMessage && !error && (
+          <p className="text-green-500 mt-2">{successMessage}</p>
+        )}
       </div>
       {selectedFile && excelHeaders.length > 0 && (
         <>
@@ -232,12 +258,21 @@ const ImportStudents = () => {
               const fieldKey = field as keyof StudentData;
               return (
                 <div key={field} className="flex flex-col">
-                  <label className="text-sm text-gray-700 mb-1">{fieldLabels[fieldKey]}</label>
+                  <label className="text-sm text-gray-700 mb-1">
+                    {fieldLabels[fieldKey]}
+                  </label>
                   <select
                     className="border border-gray-300 rounded p-2"
-                    value={mapping[fieldKey] || ""}
-                    onChange={(e) => handleMappingChange(fieldKey, e.target.value)}
+                    value={
+                      excelHeaders.includes(fieldKey)
+                        ? fieldKey
+                        : mapping[fieldKey] || ""
+                    }
+                    onChange={(e) =>
+                      handleMappingChange(fieldKey, e.target.value)
+                    }
                   >
+                    {/* excelHeaders.includes(fieldKey) ? fieldKey : "" */}
                     <option value="">Select Column</option>
                     {excelHeaders.map((header, index) => (
                       <option key={index} value={header}>
@@ -250,15 +285,30 @@ const ImportStudents = () => {
             })}
           </div>
           <div className="flex gap-4 mt-6">
-            <button className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded" onClick={handleMapData}>
-              Map Data
-            </button>
-            <button
-              className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded"
-              onClick={handleImportData}
-              disabled={mappedData.length === 0}
+            {/* <button
+              className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
+              onClick={handleMapData}
             >
-              Import Data
+              Map Data
+            </button> */}
+            <button
+              className={`bg-[#1E40AF] hover:bg-[#1E40AF] transition-all duration-300 cursor-pointer w-full text-white px-4 py-2 rounded flex items-center justify-center ${
+                isLoading ? "opacity-50 cursor-not-allowed" : ""
+              }`}
+              onClick={() => {
+                handleMapData();
+                handleImportData();
+              }}
+              disabled={isLoading}
+            >
+              {isLoading ? (
+                <>
+                  <Loader2 className="animate-spin h-5 w-5 mr-2" />
+                  Importing...
+                </>
+              ) : (
+                "Import Data"
+              )}
             </button>
           </div>
         </>
