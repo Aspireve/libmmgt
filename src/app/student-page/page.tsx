@@ -55,14 +55,16 @@ const StudentDirectory = () => {
     queryOptions: { enabled: false }, // disabled because endpoint is not available
   });
   const availableDepartments =
-    departmentResponse?.data.map((item) => item.department) || fallbackDepartments;
+    departmentResponse?.data.map((item) => item.department) ||
+    fallbackDepartments;
 
   const { data: yearResponse } = useList<{ year: string }>({
     resource: "student/years",
     pagination: { current: 1, pageSize: 100 },
     queryOptions: { enabled: false }, // disabled because endpoint is not available
   });
-  const availableYears = yearResponse?.data.map((item) => item.year) || fallbackYears;
+  const availableYears =
+    yearResponse?.data.map((item) => item.year) || fallbackYears;
 
   // Use refine’s useList hook to fetch students with filters applied.
   const {
@@ -75,7 +77,13 @@ const StudentDirectory = () => {
     pagination: { current: 1, pageSize: 1000 },
     filters: [
       ...(departmentFilter
-        ? [{ field: "department", operator: "eq" as const, value: departmentFilter }]
+        ? [
+            {
+              field: "department",
+              operator: "eq" as const,
+              value: departmentFilter,
+            },
+          ]
         : []),
       ...(yearFilter
         ? [
@@ -121,13 +129,10 @@ const StudentDirectory = () => {
       const optimisticStudents = students.filter(
         (student) => student.student_uuid !== uuid
       );
-      queryClient.setQueryData(
-        ["students", departmentFilter, yearFilter],
-        {
-          data: optimisticStudents,
-          total: optimisticStudents.length,
-        }
-      );
+      queryClient.setQueryData(["students", departmentFilter, yearFilter], {
+        data: optimisticStudents,
+        total: optimisticStudents.length,
+      });
       return { previousStudents };
     },
     onError: (err, uuid, context) => {
@@ -270,9 +275,9 @@ const handleCancelArchive = () => {
           "phone_no",
           "roll_no",
         ].some((key) =>
-          (student[key as keyof Student]?.toString().toLowerCase() || "").includes(
-            searchTerm.toLowerCase()
-          )
+          (
+            student[key as keyof Student]?.toString().toLowerCase() || ""
+          ).includes(searchTerm.toLowerCase())
         )
       )
     : students;
@@ -319,9 +324,7 @@ const handleCancelArchive = () => {
                 <button
                   onClick={() =>
                     router.push(
-                      `/student-page/EditStudent?id=${student.student_uuid}&student=${encodeURIComponent(
-                        JSON.stringify(student)
-                      )}`
+                      `/student-page/EditStudent?student_uuid=${student.student_uuid}`
                     )
                   }
                   aria-label="Edit student"
@@ -356,7 +359,7 @@ const handleCancelArchive = () => {
 
   return (
     <>
-      <Header/>
+      <Header heading="Student Directory" subheading="Tanvir Chavan" />
       <section className="border border-[#E0E2E7] rounded-[10px] w-[90%] ml-10 mt-6">
         <div className="p-4">
           <div className="flex items-center justify-between mb-4">

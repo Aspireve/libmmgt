@@ -14,8 +14,7 @@ import { toast } from "sonner";
 const EditStudent: React.FC = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  // Extract student UUID from query parameter "id"
-  const studentUuid = searchParams.get("id")?.trim() || "";
+  const studentUuid = searchParams.get("student_uuid");
 
   console.log("UUID from URL:", studentUuid);
 
@@ -49,17 +48,22 @@ const EditStudent: React.FC = () => {
   // Use refine's useOne hook with meta option (wrapped in a query object) to pass student_uuid.
   const { data, isLoading, error } = useOne<Student>({
     resource: "student/detail",
-    id: studentUuid || "", // ensure id is provided
-    meta: { query: { student_uuid: studentUuid } },
+    id: `student_uuid=${studentUuid}`,
+    queryOptions: {
+      retry: 1,
+      enabled: !!studentUuid,
+    },
   });
 
-  useEffect(() => {
-    if (studentUuid) {
-      console.log("Using student_uuid in meta:", studentUuid);
-    } else {
-      console.warn("No student UUID provided in URL query parameter.");
-    }
-  }, [studentUuid]);
+  console.log(data?.data);
+
+  // useEffect(() => {
+  //   if (studentUuid) {
+  //     console.log("Using student_uuid in meta:", studentUuid);
+  //   } else {
+  //     console.warn("No student UUID provided in URL query parameter.");
+  //   }
+  // }, [studentUuid]);
 
   // Reset form with fetched student data
   useEffect(() => {
@@ -161,7 +165,9 @@ const EditStudent: React.FC = () => {
         onError: (error: any) => {
           console.error("Update error:", error);
           toast.error(
-            `Error updating student: ${error.message || "Please try again later."}`,
+            `Error updating student: ${
+              error.message || "Please try again later."
+            }`,
             { position: "top-center" }
           );
         },
@@ -288,7 +294,8 @@ const EditStudent: React.FC = () => {
               {/* New Password */}
               <div>
                 <Label>
-                  New Password {password && <span className="text-red-500">*</span>}
+                  New Password{" "}
+                  {password && <span className="text-red-500">*</span>}
                 </Label>
                 <Input
                   type="password"
@@ -312,7 +319,9 @@ const EditStudent: React.FC = () => {
                 <Input
                   type="password"
                   {...register("confirm_password", {
-                    required: password ? "Confirm new password is required" : false,
+                    required: password
+                      ? "Confirm new password is required"
+                      : false,
                   })}
                   placeholder="Confirm New Password"
                 />
@@ -324,7 +333,10 @@ const EditStudent: React.FC = () => {
               </div>
             </div>
             <div className="flex justify-center gap-4">
-              <Button variant="outline" onClick={() => router.push("/student-page")}>
+              <Button
+                variant="outline"
+                onClick={() => router.push("/student-page")}
+              >
                 Cancel
               </Button>
               <Button
