@@ -7,59 +7,63 @@ import { RootState } from "../../redux/store/store";
 import TiaIcon from "../../images/Tia.png";
 import Dropper from "../../images/Dropper.png";
 
-const Header = () => {
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
+interface HeadersProps {
+  heading: string;
+  subheading: string;
+}
+
+const Header:React.FC<HeadersProps> = ({ heading, subheading }) => {
+
+ 
+  
+  // const pathname = usePathname();
+  // const searchParams = useSearchParams();
 
   // ✅ Get Redux data safely
   const { header_image, logo } =
     useSelector((state: RootState) => state.auth) || {};
 
-  // ✅ States for Header Text
-  const [heading, setHeading] = useState("");
-  const [subheading, setSubheading] = useState("");
+  // useEffect(() => {
+  //   const studentParam = searchParams.get("student");
+  //   let studentName = "";
+  //   let studentID = "";
 
-  useEffect(() => {
-    const studentParam = searchParams.get("student");
-    let studentName = "";
-    let studentID = "";
+  //   if (studentParam) {
+  //     try {
+  //       const studentObj = JSON.parse(decodeURIComponent(studentParam));
+  //       studentName = studentObj.student_name;
+  //       studentID = studentObj.student_id;
+  //     } catch (error) {
+  //       console.error("Error parsing student parameter:", error);
+  //     }
+  //   }
 
-    if (studentParam) {
-      try {
-        const studentObj = JSON.parse(decodeURIComponent(studentParam));
-        studentName = studentObj.student_name;
-        studentID = studentObj.student_id;
-      } catch (error) {
-        console.error("Error parsing student parameter:", error);
-      }
-    }
+  //   let newHeading = "Library Management System";
+  //   let newSubheading = "Tanvir Chavan";
 
-    let newHeading = "Library Management System";
-    let newSubheading = "Tanvir Chavan";
+  //   if (pathname === "/student-page") newHeading = "Student Directory";
+  //   if (pathname === "/fees-penalties-page") newHeading = "Fees & Penalities";
+  //   if (pathname === "/visitlog-page") newHeading = "Visit Activities";
+  //   if (pathname === "/book-pages/all-books") newHeading = "Books List";
+  //   if (pathname === "/book-pages/available-books")newHeading = "Available Books";
+  //   if (pathname === "/book-pages/issued-books") newHeading = "Issued Books";
+  //   if (pathname === "/book-pages/issue-books") newHeading = "Issue Books";
+  //   if (pathname === "/book-pages/add-book") newHeading = "Add Book";
+  //   if (pathname === "/book-pages/add-journal") newHeading = "Add Journal";
+  //   if (pathname === "/book-pages/edit-book") newHeading = "Edit Book";
 
-    if (pathname === "/student-page") newHeading = "Student Directory";
-    if (pathname === "/fees-penalties-page") newHeading = "Fees & Penalities";
-    if (pathname === "/visitlog-page") newHeading = "Visit Activities";
-    if (pathname === "/book-pages/all-books") newHeading = "Books List";
-    if (pathname === "/book-pages/available-books")newHeading = "Available Books";
-    if (pathname === "/book-pages/issued-books") newHeading = "Issued Books";
-    if (pathname === "/book-pages/issue-books") newHeading = "Issue Books";
-    if (pathname === "/book-pages/add-book") newHeading = "Add Book";
-    if (pathname === "/book-pages/add-journal") newHeading = "Add Journal";
-    if (pathname === "/book-pages/edit-book") newHeading = "Edit Book";
+  //   if (
+  //     pathname === "/student-page/student-profile" &&
+  //     studentName &&
+  //     studentID
+  //   ) {
+  //     newHeading = `${studentName}`;
+  //     newSubheading = `${studentID}`;
+  //   }
 
-    if (
-      pathname === "/student-page/student-profile" &&
-      studentName &&
-      studentID
-    ) {
-      newHeading = `${studentName}`;
-      newSubheading = `${studentID}`;
-    }
-
-    setHeading(newHeading);
-    setSubheading(newSubheading);
-  }, [pathname, searchParams]);
+  //   setHeading(newHeading);
+  //   setSubheading(newSubheading);
+  // }, [pathname, searchParams]);
 
   return (
     <div className="flex items-center justify-between mx-5 font-josefin mt-7">

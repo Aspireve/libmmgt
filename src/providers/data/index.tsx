@@ -15,7 +15,8 @@ export const dataProvider:  CustomDataProvider = {
             method: "GET",
         });
         return {
-            data: response.data,
+            Arrdata:response.data,
+            data: response,
             total: response.length,
         };
     },

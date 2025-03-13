@@ -170,7 +170,8 @@ const EditStudent: React.FC = () => {
 
   return (
     <>
-      <Header />
+            <Header heading="Edit Book" subheading="Tanvir Chavan"/>
+      
       <section className="p-10">
         <div className="container mx-auto">
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">

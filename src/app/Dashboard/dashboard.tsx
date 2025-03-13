@@ -15,9 +15,12 @@ export default function Dashboard() {
   const activeClasses =
     "bg-[#1E40AF] text-white border border-[#a3a4ae] hover:bg-[#1E40AF]";
   const inactiveClasses = "bg-white text-black border-0";
+
+  const heading = "Library Management"
+  const subheading = "Tanvir Chavan"
   return (
     <>
-      <Header />
+      <Header heading={heading} subheading={subheading}/>
       <div className="mt-8 flex justify-evenly bg-white border border-[#e4e4e4] rounded-[8px] gap-[6px] m-4 p-[10px] w-[30%]">
         <Button
           className={`rounded-[6px] transition-colors shadow-none ${paddingClasses} ${activeTab === 'issue' ? activeClasses : inactiveClasses}`}

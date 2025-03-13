@@ -92,6 +92,7 @@ const StudentDirectory = () => {
   });
 
   const students = studentsResponse?.data ?? [];
+  console.log(students[0])
   console.log("Fetched students:", studentsResponse?.data);
 
   const { mutate: deleteStudent } = useDelete();
@@ -355,7 +356,7 @@ const handleCancelArchive = () => {
 
   return (
     <>
-      <Header />
+      <Header heading="Student Directory" subheading="Tanvir Chavan"/>
       <section className="border border-[#E0E2E7] rounded-[10px] w-[90%] ml-10 mt-6">
         <div className="p-4">
           <div className="flex items-center justify-between mb-4">
@@ -434,8 +435,8 @@ const handleCancelArchive = () => {
                 )}
               </div>
               <Link href="/student-page/AddStudent">
-                <Button className="border border-[#989CA4] rounded-[8px] text-[#BBBBBB]">
-                  <img src={addBook.src} alt="Add Student" /> Add Student
+                <Button className="border border-[#1E40AF] rounded-[8px] text-[#1E40AF]">
+                   Add Student
                 </Button>
               </Link>
               <div className="relative w-72">

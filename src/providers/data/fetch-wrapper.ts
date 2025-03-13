@@ -48,7 +48,6 @@ export const fetchWrapper = async (url: string, options: RequestInit) => {
 
       throw new Error(errorMessage);
     }
-
     // ✅ Handle JSON responses properly
     const contentType = response.headers.get("content-type");
     if (contentType && contentType.includes("application/json")) {

@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useList, useInvalidate, useDeleteMany, useUpdate } from '@refinedev/core';
 import { bookRoutes, BookData } from '../types/data';
 
@@ -32,7 +32,11 @@ const BooksPage = () => {
   const [selectedBookId, setSelectedBookId] = useState<string | null>(null);
 
   const { data, isLoading } = useList<BookData>({ resource: `book_v2/${url}`});
+   const books = data?.Arrdata || [];
 
+  useEffect(()=>{
+    console.log("books:",books)
+  })
   const handleEdit = (book: BookData) => {
     router.push(`/book-pages/edit-book?book_uuid=${book.book_uuid}`);
   };
@@ -263,7 +267,7 @@ const BooksPage = () => {
               </Button>
             </div>
           </div>
-          <DataTable columns={columns} data={data?.data || []} isLoading={isLoading} />
+          <DataTable columns={columns} data={books} isLoading={isLoading} />
         </div>
       </section>
       {isModalOpen && (

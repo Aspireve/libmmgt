@@ -81,7 +81,8 @@ const AddStudent: React.FC = () => {
 
   return (
     <>
-      <Header />
+      <Header heading="Add Student" subheading="Tanvir Chavan"/>
+
       <section className="p-10">
         <div className="container mx-auto">
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
