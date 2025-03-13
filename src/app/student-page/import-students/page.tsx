@@ -5,6 +5,7 @@ import * as XLSX from "xlsx";
 import { useCreate } from "@refinedev/core";
 import { parse, format } from "date-fns";
 import { Loader2 } from "lucide-react";
+import { FileProcessor } from "@/utilities/file_processor";
 
 export interface StudentData {
   student_name: string;
@@ -116,26 +117,26 @@ const ImportStudents = () => {
         return;
       }
       try {
-        const workbook = XLSX.read(data, { type: "array" });
-        const sheet = workbook.Sheets[workbook.SheetNames[0]];
-        const sheetData = XLSX.utils.sheet_to_json(sheet, {
-          header: 1,
-        }) as any[];
-        if (sheetData.length > 0) {
-          setExcelHeaders(sheetData[0] as string[]);
-          setExcelData(sheetData.slice(1));
-          setSelectedFile(file);
-          setError("");
-          setMapping(initialMapping);
-        } else {
-          setError("No data found in the file.");
-        }
-      } catch (err) {
-        setError(
-          `Error processing file: ${
-            err instanceof Error ? err.message : "Unknown error"
-          }`
+        // const workbook = XLSX.read(data, { type: "array" });
+        // const sheet = workbook.Sheets[workbook.SheetNames[0]];
+        // const sheetData = XLSX.utils.sheet_to_json(sheet, {
+        //   header: 1,
+        // }) as any[];
+        // if (sheetData.length > 0) {
+        const processor = FileProcessor.getProcessor(file.type);
+        const { headers, data } = processor.process(
+          event.target.result as ArrayBuffer
         );
+        setExcelHeaders(headers);
+        setExcelData(data);
+        setSelectedFile(file);
+        setError("");
+        setMapping(initialMapping);
+        // } else {
+        //   setError("No data found in the file.");
+        // }
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "Unknown error");
       }
     };
     reader.readAsArrayBuffer(file);
