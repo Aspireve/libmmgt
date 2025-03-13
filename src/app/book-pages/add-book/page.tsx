@@ -152,7 +152,8 @@ const AddBook = () => {
   );
   return (
     <>
-      <Header />
+            <Header heading="Add Book" subheading="Tanvir Chavan"/>
+
       <Tabbing routes={addbookRoutes} className='w-[30%]' />
       <section className='p-10'>
         <div className="container">

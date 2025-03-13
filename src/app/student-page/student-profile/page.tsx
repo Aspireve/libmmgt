@@ -39,7 +39,8 @@ const Page = () => {
 
   return (
     <>
-      <Header />
+           <Header heading="Student Profile" subheading="Tanvir Chavan"/>
+     
       <div className="max-w-5xl ml-5 p-6 rounded-lg">
         {/* ✅ Student Information Grid */}
         <div className="grid grid-cols-4 gap-6 mt-4">
@@ -62,22 +63,14 @@ const Page = () => {
                         className="border-gray-300 p-2 rounded-md pr-10"
                         type="date"
                         value={value}
-                        readOnly
                       />
-                      <Image
-                        src={calendarIcon}
-                        alt="Calendar"
-                        width={20}
-                        height={20}
-                        className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer"
-                      />
+              
                     </div>
                   ) : (
                     <Input
                       className="border-gray-300 p-2 rounded-md"
                       type={field.type}
                       value={value}
-                      readOnly
                     />
                   )}
                 </div>
@@ -88,9 +81,8 @@ const Page = () => {
           <div className="col-span-4">
             <Label className="text-[#808080] font-medium mb-1">Address</Label>
             <Textarea
-              className="border-gray-300 p-2 rounded-md"
+              className="border-gray-300 p-2 rounded-md text-[#808080]"
               value={studentData?.address || ""}
-              readOnly
             />
           </div>
         </div>

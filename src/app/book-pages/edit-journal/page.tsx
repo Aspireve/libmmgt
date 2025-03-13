@@ -119,7 +119,8 @@ const EditJournal = () => {
 
     return (
         <>
-            <Header />
+            <Header heading="Student Directory" subheading="Tanvir Chavan"/>
+
             <section className="p-10">
                 <div className="container">
                     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">

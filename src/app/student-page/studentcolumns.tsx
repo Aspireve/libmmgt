@@ -30,7 +30,7 @@ const StudentIDCell = ({ student }: { student: Student }) => {
   const router = useRouter();
   return (
     <div
-      className="relative group cursor-pointer"
+      className="relative group cursor-pointer  font-bold"
       onClick={() => router.push(
         `/student-page/student-profile?id=${student.student_uuid}&student=${encodeURIComponent(
           JSON.stringify(student)

@@ -62,7 +62,8 @@ const Book_details = () => {
       };
     return (
         <>
-            <Header />
+                  <Header heading="Book Details" subheading="Tanvir Chavan"/>
+
             <section className='p-10'>
                 <div className="container">
                     <form onSubmit={handleSubmit(onSubmit)}>

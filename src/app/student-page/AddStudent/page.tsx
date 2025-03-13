@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Header from "../../Header/header";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -13,9 +13,12 @@ import { toast } from "sonner";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store/store";
 import Link from "next/link";
+import { Spinner } from "@chakra-ui/react"
 
 
 const AddStudent: React.FC = () => {
+  const [isUpdating,setIsUpdating] = useState(false)
+
   const router = useRouter();
   const {
     register,
@@ -41,6 +44,7 @@ const AddStudent: React.FC = () => {
   const auth = useSelector((state: RootState) => state.auth);
 
   const onSubmit = (data: FieldValues) => {
+    setIsUpdating(true)
     const hardcodedInstituteId = "828f0d33-258f-4a92-a235-9c1b30d8882b";
     const hardcodedInstituteName = "TIA";
 
@@ -71,6 +75,7 @@ const AddStudent: React.FC = () => {
       {
         onSuccess: () => {
           toast.success("Student added successfully!", { position: "top-center" });
+          setIsUpdating(false)
           router.push("/student-page");
         },
         onError: (error: any) =>
@@ -98,6 +103,18 @@ const AddStudent: React.FC = () => {
                 />
                 {errors.student_name && (
                   <p className="text-red-500 text-sm">{errors.student_name.message}</p>
+                )}
+              </div>
+              {/* Date of Birth */}
+              <div>
+                <Label>Date of Birth</Label>
+                <Input
+                  type="date"
+                  {...register("date_of_birth", { required: "Date of Birth is required" })}
+                  placeholder="Enter Date of Birth"
+                />
+                {errors.date_of_birth && (
+                  <p className="text-red-500 text-sm">{errors.date_of_birth.message}</p>
                 )}
               </div>
               {/* Department */}
@@ -203,18 +220,7 @@ const AddStudent: React.FC = () => {
                   <p className="text-red-500 text-sm">{errors.confirm_password.message}</p>
                 )}
               </div>
-              {/* Date of Birth */}
-              <div>
-                <Label>Date of Birth</Label>
-                <Input
-                  type="date"
-                  {...register("date_of_birth", { required: "Date of Birth is required" })}
-                  placeholder="Enter Date of Birth"
-                />
-                {errors.date_of_birth && (
-                  <p className="text-red-500 text-sm">{errors.date_of_birth.message}</p>
-                )}
-              </div>
+              
               {/* Gender */}
               <div>
                 <Label>Gender</Label>
@@ -225,7 +231,7 @@ const AddStudent: React.FC = () => {
                       ["male", "female"].includes(value) ||
                       "Gender must be 'male' or 'female'",
                   })}
-                  className="w-full p-2 border rounded"
+                  className="w-full p-2 border border-[#717680] rounded"
                 >
                   <option value="">Select Gender</option>
                   <option value="male">Male</option>
@@ -242,9 +248,16 @@ const AddStudent: React.FC = () => {
                 Cancel
               </Button>
               </Link>
-              <Button type="submit" className="bg-[#1E40AF] text-white rounded-[10px] hover:bg-[#1E40AF]">
-                Add Student
+      
+              {isUpdating ? (
+                <Button type="submit" disabled className="bg-[#1E40AF] text-white rounded-[10px] hover:bg-[#1E40AF]">
+                Adding Book<Spinner size="sm" />
+                </Button>
+              ):(
+                <Button type="submit" className="bg-[#1E40AF] text-white rounded-[10px] hover:bg-[#1E40AF]">
+                Add Book
               </Button>
+              )}
             </div>
           </form>
         </div>
