@@ -13,7 +13,7 @@ import { toast } from "sonner";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store/store";
 import Link from "next/link";
-import { Spinner } from "@chakra-ui/react"
+import { Loader2 } from "lucide-react";
 
 
 const AddStudent: React.FC = () => {
@@ -91,7 +91,6 @@ const AddStudent: React.FC = () => {
       <section className="p-10">
         <div className="container mx-auto">
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-            <h2 className="text-2xl font-bold mb-4">Add Student</h2>
             <div className="grid grid-cols-2 gap-4">
               {/* Student Name */}
               <div>
@@ -251,7 +250,8 @@ const AddStudent: React.FC = () => {
       
               {isUpdating ? (
                 <Button type="submit" disabled className="bg-[#1E40AF] text-white rounded-[10px] hover:bg-[#1E40AF]">
-                Adding Book<Spinner size="sm" />
+                Adding Book
+                <Loader2 className="h-5 w-5 animate-spin" />
                 </Button>
               ):(
                 <Button type="submit" className="bg-[#1E40AF] text-white rounded-[10px] hover:bg-[#1E40AF]">

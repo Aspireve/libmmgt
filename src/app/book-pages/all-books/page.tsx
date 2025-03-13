@@ -14,7 +14,6 @@ import Header from '@/app/Header/header';
 import Tabbing from '@/app/Tab/Tab';
 import { images } from "../images";
 import Link from 'next/link';
-
 import { formatDate } from '../hooks/formatDate'
 
 const BooksPage = () => {
@@ -33,10 +32,12 @@ const BooksPage = () => {
 
   const { data, isLoading } = useList<BookData>({ resource: `book_v2/${url}`});
    const books = data?.data || [];
+   const totalCount = data?.pagination?.total ?? 0;
+   const totalLimit = data?.pagination?.limit;
+   const total_no_of_pages = data?.pagination?.totalPages;
+   const [page,setPage] = useState(data?.pagination?.page)
 
-  useEffect(()=>{
-    console.log("books:",books)
-  })
+
   const handleEdit = (book: BookData) => {
     router.push(`/book-pages/edit-book?book_uuid=${book.book_uuid}`);
   };
@@ -166,7 +167,7 @@ const BooksPage = () => {
           <div className="grid grid-cols-[30%_70%] p-4">
             <div className='flex items-center gap-[10px]'>
               <h1 className='text-3xl font-bold'>{title}</h1>
-              <p className='bg-[#F9F5FF] rounded-2xl text-[#6941C6] p-1'>{data?.data.length || 0}<span> Entries</span></p>
+              <p className='bg-[#F9F5FF] rounded-2xl text-[#6941C6] p-1'>{totalCount}<span> Entries</span></p>
             </div>
             <div className="flex items-center justify-end py-4 gap-3">
             {isshowDeleteButton && (
@@ -190,12 +191,7 @@ const BooksPage = () => {
                         Department
                       </label>
                       <select className="w-full border border-gray-300 rounded px-2 py-1">
-                        {/* <option value="">All</option>
-                        {availableDepartments.map((dept) => (
-                          <option key={dept} value={dept}>
-                            {dept}
-                          </option>
-                        ))} */}
+                        
                       </select>
                     </div>
                     <Button
@@ -268,7 +264,7 @@ const BooksPage = () => {
               </Button>
             </div>
           </div>
-          <DataTable columns={columns} data={books} isLoading={isLoading} />
+          <DataTable columns={columns} data={books} isLoading={isLoading} page={page} totalCount={totalCount} totalPages={total_no_of_pages} limit={totalLimit}/>
         </div>
       </section>
       {isModalOpen && (

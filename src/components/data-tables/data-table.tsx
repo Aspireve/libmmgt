@@ -1,6 +1,16 @@
 "use client";
 
 import { useState } from "react";
+
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import {
   ColumnDef,
   flexRender,
@@ -28,12 +38,16 @@ interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   isLoading?: boolean;
+  page:number,
+  totalPages:number,
+  limit:number,
+  totalCount:number
 }
 
-export function DataTable<TData, TValue>({ 
-  columns, 
-  data, 
-  isLoading = false 
+export function DataTable<TData, TValue>({
+  columns,
+  data,
+  isLoading = false
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
 
@@ -49,13 +63,13 @@ export function DataTable<TData, TValue>({
   });
 
   const SkeletonRow = ({ index }: { index: number }) => (
-    <TableRow 
+    <TableRow
       className="animate-fade-in"
       style={{ animationDelay: `${index * 100}ms` }}
     >
       {columns.map((_, colIndex) => (
         <TableCell key={colIndex} className="py-4">
-          <Skeleton 
+          <Skeleton
             className="h-4 w-full animate-pulse bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 bg-[length:200%_100%]"
           />
         </TableCell>
@@ -105,7 +119,7 @@ export function DataTable<TData, TValue>({
                 {headerGroup.headers.map((header) => (
                   <TableHead key={header.id} className="py-4 text-[#535862] text-center">
                     {isLoading ? (
-                      <Skeleton 
+                      <Skeleton
                         className="h-4 w-20 mx-auto animate-pulse bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 bg-[length:200%_100%]"
                       />
                     ) : (
@@ -124,8 +138,8 @@ export function DataTable<TData, TValue>({
               ))
             ) : table.getRowModel().rows.length ? (
               table.getRowModel().rows.map((row) => (
-                <TableRow 
-                  key={row.id} 
+                <TableRow
+                  key={row.id}
                   className="border-b border-gray-300 text-center transition-opacity duration-300 hover:bg-gray-50"
                 >
                   {row.getVisibleCells().map((cell) => (
@@ -137,8 +151,8 @@ export function DataTable<TData, TValue>({
               ))
             ) : (
               <TableRow>
-                <TableCell 
-                  colSpan={columns.length} 
+                <TableCell
+                  colSpan={columns.length}
                   className="text-center py-4 text-gray-500 animate-fade-in"
                 >
                   No data available
@@ -150,36 +164,56 @@ export function DataTable<TData, TValue>({
       </div>
 
       <div className="flex items-center justify-between py-4 cursor-pointer">
-        <Button 
-          onClick={() => table.previousPage()} 
+        <Button
+          onClick={() => table.previousPage()}
           disabled={!table.getCanPreviousPage() || isLoading}
           className="transition-all duration-200 hover:scale-105 disabled:opacity-50 ml-10"
         >
-          <Image src={Previous} alt="Previous Icon"/>
+          <Image src={Previous} alt="Previous Icon" />
           Previous
         </Button>
 
-        <span className="text-[#535862]">
-          {isLoading ? (
-            <Skeleton 
-              className="h-4 w-20 animate-pulse bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 bg-[length:200%_100%]"
-            />
-          ) : (
-            <span className="animate-fade-in">
-              {table.getState().pagination.pageIndex + 1} ... {table.getPageCount()}
-            </span>
-          )}
-        </span>
+        <div>
+          <div className="text-[#535862] flex gap-11 items-center">
+            {isLoading ? (
+              <Skeleton
+                className="h-4 w-20 animate-pulse bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 bg-[length:200%_100%]"
+              />
+            ) : (
+              <>
+              <span className="animate-fade-in">
+                {table.getState().pagination.pageIndex + 1} ... {table.getPageCount()}
+              </span>
+              <Select>
+              <SelectTrigger className="w-[120px] border-[#717680] rounded-[10px]">
+            <SelectValue placeholder="No of rows" />
+          </SelectTrigger>
+                <SelectContent className="bg-[#fff]">
+                  <SelectGroup>
+                  <SelectLabel>No of pages</SelectLabel>
+                    <SelectItem value="5">5</SelectItem>
+                    <SelectItem value="10">10</SelectItem>
+                    <SelectItem value="15">15</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+              </>
+            )}
+          </div>  
 
-        <Button 
-          onClick={() => table.nextPage()} 
+          
+        </div>
+        <Button
+          onClick={() => table.nextPage()}
           disabled={!table.getCanNextPage() || isLoading}
           className="transition-all duration-200 hover:scale-105 disabled:opacity-50 mr-10"
         >
           Next
-          <Image src={Next} alt="Next Icon"/>
+          <Image src={Next} alt="Next Icon" />
         </Button>
       </div>
     </>
   );
 }
+
+

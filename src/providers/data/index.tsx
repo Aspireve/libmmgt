@@ -15,9 +15,9 @@ export const dataProvider:  CustomDataProvider = {
             method: "GET",
         });
         return {
-            // Arrdata:response.data,
             data: response?.data || response,
-            total: response.length,
+            total: response,
+            pagination:response?.pagination
         };
     },
     getOne: async ({ resource, id }) => {
