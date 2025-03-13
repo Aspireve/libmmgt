@@ -67,6 +67,8 @@ const formatDate = (dateString: string) => {
   }
 };
 
+
+
 const ImportStudents = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [error, setError] = useState("");
@@ -235,9 +237,10 @@ const ImportStudents = () => {
                   <label className="text-sm text-gray-700 mb-1">{fieldLabels[fieldKey]}</label>
                   <select
                     className="border border-gray-300 rounded p-2"
-                    value={mapping[fieldKey] || ""}
+                    value={excelHeaders.includes(fieldKey) ? fieldKey : mapping[fieldKey] || ""}
                     onChange={(e) => handleMappingChange(fieldKey, e.target.value)}
                   >
+                    {/* excelHeaders.includes(fieldKey) ? fieldKey : "" */}
                     <option value="">Select Column</option>
                     {excelHeaders.map((header, index) => (
                       <option key={index} value={header}>
