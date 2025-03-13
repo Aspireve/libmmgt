@@ -6,6 +6,7 @@ import { useCreate } from "@refinedev/core";
 import { parse, format } from "date-fns";
 import { Loader2 } from "lucide-react";
 import { FileProcessor } from "@/utilities/file_processor";
+import { StudentDataBuilder } from "@/utilities/student_builder";
 
 export interface StudentData {
   student_name: string;
@@ -148,59 +149,97 @@ const ImportStudents = () => {
 
   const handleMapData = () => {
     const mapped = excelData
-      .map((row) => {
-        const studentEntry: Partial<StudentData> = {};
-
-        Object.entries(mapping).forEach(([field, column]) => {
-          const fieldKey = field as keyof StudentData;
-          const colIndex = excelHeaders.indexOf(column);
-          if (column && colIndex !== -1 && row[colIndex] !== undefined) {
-            let value: any = row[colIndex];
-
-            // ✅ Convert date_of_birth to YYYY-MM-DD
-            if (fieldKey === "date_of_birth") {
+      .map(
+        (row) =>
+          new StudentDataBuilder(row, mapping, excelHeaders)
+            .setField("date_of_birth", (value) => {
               const parsedDate = new Date(value);
-              if (!isNaN(parsedDate.getTime())) {
-                value = parsedDate.toISOString().split("T")[0]; // Convert to YYYY-MM-DD
-              } else {
-                console.warn(`Invalid Date: ${value}`);
-                value = ""; // Set empty or handle error case
-              }
-            }
+              return !isNaN(parsedDate.getTime())
+                ? parsedDate.toISOString().split("T")[0]
+                : "";
+            })
+            .setField("roll_no", (value) => {
+              const num = Number(value);
+              return isNaN(num) ? 0 : num;
+            })
+            .setField("student_name")
+            .setField("department")
+            .setField("email")
+            .setField("phone_no")
+            .setField("address")
+            .setField("year_of_admission")
+            .setField("password")
+            .setField("confirm_password")
+            .setField("gender")
+            .setField("institute_id")
+            .setField("institute_name")
+            .build()
+        //   {
 
-            // ✅ Convert roll_no to number
-            if (fieldKey === "roll_no") {
-              value = Number(value);
-              if (isNaN(value)) value = 0; // Fallback for invalid numbers
-            }
+        //   const studentEntry: Partial<StudentData> = {};
 
-            // ✅ Assign the value only if it's not undefined
-            (studentEntry as any)[fieldKey] = value;
-          }
-        });
+        //   Object.entries(mapping).forEach(([field, column]) => {
+        //     const fieldKey = field as keyof StudentData;
+        //     const colIndex = excelHeaders.indexOf(column);
+        //     if (column && colIndex !== -1 && row[colIndex] !== undefined) {
+        //       let value: any = row[colIndex];
 
-        return studentEntry;
-      })
+        //       // ✅ Convert date_of_birth to YYYY-MM-DD
+        //       if (fieldKey === "date_of_birth") {
+        //         const parsedDate = new Date(value);
+        //         if (!isNaN(parsedDate.getTime())) {
+        //           value = parsedDate.toISOString().split("T")[0]; // Convert to YYYY-MM-DD
+        //         } else {
+        //           console.warn(`Invalid Date: ${value}`);
+        //           value = ""; // Set empty or handle error case
+        //         }
+        //       }
+
+        //       // ✅ Convert roll_no to number
+        //       if (fieldKey === "roll_no") {
+        //         value = Number(value);
+        //         if (isNaN(value)) value = 0; // Fallback for invalid numbers
+        //       }
+
+        //       // ✅ Assign the value only if it's not undefined
+        //       (studentEntry as any)[fieldKey] = value;
+        //     }
+        //   });
+
+        //   return studentEntry;
+        // }
+      )
       .filter((entry) => Object.keys(entry).length > 0);
 
     setMappedData(mapped);
     console.log(mapped);
     setSuccessMessage(`Successfully mapped ${mapped.length} records.`);
-  };
-
-  const handleImportData = () => {
-    if (mappedData.length === 0) {
+    if (mapped.length === 0) {
       setError("No data to import.");
       return;
     }
     mutate(
-      { resource: "student/bulk-create", values: mappedData },
+      { resource: "student/bulk-create", values: mapped },
       {
         onSuccess: () => setSuccessMessage("Data imported successfully!"),
         onError: () => setError("Import failed."),
       }
     );
   };
+
+  // const handleImportData = () => {
+  //   if (mappedData.length === 0) {
+  //     setError("No data to import.");
+  //     return;
+  //   }
+  //   mutate(
+  //     { resource: "student/bulk-create", values: mappedData },
+  //     {
+  //       onSuccess: () => setSuccessMessage("Data imported successfully!"),
+  //       onError: () => setError("Import failed."),
+  //     }
+  //   );
+  // };
 
   return (
     <div className="container mx-auto p-6">
@@ -296,10 +335,11 @@ const ImportStudents = () => {
               className={`bg-[#1E40AF] hover:bg-[#1E40AF] transition-all duration-300 cursor-pointer w-full text-white px-4 py-2 rounded flex items-center justify-center ${
                 isLoading ? "opacity-50 cursor-not-allowed" : ""
               }`}
-              onClick={() => {
-                handleMapData();
-                handleImportData();
-              }}
+              onClick={handleMapData}
+              // onClick={() => {
+              // handleMapData();
+              // handleImportData();
+              // }}
               disabled={isLoading}
             >
               {isLoading ? (
