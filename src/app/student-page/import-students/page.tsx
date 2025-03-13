@@ -302,6 +302,7 @@ const ImportStudents = () => {
                     {fieldLabels[fieldKey]}
                   </label>
                   <select
+                  
                     className="border border-gray-300 rounded p-2"
                     value={
                       excelHeaders.includes(fieldKey)

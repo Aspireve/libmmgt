@@ -264,7 +264,7 @@ const BooksPage = () => {
               </Button>
             </div>
           </div>
-          <DataTable columns={columns} data={books} isLoading={isLoading} page={page} totalCount={totalCount} totalPages={total_no_of_pages} limit={totalLimit}/>
+          <DataTable columns={columns} data={books} isLoading={isLoading}/>
         </div>
       </section>
       {isModalOpen && (

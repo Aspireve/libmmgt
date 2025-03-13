@@ -38,10 +38,6 @@ interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   isLoading?: boolean;
-  page:number,
-  totalPages:number,
-  limit:number,
-  totalCount:number
 }
 
 export function DataTable<TData, TValue>({

@@ -87,9 +87,9 @@ export const profiledata = [
       type: "text",
     },
     {
-      name: "year_of_admission",
-      label: "Year of Admission",
-      key: "year_of_admission",
+      name: "date_of_birth",
+      label: "Date of Birth",
+      key: "date_of_birth",
       type: "date",
     },
     {
