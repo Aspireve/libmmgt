@@ -1,36 +1,23 @@
 "use client";
 
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect } from "react";
 import Header from "../../Header/header";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { useForm, FieldValues } from "react-hook-form";
-import { useUpdate } from "@refinedev/core";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useOne, useUpdate } from "@refinedev/core";
 import { Student } from "../studentcolumns";
 import { toast } from "sonner";
-
-
 
 const EditStudent: React.FC = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const studentUuid = searchParams.get("id");
+  // Extract student UUID from query parameter "id"
+  const studentUuid = searchParams.get("id")?.trim() || "";
 
-  const initialData = useMemo(() => {
-    const parsedStudent = searchParams.get("student");
-    let data: Student = {} as Student;
-    try {
-      if (parsedStudent) {
-        data = JSON.parse(decodeURIComponent(parsedStudent)) as Student;
-        console.log("Parsed initialData:", data);
-      }
-    } catch (error) {
-      console.error("Failed to parse student data from URL", error);
-    }
-    return data;
-  }, [searchParams]);
+  console.log("UUID from URL:", studentUuid);
 
   const {
     register,
@@ -59,27 +46,46 @@ const EditStudent: React.FC = () => {
 
   const password = watch("password");
 
+  // Use refine's useOne hook with meta option (wrapped in a query object) to pass student_uuid.
+  const { data, isLoading, error } = useOne<Student>({
+    resource: "student/detail",
+    id: studentUuid || "", // ensure id is provided
+    meta: { query: { student_uuid: studentUuid } },
+  });
+
   useEffect(() => {
-    if (initialData && initialData.student_uuid) {
+    if (studentUuid) {
+      console.log("Using student_uuid in meta:", studentUuid);
+    } else {
+      console.warn("No student UUID provided in URL query parameter.");
+    }
+  }, [studentUuid]);
+
+  // Reset form with fetched student data
+  useEffect(() => {
+    if (data?.data) {
+      const student = data.data;
+      console.log("Fetched student data:", student);
       reset({
-        student_name: initialData.student_name || "",
-        department: initialData.department || "",
-        email: initialData.email || "",
-        phone_no: initialData.phone_no || "",
-        address: initialData.address || "",
-        roll_no: initialData.roll_no || 0,
-        year_of_admission: initialData.year_of_admission || "",
+        student_name: student.student_name || "",
+        department: student.department || "",
+        email: student.email || "",
+        phone_no: student.phone_no || "",
+        address: student.address || "",
+        roll_no: student.roll_no || 0,
+        year_of_admission: student.year_of_admission || "",
         password: "",
         confirm_password: "",
       });
     } else {
-      console.warn("No valid student_uuid in initialData:", initialData);
+      console.warn("No student data found for UUID:", studentUuid);
     }
-  }, [initialData, reset]);
+  }, [data, reset, studentUuid]);
 
-  const { mutate } = useUpdate();
+  // Use refine's useUpdate hook for updating the student.
+  const { mutate } = useUpdate<Student>();
 
-  const onSubmit = (data: FieldValues) => {
+  const onSubmit = (formData: FieldValues) => {
     const hardcodedInstituteId = "828f0d33-258f-4a92-a235-9c1b30d8882b";
 
     const validStudentUuid =
@@ -88,39 +94,35 @@ const EditStudent: React.FC = () => {
         studentUuid
       )
         ? studentUuid
-        : initialData.student_uuid;
+        : "";
 
-    console.log("studentUuid from URL:", studentUuid);
-    console.log("initialData.student_uuid:", initialData.student_uuid);
-    console.log("validStudentUuid:", validStudentUuid);
+    console.log("Valid student UUID for update:", validStudentUuid);
 
-    if (
-      !validStudentUuid ||
-      !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
-        validStudentUuid
-      )
-    ) {
+    if (!validStudentUuid) {
       toast.error("Invalid student UUID format. A valid UUID is required.", {
         position: "top-center",
       });
       return;
     }
 
+    // Optionally, include student_id if available from fetched data:
+    const fetchedStudent = data?.data;
+
     const studentData: Partial<Student> = {
-      student_id: initialData.student_id,
+      student_id: fetchedStudent?.student_id, // include if backend needs it
       student_uuid: validStudentUuid,
-      student_name: data.student_name,
-      department: data.department,
-      email: data.email,
-      phone_no: data.phone_no,
-      address: data.address,
-      roll_no: Number(data.roll_no),
-      year_of_admission: data.year_of_admission,
+      student_name: formData.student_name,
+      department: formData.department,
+      email: formData.email,
+      phone_no: formData.phone_no,
+      address: formData.address,
+      roll_no: Number(formData.roll_no),
+      year_of_admission: formData.year_of_admission,
       institute_id: hardcodedInstituteId,
     };
 
-    const passwordValue = data.password?.trim();
-    const confirmPasswordValue = data.confirm_password?.trim();
+    const passwordValue = formData.password?.trim();
+    const confirmPasswordValue = formData.confirm_password?.trim();
 
     if (passwordValue) {
       if (!confirmPasswordValue) {
@@ -135,17 +137,18 @@ const EditStudent: React.FC = () => {
         });
         return;
       }
-
       studentData.password = passwordValue;
       studentData.confirm_password = confirmPasswordValue;
     }
 
-    console.log("Payload:", studentData);
+    console.log("Payload for update:", studentData);
 
+    // Add meta so that the update request includes the identifier as a query parameter.
     mutate(
       {
         resource: "student/edit",
         id: validStudentUuid,
+        meta: { query: { student_uuid: validStudentUuid } },
         values: studentData,
       },
       {
@@ -158,15 +161,16 @@ const EditStudent: React.FC = () => {
         onError: (error: any) => {
           console.error("Update error:", error);
           toast.error(
-            `Error updating student: ${
-              error.message || "Please try again later."
-            }`,
+            `Error updating student: ${error.message || "Please try again later."}`,
             { position: "top-center" }
           );
         },
       }
     );
   };
+
+  if (isLoading) return <div>Loading student data...</div>;
+  if (error) return <div>Error loading student data</div>;
 
   return (
     <>
@@ -284,8 +288,7 @@ const EditStudent: React.FC = () => {
               {/* New Password */}
               <div>
                 <Label>
-                  New Password{" "}
-                  {password && <span className="text-red-500">*</span>}
+                  New Password {password && <span className="text-red-500">*</span>}
                 </Label>
                 <Input
                   type="password"
@@ -309,9 +312,7 @@ const EditStudent: React.FC = () => {
                 <Input
                   type="password"
                   {...register("confirm_password", {
-                    required: password
-                      ? "Confirm new password is required"
-                      : false,
+                    required: password ? "Confirm new password is required" : false,
                   })}
                   placeholder="Confirm New Password"
                 />
@@ -323,10 +324,7 @@ const EditStudent: React.FC = () => {
               </div>
             </div>
             <div className="flex justify-center gap-4">
-              <Button
-                variant="outline"
-                onClick={() => router.push("/student-page")}
-              >
+              <Button variant="outline" onClick={() => router.push("/student-page")}>
                 Cancel
               </Button>
               <Button

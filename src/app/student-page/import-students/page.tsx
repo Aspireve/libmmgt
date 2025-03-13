@@ -234,6 +234,7 @@ const ImportStudents = () => {
                 <div key={field} className="flex flex-col">
                   <label className="text-sm text-gray-700 mb-1">{fieldLabels[fieldKey]}</label>
                   <select
+                  
                     className="border border-gray-300 rounded p-2"
                     value={mapping[fieldKey] || ""}
                     onChange={(e) => handleMappingChange(fieldKey, e.target.value)}
