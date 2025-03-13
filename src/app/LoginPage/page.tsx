@@ -30,28 +30,47 @@ const LoginPage: React.FC = () => {
       const response = await axios.post(
         "https://admissionserver.onrender.com/auth/login",
         { email, password },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
+        { headers: { "Content-Type": "application/json" } }
       );
 
       const data = response.data;
 
-      // Check if token exists, then store it in localStorage and Redux
       if (data.token) {
         localStorage.setItem("token", data.token);
-        // Dispatch the setUser action to store login credentials globally
-        dispatch(setUser(data));
-        // Redirect to import-students page after successful login
-        router.push("/import-students");
+        const mappedData = {
+          ...data,
+          header_image: data.header || data.header_image || null,
+        };
+        delete mappedData.header;
+        dispatch(setUser(mappedData));
+        window.location.href = "/"; // Full reload for navigation
       } else {
         setError("Invalid login credentials");
       }
     } catch (err) {
       setError("Login failed. Please try again.");
     }
+  };
+
+  const handleTempLogin = (): void => {
+    const tempToken = "temp-token-12345";
+    localStorage.setItem("token", tempToken);
+
+    const tempUserData = {
+      token: tempToken,
+      email: "default@example.com",
+      first_name: "Temp User",
+      institute_uuid: null,
+      employee_uuid: null,
+      institute_name: null,
+      organization_uuid: null,
+      phone: null,
+      logo: null,
+      header_image: null,
+    };
+
+    dispatch(setUser(tempUserData));
+    window.location.href = "/"; // Full reload for navigation
   };
 
   return (
@@ -110,6 +129,12 @@ const LoginPage: React.FC = () => {
               Login
             </Button>
           </form>
+          <Button
+            onClick={handleTempLogin}
+            className="w-full mt-4 bg-gray-200 text-gray-700 font-semibold py-2.5 rounded-lg hover:bg-gray-300 transition-all duration-300"
+          >
+            Temp Login
+          </Button>
           <p className="text-center text-sm text-gray-500 mt-4">
             Don’t have an account?{" "}
             <a href="/signup" className="text-indigo-600 hover:underline font-medium">
