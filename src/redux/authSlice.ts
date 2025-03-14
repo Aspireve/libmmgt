@@ -1,18 +1,5 @@
-// src/redux/authSlice.ts
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-
-interface AuthState {
-  token: string | null;
-  institute_uuid: string | null;
-  employee_uuid: string | null;
-  first_name: string | null;
-  institute_name: string | null;
-  organization_uuid: string | null;
-  email: string | null;
-  phone: string | null;
-  logo: string | null;
-  header_image: string | null; 
-}
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import type { AuthState } from "@/types/auth";
 
 const initialState: AuthState = {
   token: null,
@@ -28,7 +15,7 @@ const initialState: AuthState = {
 };
 
 const authSlice = createSlice({
-  name: 'auth',
+  name: "auth",
   initialState,
   reducers: {
     setUser: (state, action: PayloadAction<AuthState>) => {
