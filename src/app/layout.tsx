@@ -5,7 +5,7 @@ import { Provider } from "react-redux";
 import { store } from "../redux/store/store";
 import { RefineContext } from "./_refine_context";
 import Sidebar from "@/components/custom/sidebar";
-import Navbar from "./Navbar/navbar";
+import Navbar from "@/components/custom/navbar";
 import "../styles/global.css";
 import { Toaster } from "@/components/ui/sonner";
 import { TabProvider } from "./context/TabContext";

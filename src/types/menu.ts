@@ -4,3 +4,9 @@ export interface MenuItem {
   icon: any;
   route: string;
 }
+
+export type Tab = {
+  id: string;
+  title: string;
+  route: string;
+};
