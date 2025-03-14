@@ -6,6 +6,8 @@ const images = {
   ArrowLeft: require("./arrow-left.png"),
   ArrowRight: require("./arrow-right.png"),
   AvailableBooks: require("./Available_Books.png"),
+  BookBorrowed: require("./BookBorrowed.png"),
+  BookReturned: require("./BookReturned.png"),
   BooksLogo: require("./BooksLogo.png"),
   BorrowedBooks: require("./Borrowed_Books.png"),
   Calendar: require("./calender.png"),
