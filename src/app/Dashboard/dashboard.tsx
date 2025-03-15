@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 
 export default function Dashboard() {
   const [activeTab, setActiveTab] = useState<"issue" | "request">("issue");
+  const [refresh, setRefresh] = useState(0);
 
   const paddingClasses =
     "transition-all duration-300 py-[5px] px-[10px] text-[11px] sm:py-[6px] sm:px-[12px] sm:text-[14px] md:py-[10px] md:px-[10px] md:text-[16px]";
@@ -44,8 +45,8 @@ export default function Dashboard() {
         {activeTab === "issue" && <BookBorrowedDetails />}
         {activeTab === "request" && <BookActiveDetails />}
       </div> */}
-      <IssueBook />
-      <Activities />
+      <IssueBook setRefresh={setRefresh}/>
+      <Activities refresh={refresh}/>
       <div className="py-10" />
     </>
   );

@@ -16,12 +16,14 @@ import {
 import { useCreate } from "@refinedev/core";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
-import { QueryClient, useQueryClient } from "@tanstack/react-query";
 
-export default function IssueBook() {
+export default function IssueBook({
+  setRefresh,
+}: {
+  setRefresh: React.Dispatch<React.SetStateAction<number>>;
+}) {
   const [action, setAction] = useState<ActionType>();
   const { mutate, isLoading } = useCreate();
-  const queryClient = useQueryClient();
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
@@ -42,7 +44,7 @@ export default function IssueBook() {
         onSuccess: () => {
           toast.success(`Book ${action} Successfully!`);
           form.reset();
-          queryClient.invalidateQueries({ queryKey: ["book_v2/get_all_logs"] });
+          setRefresh((prev: number) => prev + 1);
         },
         onError: (error) => {
           toast.error(`Error ${action} Book: ` + error.message);
