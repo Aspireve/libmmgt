@@ -21,7 +21,7 @@ export default function Dashboard() {
   return (
     <>
       <Header heading={heading} subheading={subheading} />
-      <div className="mt-8 flex justify-evenly bg-white border border-[#e4e4e4] rounded-[8px] gap-[6px] m-4 p-[5px] w-fit">
+      {/* <div className="mt-8 flex justify-evenly bg-white border border-[#e4e4e4] rounded-[8px] gap-[6px] m-4 p-[5px] w-fit">
         <Button
           className={`rounded-[6px] transition-colors shadow-none ${paddingClasses} ${
             activeTab === "issue" ? activeClasses : inactiveClasses
@@ -43,7 +43,7 @@ export default function Dashboard() {
       <div className="border border-[#E0E2E7] rounded-[10px] m-4">
         {activeTab === "issue" && <BookBorrowedDetails />}
         {activeTab === "request" && <BookActiveDetails />}
-      </div>
+      </div> */}
       <IssueBook />
       <Activities />
       <div className="py-10" />

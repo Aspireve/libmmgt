@@ -1,7 +1,7 @@
 "use client";
 
-import React from "react";
-import { useField, useForm } from "@tanstack/react-form";
+import React, { useState } from "react";
+import { useForm } from "@tanstack/react-form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -13,8 +13,44 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useCreate } from "@refinedev/core";
+import { Loader2 } from "lucide-react";
+import { toast } from "sonner";
+import { QueryClient, useQueryClient } from "@tanstack/react-query";
 
 export default function IssueBook() {
+  const [action, setAction] = useState<ActionType>();
+  const { mutate, isLoading } = useCreate();
+  const queryClient = useQueryClient();
+
+  const handleSubmit = (e: any) => {
+    e.preventDefault();
+    console.log(e);
+    mutate(
+      {
+        resource:
+          action === ActionType.CHECK_IN
+            ? "book_v2/borrowed"
+            : "book_v2/returned",
+        values: {
+          student_uuid: form.getFieldValue("studentId"),
+          barcode: form.getFieldValue("bookId"),
+          book_uuid: "",
+        },
+      },
+      {
+        onSuccess: () => {
+          toast.success(`Book ${action} Successfully!`);
+          form.reset();
+          queryClient.invalidateQueries({ queryKey: ["book_v2/get_all_logs"] });
+        },
+        onError: (error) => {
+          toast.error(`Error ${action} Book: ` + error.message);
+        },
+      }
+    );
+  };
+
   const form = useForm({
     defaultValues: {
       action: ActionType.CHECK_IN,
@@ -22,28 +58,20 @@ export default function IssueBook() {
       bookName: "",
       studentId: "",
     },
-    onSubmit: ({ value }) => {
-      const actionType =
-        value.action === ActionType.CHECK_IN ? "Issue Book" : "Return Book";
-      console.log("Submitted:", { actionType, ...value });
-      form.reset();
-    },
   });
 
   return (
     <div className="transition-all duration-300 hover:shadow-lg border border-[#AEB1B9] shadow-[#AEB1B9] max-w-[90%] h-[190px] rounded-[12px] bg-[#F3F4F6] ml-10 mt-5 p-6">
       <div className="flex items-center mb-4 gap-6">
         <h2 className="text-2xl font-semibold">
-          {form.getFieldValue("action") === ActionType.CHECK_IN
-            ? "Issue Book"
-            : "Return a Book"}
+          {action === ActionType.CHECK_IN ? "Issue Book" : "Return a Book"}
         </h2>
         <form.Field
           name="action"
           children={(field) => (
             <Select
-              value={field.state.value}
-              onValueChange={(value) => field.handleChange(value as ActionType)}
+              value={action}
+              onValueChange={(value) => setAction(value as ActionType)}
             >
               <SelectTrigger className="w-[180px] bg-white border border-[#1E40AF] text-[#1E40AF] rounded-[5px]">
                 <SelectValue placeholder="Select Type" />
@@ -56,7 +84,7 @@ export default function IssueBook() {
           )}
         />
       </div>
-      <form onSubmit={form.handleSubmit} className="flex flex-wrap gap-4">
+      <form onSubmit={handleSubmit} className="flex flex-wrap gap-4">
         <form.Field
           name="bookId"
           children={(field) => (
@@ -121,9 +149,17 @@ export default function IssueBook() {
           </Button>
           <Button
             type="submit"
+            disabled={isLoading}
             className="mt-5 rounded-[5px] border border-[#1E40AF] bg-[#1E40AF] text-[#fff] hover:bg-[#1E40AF]"
           >
-            Submit
+            {isLoading ? (
+              <>
+                <Loader2 className="animate-spin h-5 w-5 mr-2" />
+                Loading...
+              </>
+            ) : (
+              "Submit"
+            )}
           </Button>
         </div>
       </form>
