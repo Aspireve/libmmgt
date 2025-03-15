@@ -15,16 +15,23 @@ type ErrorResponse = {
 // export const API_URL = "https://lms-q8fb.onrender.com"
 
 const customFetch = async (url: string, options: RequestInit) => {
-  const fullUrl = url.startsWith("https") ? url : `${API_URL}${url.startsWith("/") ? url : `/${url}`}`;
+  // Construct the full URL
+  const fullUrl = url.startsWith("https")
+    ? url
+    : `${API_URL}${url.startsWith("/") ? url : `/${url}`}`;
+
+  console.log("Fetching URL:", fullUrl);
 
   return fetch(fullUrl, {
     ...options,
+    mode: 'cors', // Add this if your API supports CORS
     headers: {
       ...(options.headers || {}), // Ensure headers exist
       "Content-Type": "application/json",
     },
   });
 };
+
 
 export const fetchWrapper = async (url: string, options: RequestInit) => {
   try {
