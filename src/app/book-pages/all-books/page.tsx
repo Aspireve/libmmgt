@@ -18,6 +18,8 @@ import { formatDate } from '../hooks/formatDate'
 
 const BooksPage = () => {
   const [url, setUrl] = useState("all")
+  const [bookURL, setbookURL] = useState("book_v2")
+
   const [title, setTitle] = useState("Books")
   const { mutate } = useUpdate()
   const {mutateAsync} = useDeleteMany()
@@ -30,12 +32,9 @@ const BooksPage = () => {
   const [isDepartementOpen, setIsDepartmentOpen] = useState(false)
   const [selectedBookId, setSelectedBookId] = useState<string | null>(null);
 
-  const { data, isLoading } = useList<BookData>({ resource: `book_v2/${url}`});
-   const books = data?.data || [];
+  const { data, isLoading } = useList<BookData>({ resource: `${bookURL}/${url}`});
    const totalCount = data?.pagination?.total ?? 0;
-   const totalLimit = data?.pagination?.limit;
-   const total_no_of_pages = data?.pagination?.totalPages;
-   const [page,setPage] = useState(data?.pagination?.page)
+   
 
 
   const handleEdit = (book: BookData) => {
@@ -264,7 +263,7 @@ const BooksPage = () => {
               </Button>
             </div>
           </div>
-          <DataTable columns={columns} data={books} isLoading={isLoading}/>
+          <DataTable columns={columns} resource={`${bookURL}/${url}`} isLoading={isLoading}/>
         </div>
       </section>
       {isModalOpen && (

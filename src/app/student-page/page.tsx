@@ -462,7 +462,7 @@ const handleCancelArchive = () => {
           </div>
           <DataTable
             columns={studentColumns}
-            data={filteredStudents}
+            resource="student/all"
             isLoading={isLoading}
           />
         </div>

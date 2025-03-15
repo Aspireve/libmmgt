@@ -14,10 +14,7 @@ import {
 import {
   ColumnDef,
   flexRender,
-  SortingState,
   getCoreRowModel,
-  getSortedRowModel,
-  getPaginationRowModel,
   useReactTable,
 } from "@tanstack/react-table";
 import {
@@ -33,29 +30,35 @@ import { Skeleton } from "@/components/ui/skeleton";
 import Image from "next/image";
 import Previous from '../../images/arrow-left.png'
 import Next from '../../images/arrow-right.png'
+import { BaseRecord, useList } from "@refinedev/core";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
-  data: TData[];
-  isLoading?: boolean;
+  resource: string;
+  isLoading?:boolean
 }
 
-export function DataTable<TData, TValue>({
+export function DataTable<TData extends BaseRecord, TValue>({
   columns,
-  data,
-  isLoading = false
+  resource,
+  isLoading=false
 }: DataTableProps<TData, TValue>) {
-  const [sorting, setSorting] = useState<SortingState>([]);
 
+  const [page, setPage] = useState<number>(1);
+
+  const {data} = useList<TData>({
+    resource,
+    pagination:{
+      current:page,
+      pageSize:5
+    }
+  })
+  const totalPages = data?.pagination?.totalPages  || []
   const table = useReactTable({
-    data,
+    data: data?.data ?? [],
     columns,
-    initialState: { pagination: { pageSize: 5 } },
+    pageCount: totalPages,
     getCoreRowModel: getCoreRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    state: { sorting },
-    onSortingChange: setSorting,
   });
 
   const SkeletonRow = ({ index }: { index: number }) => (
@@ -159,10 +162,11 @@ export function DataTable<TData, TValue>({
         </Table>
       </div>
 
+            {/* Pagination Controls */}
       <div className="flex items-center justify-between py-4 cursor-pointer">
         <Button
-          onClick={() => table.previousPage()}
-          disabled={!table.getCanPreviousPage() || isLoading}
+          onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+          disabled={page === 1 || isLoading}
           className="transition-all duration-200 hover:scale-105 disabled:opacity-50 ml-10"
         >
           <Image src={Previous} alt="Previous Icon" />
@@ -200,8 +204,8 @@ export function DataTable<TData, TValue>({
           
         </div>
         <Button
-          onClick={() => table.nextPage()}
-          disabled={!table.getCanNextPage() || isLoading}
+          onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))}
+          disabled={page === totalPages || isLoading}
           className="transition-all duration-200 hover:scale-105 disabled:opacity-50 mr-10"
         >
           Next
@@ -209,7 +213,8 @@ export function DataTable<TData, TValue>({
         </Button>
       </div>
     </>
-  );
-}
+  )}
+
+
 
 

@@ -9,8 +9,10 @@ interface CustomDataProvider extends DataProvider {
   }
 
 export const dataProvider:  CustomDataProvider = {
-    getList: async ({ resource, pagination, filters, sorters, meta }) => {
-        const url = `${resource}`;
+    getList: async ({ resource, pagination }) => {
+        const { current = 1, pageSize = 5} = pagination ?? {};
+
+        const url = `${resource}?_page=${current}&_limit=${pageSize}`;
         const response = await fetchWrapper(url, {
             method: "GET",
         });
