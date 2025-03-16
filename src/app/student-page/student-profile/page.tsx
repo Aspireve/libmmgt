@@ -33,10 +33,12 @@ const Page = () => {
     },
   });
 
+  console.log({ data, isLoading });
+
   return (
     <>
-           <Header heading="Student Profile" subheading="Tanvir Chavan"/>
-     
+      <Header heading="Student Profile" subheading="Tanvir Chavan" />
+
       <div className="max-w-5xl ml-5 p-6 rounded-lg">
         {/* ✅ Student Information Grid */}
         <div className="grid grid-cols-4 gap-6 mt-4">
@@ -58,10 +60,10 @@ const Page = () => {
                   {field.type === "date" ? (
                     <div className="relative">
                       <Input
-                        className="border-gray-300 p-2 rounded-md pr-10"
+                        className="border-gray-300 p-2 rounded-md pr-10 text-black"
                         type="date"
                         value={value ? value.split("T")[0] : ""} // Extract only "YYYY-MM-DD"
-                        readOnly
+                        readOnly={true}
                       />
                       <Image
                         src={calendarIcon}
@@ -70,12 +72,12 @@ const Page = () => {
                         height={20}
                         className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer"
                       />
-              
                     </div>
                   ) : (
                     <Input
-                      className="border-gray-300 p-2 rounded-md"
+                      className="border-gray-300 p-2 rounded-md text-black"
                       type={field.type}
+                      readOnly={true}
                       value={value}
                     />
                   )}
@@ -100,7 +102,7 @@ const Page = () => {
       </div>
       <Tabbing className="w-[20%] ml-10" routes={studentprofileRoutes} />
       <section className="border border-[#E0E2E7] rounded-[10px] w-[80%] ml-10 mb-10 mt-6">
-        <DataTable columns={borrowedBooksColumns} data={borrowedBooks} />
+        {/* <DataTable columns={borrowedBooksColumns} data={borrowedBooks} /> */}
       </section>
     </>
   );

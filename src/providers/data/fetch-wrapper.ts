@@ -17,7 +17,9 @@ export const API_URL = "http://localhost:3001";
 const customFetch = async (url: string, options: RequestInit) => {
   const fullUrl = url.startsWith("https")
     ? url
-    : `${API_URL}${url.startsWith("/") ? url : `/${url}`}`;
+    : `${API_URL}${url.startsWith("/") ? url : `/${url}`}`
+
+  // console.log({ fullUrl, options });
 
   // return fetch(fullUrl, options);
   return fetch(fullUrl, {

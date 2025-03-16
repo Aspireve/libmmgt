@@ -250,12 +250,12 @@ const AddStudent: React.FC = () => {
       
               {isUpdating ? (
                 <Button type="submit" disabled className="bg-[#1E40AF] text-white rounded-[10px] hover:bg-[#1E40AF]">
-                Adding Book
+                Adding Student
                 <Loader2 className="h-5 w-5 animate-spin" />
                 </Button>
               ):(
                 <Button type="submit" className="bg-[#1E40AF] text-white rounded-[10px] hover:bg-[#1E40AF]">
-                Add Book
+                Add Student
               </Button>
               )}
             </div>

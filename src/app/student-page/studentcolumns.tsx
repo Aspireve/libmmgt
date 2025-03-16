@@ -31,22 +31,21 @@ const StudentIDCell = ({ student }: { student: Student }) => {
   return (
     <div
       className="relative group cursor-pointer  font-bold"
-      onClick={() => router.push(
-        `/student-page/student-profile?id=${student.student_uuid}&student=${encodeURIComponent(
-          JSON.stringify(student)
-        )}`
-      )}
+      onClick={() =>
+        router.push(`/student-page/student-profile?student_uuid=${student.student_uuid}`)
+      }
     >
       {student.student_id}
       {/* Chat bubble tooltip */}
-      <div className="absolute left-1/2 transform -translate-x-1/2 bottom-full mb-2 hidden group-hover:flex items-center justify-center bg-gray-800 text-white text-xs rounded-lg px-3 py-1 shadow-md whitespace-nowrap
-      after:content-[''] after:absolute after:top-full after:left-1/2 after:-translate-x-1/2 after:border-4 after:border-transparent after:border-t-gray-800">
+      <div
+        className="absolute left-1/2 transform -translate-x-1/2 bottom-full mb-2 hidden group-hover:flex items-center justify-center bg-gray-800 text-white text-xs rounded-lg px-3 py-1 shadow-md whitespace-nowrap
+      after:content-[''] after:absolute after:top-full after:left-1/2 after:-translate-x-1/2 after:border-4 after:border-transparent after:border-t-gray-800"
+      >
         Student Profile
       </div>
     </div>
   );
 };
-
 
 // ✅ Component for Name Column
 const StudentNameCell = ({ student }: { student: Student }) => {
@@ -54,22 +53,21 @@ const StudentNameCell = ({ student }: { student: Student }) => {
   return (
     <div
       className="relative group cursor-pointer"
-      onClick={() => router.push(
-        `/student-page/student-profile?id=${student.student_uuid}&student=${encodeURIComponent(
-          JSON.stringify(student)
-        )}`
-      )}
+      onClick={() =>
+        router.push(`/student-page/student-profile?student_uuid=${student.student_uuid}`)
+      }
     >
       {student.student_name}
       {/* Chat bubble tooltip */}
-      <div className="absolute left-1/2 transform -translate-x-1/2 bottom-full mb-2 hidden group-hover:flex items-center justify-center bg-gray-800 text-white text-xs rounded-lg px-3 py-1 shadow-md whitespace-nowrap
-      after:content-[''] after:absolute after:top-full after:left-1/2 after:-translate-x-1/2 after:border-4 after:border-transparent after:border-t-gray-800">
+      <div
+        className="absolute left-1/2 transform -translate-x-1/2 bottom-full mb-2 hidden group-hover:flex items-center justify-center bg-gray-800 text-white text-xs rounded-lg px-3 py-1 shadow-md whitespace-nowrap
+      after:content-[''] after:absolute after:top-full after:left-1/2 after:-translate-x-1/2 after:border-4 after:border-transparent after:border-t-gray-800"
+      >
         Student Profile
       </div>
     </div>
   );
 };
-
 
 export const studentColumns: ColumnDef<Student>[] = [
   {

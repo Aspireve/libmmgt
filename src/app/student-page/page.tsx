@@ -464,6 +464,7 @@ const handleCancelArchive = () => {
             columns={studentColumns}
             resource="student/all"
             isLoading={isLoading}
+            search={searchTerm}
           />
         </div>
       </section>
