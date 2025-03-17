@@ -72,7 +72,7 @@ const StudentDirectory = () => {
     isLoading,
     error,
     refetch,
-  } = useList<Student>({
+  } = useList<Student>({  
     resource: "student/all",
     pagination: { current: 1, pageSize: 1000 },
     filters: [

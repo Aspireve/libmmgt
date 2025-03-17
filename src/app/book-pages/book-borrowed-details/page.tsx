@@ -78,7 +78,7 @@ const BookBorrowedDetails = () => {
    
   return (
     <>
-    <DataTable columns={columns} data={data} />
+    <DataTable columns={columns} resource='fees' />
     </>
   )
 }

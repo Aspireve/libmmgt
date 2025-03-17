@@ -24,7 +24,7 @@ const IssueBook = () => {
 
     <section className='border border-[#E0E2E7] rounded-[10px] m-10'>
                   {/* <DataTable columns={columns} data={data?.data || []} /> */}
-                  <DataTable columns={columns} data={data} />
+                  <DataTable columns={columns} resource='issue-book' />
 
     </section>
     </>
