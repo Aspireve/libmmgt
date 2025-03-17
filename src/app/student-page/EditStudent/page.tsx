@@ -11,11 +11,13 @@ import { useOne, useUpdate } from "@refinedev/core";
 import { Student } from "../studentcolumns";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const EditStudent: React.FC = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const studentUuid = searchParams.get("student_uuid");
+  // Read the student id from query parameter "id"
+  const studentUuid = searchParams.get("id");
 
   console.log("UUID from URL:", studentUuid);
 
@@ -46,25 +48,19 @@ const EditStudent: React.FC = () => {
 
   const password = watch("password");
 
-  // Use refine's useOne hook with meta option (wrapped in a query object) to pass student_uuid.
-  const { data, isLoading, error } = useOne<Student>({
+  // Use the useOne hook with a working format similar to your book edit example.
+  // This will construct a URL like: 
+  // GET https://lms-807p.onrender.com/student/detail?student_uuid=<studentUuid>
+  const { data, isLoading: isFetching, error } = useOne<Student>({
     resource: "student/detail",
-    id: `student_uuid=${studentUuid}`,
+    id: studentUuid ? `student_uuid=${studentUuid}` : "",
     queryOptions: {
       retry: 1,
       enabled: !!studentUuid,
     },
   });
 
-  console.log(data?.data);
-
-  // useEffect(() => {
-  //   if (studentUuid) {
-  //     console.log("Using student_uuid in meta:", studentUuid);
-  //   } else {
-  //     console.warn("No student UUID provided in URL query parameter.");
-  //   }
-  // }, [studentUuid]);
+  console.log("Fetched data:", data?.data);
 
   // Reset form with fetched student data
   useEffect(() => {
@@ -87,17 +83,15 @@ const EditStudent: React.FC = () => {
     }
   }, [data, reset, studentUuid]);
 
-  // Use refine's useUpdate hook for updating the student.
-  const { mutate, isLoading: isUpdateLoading } = useUpdate<Student>();
+  // Use useUpdate hook for updating the student record.
+  const { mutate, isLoading: isUpdating } = useUpdate<Student>();
 
   const onSubmit = (formData: FieldValues) => {
     const hardcodedInstituteId = "828f0d33-258f-4a92-a235-9c1b30d8882b";
 
     const validStudentUuid =
       studentUuid &&
-      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
-        studentUuid
-      )
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(studentUuid)
         ? studentUuid
         : "";
 
@@ -110,11 +104,10 @@ const EditStudent: React.FC = () => {
       return;
     }
 
-    // Optionally, include student_id if available from fetched data:
     const fetchedStudent = data?.data;
 
     const studentData: Partial<Student> = {
-      student_id: fetchedStudent?.student_id, // include if backend needs it
+      student_id: fetchedStudent?.student_id,
       student_uuid: validStudentUuid,
       student_name: formData.student_name,
       department: formData.department,
@@ -131,15 +124,11 @@ const EditStudent: React.FC = () => {
 
     if (passwordValue) {
       if (!confirmPasswordValue) {
-        toast.error("Confirm password is required.", {
-          position: "top-center",
-        });
+        toast.error("Confirm password is required.", { position: "top-center" });
         return;
       }
       if (passwordValue !== confirmPasswordValue) {
-        toast.error("Password and confirm password do not match.", {
-          position: "top-center",
-        });
+        toast.error("Password and confirm password do not match.", { position: "top-center" });
         return;
       }
       studentData.password = passwordValue;
@@ -148,7 +137,7 @@ const EditStudent: React.FC = () => {
 
     console.log("Payload for update:", studentData);
 
-    // Add meta so that the update request includes the identifier as a query parameter.
+    // Update the student record.
     mutate(
       {
         resource: "student/edit",
@@ -158,31 +147,47 @@ const EditStudent: React.FC = () => {
       },
       {
         onSuccess: () => {
-          toast.success("Student updated successfully!", {
-            position: "top-center",
-          });
+          toast.success("Student updated successfully!", { position: "top-center" });
           setTimeout(() => router.push("/student-page"), 500);
         },
         onError: (error: any) => {
           console.error("Update error:", error);
           toast.error(
-            `Error updating student: ${
-              error.message || "Please try again later."
-            }`,
+            `Error updating student: ${error.message || "Please try again later."}`,
             { position: "top-center" }
           );
-        },
+        }
       }
     );
   };
 
-  if (isLoading) return <div>Loading student data...</div>;
+  // Show shadcn Skeleton when fetching student data.
+  if (isFetching) {
+    return (
+      <div className="p-10">
+        <Header heading="Edit Student" subheading="Tanvir Chavan" />
+        <div className="space-y-4">
+          <Skeleton className="h-6 w-1/3" />
+          <div className="grid grid-cols-2 gap-4">
+            <Skeleton className="h-10" />
+            <Skeleton className="h-10" />
+            <Skeleton className="h-10" />
+            <Skeleton className="h-10" />
+          </div>
+          <div className="flex justify-center gap-4">
+            <Skeleton className="h-10 w-24" />
+            <Skeleton className="h-10 w-24" />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   if (error) return <div>Error loading student data</div>;
 
   return (
     <>
-      <Header heading="Edit Book" subheading="Tanvir Chavan" />
-
+      <Header heading="Edit Student" subheading="Tanvir Chavan" />
       <section className="p-10">
         <div className="container mx-auto">
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
@@ -193,15 +198,11 @@ const EditStudent: React.FC = () => {
                 <Label>Student Name</Label>
                 <Input
                   type="text"
-                  {...register("student_name", {
-                    required: "Student Name is required",
-                  })}
+                  {...register("student_name", { required: "Student Name is required" })}
                   placeholder="Enter Student Name"
                 />
                 {errors.student_name && (
-                  <p className="text-red-500 text-sm">
-                    {errors.student_name.message}
-                  </p>
+                  <p className="text-red-500 text-sm">{errors.student_name.message}</p>
                 )}
               </div>
               {/* Department */}
@@ -213,9 +214,7 @@ const EditStudent: React.FC = () => {
                   placeholder="Enter Department"
                 />
                 {errors.department && (
-                  <p className="text-red-500 text-sm">
-                    {errors.department.message}
-                  </p>
+                  <p className="text-red-500 text-sm">{errors.department.message}</p>
                 )}
               </div>
               {/* Email */}
@@ -235,15 +234,11 @@ const EditStudent: React.FC = () => {
                 <Label>Phone Number</Label>
                 <Input
                   type="text"
-                  {...register("phone_no", {
-                    required: "Phone Number is required",
-                  })}
+                  {...register("phone_no", { required: "Phone Number is required" })}
                   placeholder="Enter Phone Number"
                 />
                 {errors.phone_no && (
-                  <p className="text-red-500 text-sm">
-                    {errors.phone_no.message}
-                  </p>
+                  <p className="text-red-500 text-sm">{errors.phone_no.message}</p>
                 )}
               </div>
               {/* Address */}
@@ -255,9 +250,7 @@ const EditStudent: React.FC = () => {
                   placeholder="Enter Address"
                 />
                 {errors.address && (
-                  <p className="text-red-500 text-sm">
-                    {errors.address.message}
-                  </p>
+                  <p className="text-red-500 text-sm">{errors.address.message}</p>
                 )}
               </div>
               {/* Roll No. */}
@@ -265,16 +258,11 @@ const EditStudent: React.FC = () => {
                 <Label>Roll No.</Label>
                 <Input
                   type="number"
-                  {...register("roll_no", {
-                    required: "Roll No. is required",
-                    valueAsNumber: true,
-                  })}
+                  {...register("roll_no", { required: "Roll No. is required", valueAsNumber: true })}
                   placeholder="Enter Roll No."
                 />
                 {errors.roll_no && (
-                  <p className="text-red-500 text-sm">
-                    {errors.roll_no.message}
-                  </p>
+                  <p className="text-red-500 text-sm">{errors.roll_no.message}</p>
                 )}
               </div>
               {/* Year of Admission */}
@@ -282,78 +270,52 @@ const EditStudent: React.FC = () => {
                 <Label>Year of Admission</Label>
                 <Input
                   type="text"
-                  {...register("year_of_admission", {
-                    required: "Year of Admission is required",
-                  })}
+                  {...register("year_of_admission", { required: "Year of Admission is required" })}
                   placeholder="Enter Year of Admission (e.g., 2023)"
                 />
                 {errors.year_of_admission && (
-                  <p className="text-red-500 text-sm">
-                    {errors.year_of_admission.message}
-                  </p>
+                  <p className="text-red-500 text-sm">{errors.year_of_admission.message}</p>
                 )}
               </div>
               {/* New Password */}
               <div>
                 <Label>
-                  New Password{" "}
-                  {password && <span className="text-red-500">*</span>}
+                  New Password {password && <span className="text-red-500">*</span>}
                 </Label>
                 <Input
                   type="password"
-                  {...register("password", {
-                    required: password ? "New password is required" : false,
-                  })}
+                  {...register("password", { required: password ? "New password is required" : false })}
                   placeholder="Enter New Password"
                 />
                 {errors.password && (
-                  <p className="text-red-500 text-sm">
-                    {errors.password.message}
-                  </p>
+                  <p className="text-red-500 text-sm">{errors.password.message}</p>
                 )}
               </div>
               {/* Confirm New Password */}
               <div>
                 <Label>
-                  Confirm New Password{" "}
-                  {password && <span className="text-red-500">*</span>}
+                  Confirm New Password {password && <span className="text-red-500">*</span>}
                 </Label>
                 <Input
                   type="password"
-                  {...register("confirm_password", {
-                    required: password
-                      ? "Confirm new password is required"
-                      : false,
-                  })}
+                  {...register("confirm_password", { required: password ? "Confirm new password is required" : false })}
                   placeholder="Confirm New Password"
                 />
                 {errors.confirm_password && (
-                  <p className="text-red-500 text-sm">
-                    {errors.confirm_password.message}
-                  </p>
+                  <p className="text-red-500 text-sm">{errors.confirm_password.message}</p>
                 )}
               </div>
             </div>
             <div className="flex justify-center gap-4">
-              <Button
-                variant="outline"
-                onClick={() => router.push("/student-page")}
-              >
+              <Button variant="outline" onClick={() => router.push("/student-page")}>
                 Cancel
               </Button>
               <Button
                 type="submit"
                 className="bg-[#1E40AF] text-white rounded-[10px] hover:bg-[#1E40AF]"
-                disabled={isLoading || isUpdateLoading}
+                disabled={isUpdating}
               >
-                {isUpdateLoading ? (
-                  <>
-                    <Loader2 className="animate-spin h-5 w-5 mr-2" />
-                    Saving...
-                  </>
-                ) : (
-                  "Save Changes"
-                )}
+                {isUpdating ? <Loader2 className="h-5 w-5 animate-spin" /> : "Save Changes"}
               </Button>
             </div>
           </form>

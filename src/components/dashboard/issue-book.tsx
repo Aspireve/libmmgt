@@ -18,9 +18,9 @@ import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
 export default function IssueBook({
-  setRefresh,
+  setRefreshAction,
 }: {
-  setRefresh: React.Dispatch<React.SetStateAction<number>>;
+  setRefreshAction: React.Dispatch<React.SetStateAction<number>>;
 }) {
   const [action, setAction] = useState<ActionType>();
   const { mutate, isLoading } = useCreate();
@@ -44,7 +44,7 @@ export default function IssueBook({
         onSuccess: () => {
           toast.success(`Book ${action} Successfully!`);
           form.reset();
-          setRefresh((prev: number) => prev + 1);
+          setRefreshAction((prev: number) => prev + 1);
         },
         onError: (error) => {
           toast.error(`Error ${action} Book: ` + error.message);

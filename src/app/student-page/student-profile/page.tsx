@@ -97,12 +97,12 @@ const Page = () => {
                 readOnly
               />
             </div>
-          )}
+          )}  
         </div>
       </div>
       <Tabbing className="w-[20%] ml-10" routes={studentprofileRoutes} />
       <section className="border border-[#E0E2E7] rounded-[10px] w-[80%] ml-10 mb-10 mt-6">
-        {/* <DataTable columns={borrowedBooksColumns} data={borrowedBooks} /> */}
+        <DataTable columns={borrowedBooksColumns} resource="Book_v2/borrowed" /> 
       </section>
     </>
   );

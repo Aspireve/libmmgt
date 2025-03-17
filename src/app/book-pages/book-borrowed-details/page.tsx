@@ -1,3 +1,5 @@
+"use client"
+
 import React, { useEffect, useState } from 'react'
 import { ColumnDef } from '@tanstack/react-table';
 import { DataTable } from '@/components/data-tables/data-table';

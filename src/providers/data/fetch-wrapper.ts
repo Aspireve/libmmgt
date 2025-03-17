@@ -8,7 +8,11 @@ type ErrorResponse = {
 export const API_URL = "https://lms-o9sv.onrender.com";
 
 //Leon Url
+<<<<<<< HEAD
 // export const API_URL = "https://lms-807p.onrender.com";
+=======
+//export const API_URL = "http://localhost:3001";
+>>>>>>> d2641152c6d410413bb3c7e34353d602b175af93
 
 //Jigisha Url
 
@@ -24,12 +28,14 @@ const customFetch = async (url: string, options: RequestInit) => {
   // return fetch(fullUrl, options);
   return fetch(fullUrl, {
     ...options,
+    mode: 'cors', // Add this if your API supports CORS
     headers: {
       ...(options.headers || {}), // Ensure headers exist
       "Content-Type": "application/json",
     },
   });
 };
+
 
 export const fetchWrapper = async (url: string, options: RequestInit) => {
   try {
