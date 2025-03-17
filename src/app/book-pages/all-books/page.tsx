@@ -5,16 +5,16 @@ import { bookRoutes, BookData } from '../types/data';
 
 import { ColumnDef } from '@tanstack/react-table';
 import { Button } from '@/components/ui/button';
-import { DataTable } from '@/components/data-tables/data-table';
 import { Input } from '@/components/ui/input';
 import Image from 'next/image';
 import { useRouter } from "next/navigation";
 import { toast } from 'sonner';
 import Header from '@/app/Header/header';
 import Tabbing from '@/app/Tab/Tab';
-import { images } from "../images";
+import images  from "@/images/index";
 import Link from 'next/link';
 import { formatDate } from '../hooks/formatDate'
+import { MainTable } from '@/components/data-tables/main-table';
 
 const BooksPage = () => {
   const [url, setUrl] = useState("all")
@@ -32,7 +32,7 @@ const BooksPage = () => {
   const invalidate = useInvalidate();
   const router = useRouter();
 
-  const { data, isLoading } = useList<BookData>({ resource: `${bookURL}/${url}`, pagination:{pageSize:5} });
+  const { data, isLoading } = useList<BookData>( {pagination:{pageSize:5} });
   const totalCount = data?.pagination?.total ?? 0;
 
   const handleEdit = (book: BookData) => {
@@ -144,10 +144,10 @@ const BooksPage = () => {
       cell: ({ row }) => (
         <div className="flex gap-2">
           <Button variant="ghost" size="icon" onClick={() => handleEdit(row.original)}>
-            <Image src={images.edit} alt='Edit button' />
+            <Image src={images.Edit} alt='Edit button' />
           </Button>
           <Button variant="ghost" size="icon" onClick={() => handleDeleteClick(row.original.book_uuid)}>
-            <Image src={images.delete} alt='Delete button' />
+            <Image src={images.Thrash} alt='Delete button' />
           </Button>
         </div>
       ),
@@ -193,7 +193,6 @@ const BooksPage = () => {
                       </select>
                     </div>
                     <Button
-
                       className="w-full bg-[#1E40AF] text-white hover:bg-blue-950"
                     >
                       Apply Filters
@@ -205,7 +204,7 @@ const BooksPage = () => {
               <Link href={"/book-pages/import-book"}>
                 <Button
                   className="shadow-none border border-[#1E40AF] text-[#1E40AF] rounded-[10px]">
-                  <Image src={images.import} alt="Import button" />
+                  <Image src={images.Import} alt="Import button" />
                   Import
                 </Button>
               </Link>
@@ -248,7 +247,7 @@ const BooksPage = () => {
 
               <div className="relative max-w-sm w-72">
                 <Image
-                  src={images.search}
+                  src={images.Search}
                   alt="search-icon"
                   className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"
                 />
@@ -262,7 +261,7 @@ const BooksPage = () => {
               </Button>
             </div>
           </div>
-          <DataTable columns={columns} resource={`${bookURL}/${url}`} isLoading={isLoading} />
+          <MainTable columns={columns} resource={`${bookURL}/${url}`} />
         </div>
       </section>
       {isModalOpen && (

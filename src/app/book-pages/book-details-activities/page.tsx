@@ -62,6 +62,8 @@ const BookActiveDetails = () => {
 
 
     const [data, setData] = useState<BookActiveData[]>([]);
+     const [page, setPage] = useState<number>(1);
+        const [limit, setLimit] = useState<number>(5);
     
         useEffect(() => {
             setTimeout(() => setData(studentActiveData), 1000);
@@ -85,8 +87,17 @@ const BookActiveDetails = () => {
    
   return (
     <>
-    <DataTable columns={columns} resource='activites' />
-    </>
+                <DataTable
+                    columns={columns}
+                    data={studentActiveData}
+                    isLoading={false}
+                    page={0}
+                    limit={0}
+                    setLimit={setLimit}
+                    setPage={setPage}
+                    totalPages={10} />
+    
+            </>
   )
 }
 

@@ -8,8 +8,8 @@ import TiaIcon from "../../images/Tia.png";
 import Dropper from "../../images/Dropper.png";
 
 interface HeadersProps {
-  heading: string;
-  subheading: string;
+  heading: any;
+  subheading: any;
 }
 
 const Header:React.FC<HeadersProps> = ({ heading, subheading }) => {

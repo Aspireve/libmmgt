@@ -33,11 +33,15 @@ const Page = () => {
     },
   });
 
-  console.log({ data, isLoading });
+  const name = data?.data.student_name
+  const id = data?.data.student_id
+
+
+  console.log({ data, isLoading, name });
 
   return (
     <>
-      <Header heading="Student Profile" subheading="Tanvir Chavan" />
+      <Header heading={name} subheading={id} />
 
       <div className="max-w-5xl ml-5 p-6 rounded-lg">
         {/* ✅ Student Information Grid */}
@@ -102,7 +106,7 @@ const Page = () => {
       </div>
       <Tabbing className="w-[20%] ml-10" routes={studentprofileRoutes} />
       <section className="border border-[#E0E2E7] rounded-[10px] w-[80%] ml-10 mb-10 mt-6">
-        <DataTable columns={borrowedBooksColumns} resource="Book_v2/borrowed" /> 
+        {/* <DataTable columns={borrowedBooksColumns} resource="Book_v2/borrowed" />  */}
       </section>
     </>
   );

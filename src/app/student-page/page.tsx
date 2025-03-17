@@ -5,7 +5,6 @@ import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useList, useDelete } from "@refinedev/core";
 import Header from "../Header/header";
-import { DataTable } from "@/components/data-tables/data-table";
 import { useStudentColumns, Student } from "./studentcolumns";
 import Search from "../../images/search.png";
 import Image from "next/image";
@@ -18,6 +17,7 @@ import { images } from "../book-pages/images";
 import { useUpdate } from "@refinedev/core";
 import StudentFilterDropdown from "./StudentFilterdropdown";
 import { Loader2 } from "lucide-react";
+import { MainTable } from "@/components/data-tables/main-table";
 
 const StudentDirectory = () => {
   const router = useRouter();
@@ -289,10 +289,9 @@ const StudentDirectory = () => {
               </Button>
             </div>
           </div>
-          <DataTable
+          <MainTable
             columns={studentColumns}
             resource="student/all"
-            isLoading={isLoading}
             search={searchTerm}
           />
         </div>

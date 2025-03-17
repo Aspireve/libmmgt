@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import Header from "../Header/header";
 import { DataTable } from "@/components/data-tables/data-table";
-import { PenaltiesColumns, Penalties } from "./columns";
+import { PenaltiesColumns, fallbackData, Penalties } from "./columns";
 import { useList } from "@refinedev/core"; 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -21,18 +21,18 @@ import {
 } from "@/components/ui/popover";
 
 // Define Department interface
-// interface Department {
-//   id: string;
-//   name: string;
-// }
+interface Department {
+  id: string;
+  name: string;
+}
 
 // // Fallback department data
-// const fallbackDepartments: Department[] = [
-//   { id: "1", name: "Electronics" },
-//   { id: "2", name: "Computer Science" },
-//   { id: "3", name: "Mechanical" },
-//   { id: "4", name: "Civil" },
-// ];
+const fallbackDepartments: Department[] = [
+  { id: "1", name: "Electronics" },
+  { id: "2", name: "Computer Science" },
+  { id: "3", name: "Mechanical" },
+  { id: "4", name: "Civil" },
+];
 
 const FeesPenaltiesPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -42,78 +42,79 @@ const FeesPenaltiesPage = () => {
   const [selectedDepartment, setSelectedDepartment] = useState<string>("");
 
   // // Fetch departments
-  // const { data: departmentData } = useList<Department>({
-  //   resource: "departments",
-  // });
+  const { data: departmentData } = useList<Department>({
+    resource: "departments",
+  });
 
-  // // Get department data from API or fallback
-  // const departments: Department[] = Array.isArray(departmentData?.data)
-  //   ? departmentData.data
-  //   : fallbackDepartments;
+   // Get department data from API or fallback
+  const departments: Department[] = Array.isArray(departmentData?.data)
+    ? departmentData.data
+    : fallbackDepartments;
 
   // Fetch fees and penalties
   const { data ,isLoading } = useList<Penalties>({
-    resource: "fees",
-    // filters: [
-    //   ...(searchTerm
-    //     ? [
-    //         {
-    //           field: "student_name",
-    //           operator: "contains" as const,
-    //           value: searchTerm,
-    //         },
-    //       ]
-    //     : []),
-    //   ...(dateRange?.from
-    //     ? [
-    //         {
-    //           field: "Issued_date",
-    //           operator: "gte" as const,
-    //           value: format(dateRange.from, "yyyy-MM-dd"),
-    //         },
-    //       ]
-    //     : []),
-    //   ...(dateRange?.to
-    //     ? [
-    //         {
-    //           field: "Issued_date",
-    //           operator: "lte" as const,
-    //           value: format(dateRange.to, "yyyy-MM-dd"),
-    //         },
-    //       ]
-    //     : []),
-    //   ...(timeFrom
-    //     ? [
-    //         {
-    //           field: "time", // Assuming a 'time' field exists; adjust if the field name differs
-    //           operator: "gte" as const,
-    //           value: timeFrom,
-    //         },
-    //       ]
-    //     : []),
-    //   ...(timeTo
-    //     ? [
-    //         {
-    //           field: "time", // Assuming a 'time' field exists; adjust if the field name differs
-    //           operator: "lte" as const,
-    //           value: timeTo,
-    //         },
-    //       ]
-    //     : []),
-    //   ...(selectedDepartment
-    //     ? [
-    //         {
-    //           field: "department",
-    //           operator: "eq" as const,
-    //           value: selectedDepartment,
-    //         },
-    //       ]
-    //     : []),
-    // ],
+    // resource: "fees",
+    filters: [
+      ...(searchTerm
+        ? [
+            {
+              field: "student_name",
+              operator: "contains" as const,
+              value: searchTerm,
+            },
+          ]
+        : []),
+      ...(dateRange?.from
+        ? [
+            {
+              field: "Issued_date",
+              operator: "gte" as const,
+              value: format(dateRange.from, "yyyy-MM-dd"),
+            },
+          ]
+        : []),
+      ...(dateRange?.to
+        ? [
+            {
+              field: "Issued_date",
+              operator: "lte" as const,
+              value: format(dateRange.to, "yyyy-MM-dd"),
+            },
+          ]
+        : []),
+      ...(timeFrom
+        ? [
+            {
+              field: "time", // Assuming a 'time' field exists; adjust if the field name differs
+              operator: "gte" as const,
+              value: timeFrom,
+            },
+          ]
+        : []),
+      ...(timeTo
+        ? [
+            {
+              field: "time", // Assuming a 'time' field exists; adjust if the field name differs
+              operator: "lte" as const,
+              value: timeTo,
+            },
+          ]
+        : []),
+      ...(selectedDepartment
+        ? [
+            {
+              field: "department",
+              operator: "eq" as const,
+              value: selectedDepartment,
+            },
+          ]
+        : []),
+    ],
     pagination: { current: 1, pageSize: 5 },
   });
 
-
+const [page, setPage] = useState<number>(1);
+    const [limit, setLimit] = useState<number>(5);
   return (
     <>
       <Header heading="Fees & Penalties" subheading="Tanvir Chavan"/>
@@ -175,7 +176,7 @@ const FeesPenaltiesPage = () => {
           </div>
         </div>
         <div className="flex items-center gap-12 mt-4">
-          {/* <select
+          <select
             value={selectedDepartment}
             onChange={(e) => setSelectedDepartment(e.target.value)}
             className="appearance-none w-[140px] border border-[#989CA4] rounded-[8px] text-[grey] px-3 py-2"
@@ -186,7 +187,7 @@ const FeesPenaltiesPage = () => {
                 {dept.name}
               </option>
             ))}
-          </select> */}
+          </select>
           <Button
             className="border border-[#1E40AF] text-[#1E40AF] rounded-[10px] w-[100px] flex items-center justify-center"
           >
@@ -226,11 +227,15 @@ const FeesPenaltiesPage = () => {
               </Button>
             </div>
           </div>
-          {/* <DataTable
-            columns={PenaltiesColumns}
-            resource="fees"
-            isLoading={isLoading}
-          /> */}
+          <DataTable
+                          columns={PenaltiesColumns}
+                          data={fallbackData}
+                          isLoading={false}
+                          page={0}
+                          limit={0}
+                          setLimit={setLimit}
+                          setPage={setPage}
+                          totalPages={10} />
         </div>
       </section>
     </>
