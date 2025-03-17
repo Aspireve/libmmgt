@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store/store";
@@ -8,8 +8,8 @@ import TiaIcon from "../../images/Tia.png";
 import Dropper from "../../images/Dropper.png";
 
 interface HeadersProps {
-  heading: string;
-  subheading: string;
+  heading?: string;
+  subheading?: string;
 }
 
 const Header:React.FC<HeadersProps> = ({ heading, subheading }) => {
@@ -66,6 +66,7 @@ const Header:React.FC<HeadersProps> = ({ heading, subheading }) => {
   // }, [pathname, searchParams]);
 
   return (
+    <Suspense fallback={<div>Loading...</div>}>
     <div className="flex items-center justify-between mx-5 font-josefin mt-7">
       <div className="flex-1">
         <h1 className="ml-[22px] text-black text-3xl font-bold">{heading}</h1>
@@ -105,6 +106,7 @@ const Header:React.FC<HeadersProps> = ({ heading, subheading }) => {
         </div>
       </div>
     </div>
+    </Suspense>
   );
 };
 

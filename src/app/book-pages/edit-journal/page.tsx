@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "@refinedev/react-hook-form";
 import { useOne, useUpdate } from "@refinedev/core";
@@ -118,6 +118,7 @@ const EditJournal = () => {
 
 
     return (
+        <Suspense fallback={<div>Loading...</div>}>
         <>
             <Header heading="Student Directory" subheading="Tanvir Chavan"/>
 
@@ -150,6 +151,7 @@ const EditJournal = () => {
                 </div>
             </section>
         </>
+        </Suspense>
     )
 }
 

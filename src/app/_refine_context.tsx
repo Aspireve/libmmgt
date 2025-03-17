@@ -1,12 +1,11 @@
 "use client";
 
-
 import { Refine, type AuthProvider } from "@refinedev/core";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { RefineKbar, RefineKbarProvider } from "@refinedev/kbar";
 import { SessionProvider, signIn, signOut, useSession } from "next-auth/react";
 import { usePathname } from "next/navigation";
-import React from "react";
+import React, { Suspense } from "react";
 
 import routerProvider from "@refinedev/nextjs-router";
 
@@ -16,12 +15,11 @@ import "../styles/global.css";
 // Import your pages
 // import Dashboard from "@/pages/dashboard";
 
-import IssuedBooks from "@/app/book-pages/issued-books/page"
-import IssueBooks from "@/app/book-pages/issue-books/page"
+import IssuedBooks from "@/app/book-pages/issued-books/page";
+import IssueBooks from "@/app/book-pages/issue-books/page";
 
 import BooksPage from "@/app/book-pages/all-books/page";
 // import LoginPage from "./LoginPage/page";
-
 
 const queryClient = new QueryClient();
 
@@ -105,42 +103,43 @@ const App = (props: React.PropsWithChildren<AppProps>) => {
 
   return (
     <>
-      <QueryClientProvider client={queryClient}>
-        <RefineKbarProvider>
-          <Refine
-            routerProvider={routerProvider}
-            dataProvider={dataProvider}
-            authProvider={authProvider}
-            options={{
-              syncWithLocation: true,
-              warnWhenUnsavedChanges: true,
-              useNewQueryKeys: true,
-            }}
-            resources={[
-              {
-                name: "all-books",
-                list: BooksPage,
-                meta: { label: "All Books" },
-              },
-              {
-                name: "issued-books",
-                list: IssuedBooks,
-                meta: { label: "Issued Books" },
-              },
-              {
-                name: "issue-books",
-                list: IssueBooks,
-                meta: { label: "Issue Books" },
-              },
-              
-            ]}
-          >
-            {/* <LoginPage/> */}
-            {props.children}
-            <RefineKbar />
-          </Refine>
-        </RefineKbarProvider>
-      </QueryClientProvider>
+      <Suspense fallback={<> loding...</>}>
+        <QueryClientProvider client={queryClient}>
+          <RefineKbarProvider>
+            <Refine
+              routerProvider={routerProvider}
+              dataProvider={dataProvider}
+              authProvider={authProvider}
+              options={{
+                syncWithLocation: true,
+                warnWhenUnsavedChanges: true,
+                useNewQueryKeys: true,
+              }}
+              resources={[
+                {
+                  name: "all-books",
+                  list: BooksPage,
+                  meta: { label: "All Books" },
+                },
+                {
+                  name: "issued-books",
+                  list: IssuedBooks,
+                  meta: { label: "Issued Books" },
+                },
+                {
+                  name: "issue-books",
+                  list: IssueBooks,
+                  meta: { label: "Issue Books" },
+                },
+              ]}
+            >
+              {/* <LoginPage/> */}
+              {props.children}
+              <RefineKbar />
+            </Refine>
+          </RefineKbarProvider>
+        </QueryClientProvider>
+      </Suspense>
     </>
   );
 };

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { Suspense, useState } from "react";
 import Header from "../Header/header";
 import { DataTable } from "@/components/data-tables/data-table";
 import { PenaltiesColumns, fallbackData, Penalties } from "./columns";
@@ -133,6 +133,7 @@ const FeesPenaltiesPage = () => {
     : fallbackData;
 
   return (
+    <Suspense fallback={<div>Loading...</div>}>
     <>
       <Header heading="Fees & Penalties" subheading="Tanvir Chavan"/>
       <div className="mt-8 w-[90%] ml-10 border border-[#E0E2E7] rounded-[10px] p-4">
@@ -253,6 +254,7 @@ const FeesPenaltiesPage = () => {
         </div>
       </section>
     </>
+    </Suspense>
   );
 };
 

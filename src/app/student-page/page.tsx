@@ -1,10 +1,10 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useList, useDelete } from "@refinedev/core";
-import Header from "../Header/header";
+import Header from "@/components/custom/header";
 import { DataTable } from "@/components/data-tables/data-table";
 import { useStudentColumns, Student } from "./studentcolumns";
 import Search from "../../images/search.png";
@@ -36,6 +36,11 @@ const StudentDirectory = () => {
   const [isArchiving, setIsArchiving] = useState(false);
   const [selectedStudents, setSelectedStudents] = useState<string[]>([]);
 
+  const {data, isLoading: isDepartmentLoading} = useList({
+    resource: "student/departments",
+  })
+
+  console.log({data, isDepartmentLoading})
   // Fallback values for filters
   const fallbackDepartments = ["Computer Science", "Mathematics", "Physics", "Chemistry"];
   const fallbackYears = ["2021", "2020", "2019", "2018"];
@@ -220,6 +225,7 @@ const StudentDirectory = () => {
   }
 
   return (
+    <Suspense fallback={<div>Loading...</div>}>
     <>
       <Header heading="Student Directory" subheading="Tanvir Chavan" />
       <section className="border border-[#E0E2E7] rounded-[10px] w-[90%] ml-10 mt-6">
@@ -284,9 +290,9 @@ const StudentDirectory = () => {
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
               </div>
-              <Button className="bg-[#1E40AF] hover:bg-[#142457] transition-all duration-300 text-white rounded-[8px] w-[15%]">
+              {/* <Button className="bg-[#1E40AF] hover:bg-[#142457] transition-all duration-300 text-white rounded-[8px] w-[15%]">
                 Search
-              </Button>
+              </Button> */}
             </div>
           </div>
           <DataTable
@@ -319,6 +325,7 @@ const StudentDirectory = () => {
         </div>
       )}
     </>
+    </Suspense>
   );
 };
 

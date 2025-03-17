@@ -24,6 +24,7 @@ export interface BookData {
     item_type?: string;
     bill_no: number;
     institute_uuid: string;
+    book_id: string;
     // is_archived:Boolean;
   }
 

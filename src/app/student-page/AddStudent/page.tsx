@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Header from "../../Header/header";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -111,6 +111,7 @@ const AddStudent: React.FC = () => {
                   type="date"
                   {...register("date_of_birth", { required: "Date of Birth is required" })}
                   placeholder="Enter Date of Birth"
+                  max={new Date().toISOString().split("T")[0]}
                 />
                 {errors.date_of_birth && (
                   <p className="text-red-500 text-sm">{errors.date_of_birth.message}</p>

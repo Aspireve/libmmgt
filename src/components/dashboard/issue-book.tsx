@@ -68,9 +68,8 @@ export default function IssueBook({
         <h2 className="text-2xl font-semibold">
           {action === ActionType.CHECK_IN ? "Issue Book" : "Return a Book"}
         </h2>
-        <form.Field
-          name="action"
-          children={(field) => (
+        <form.Field name="action">
+          {(field) => (
             <Select
               value={action}
               onValueChange={(value) => setAction(value as ActionType)}
@@ -84,12 +83,11 @@ export default function IssueBook({
               </SelectContent>
             </Select>
           )}
-        />
+        </form.Field>
       </div>
       <form onSubmit={handleSubmit} className="flex flex-wrap gap-4">
-        <form.Field
-          name="bookId"
-          children={(field) => (
+        <form.Field name="bookId">
+          {(field) => (
             <div className="flex-1 min-w-[200px]">
               <Label htmlFor="bookId" className="text-[#1F2937] mb-1">
                 Book ID
@@ -103,11 +101,10 @@ export default function IssueBook({
               />
             </div>
           )}
-        />
+        </form.Field>
 
-        <form.Field
-          name="bookName"
-          children={(field) => (
+        <form.Field name="bookName">
+          {(field) => (
             <div className="flex-1 min-w-[200px]">
               <Label htmlFor="bookName" className="text-[#1F2937] mb-1">
                 Name of the Book
@@ -121,11 +118,10 @@ export default function IssueBook({
               />
             </div>
           )}
-        />
+        </form.Field>
 
-        <form.Field
-          name="studentId"
-          children={(field) => (
+        <form.Field name="studentId">
+          {(field) => (
             <div className="flex-1 min-w-[200px]">
               <Label htmlFor="studentId" className="text-[#1F2937] mb-1">
                 Student ID
@@ -139,7 +135,7 @@ export default function IssueBook({
               />
             </div>
           )}
-        />
+        </form.Field>
 
         <div className="flex items-center gap-2 ml-auto">
           <Button

@@ -114,7 +114,7 @@ const Page = () => {
           </div>
           <Button className="bg-blue-600 text-white px-4 py-2 rounded">Search</Button>
         </div>
-        <DataTable columns={visitLogColumns} data={visitLogs} isLoading={isLoading} />
+        {/* <DataTable columns={visitLogColumns} data={visitLogs} isLoading={isLoading} /> */}
       </section>
     </>
   );

@@ -8,6 +8,10 @@ export class FileProcessor {
     return new ExcelProcessor();
   }
 
+  static isSupported(fileType: string): boolean {
+    return fileType.includes("csv") || fileType.includes("excel");
+  }
+
   process(data: ArrayBuffer): { headers: string[]; data: any[] } {
     throw new Error("process method must be implemented.");
   }

@@ -1,5 +1,6 @@
 'use client';
-import React, { useState } from 'react';
+
+import React, { Suspense, useState } from 'react';
 import { useDelete, useList, useInvalidate } from '@refinedev/core';
 import { bookRoutes, JournalData } from '../types/data';
 
@@ -96,6 +97,7 @@ const JournalPage = () => {
     ];
   
     return (
+      <Suspense fallback={<div>Loading...</div>}>
       <>
               <Header heading="Journal" subheading="Tanvir Chavan"/>
         
@@ -180,6 +182,7 @@ const JournalPage = () => {
           </div>
         )}
       </>
+      </Suspense>
     );
   };
 

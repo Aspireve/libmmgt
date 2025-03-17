@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Header from "@/app/Header/header";
 import { profiledata } from "../student-profile/studentprofile";
@@ -36,6 +36,7 @@ const Page = () => {
   console.log({ data, isLoading });
 
   return (
+    <Suspense fallback={<div>Loading...</div>}>
     <>
       <Header heading="Student Profile" subheading="Tanvir Chavan" />
 
@@ -105,6 +106,7 @@ const Page = () => {
         <DataTable columns={borrowedBooksColumns} resource="Book_v2/borrowed" /> 
       </section>
     </>
+    </Suspense>
   );
 };
 

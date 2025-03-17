@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { Suspense, useEffect } from "react";
 import Header from "../../Header/header";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -186,6 +186,7 @@ const EditStudent: React.FC = () => {
   if (error) return <div>Error loading student data</div>;
 
   return (
+    <Suspense fallback={<div>Loading...</div>}>
     <>
       <Header heading="Edit Student" subheading="Tanvir Chavan" />
       <section className="p-10">
@@ -322,6 +323,7 @@ const EditStudent: React.FC = () => {
         </div>
       </section>
     </>
+    </Suspense>
   );
 };
 

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { Suspense, useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import { useDispatch } from "react-redux";
@@ -74,6 +74,7 @@ const LoginPage: React.FC = () => {
   };
 
   return (
+    <Suspense fallback={<div>Loading...</div>}>
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-indigo-50 via-white to-blue-50">
       <Card className="w-full max-w-md shadow-xl rounded-xl bg-white border border-gray-100">
         <CardHeader className="text-center pt-8 pb-6">
@@ -144,6 +145,7 @@ const LoginPage: React.FC = () => {
         </CardContent>
       </Card>
     </div>
+    </Suspense>
   );
 };
 

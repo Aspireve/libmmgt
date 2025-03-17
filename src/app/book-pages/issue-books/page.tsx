@@ -2,7 +2,7 @@
 'use client';
 import { Issue_Books, columns, issueBooksData } from './columns';
 import { DataTable } from '@/components/data-tables/data-table';
-import React, { useEffect, useState } from 'react';
+import React, { Suspense, useEffect, useState } from 'react';
 import { useList } from '@refinedev/core';
 import Header from '@/app/Header/header';
 
@@ -18,6 +18,7 @@ const IssueBook = () => {
           }, 1000);
         }, []);
   return (
+    <Suspense fallback={<div>Loading...</div>}>
     <>
           <Header heading="Issue Books" subheading="Tanvir Chavan"/>
     
@@ -28,6 +29,7 @@ const IssueBook = () => {
 
     </section>
     </>
+    </Suspense>
   );
 };
 

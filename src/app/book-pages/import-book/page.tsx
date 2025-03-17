@@ -1,7 +1,7 @@
 "use client";
 
 import { useCreate } from "@refinedev/core";
-import React, { useState } from "react";
+import React, { Suspense, useState } from "react";
 import * as XLSX from "xlsx";
 import { BookData } from '../types/data'
 import { initialMapping, MappingType } from './mapdata'
@@ -133,6 +133,7 @@ const Import_Books = () => {
   };
 
   return (
+    <Suspense fallback={<div>Loading...</div>}>
     <div className="flex justify-center items-center w-full ">
       <div className="p-6 w-full max-w-3xl">
         <h2 className="text-xl font-semibold mb-4">Library Management - Import Book Data</h2>
@@ -193,6 +194,7 @@ const Import_Books = () => {
         )}
       </div>
     </div>
+    </Suspense>
   );
 };
 export default Import_Books;

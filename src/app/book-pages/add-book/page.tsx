@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from 'react'
+import React, { Suspense, useEffect, useState } from 'react'
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from '@/components/ui/label';
@@ -151,6 +151,7 @@ const AddBook = () => {
     </div>
   );
   return (
+    <Suspense fallback={<div>Loading...</div>}>
     <>
             <Header heading="Add Book" subheading="Tanvir Chavan"/>
 
@@ -193,6 +194,7 @@ const AddBook = () => {
         </div>
       </section>
     </>
+    </Suspense>
   )
 }
 export default AddBook
