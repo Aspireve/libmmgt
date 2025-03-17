@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import Header from "../Header/header";
 import { DataTable } from "@/components/data-tables/data-table";
-import { PenaltiesColumns, fallbackData, Penalties } from "./columns";
+import { PenaltiesColumns, Penalties } from "./columns";
 import { useList } from "@refinedev/core"; 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -21,18 +21,18 @@ import {
 } from "@/components/ui/popover";
 
 // Define Department interface
-interface Department {
-  id: string;
-  name: string;
-}
+// interface Department {
+//   id: string;
+//   name: string;
+// }
 
-// Fallback department data
-const fallbackDepartments: Department[] = [
-  { id: "1", name: "Electronics" },
-  { id: "2", name: "Computer Science" },
-  { id: "3", name: "Mechanical" },
-  { id: "4", name: "Civil" },
-];
+// // Fallback department data
+// const fallbackDepartments: Department[] = [
+//   { id: "1", name: "Electronics" },
+//   { id: "2", name: "Computer Science" },
+//   { id: "3", name: "Mechanical" },
+//   { id: "4", name: "Civil" },
+// ];
 
 const FeesPenaltiesPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -41,96 +41,78 @@ const FeesPenaltiesPage = () => {
   const [timeTo, setTimeTo] = useState("");
   const [selectedDepartment, setSelectedDepartment] = useState<string>("");
 
-  // Fetch departments
-  const { data: departmentData } = useList<Department>({
-    resource: "departments",
-  });
+  // // Fetch departments
+  // const { data: departmentData } = useList<Department>({
+  //   resource: "departments",
+  // });
 
-  // Get department data from API or fallback
-  const departments: Department[] = Array.isArray(departmentData?.data)
-    ? departmentData.data
-    : fallbackDepartments;
+  // // Get department data from API or fallback
+  // const departments: Department[] = Array.isArray(departmentData?.data)
+  //   ? departmentData.data
+  //   : fallbackDepartments;
 
   // Fetch fees and penalties
-  const {
-    data: penaltiesData,
-    isLoading,
-    refetch,
-  } = useList<Penalties>({
-    resource: "feespenalties",
-    filters: [
-      ...(searchTerm
-        ? [
-            {
-              field: "student_name",
-              operator: "contains" as const,
-              value: searchTerm,
-            },
-          ]
-        : []),
-      ...(dateRange?.from
-        ? [
-            {
-              field: "Issued_date",
-              operator: "gte" as const,
-              value: format(dateRange.from, "yyyy-MM-dd"),
-            },
-          ]
-        : []),
-      ...(dateRange?.to
-        ? [
-            {
-              field: "Issued_date",
-              operator: "lte" as const,
-              value: format(dateRange.to, "yyyy-MM-dd"),
-            },
-          ]
-        : []),
-      ...(timeFrom
-        ? [
-            {
-              field: "time", // Assuming a 'time' field exists; adjust if the field name differs
-              operator: "gte" as const,
-              value: timeFrom,
-            },
-          ]
-        : []),
-      ...(timeTo
-        ? [
-            {
-              field: "time", // Assuming a 'time' field exists; adjust if the field name differs
-              operator: "lte" as const,
-              value: timeTo,
-            },
-          ]
-        : []),
-      ...(selectedDepartment
-        ? [
-            {
-              field: "department",
-              operator: "eq" as const,
-              value: selectedDepartment,
-            },
-          ]
-        : []),
-    ],
-    pagination: { current: 1, pageSize: 1000 },
+  const { data ,isLoading } = useList<Penalties>({
+    resource: "fees",
+    // filters: [
+    //   ...(searchTerm
+    //     ? [
+    //         {
+    //           field: "student_name",
+    //           operator: "contains" as const,
+    //           value: searchTerm,
+    //         },
+    //       ]
+    //     : []),
+    //   ...(dateRange?.from
+    //     ? [
+    //         {
+    //           field: "Issued_date",
+    //           operator: "gte" as const,
+    //           value: format(dateRange.from, "yyyy-MM-dd"),
+    //         },
+    //       ]
+    //     : []),
+    //   ...(dateRange?.to
+    //     ? [
+    //         {
+    //           field: "Issued_date",
+    //           operator: "lte" as const,
+    //           value: format(dateRange.to, "yyyy-MM-dd"),
+    //         },
+    //       ]
+    //     : []),
+    //   ...(timeFrom
+    //     ? [
+    //         {
+    //           field: "time", // Assuming a 'time' field exists; adjust if the field name differs
+    //           operator: "gte" as const,
+    //           value: timeFrom,
+    //         },
+    //       ]
+    //     : []),
+    //   ...(timeTo
+    //     ? [
+    //         {
+    //           field: "time", // Assuming a 'time' field exists; adjust if the field name differs
+    //           operator: "lte" as const,
+    //           value: timeTo,
+    //         },
+    //       ]
+    //     : []),
+    //   ...(selectedDepartment
+    //     ? [
+    //         {
+    //           field: "department",
+    //           operator: "eq" as const,
+    //           value: selectedDepartment,
+    //         },
+    //       ]
+    //     : []),
+    // ],
+    pagination: { current: 1, pageSize: 5 },
   });
 
-  // Convert API data into Penalties format
-  const feesPenalties: Penalties[] = Array.isArray(penaltiesData?.data)
-    ? penaltiesData.data.map((item) => ({
-        student_id: item.student_id ?? "",
-        student_name: item.student_name ?? "",
-        department: item.department ?? "",
-        book_id: item.book_id ?? "",
-        book_category: item.book_category ?? "",
-        Issued_date: item.Issued_date ? new Date(item.Issued_date) : new Date(),
-        return_date: item.return_date ? new Date(item.return_date) : new Date(),
-        penalties: item.penalties ?? "",
-        student_uuid: item.student_uuid ?? "",
-      }))
-    : fallbackData;
 
   return (
     <>
@@ -193,7 +175,7 @@ const FeesPenaltiesPage = () => {
           </div>
         </div>
         <div className="flex items-center gap-12 mt-4">
-          <select
+          {/* <select
             value={selectedDepartment}
             onChange={(e) => setSelectedDepartment(e.target.value)}
             className="appearance-none w-[140px] border border-[#989CA4] rounded-[8px] text-[grey] px-3 py-2"
@@ -204,9 +186,8 @@ const FeesPenaltiesPage = () => {
                 {dept.name}
               </option>
             ))}
-          </select>
+          </select> */}
           <Button
-            onClick={() => refetch()}
             className="border border-[#1E40AF] text-[#1E40AF] rounded-[10px] w-[100px] flex items-center justify-center"
           >
             <Image src={filter} height={19} width={19} alt="filter" />
@@ -220,7 +201,7 @@ const FeesPenaltiesPage = () => {
             <div className="flex items-center gap-4">
               <h1 className="text-3xl font-semibold ml-4">Fees & Penalties</h1>
               <p className="bg-[#F9F5FF] rounded-2xl text-[#6941C6] px-2">
-                {feesPenalties.length} Entries
+                5 Entries
               </p>
             </div>
             <div className="flex items-center gap-2">
@@ -238,18 +219,18 @@ const FeesPenaltiesPage = () => {
                 />
               </div>
               <Button
-                onClick={() => refetch()}
+               
                 className="bg-blue-600 text-white px-4 py-2 rounded"
               >
                 Search
               </Button>
             </div>
           </div>
-          <DataTable
+          {/* <DataTable
             columns={PenaltiesColumns}
-            resource="departments"
+            resource="fees"
             isLoading={isLoading}
-          />
+          /> */}
         </div>
       </section>
     </>

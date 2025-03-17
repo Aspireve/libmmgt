@@ -46,12 +46,12 @@ export function DataTable<TData extends BaseRecord, TValue>({
   search = "",
 }: DataTableProps<TData, TValue>) {
   const [page, setPage] = useState<number>(1);
-
+  const [limit, setLimit] = useState<number>(5);
   const { data } = useList<TData>({
     resource,
     pagination: {
       current: page,
-      pageSize: 5,
+      pageSize: limit,
     },
     filters: [
       {
@@ -61,7 +61,7 @@ export function DataTable<TData extends BaseRecord, TValue>({
       },
     ],
   });
-  const totalPages = data?.pagination?.totalPages || [];
+  const totalPages = data?.pagination?.totalPages || 1;
   const table = useReactTable({
     data: data?.data ?? [],
     columns,
@@ -202,7 +202,7 @@ export function DataTable<TData extends BaseRecord, TValue>({
                   {table.getState().pagination.pageIndex + 1} ...{" "}
                   {table.getPageCount()}
                 </span>
-                <Select>
+                {/* <Select>
                   <SelectTrigger className="w-[120px] border-[#717680] rounded-[10px]">
                     <SelectValue placeholder="No of rows" />
                   </SelectTrigger>
@@ -214,7 +214,7 @@ export function DataTable<TData extends BaseRecord, TValue>({
                       <SelectItem value="15">15</SelectItem>
                     </SelectGroup>
                   </SelectContent>
-                </Select>
+                </Select> */}
               </>
             )}
           </div>
