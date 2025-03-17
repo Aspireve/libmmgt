@@ -56,8 +56,13 @@ const StudentDirectory = () => {
   });
   const availableYears = yearResponse?.data.map((item) => item.year) || fallbackYears;
 
-  // Fetch students with server-side filters (department, year, and search term)
-  const { data: studentsResponse, isLoading, error, refetch } = useList<Student>({
+  // Use refine’s useList hook to fetch students with filters applied.
+  const {
+    data: studentsResponse,
+    isLoading,
+    error,
+    refetch,
+  } = useList<Student>({  
     resource: "student/all",
     pagination: { current: 1, pageSize: 1000 },
     filters: [
@@ -121,29 +126,29 @@ const StudentDirectory = () => {
     },
   });
 
-  // Archive function for bulk operations (single or multiple)
-  const handleBulkArchive = async () => {
+  // Delete function for bulk operations (single or multiple)
+  const handleBulkDelete = async () => {
     if (selectedStudents.length === 0) return;
     try {
       let response;
       if (selectedStudents.length === 1) {
-        response = await fetch("https://lms-807p.onrender.com/student/archive", {
+        response = await fetch("https://lms-807p.onrender.com/student/Delete", {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ student_uuid: selectedStudents[0] }),
         });
       } else {
-        response = await fetch("https://lms-807p.onrender.com/student/bulk-archive", {
+        response = await fetch("https://lms-807p.onrender.com/student/bulk-Delete", {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(selectedStudents),
         });
       }
       if (!response.ok) {
-        throw new Error("Failed to archive student(s)");
+        throw new Error("Failed to Delete student(s)");
       }
       toast.success(
-        selectedStudents.length === 1 ? "Student archived successfully!" : "Students archived successfully!",
+        selectedStudents.length === 1 ? "Student Deleted successfully!" : "Students Deleted successfully!",
         { position: "top-center" }
       );
       setSelectedStudents([]);
@@ -153,14 +158,14 @@ const StudentDirectory = () => {
     }
   };
 
-  const handleConfirmArchive = async () => {
+  const handleConfirmDelete = async () => {
     setIsArchiving(true);
-    await handleBulkArchive();
+    await handleBulkDelete();
     setIsArchiving(false);
     setShowConfirmModal(false);
   };
 
-  const handleCancelArchive = () => {
+  const handleCancelDelete = () => {
     setShowConfirmModal(false);
   };
 
@@ -221,7 +226,7 @@ const StudentDirectory = () => {
         <div className="p-4">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-4">
-              <p className="text-sm font-semibold ml-4">Students</p>
+              <p className="text-md font-semibold ml-4">Students</p>
               <span className="rounded-full bg-[#F9F5FF] px-3 py-1 text-sm font-medium text-[#6941C6]">
                 {filteredStudents.length} Entries
               </span>
@@ -232,7 +237,7 @@ const StudentDirectory = () => {
                   className="bg-red-600 text-white hover:bg-red-900 rounded-[10px]"
                   onClick={() => setShowConfirmModal(true)}
                 >
-                  {selectedStudents.length === 1 ? "Archive" : "Archive All"}
+                  {selectedStudents.length === 1 ? "Delete" : "Delete All"}
                 </Button>
               )}
               <Link href="/student-page/import-students">
@@ -274,34 +279,39 @@ const StudentDirectory = () => {
                 />
                 <Input
                   placeholder="Search"
-                  className="w-full pl-10 rounded-[8px] border border-[#D5D7DA] text-[#BBBBBB]"
+                  className="w-full pl-10 rounded-[8px] border border-[#D5D7DA] text-black"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
               </div>
-              <Button className="bg-[#1E40AF] text-white rounded-[8px] w-[15%]">
+              <Button className="bg-[#1E40AF] hover:bg-[#142457] transition-all duration-300 text-white rounded-[8px] w-[15%]">
                 Search
               </Button>
             </div>
           </div>
-          <DataTable columns={studentColumns} data={filteredStudents} isLoading={isLoading} />
+          <DataTable
+            columns={studentColumns}
+            resource="student/all"
+            isLoading={isLoading}
+            search={searchTerm}
+          />
         </div>
       </section>
 
       {showConfirmModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white rounded-lg p-6 w-80">
-            <h3 className="text-xl font-semibold mb-4">Confirm Archive</h3>
+            <h3 className="text-xl font-semibold mb-4">Confirm Delete</h3>
             <p className="mb-6">
               {selectedStudents.length === 1
-                ? "Are you sure you want to archive this student?"
-                : "Are you sure you want to archive these students?"}
+                ? "Are you sure you want to Delete this student?"
+                : "Are you sure you want to Delete these students?"}
             </p>
             <div className="flex justify-end gap-4">
-              <Button onClick={handleCancelArchive} variant="outline">
+              <Button onClick={handleCancelDelete} variant="outline">
                 Cancel
               </Button>
-              <Button onClick={handleConfirmArchive} className="bg-red-600 text-white hover:bg-red-700">
+              <Button onClick={handleConfirmDelete} className="bg-red-600 text-white hover:bg-red-700">
                 {isArchiving ? <Loader2 className="h-5 w-5 animate-spin" /> : "Confirm"}
               </Button>
             </div>

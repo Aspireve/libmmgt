@@ -85,7 +85,7 @@ const BookActiveDetails = () => {
    
   return (
     <>
-    <DataTable columns={columns} data={data} />
+    <DataTable columns={columns} resource='activites' />
     </>
   )
 }

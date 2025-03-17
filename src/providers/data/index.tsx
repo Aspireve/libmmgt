@@ -9,8 +9,32 @@ interface CustomDataProvider extends DataProvider {
   }
 
 export const dataProvider:  CustomDataProvider = {
-    getList: async ({ resource, pagination, filters, sorters, meta }) => {
-        const url = `${resource}`;
+    getList: async ({ resource, pagination, filters }) => {
+        const { current = 1, pageSize = 5} = pagination ?? {};
+
+        let url = `${resource}?_page=${current}&_limit=${pageSize}`;
+
+        if (filters?.length) {
+            const filterParams = filters
+                .map(({ field, operator, value,  }) => {
+                    if (!field || value === undefined) return "";
+                    let query = `${encodeURIComponent(field)}`;
+                    if (operator === "eq") {
+                        query += `=${encodeURIComponent(value)}`;
+                    } else if (operator === "gte") {
+                        query += `_gte=${encodeURIComponent(value)}`;
+                    } else if (operator === "lte") {
+                        query += `_lte=${encodeURIComponent(value)}`;
+                    } else {
+                        return ""; // Ignore unsupported operators
+                    }
+                    return query;
+                })
+                .filter(Boolean)
+                .join("&");
+    
+            url += `&${filterParams}`;
+        }
         const response = await fetchWrapper(url, {
             method: "GET",
         });

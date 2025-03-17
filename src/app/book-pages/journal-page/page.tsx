@@ -20,8 +20,9 @@ import { formatDate } from '../hooks/formatDate'
 const JournalPage = () => {
 
     const [url, setUrl] = useState("all")
+    const [journalURL, setJournalURL] = useState("journals")
     const [title,setTitle] = useState("Journal")
-    const { data } = useList<JournalData>({ resource: `journals/${url}` });
+    const { data } = useList<JournalData>({ resource: `${journalURL}/${url}` });
     const { mutate } = useDelete()
     const invalidate = useInvalidate();
     const router = useRouter();
@@ -163,7 +164,7 @@ const JournalPage = () => {
                 </Button>
               </div>
             </div>
-            <DataTable columns={columns} data={data?.data || []} />
+            <DataTable columns={columns} resource={`${journalURL}/${url}`} />
           </div>
         </section>
         {isModalOpen && (

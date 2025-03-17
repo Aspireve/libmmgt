@@ -1,3 +1,5 @@
+"use client"
+
 import React, { useEffect, useState } from 'react'
 import { ColumnDef } from '@tanstack/react-table';
 import { DataTable } from '@/components/data-tables/data-table';
@@ -78,7 +80,7 @@ const BookBorrowedDetails = () => {
    
   return (
     <>
-    <DataTable columns={columns} data={data} />
+    <DataTable columns={columns} resource='fees' />
     </>
   )
 }

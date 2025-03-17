@@ -4,24 +4,24 @@ type ErrorResponse = {
   message?: string;
 };
 
-// Siddhesh URL 
-// export const API_URL = "https://lms-o9sv.onrender.com"; 
+// Siddhesh URL
+export const API_URL = "https://lms-o9sv.onrender.com";
 
 //Leon Url
- export const API_URL = "https://lms-807p.onrender.com"
+//export const API_URL = "http://localhost:3001";
 
 //Jigisha Url
 
 // export const API_URL = "https://lms-q8fb.onrender.com"
 
 const customFetch = async (url: string, options: RequestInit) => {
-  // Construct the full URL
   const fullUrl = url.startsWith("https")
     ? url
-    : `${API_URL}${url.startsWith("/") ? url : `/${url}`}`;
+    : `${API_URL}${url.startsWith("/") ? url : `/${url}`}`
 
-  console.log("Fetching URL:", fullUrl);
+  // console.log({ fullUrl, options });
 
+  // return fetch(fullUrl, options);
   return fetch(fullUrl, {
     ...options,
     mode: 'cors', // Add this if your API supports CORS

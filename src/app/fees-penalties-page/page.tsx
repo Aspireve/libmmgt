@@ -134,7 +134,7 @@ const FeesPenaltiesPage = () => {
 
   return (
     <>
-      <Header />
+      <Header heading="Fees & Penalties" subheading="Tanvir Chavan"/>
       <div className="mt-8 w-[90%] ml-10 border border-[#E0E2E7] rounded-[10px] p-4">
         <h2 className="text-lg font-semibold">Filter</h2>
         <div className="grid grid-cols-4 gap-4 mt-2">
@@ -247,7 +247,7 @@ const FeesPenaltiesPage = () => {
           </div>
           <DataTable
             columns={PenaltiesColumns}
-            data={feesPenalties}
+            resource="departments"
             isLoading={isLoading}
           />
         </div>
