@@ -3,8 +3,7 @@
 import React, { useRef, useEffect } from "react";
 import { ColumnDef } from "@tanstack/react-table";
 import { useRouter } from "next/navigation";
-import EditBtn from "../../images/EditBtn.png";
-import DeleteBtn from "../../images/DeleteBtn.png";
+import Images from "@/images"
 
 export interface Student {
   student_id: string;
@@ -144,13 +143,13 @@ export const useStudentColumns = ({
               onClick={() => handleEdit(student, router)}
               aria-label="Edit student"
             >
-              <img src={EditBtn.src} alt="Edit" />
+              <img src={Images.EditButton} alt="Edit" />
             </button>
             <button
               onClick={() => handleDelete(student.student_uuid)}
               aria-label="Delete student"
             >
-              <img src={DeleteBtn.src} alt="Delete" />
+              <img src={Images.DeleteButton} alt="Delete" />
             </button>
           </div>
         );
