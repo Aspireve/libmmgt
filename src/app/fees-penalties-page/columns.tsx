@@ -6,12 +6,12 @@ export interface Penalties {
   student_id: string;
   student_name: string;
   department: string;
-  book_id: string; // Added Book_id to the interface
+  book_id: string;
   book_category: string;
   Issued_date: Date;
   return_date: Date;
   penalties: string;
-  student_uuid?: string; // Optional, used for edit/delete actions
+  student_uuid?: string;
 }
  
 export const PenaltiesColumns: ColumnDef<Penalties>[] = [
@@ -28,7 +28,7 @@ export const PenaltiesColumns: ColumnDef<Penalties>[] = [
     header: "Department",
   },
   {
-    accessorKey: "book_id", // Corrected to match the interface
+    accessorKey: "book_id",
     header: "Book ID",
   },
   {

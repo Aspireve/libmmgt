@@ -26,7 +26,7 @@ interface Department {
   name: string;
 }
 
-// Fallback department data
+// // Fallback department data
 const fallbackDepartments: Department[] = [
   { id: "1", name: "Electronics" },
   { id: "2", name: "Computer Science" },
@@ -41,23 +41,19 @@ const FeesPenaltiesPage = () => {
   const [timeTo, setTimeTo] = useState("");
   const [selectedDepartment, setSelectedDepartment] = useState<string>("");
 
-  // Fetch departments
+  // // Fetch departments
   const { data: departmentData } = useList<Department>({
     resource: "departments",
   });
 
-  // Get department data from API or fallback
+   // Get department data from API or fallback
   const departments: Department[] = Array.isArray(departmentData?.data)
     ? departmentData.data
     : fallbackDepartments;
 
   // Fetch fees and penalties
-  const {
-    data: penaltiesData,
-    isLoading,
-    refetch,
-  } = useList<Penalties>({
-    resource: "feespenalties",
+  const { data ,isLoading } = useList<Penalties>({
+    // resource: "fees",
     filters: [
       ...(searchTerm
         ? [
@@ -114,24 +110,11 @@ const FeesPenaltiesPage = () => {
           ]
         : []),
     ],
-    pagination: { current: 1, pageSize: 1000 },
+    pagination: { current: 1, pageSize: 5 },
   });
 
-  // Convert API data into Penalties format
-  const feesPenalties: Penalties[] = Array.isArray(penaltiesData?.data)
-    ? penaltiesData.data.map((item) => ({
-        student_id: item.student_id ?? "",
-        student_name: item.student_name ?? "",
-        department: item.department ?? "",
-        book_id: item.book_id ?? "",
-        book_category: item.book_category ?? "",
-        Issued_date: item.Issued_date ? new Date(item.Issued_date) : new Date(),
-        return_date: item.return_date ? new Date(item.return_date) : new Date(),
-        penalties: item.penalties ?? "",
-        student_uuid: item.student_uuid ?? "",
-      }))
-    : fallbackData;
-
+const [page, setPage] = useState<number>(1);
+    const [limit, setLimit] = useState<number>(5);
   return (
     <Suspense fallback={<div>Loading...</div>}>
     <>
@@ -207,7 +190,6 @@ const FeesPenaltiesPage = () => {
             ))}
           </select>
           <Button
-            onClick={() => refetch()}
             className="border border-[#1E40AF] text-[#1E40AF] rounded-[10px] w-[100px] flex items-center justify-center"
           >
             <Image src={filter} height={19} width={19} alt="filter" />
@@ -221,7 +203,7 @@ const FeesPenaltiesPage = () => {
             <div className="flex items-center gap-4">
               <h1 className="text-3xl font-semibold ml-4">Fees & Penalties</h1>
               <p className="bg-[#F9F5FF] rounded-2xl text-[#6941C6] px-2">
-                {feesPenalties.length} Entries
+                5 Entries
               </p>
             </div>
             <div className="flex items-center gap-2">
@@ -239,7 +221,7 @@ const FeesPenaltiesPage = () => {
                 />
               </div>
               <Button
-                onClick={() => refetch()}
+               
                 className="bg-blue-600 text-white px-4 py-2 rounded"
               >
                 Search
@@ -247,10 +229,14 @@ const FeesPenaltiesPage = () => {
             </div>
           </div>
           <DataTable
-            columns={PenaltiesColumns}
-            resource="departments"
-            isLoading={isLoading}
-          />
+                          columns={PenaltiesColumns}
+                          data={fallbackData}
+                          isLoading={false}
+                          page={0}
+                          limit={0}
+                          setLimit={setLimit}
+                          setPage={setPage}
+                          totalPages={10} />
         </div>
       </section>
     </>

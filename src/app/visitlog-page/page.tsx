@@ -26,24 +26,24 @@ const Page = () => {
   };
 
   const { data, isLoading, refetch } = useList<VisitLog>({
-    resource: "visitlogs",
-    pagination: { current: 1, pageSize: 1000 },
+    // resource: "alllogs",
+    // pagination: { current: 1, pageSize: 5 },
     filters: [
       ...(dateRange?.from && dateRange?.to
         ? [{
-            field: "date",
-            operator: "between" as const,
-            value: [format(dateRange.from, "yyyy-MM-dd"), format(dateRange.to, "yyyy-MM-dd")],
-          }]
+          field: "date",
+          operator: "between" as const,
+          value: [format(dateRange.from, "yyyy-MM-dd"), format(dateRange.to, "yyyy-MM-dd")],
+        }]
         : []),
       ...(timeFrom ? [{ field: "in_time", operator: "gte" as const, value: timeFrom }] : []),
       ...(timeTo ? [{ field: "out_time", operator: "lte" as const, value: timeTo }] : []),
       ...(searchTerm.trim()
         ? [{
-            field: "visitor_name",
-            operator: "contains" as const,
-            value: searchTerm.trim(),
-          }]
+          field: "visitor_name",
+          operator: "contains" as const,
+          value: searchTerm.trim(),
+        }]
         : []),
     ],
     queryOptions: {
@@ -51,12 +51,13 @@ const Page = () => {
       cacheTime: 10 * 60 * 1000,
     },
   });
-
+  const [page, setPage] = useState<number>(1);
+      const [limit, setLimit] = useState<number>(5);
   const visitLogs: VisitLog[] = Array.isArray(data?.data) ? data.data : fallbackVisitLogData;
 
   return (
     <>
-      <Header />
+      <Header heading="Visit Activites" subheading="Tanvir Chavan" />
       <div className="mt-8 w-[90%] ml-10 border border-[#E0E2E7] rounded-[10px] p-4">
         <h2 className="text-lg font-semibold">Filter</h2>
         <div className="grid grid-cols-4 gap-4 mt-2">
@@ -114,7 +115,15 @@ const Page = () => {
           </div>
           <Button className="bg-blue-600 text-white px-4 py-2 rounded">Search</Button>
         </div>
-        {/* <DataTable columns={visitLogColumns} data={visitLogs} isLoading={isLoading} /> */}
+        <DataTable
+          columns={visitLogColumns}
+          data={fallbackVisitLogData}
+          isLoading={false}
+          page={0}
+          limit={0}
+          setLimit={setLimit}
+          setPage={setPage}
+          totalPages={10} />
       </section>
     </>
   );

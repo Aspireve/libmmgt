@@ -1,77 +1,49 @@
 "use client";
 
-import { useState } from "react";
-
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  ColumnDef,
-  flexRender,
-  getCoreRowModel,
-  useReactTable,
-} from "@tanstack/react-table";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useReactTable, getCoreRowModel, flexRender, ColumnDef } from "@tanstack/react-table";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import Image from "next/image";
-import Previous from "../../images/arrow-left.png";
-import Next from "../../images/arrow-right.png";
-import { BaseRecord, useList } from "@refinedev/core";
+import Images from '@/images/index'
+import { BaseRecord } from "@refinedev/core";
 
-interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[];
-  resource: string;
-  isLoading?: boolean;
-  search?: string;
+interface DataTableProps<TData> {
+  columns: ColumnDef<TData, any>[];
+  data: TData[];
+  isLoading: boolean;
+  page: number;
+  limit: number;
+  setLimit: (limit: number) => void;
+  setPage: (page: number | ((prev: number) => number)) => void;
+  totalPages: number;
 }
 
-export function DataTable<TData extends BaseRecord, TValue>({
-  columns,
-  resource,
-  isLoading = false,
-  search = "",
-}: DataTableProps<TData, TValue>) {
-  const [page, setPage] = useState<number>(1);
 
-  const { data } = useList<TData>({
-    resource,
-    pagination: {
-      current: page,
-      pageSize: 5,
-    },
-    filters: [
-      {
-        field: "_search",
-        operator: "eq",
-        value: search,
-      },
-    ],
-  });
-  const totalPages = data?.pagination?.totalPages || 1;
+export function DataTable<TData extends BaseRecord>({
+  columns,
+  data,
+  isLoading,
+  page,
+  setPage,
+  setLimit,
+  totalPages,
+}: DataTableProps<TData>) {
+  
   const table = useReactTable({
-    data: data?.data ?? [],
+    data,
     columns,
-    pageCount: totalPages,
     getCoreRowModel: getCoreRowModel(),
+    manualPagination: true,
+    pageCount: totalPages,
   });
+
+  const options = [5, 10, 15, 20, 25];
 
   const SkeletonRow = ({ index }: { index: number }) => (
     <TableRow
-      className="animate-fade-in"
+    className="animate-fade-in"
       style={{ animationDelay: `${index * 100}ms` }}
     >
       {columns.map((_, colIndex) => (
@@ -81,41 +53,8 @@ export function DataTable<TData extends BaseRecord, TValue>({
       ))}
     </TableRow>
   );
-
   return (
     <>
-      <style jsx>{`
-        @keyframes fadeIn {
-          from {
-            opacity: 0;
-            transform: translateY(10px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-
-        .animate-fade-in {
-          animation: fadeIn 0.5s ease-out forwards;
-        }
-
-        .animate-pulse {
-          animation: pulse 2s infinite;
-          background-size: 200% 100%;
-          animation: pulseGradient 2s ease-in-out infinite;
-        }
-
-        @keyframes pulseGradient {
-          0% {
-            background-position: 200% 0;
-          }
-          100% {
-            background-position: -200% 0;
-          }
-        }
-      `}</style>
-
       <div className="rounded-md flex flex-col gap-4">
         <Table className="font-inter w-full">
           <TableHeader>
@@ -145,26 +84,22 @@ export function DataTable<TData extends BaseRecord, TValue>({
 
           <TableBody>
             {isLoading ? (
-              Array(5)
-                .fill(null)
-                .map((_, index) => <SkeletonRow key={index} index={index} />)
+              Array(5).fill(null).map((_, index) => <SkeletonRow key={index} index={index} />)
             ) : table.getRowModel().rows.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
                   className="border-b border-gray-300 text-center transition-opacity duration-300 hover:bg-gray-50"
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell
-                      key={cell.id}
-                      className="py-4 text-[#535862] text-sm"
-                    >
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
+                >{row.getVisibleCells().map((cell) => (
+                  <TableCell
+                    key={cell.id}
+                    className="py-4 text-[#535862] text-sm"
+                  >{flexRender(
+                    cell.column.columnDef.cell,
+                    cell.getContext()
+                  )}
+                  </TableCell>
+                ))}
                 </TableRow>
               ))
             ) : (
@@ -172,8 +107,7 @@ export function DataTable<TData extends BaseRecord, TValue>({
                 <TableCell
                   colSpan={columns.length}
                   className="text-center py-4 text-gray-500 animate-fade-in"
-                >
-                  No data available
+                >No data available
                 </TableCell>
               </TableRow>
             )}
@@ -184,11 +118,10 @@ export function DataTable<TData extends BaseRecord, TValue>({
       {/* Pagination Controls */}
       <div className="flex items-center justify-between py-4 cursor-pointer">
         <Button
-          onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+          onClick={() => setPage((prev: number) => Math.max(prev - 1, 1))}
           disabled={page === 1 || isLoading}
           className="transition-all duration-200 hover:scale-105 disabled:opacity-50 ml-10"
-        >
-          <Image src={Previous} alt="Previous Icon" />
+        ><Image src={Images.ArrowLeft} alt="Previous Icon" />
           Previous
         </Button>
 
@@ -199,22 +132,24 @@ export function DataTable<TData extends BaseRecord, TValue>({
             ) : (
               <>
                 <span className="animate-fade-in">
-                  {table.getState().pagination.pageIndex + 1} ...{" "}
-                  {table.getPageCount()}
+                  {page} ...{" "}
+                  {totalPages}
                 </span>
-                {/* <Select>
+                <Select onValueChange={(value) => setLimit?.(Number(value))}>
                   <SelectTrigger className="w-[120px] border-[#717680] rounded-[10px]">
                     <SelectValue placeholder="No of rows" />
                   </SelectTrigger>
                   <SelectContent className="bg-[#fff]">
                     <SelectGroup>
                       <SelectLabel>No of pages</SelectLabel>
-                      <SelectItem value="5">5</SelectItem>
-                      <SelectItem value="10">10</SelectItem>
-                      <SelectItem value="15">15</SelectItem>
+                      {options.map((option) => (
+                        <SelectItem key={option} value={option.toString()}>
+                          {option}
+                        </SelectItem>
+                      ))}
                     </SelectGroup>
                   </SelectContent>
-                </Select> */}
+                </Select>
               </>
             )}
           </div>
@@ -225,7 +160,7 @@ export function DataTable<TData extends BaseRecord, TValue>({
           className="transition-all duration-200 hover:scale-105 disabled:opacity-50 mr-10"
         >
           Next
-          <Image src={Next} alt="Next Icon" />
+          <Image src={Images.ArrowRight} alt="Next Icon" />
         </Button>
       </div>
     </>
