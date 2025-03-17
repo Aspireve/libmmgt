@@ -364,7 +364,7 @@ const handleCancelArchive = () => {
         <div className="p-4">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-4">
-              <p className="text-sm font-semibold ml-4">Students</p>
+              <p className="text-md font-semibold ml-4">Students</p>
               <span className="rounded-full bg-[#F9F5FF] px-3 py-1 text-sm font-medium text-[#6941C6]">
                 {filteredStudents.length} Entries
               </span>
@@ -450,12 +450,12 @@ const handleCancelArchive = () => {
                 />
                 <Input
                   placeholder="Search"
-                  className="w-full pl-10 rounded-[8px] border border-[#D5D7DA] text-[#BBBBBB]"
+                  className="w-full pl-10 rounded-[8px] border border-[#D5D7DA] text-black"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
               </div>
-              <Button className="bg-[#1E40AF] text-white rounded-[8px] w-[15%]">
+              <Button className="bg-[#1E40AF] hover:bg-[#142457] transition-all duration-300 text-white rounded-[8px] w-[15%]">
                 Search
               </Button>
             </div>
@@ -464,6 +464,7 @@ const handleCancelArchive = () => {
             columns={studentColumns}
             resource="student/all"
             isLoading={isLoading}
+            search={searchTerm}
           />
         </div>
       </section>

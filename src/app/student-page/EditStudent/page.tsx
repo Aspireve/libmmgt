@@ -10,6 +10,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useOne, useUpdate } from "@refinedev/core";
 import { Student } from "../studentcolumns";
 import { toast } from "sonner";
+import { Loader2 } from "lucide-react";
 
 const EditStudent: React.FC = () => {
   const router = useRouter();
@@ -87,7 +88,7 @@ const EditStudent: React.FC = () => {
   }, [data, reset, studentUuid]);
 
   // Use refine's useUpdate hook for updating the student.
-  const { mutate } = useUpdate<Student>();
+  const { mutate, isLoading: isUpdateLoading } = useUpdate<Student>();
 
   const onSubmit = (formData: FieldValues) => {
     const hardcodedInstituteId = "828f0d33-258f-4a92-a235-9c1b30d8882b";
@@ -180,8 +181,8 @@ const EditStudent: React.FC = () => {
 
   return (
     <>
-            <Header heading="Edit Book" subheading="Tanvir Chavan"/>
-      
+      <Header heading="Edit Book" subheading="Tanvir Chavan" />
+
       <section className="p-10">
         <div className="container mx-auto">
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
@@ -343,8 +344,16 @@ const EditStudent: React.FC = () => {
               <Button
                 type="submit"
                 className="bg-[#1E40AF] text-white rounded-[10px] hover:bg-[#1E40AF]"
+                disabled={isLoading || isUpdateLoading}
               >
-                Save Changes
+                {isUpdateLoading ? (
+                  <>
+                    <Loader2 className="animate-spin h-5 w-5 mr-2" />
+                    Saving...
+                  </>
+                ) : (
+                  "Save Changes"
+                )}
               </Button>
             </div>
           </form>

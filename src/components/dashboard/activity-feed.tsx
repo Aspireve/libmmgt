@@ -1,47 +1,34 @@
 "use client";
 
-import React from "react";
-// import { FileText } from "lucide-react";
+import React, { useEffect } from "react";
 import ActivityLog from "./activity-log";
 import { ActivityType } from "@/types/book";
+import { useList } from "@refinedev/core";
 
-export default function Activities() {
-  // For demonstration, we create 6 identical items
-  // const items = Array.from({ length: 6 }, () => ({
-  //   title: "The Lean Startup by Eric Ries",
-  //   author: "Rohan Sharma",
-  //   date: "19 Feb 2025, 10:15 AM",
-  // }));
+export default function Activities({ refresh }: { refresh: number }) {
+  const { data, isLoading, refetch } = useList({
+    resource: "book_v2/get_all_logs",
+  });
+
+  useEffect(() => {
+    refetch();
+    console.log("cool")
+  }, [refresh]);
 
   return (
     <div className="transition-all duration-300 hover:shadow-lg border border-[#AEB1B9] max-w-[90%] h-110 rounded-[10px] bg-[#F3F4F6] ml-10 mt-5 p-6">
       <h2 className="text-2xl font-semibold mb-4">Activities</h2>
-      <ActivityLog
-        type={ActivityType.Borrowed}
-        title="The Lean Startup by Eric Ries"
-        studentName="Rohan Sharma"
-        time={"2025-03-14 21:06:57"}
-      />
-      <ActivityLog
-        type={ActivityType.Returned}
-        title="The Lean Startup by Eric Ries"
-        studentName="Rohan Sharma"
-        time={"2025-03-14 21:06:57"}
-      />
-      {/* <div className="space-y-3 rounded-[5px]">
-        {items.map((item, i) => (
-          <div
-            key={i}
-            className="flex items-center gap-3 p-3 rounded-[5px] border border-gray-200 bg-white"
-          >
-            <FileText className="w-5 h-5 text-gray-500" />
-            <p className="text-sm text-black">
-              <span className="font-bold">{item.title}</span> | {item.author} |{" "}
-              {item.date}
-            </p>
-          </div>
+      {isLoading && <ActivityLog isLoading={true} />}
+      {data &&
+        data.data.map((item) => (
+          <ActivityLog
+            type={item?.action as ActivityType}
+            title={item?.new_booktitle[0].book_title}
+            studentName={item?.borrower_uuid}
+            time={item?.time}
+            isLoading={isLoading}
+          />
         ))}
-      </div> */}
     </div>
   );
 }
