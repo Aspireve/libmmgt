@@ -199,8 +199,11 @@ const ImportStudents = () => {
     mutate(
       { resource: "student/bulk-create", values: mapped },
       {
-        onSuccess: (data) => {
-          console.log(data)
+        onSuccess: ({data}) => {
+          if(!data?.body?.locked) {
+            toast.error("Import Failed");
+            return 
+          }
           toast.success("Students Added Successfully");
           setImportData({
             data: [],
