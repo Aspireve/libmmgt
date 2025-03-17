@@ -10,3 +10,9 @@ export interface AuthState {
   logo: string | null;
   header_image: string | null;
 }
+
+export interface ImportData {
+  title: string;
+  headers: string[];
+  data: any[];
+}

@@ -4,6 +4,7 @@ import React, { useRef, useEffect } from "react";
 import { ColumnDef } from "@tanstack/react-table";
 import { useRouter } from "next/navigation";
 import Images from "@/images"
+import Image from "next/image";
 
 export interface Student {
   student_id: string;
@@ -143,13 +144,13 @@ export const useStudentColumns = ({
               onClick={() => handleEdit(student, router)}
               aria-label="Edit student"
             >
-              <img src={Images.EditButton} alt="Edit" />
+              <Image src={Images.EditButton} alt="Edit" />
             </button>
             <button
               onClick={() => handleDelete(student.student_uuid)}
               aria-label="Delete student"
             >
-              <img src={Images.DeleteButton} alt="Delete" />
+              <Image src={Images.DeleteButton} alt="Delete" />
             </button>
           </div>
         );

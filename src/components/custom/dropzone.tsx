@@ -1,22 +1,15 @@
 "use client";
 
 import React, { useRef } from "react";
+import type { ImportData } from "@/types/auth";
 
 const Dropzone = ({
   selectedFile,
-  setSelectedFile,
+  clearSelectedFile,
   processFile,
 }: {
-  selectedFile: {
-    title: string;
-    headers: string[];
-    data: any[];
-  };
-  setSelectedFile: (e: {
-    title: string;
-    headers: string[];
-    data: any[];
-  }) => void;
+  selectedFile: ImportData;
+  clearSelectedFile: () => void;
   processFile: (e: File | null) => void;
 }) => {
   const dropRef = useRef<HTMLDivElement>(null);
@@ -60,13 +53,7 @@ const Dropzone = ({
             {selectedFile.title} uploaded!
           </p>
           <button
-            onClick={() =>
-              setSelectedFile({
-                title: "",
-                data: [],
-                headers: [],
-              })
-            }
+            onClick={clearSelectedFile}
             className="text-gray-500 text-sm mt-1 hover:text-black transition-all duration-100"
           >
             Change file
@@ -89,12 +76,6 @@ const Dropzone = ({
           </label>
         </div>
       )}
-      {/* {error && (
-        <p className="text-red-500 mt-2 whitespace-pre-line">{error}</p>
-      )}
-      {successMessage && !error && (
-        <p className="text-green-500 mt-2">{successMessage}</p>
-      )} */}
     </div>
   );
 };
