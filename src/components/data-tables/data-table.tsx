@@ -46,12 +46,12 @@ export function DataTable<TData extends BaseRecord, TValue>({
   search = "",
 }: DataTableProps<TData, TValue>) {
   const [page, setPage] = useState<number>(1);
-
+  const [limit, setLimit] = useState<number>(5);
   const { data } = useList<TData>({
     resource,
     pagination: {
       current: page,
-      pageSize: 5,
+      pageSize: limit,
     },
     filters: [
       {

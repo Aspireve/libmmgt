@@ -19,23 +19,21 @@ import { formatDate } from '../hooks/formatDate'
 const BooksPage = () => {
   const [url, setUrl] = useState("all")
   const [bookURL, setbookURL] = useState("book_v2")
-
   const [title, setTitle] = useState("Books")
-  const { mutate } = useUpdate()
-  const {mutateAsync} = useDeleteMany()
-  const invalidate = useInvalidate();
-  const router = useRouter();
   const [DeleteIds, setDeleteIds] = useState<string[]>([])
   const [isshowDeleteButton, setIsShowDeleteButton] = useState(false)
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [isDepartementOpen, setIsDepartmentOpen] = useState(false)
   const [selectedBookId, setSelectedBookId] = useState<string | null>(null);
+  
+  const { mutateAsync } = useDeleteMany()
+  const { mutate } = useUpdate()
+  const invalidate = useInvalidate();
+  const router = useRouter();
 
-  const { data, isLoading } = useList<BookData>({ resource: `${bookURL}/${url}`});
-   const totalCount = data?.pagination?.total ?? 0;
-   
-
+  const { data, isLoading } = useList<BookData>({ resource: `${bookURL}/${url}`, pagination:{pageSize:5} });
+  const totalCount = data?.pagination?.total ?? 0;
 
   const handleEdit = (book: BookData) => {
     router.push(`/book-pages/edit-book?book_uuid=${book.book_uuid}`);
@@ -59,28 +57,28 @@ const BooksPage = () => {
       }
     });
   };
-  const handleMultipleDelete = async () =>{
+  const handleMultipleDelete = async () => {
     try {
       const response = await mutateAsync({
-        resource: "books/deleteMany",
+        resource: `${bookURL}/deleteMany`,
         ids: DeleteIds,
       });
-  
+
       console.log("Deleted successfully:", response);
       toast.success("Selected records deleted successfully!");
     } catch (error) {
-      console.error("DeleteMany Error:",error);
+      console.error("DeleteMany Error:", error);
       toast.error("Failed to delete selected items.");
     }
   }
   const confirmDelete = () => {
     console.log('started');
-    console.log("selected book id",selectedBookId)
-    
+    console.log("selected book id", selectedBookId)
+
     if (selectedBookId) {
       mutate({
-        resource: 'book_v2/uparchive',
-        values:`book_uuid:${selectedBookId}`,
+        resource: `${bookURL}/uparchive`,
+        values: `book_uuid:${selectedBookId}`,
       },
         {
           onError: () => {
@@ -89,7 +87,7 @@ const BooksPage = () => {
           onSuccess: () => {
             toast.success("Student deleted sucessfuly!!!")
             invalidate({
-              resource: `book_v2/${url}`, invalidates: ["list"]
+              resource: `${bookURL}/${url}`, invalidates: ["list"]
             });
           },
         },
@@ -100,16 +98,17 @@ const BooksPage = () => {
   };
 
   const columns: ColumnDef<BookData>[] = [
-    { id:'action', header:" ",cell:({row})=>{
-      const book = row.original
-      return(
-        <Input 
-        type='checkbox' 
-        checked={DeleteIds.includes(book.book_uuid)}
-        value={book.book_uuid} 
-        onChange={handleChangeDelete}/>
-      )
-    }
+    {
+      id: 'action', header: " ", cell: ({ row }) => {
+        const book = row.original
+        return (
+          <Input
+            type='checkbox'
+            checked={DeleteIds.includes(book.book_uuid)}
+            value={book.book_uuid}
+            onChange={handleChangeDelete} />
+        )
+      }
 
     },
     { accessorKey: 'book_uuid', header: 'Book ID' },
@@ -157,8 +156,8 @@ const BooksPage = () => {
 
   return (
     <>
-      <Header heading="Book List" subheading="Tanvir Chavan"/>
-      
+      <Header heading="Book List" subheading="Tanvir Chavan" />
+
       <Tabbing routes={bookRoutes} className="w-[30%]" />
 
       <section className="border border-[#E0E2E7] rounded-[10px] m-4">
@@ -169,13 +168,13 @@ const BooksPage = () => {
               <p className='bg-[#F9F5FF] rounded-2xl text-[#6941C6] p-1'>{totalCount}<span> Entries</span></p>
             </div>
             <div className="flex items-center justify-end py-4 gap-3">
-            {isshowDeleteButton && (
-                  <Button
+              {isshowDeleteButton && (
+                <Button
                   onClick={handleMultipleDelete}
                   className="bg-red-600 text-white rounded-[8px] px-4 py-2 hover:bg-red-700 hover:text-white">
                   Delete
                 </Button>
-                )}
+              )}
               <div className="relative">
                 <Button
                   className="bg-[#1E40AF] text-white rounded-[8px] px-4 py-2 hover:bg-[#1E40AF] hover:text-white"
@@ -190,7 +189,7 @@ const BooksPage = () => {
                         Department
                       </label>
                       <select className="w-full border border-gray-300 rounded px-2 py-1">
-                        
+
                       </select>
                     </div>
                     <Button
@@ -263,7 +262,7 @@ const BooksPage = () => {
               </Button>
             </div>
           </div>
-          <DataTable columns={columns} resource={`${bookURL}/${url}`} isLoading={isLoading}/>
+          <DataTable columns={columns} resource={`${bookURL}/${url}`} isLoading={isLoading} />
         </div>
       </section>
       {isModalOpen && (

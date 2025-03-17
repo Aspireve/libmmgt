@@ -46,7 +46,7 @@ export default function Dashboard() {
         {activeTab === "request" && <BookActiveDetails />}
       </div> */}
       <IssueBook setRefreshAction={setRefresh}/>
-      <Activities refresh={refresh}/>
+      {/* <Activities refresh={refresh}/> */}
       <div className="py-10" />
     </>
   );
