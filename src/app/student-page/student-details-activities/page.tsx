@@ -20,7 +20,8 @@ const activitiesData = [
 
 const StudentDetailActivities = () => {
   return (
-    <DataTable columns={studentActivitiesColumns} resource="Book_v2/activities" />
+    <></>
+    // <DataTable columns={studentActivitiesColumns} resource="Book_v2/activities" />
   );
 };
 
