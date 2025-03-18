@@ -20,6 +20,7 @@ export default function SetUserDataPage() {
     phone: "9833911446",
     logo: "https://admissionuploads.s3.amazonaws.com/..._Tia_logo.png",
     header: "https://admissionuploads.s3.amazonaws.com/..._Tia_header.jpg",
+    header_image: "sdfsdf",
   };
 
   const handleSetUser = () => {

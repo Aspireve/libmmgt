@@ -7,7 +7,7 @@ export default function AllBooksPage() {
   return (
     <>
     <Header/>
-    <Tabbing
+    {/* <Tabbing
         tabs={[
           { key: "all-books", label: "All Books" },
           { key: "available-books", label: "Available Books" },
@@ -17,7 +17,7 @@ export default function AllBooksPage() {
         onTabChange={(activeTab) => {
           console.log("All Books tab changed to:", activeTab);
         }}
-      />
+      /> */}
     </>
   );
 }

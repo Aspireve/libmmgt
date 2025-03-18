@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Header from "@/app/Header/header";
 import { profiledata } from "../student-profile/studentprofile";
@@ -32,7 +32,11 @@ const Page = () => {
     },
   });
 
-  console.log({ data, isLoading });
+  const name = data?.data.student_name
+  const id = data?.data.student_id
+
+
+  console.log({ data, isLoading, name });
 
   // State for active tab: "borrowed" or "activities"
   const [activeTab, setActiveTab] = useState<"borrowed" | "activities">("borrowed");
@@ -45,8 +49,9 @@ const Page = () => {
   const inactiveClasses = "bg-white text-black border-0";
 
   return (
+    <Suspense fallback={<div>Loading...</div>}>
     <>
-      <Header heading="Student Profile" subheading="Tanvir Chavan" />
+      <Header heading={name} subheading={id} />
 
       <div className="max-w-5xl ml-5 p-6 rounded-lg">
         {/* Student Information Grid */}
@@ -135,14 +140,10 @@ const Page = () => {
 
       {/* Data Table Section */}
       <section className="border border-[#E0E2E7] rounded-[10px] w-[80%] ml-10 mb-10 mt-6">
-        {activeTab === "borrowed" && (
-          <DataTable columns={borrowedBooksColumns} resource="Book_v2/borrowed" />
-        )}
-        {activeTab === "activities" && (
-          <DataTable columns={studentActivitiesColumns} resource="Book_v2/activities" />
-        )}
+        {/* <DataTable columns={borrowedBooksColumns} resource="Book_v2/borrowed" />  */}
       </section>
     </>
+    </Suspense>
   );
 };
 

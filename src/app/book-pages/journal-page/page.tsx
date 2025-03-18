@@ -1,11 +1,11 @@
 'use client';
-import React, { useState } from 'react';
+
+import React, { Suspense, useState } from 'react';
 import { useDelete, useList, useInvalidate } from '@refinedev/core';
 import { bookRoutes, JournalData } from '../types/data';
 
 import { ColumnDef } from '@tanstack/react-table';
 import { Button } from '@/components/ui/button';
-import { DataTable } from '@/components/data-tables/data-table';
 import { Input } from '@/components/ui/input';
 import Image from 'next/image';
 import { useRouter } from "next/navigation";
@@ -15,6 +15,7 @@ import Tabbing from '@/app/Tab/Tab';
 import { images } from "../images";
 import Link from 'next/link';
 import { formatDate } from '../hooks/formatDate'
+import { MainTable } from '@/components/data-tables/main-table';
 
 
 const JournalPage = () => {
@@ -96,6 +97,7 @@ const JournalPage = () => {
     ];
   
     return (
+      <Suspense fallback={<div>Loading...</div>}>
       <>
               <Header heading="Journal" subheading="Tanvir Chavan"/>
         
@@ -164,7 +166,7 @@ const JournalPage = () => {
                 </Button>
               </div>
             </div>
-            <DataTable columns={columns} resource={`${journalURL}/${url}`} />
+            <MainTable columns={columns} resource={`${journalURL}/${url}`} />
           </div>
         </section>
         {isModalOpen && (
@@ -180,6 +182,7 @@ const JournalPage = () => {
           </div>
         )}
       </>
+      </Suspense>
     );
   };
 

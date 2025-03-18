@@ -56,33 +56,44 @@ const BookBorrowedDetails = () => {
 
         }
     ];
-   
+
 
     const [data, setData] = useState<BookData[]>([]);
-    
-        useEffect(() => {
-            setTimeout(() => setData(studentData), 1000);
-        }, []);
+    const [page, setPage] = useState<number>(1);
+    const [limit, setLimit] = useState<number>(5);
 
-     const columns: ColumnDef<BookData>[] = [
-            { accessorKey: 'student_id', header: 'Student ID' },
-            { accessorKey: 'student_name', header: 'Student Name', },
-            { accessorKey: 'department', header: 'Department' },
-            {
-                accessorKey: 'issued_date', header: 'Issued Date',
-                cell: ({ row }) => <span>{formatDate(row.original.issued_date)}</span>
-            },
-            {
-                accessorKey: "return_date", header: "Return Date",
-                cell: ({ row }) => <span>{formatDate(row.original.return_date)}</span>
-            }
-        ];
-   
-  return (
-    <>
-    <DataTable columns={columns} resource='fees' />
-    </>
-  )
+    useEffect(() => {
+        setTimeout(() => setData(studentData), 1000);
+    }, []);
+
+    const columns: ColumnDef<BookData>[] = [
+        { accessorKey: 'student_id', header: 'Student ID' },
+        { accessorKey: 'student_name', header: 'Student Name', },
+        { accessorKey: 'department', header: 'Department' },
+        {
+            accessorKey: 'issued_date', header: 'Issued Date',
+            cell: ({ row }) => <span>{formatDate(row.original.issued_date)}</span>
+        },
+        {
+            accessorKey: "return_date", header: "Return Date",
+            cell: ({ row }) => <span>{formatDate(row.original.return_date)}</span>
+        }
+    ];
+
+    return (
+        <>
+            <DataTable
+                columns={columns}
+                data={studentData}
+                isLoading={false}
+                page={0}
+                limit={0}
+                setLimit={setLimit}
+                setPage={setPage}
+                totalPages={10} />
+
+        </>
+    )
 }
 
 export default BookBorrowedDetails

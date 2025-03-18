@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React, { Suspense, useState } from 'react';
 import { useDelete, useList, useInvalidate } from '@refinedev/core';
 import { bookRoutes, BookData } from '../types/data';
 
@@ -88,6 +88,7 @@ const BooksPage = () => {
   ];
 
   return (
+    <Suspense fallback={<div>Loading...</div>}>
     <>
       <Header heading="Student Directory" subheading="Tanvir Chavan"/>
       <Tabbing routes={bookRoutes} className="w-[30%]" />
@@ -157,7 +158,7 @@ const BooksPage = () => {
               </Button>
             </div>
           </div>
-          <DataTable columns={columns} data={data?.data || []} />
+          {/* <DataTable columns={columns} data={data?.data || []} /> */}
         </div>
       </section>
       {isModalOpen && (
@@ -173,6 +174,7 @@ const BooksPage = () => {
         </div>
       )}
     </>
+    </Suspense>
   );
 };
 

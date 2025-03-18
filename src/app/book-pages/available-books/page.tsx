@@ -1,8 +1,8 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import { BookData, dummyBooks } from '../types/data';
+import type { BookData } from '../types/data';
 import { DataTable } from '@/components/data-tables/data-table';
-import { useList } from '@refinedev/core';
+import { BaseRecord, useList } from '@refinedev/core';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { bookRoutes } from '../types/data';
@@ -20,7 +20,8 @@ const AvaBooks = () => {
     const date = new Date(dateString);
     return date.toISOString().split('T')[0];
   };
-  const columns: ColumnDef<BookData>[] = [
+
+  const columns: ColumnDef<BookData, unknown>[] = [
     { accessorKey: 'book_id',header: 'Sr no'},
     { accessorKey: 'book_title',header: 'Name of Book'},
     { accessorKey: 'book_author',header: 'Name of Author',},
@@ -86,7 +87,7 @@ const AvaBooks = () => {
             </div>
           </div>
           
-            <DataTable columns={columns} data={data?.data || []} />
+            {/* <DataTable columns={columns as ColumnDef<BaseRecord, unknown>[]} data={data?.data || []} /> */}
             {/* <DataTable columns={columns} data={data} /> */}
         </div>
         </section>

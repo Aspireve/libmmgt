@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react'
+import React, { Suspense, useState } from 'react'
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from '@/components/ui/label';
@@ -83,6 +83,7 @@ const AddJournal = () => {
   };
 
   return (
+    <Suspense fallback={<div>Loading...</div>}>
     <>
             <Header heading="Add Journal" subheading="Tanvir Chavan"/>
 
@@ -129,6 +130,7 @@ const AddJournal = () => {
         </div>
       </section>
     </>
+    </Suspense>
   )
 }
 

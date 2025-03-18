@@ -5,7 +5,7 @@ import { Suspense } from "react";
 
 export default function NotFound() {
   return (
-    <Suspense>
+    <Suspense fallback={<>Loading...</>}>
       <Authenticated key="not-found">
         <ErrorComponent />
       </Authenticated>

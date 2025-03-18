@@ -1,167 +1,27 @@
 "use client";
 
-import React, { useEffect } from "react";
-import Header from "../../Header/header";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { useForm, FieldValues } from "react-hook-form";
+import React, { Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useOne, useUpdate } from "@refinedev/core";
-import { Student } from "../studentcolumns";
-import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
+import Header from "@/components/custom/header";
+import { Button } from "@/components/ui/button";
+import { useUpdate } from "@refinedev/core";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useEditStudentForm } from "@/hooks/edit-student-form";
+import { InputField } from "@/components/custom/InputField";
+import type { StudentFromDatabase } from "@/types/student";
 
 const EditStudent: React.FC = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  // Read the student id from query parameter "id"
   const studentUuid = searchParams.get("id");
 
-  console.log("UUID from URL:", studentUuid);
-
-  const {
-    register,
-    handleSubmit,
-    reset,
-    watch,
-    formState: { errors },
-  } = useForm<
-    Student & {
-      password?: string;
-      confirm_password?: string;
-    }
-  >({
-    defaultValues: {
-      student_name: "",
-      department: "",
-      email: "",
-      phone_no: "",
-      address: "",
-      roll_no: 0,
-      year_of_admission: "",
-      password: "",
-      confirm_password: "",
-    },
-  });
+  const { register, handleSubmit, errors, isFetching, error, onSubmit, watch } =
+    useEditStudentForm(studentUuid || "");
 
   const password = watch("password");
+  const { mutate, isLoading: isUpdating } = useUpdate<StudentFromDatabase>();
 
-  // Use the useOne hook with a working format similar to your book edit example.
-  // This will construct a URL like: 
-  // GET https://lms-807p.onrender.com/student/detail?student_uuid=<studentUuid>
-  const { data, isLoading: isFetching, error } = useOne<Student>({
-    resource: "student/detail",
-    id: studentUuid ? `student_uuid=${studentUuid}` : "",
-    queryOptions: {
-      retry: 1,
-      enabled: !!studentUuid,
-    },
-  });
-
-  console.log("Fetched data:", data?.data);
-
-  // Reset form with fetched student data
-  useEffect(() => {
-    if (data?.data) {
-      const student = data.data;
-      console.log("Fetched student data:", student);
-      reset({
-        student_name: student.student_name || "",
-        department: student.department || "",
-        email: student.email || "",
-        phone_no: student.phone_no || "",
-        address: student.address || "",
-        roll_no: student.roll_no || 0,
-        year_of_admission: student.year_of_admission || "",
-        password: "",
-        confirm_password: "",
-      });
-    } else {
-      console.warn("No student data found for UUID:", studentUuid);
-    }
-  }, [data, reset, studentUuid]);
-
-  // Use useUpdate hook for updating the student record.
-  const { mutate, isLoading: isUpdating } = useUpdate<Student>();
-
-  const onSubmit = (formData: FieldValues) => {
-    const hardcodedInstituteId = "828f0d33-258f-4a92-a235-9c1b30d8882b";
-
-    const validStudentUuid =
-      studentUuid &&
-      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(studentUuid)
-        ? studentUuid
-        : "";
-
-    console.log("Valid student UUID for update:", validStudentUuid);
-
-    if (!validStudentUuid) {
-      toast.error("Invalid student UUID format. A valid UUID is required.", {
-        position: "top-center",
-      });
-      return;
-    }
-
-    const fetchedStudent = data?.data;
-
-    const studentData: Partial<Student> = {
-      student_id: fetchedStudent?.student_id,
-      student_uuid: validStudentUuid,
-      student_name: formData.student_name,
-      department: formData.department,
-      email: formData.email,
-      phone_no: formData.phone_no,
-      address: formData.address,
-      roll_no: Number(formData.roll_no),
-      year_of_admission: formData.year_of_admission,
-      institute_id: hardcodedInstituteId,
-    };
-
-    const passwordValue = formData.password?.trim();
-    const confirmPasswordValue = formData.confirm_password?.trim();
-
-    if (passwordValue) {
-      if (!confirmPasswordValue) {
-        toast.error("Confirm password is required.", { position: "top-center" });
-        return;
-      }
-      if (passwordValue !== confirmPasswordValue) {
-        toast.error("Password and confirm password do not match.", { position: "top-center" });
-        return;
-      }
-      studentData.password = passwordValue;
-      studentData.confirm_password = confirmPasswordValue;
-    }
-
-    console.log("Payload for update:", studentData);
-
-    // Update the student record.
-    mutate(
-      {
-        resource: "student/edit",
-        id: validStudentUuid,
-        meta: { query: { student_uuid: validStudentUuid } },
-        values: studentData,
-      },
-      {
-        onSuccess: () => {
-          toast.success("Student updated successfully!", { position: "top-center" });
-          setTimeout(() => router.push("/student-page"), 500);
-        },
-        onError: (error: any) => {
-          console.error("Update error:", error);
-          toast.error(
-            `Error updating student: ${error.message || "Please try again later."}`,
-            { position: "top-center" }
-          );
-        }
-      }
-    );
-  };
-
-  // Show shadcn Skeleton when fetching student data.
   if (isFetching) {
     return (
       <div className="p-10">
@@ -186,142 +46,143 @@ const EditStudent: React.FC = () => {
   if (error) return <div>Error loading student data</div>;
 
   return (
-    <>
-      <Header heading="Edit Student" subheading="Tanvir Chavan" />
-      <section className="p-10">
-        <div className="container mx-auto">
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-            <h2 className="text-2xl font-bold mb-4">Edit Student</h2>
-            <div className="grid grid-cols-2 gap-4">
-              {/* Student Name */}
-              <div>
-                <Label>Student Name</Label>
-                <Input
+    <Suspense fallback={<div>Loading...</div>}>
+      <>
+        <Header heading="Edit Student" subheading="Tanvir Chavan" />
+        <section className="p-10">
+          <div className="container mx-auto">
+            <form
+              onSubmit={handleSubmit((data) => onSubmit(data, mutate))}
+              className="space-y-6"
+            >
+              <h2 className="text-2xl font-bold mb-4">Edit Student</h2>
+              <div className="grid grid-cols-2 gap-4">
+                {/* Student Name */}
+                <InputField
+                  label="Student Name"
+                  name="student_name"
+                  register={register}
+                  errors={errors}
                   type="text"
-                  {...register("student_name", { required: "Student Name is required" })}
+                  validation={{
+                    required: "Student Name is required",
+                  }}
                   placeholder="Enter Student Name"
                 />
-                {errors.student_name && (
-                  <p className="text-red-500 text-sm">{errors.student_name.message}</p>
-                )}
-              </div>
-              {/* Department */}
-              <div>
-                <Label>Department</Label>
-                <Input
+                <InputField
+                  label="Department"
+                  name="department"
+                  register={register}
+                  errors={errors}
                   type="text"
-                  {...register("department")}
                   placeholder="Enter Department"
                 />
-                {errors.department && (
-                  <p className="text-red-500 text-sm">{errors.department.message}</p>
-                )}
-              </div>
-              {/* Email */}
-              <div>
-                <Label>Email</Label>
-                <Input
+                <InputField
+                  label="Email"
+                  name="email"
+                  register={register}
+                  errors={errors}
                   type="email"
-                  {...register("email", { required: "Email is required" })}
                   placeholder="Enter Email"
                 />
-                {errors.email && (
-                  <p className="text-red-500 text-sm">{errors.email.message}</p>
-                )}
-              </div>
-              {/* Phone Number */}
-              <div>
-                <Label>Phone Number</Label>
-                <Input
+                {/* Email */}
+                <InputField
+                  label="Phone Number"
+                  name="phone_no"
+                  register={register}
+                  errors={errors}
                   type="text"
-                  {...register("phone_no", { required: "Phone Number is required" })}
+                  validation={{
+                    required: "Phone Number is required",
+                  }}
                   placeholder="Enter Phone Number"
                 />
-                {errors.phone_no && (
-                  <p className="text-red-500 text-sm">{errors.phone_no.message}</p>
-                )}
-              </div>
-              {/* Address */}
-              <div>
-                <Label>Address</Label>
-                <Input
+                <InputField
+                  label="Address"
+                  name="address"
+                  register={register}
+                  errors={errors}
                   type="text"
-                  {...register("address", { required: "Address is required" })}
+                  validation={{
+                    required: "Address is required",
+                  }}
                   placeholder="Enter Address"
                 />
-                {errors.address && (
-                  <p className="text-red-500 text-sm">{errors.address.message}</p>
-                )}
-              </div>
-              {/* Roll No. */}
-              <div>
-                <Label>Roll No.</Label>
-                <Input
+                <InputField
+                  label="Roll No."
+                  name="roll_no"
+                  register={register}
+                  errors={errors}
                   type="number"
-                  {...register("roll_no", { required: "Roll No. is required", valueAsNumber: true })}
+                  validation={{
+                    required: "Roll No. is required",
+                    valueAsNumber: true,
+                  }}
                   placeholder="Enter Roll No."
                 />
-                {errors.roll_no && (
-                  <p className="text-red-500 text-sm">{errors.roll_no.message}</p>
-                )}
-              </div>
-              {/* Year of Admission */}
-              <div>
-                <Label>Year of Admission</Label>
-                <Input
+                <InputField
+                  label="Year of Admission"
+                  name="year_of_admission"
+                  register={register}
+                  errors={errors}
                   type="text"
-                  {...register("year_of_admission", { required: "Year of Admission is required" })}
+                  validation={{
+                    required: "Year of Admission is required",
+                  }}
                   placeholder="Enter Year of Admission (e.g., 2023)"
                 />
-                {errors.year_of_admission && (
-                  <p className="text-red-500 text-sm">{errors.year_of_admission.message}</p>
-                )}
-              </div>
-              {/* New Password */}
-              <div>
-                <Label>
-                  New Password {password && <span className="text-red-500">*</span>}
-                </Label>
-                <Input
+                <InputField
+                  label="New Password"
+                  name="password"
+                  register={register}
+                  errors={errors}
                   type="password"
-                  {...register("password", { required: password ? "New password is required" : false })}
+                  validation={{
+                    required: password ? "New password is required" : false,
+                  }}
                   placeholder="Enter New Password"
                 />
-                {errors.password && (
-                  <p className="text-red-500 text-sm">{errors.password.message}</p>
-                )}
-              </div>
-              {/* Confirm New Password */}
-              <div>
-                <Label>
-                  Confirm New Password {password && <span className="text-red-500">*</span>}
-                </Label>
-                <Input
+                <InputField
+                  label="Confirm New Password"
+                  name="confirm_password"
+                  register={register}
+                  errors={errors}
                   type="password"
-                  {...register("confirm_password", { required: password ? "Confirm new password is required" : false })}
+                  validation={{
+                    required: password
+                      ? "Confirm new password is required"
+                      : false,
+                  }}
                   placeholder="Confirm New Password"
                 />
-                {errors.confirm_password && (
-                  <p className="text-red-500 text-sm">{errors.confirm_password.message}</p>
-                )}
               </div>
-            </div>
-            <div className="flex justify-center gap-4">
-              <Button variant="outline" onClick={() => router.push("/student-page")}>
-                Cancel
-              </Button>
-              <Button
-                type="submit"
-                className="bg-[#1E40AF] text-white rounded-[10px] hover:bg-[#1E40AF]"
-                disabled={isUpdating}
-              >
-                {isUpdating ? <Loader2 className="h-5 w-5 animate-spin" /> : "Save Changes"}
-              </Button>
-            </div>
-          </form>
-        </div>
-      </section>
-    </>
+              <div className="flex justify-center gap-4">
+                <Button
+                  variant="outline"
+                  onClick={() => router.push("/student-page")}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  type="submit"
+                  className="bg-[#1E40AF] text-white rounded-[10px] hover:bg-[#1E40AF]"
+                  disabled={isUpdating}
+                >
+                  {isUpdating ? (
+                    <>
+                      <Loader2 className="h-5 w-5 animate-spin" />
+                      Updating...
+                    </>
+                  ) : (
+                    "Save Changes"
+                  )}
+                </Button>
+              </div>
+            </form>
+          </div>
+        </section>
+      </>
+    </Suspense>
   );
 };
 
