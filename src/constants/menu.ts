@@ -13,7 +13,7 @@ export const menuItems: MenuItem[] = [
     id: "student-page",
     title: "Student Directory",
     icon: Images.IssuedBooks,
-    route: "/student-page",
+    route: "/StudentAll",
   },
   {
     id: "fees-penalties-page",
