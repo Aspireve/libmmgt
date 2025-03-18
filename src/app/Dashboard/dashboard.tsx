@@ -29,7 +29,7 @@ export default function Dashboard() {
           [LibraryTabs.ISSUE]: (
             <>
               <IssueBook setRefreshAction={setRefresh} />
-              <Activities refresh={refresh} />
+              {/* <Activities refresh={refresh} /> */}
             </>
           ),
           [LibraryTabs.REQUEST]: <>Insert Data Table</>,

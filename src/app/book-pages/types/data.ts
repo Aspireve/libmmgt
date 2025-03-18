@@ -1,5 +1,7 @@
 export interface BookData {
-    book_uuid:string
+    book_uuid:string;
+    book_id: string;
+    book_copy_uuid:string;
     book_title: string;
     book_author: string;
     total_count:number;
@@ -11,7 +13,7 @@ export interface BookData {
     edition: string;
     isbn: string;
     no_of_pages: number;
-    no_of_preliminary_pages: number;
+    no_of_preliminary: number;
     subject: string;
     department: string;
     call_number: string;
@@ -24,7 +26,8 @@ export interface BookData {
     item_type?: string;
     bill_no: number;
     institute_uuid: string;
-    book_id: string;
+    title:[]; 
+    copies:[]
     // is_archived:Boolean;
   }
 

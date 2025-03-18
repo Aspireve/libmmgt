@@ -95,6 +95,7 @@ const AddBook = () => {
   }, [isbn, refetch, setValue]);
 
   const onSubmit = (data: any) => {
+    console.log("working",data)
     const formatDate = (dateString: string | undefined) => {
       if (!dateString) return null;
       const date = new Date(dateString);
@@ -102,17 +103,17 @@ const AddBook = () => {
     };
     const formattedData: BookData = {
       ...data,
-      no_of_pages: parseInt(data.no_of_pages.toString(), 10),
-      no_of_preliminary_pages: parseInt(data.no_of_preliminary_pages.toString(), 10),
-      inventory_number: parseInt(data.inventory_number.toString(), 10),
-      accession_number: parseInt(data.accession_number.toString(), 10),
-      bill_no: parseInt(data.bill_no.toString(), 10),
+      // no_of_pages: parseInt(data.no_of_pages.toString(), 10),
+      // no_of_preliminary: parseInt(data.no_of_preliminary.toString(), 10),
+      // inventory_number: parseInt(data.inventory_number.toString(), 10),
+      // accession_number: parseInt(data.accession_number.toString(), 10),
+      // bill_no: parseInt(data.bill_no.toString(), 10),
       year_of_publication: formatDate(data.year_of_publication),
       date_of_acquisition: formatDate(data.date_of_acquisition),
       institute_id: "828f0d33-258f-4a92-a235-9c1b30d8882b"
     };
     mutate(
-      { resource: "book/create", values: formattedData },
+      { resource: "book_v2/create", values: formattedData },
       {
         onSuccess: () => {
           toast.success("Book added successfully!")
@@ -152,48 +153,47 @@ const AddBook = () => {
   );
   return (
     <Suspense fallback={<div>Loading...</div>}>
-    <>
-            <Header heading="Add Book" subheading="Tanvir Chavan"/>
+      <>
+        <Header heading="Add Book" subheading="Tanvir Chavan" />
 
-      <Tabbing routes={addbookRoutes} className='w-[30%]' />
-      <section className='p-10'>
-        <div className="container">
-          {/* ISBN Number  */}
-          <div>
-            <h2>ISBN Number</h2>
-            <div className='grid grid-cols-4 gap-4 p-4'>
-              <div>
-                <Label>ISBN Number</Label>
-                <Input
-                  className='text-[#343232]'
-                  type="text"
-                  value={isbn}
-                  onChange={(e) => setIsbn(e.target.value)}
-                  placeholder="Enter Book ISBN Number"
-                />
-                <br />
-                {/* <Button className='bg-[#1E40AF] text-white rounded-[8px] px-4 py-2 hover:bg-[#1E40AF] hover:text-white'
-                  onClick={handleIsbnNumber}>Submit</Button> */}
+        <Tabbing routes={addbookRoutes} className='w-[30%]' />
+        <section className='p-10'>
+          <div className="container">
+            {/* ISBN Number  */}
+            <div>
+              <h2>ISBN Number</h2>
+              <div className='grid grid-cols-4 gap-4 p-4'>
+                <div>
+                  <Label>ISBN Number</Label>
+                  <Input
+                    className='text-[#343232]'
+                    type="text"
+                    value={isbn}
+                    onChange={(e) => setIsbn(e.target.value)}
+                    placeholder="Enter Book ISBN Number"
+                  />
+                  <br />
+
+                </div>
               </div>
             </div>
-          </div>
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-            {inputFields.map((section) => (
-              <FormSection key={section.title} title={section.title} fields={section.fields} />
-            ))}
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+              {inputFields.map((section) => (
+                <FormSection key={section.title} title={section.title} fields={section.fields} />
+              ))}
 
-            <div className="flex justify-center">
-              <Link href={"/book-pages/all-books"}>
-                <Button>Cancel</Button>
-              </Link>
-              <Button type="submit" className="shadow-none border border-[#1E40AF] text-white bg-[#1E40AF] rounded-[10px] hover:bg-[#1E40AF]">
-                Add Book
-              </Button>
-            </div>
-          </form>;
-        </div>
-      </section>
-    </>
+              <div className="flex justify-center">
+                <Link href={"/book-pages/all-books"}>
+                  <Button>Cancel</Button>
+                </Link>
+                <Button type="submit" className="shadow-none border border-[#1E40AF] text-white bg-[#1E40AF] rounded-[10px] hover:bg-[#1E40AF]">
+                  Add Book
+                </Button>
+              </div>
+            </form>;
+          </div>
+        </section>
+      </>
     </Suspense>
   )
 }

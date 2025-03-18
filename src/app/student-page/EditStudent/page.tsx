@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { useUpdate } from "@refinedev/core";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useEditStudentForm } from "@/hooks/edit-student-form";
-import { InputField } from "@/components/custom/InputField";
+import { InputField } from "@/components/custom/inputfield";
 import type { StudentFromDatabase } from "@/types/student";
 
 const EditStudent: React.FC = () => {

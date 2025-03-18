@@ -8,7 +8,7 @@ export const bibliographic = [
     { label: "Edition", name: "edition", type:"text", required: "Edition is required", placeholder: "Enter Edition" },
     { label: "ISBN", name: "isbn", type:"text", required: "ISBN is required", placeholder: "Enter ISBN" },
     { label: "No. of Pages", name: "no_of_pages", type:"number", required: "Number of pages is required", placeholder: "Enter No. of Pages" },
-    { label: "No. of Preliminary Pages", name: "no_of_preliminary_pages", type:"number", required: "Preliminary pages are required", placeholder: "Enter No. of Preliminary Pages" },
+    { label: "No. of Preliminary Pages", name: "no_of_preliminary", type:"number", required: "Preliminary pages are required", placeholder: "Enter No. of Preliminary Pages" },
     { label: "Subject", name: "subject", required: "Subject is required", type:"text", placeholder: "Enter Subject" },
     { label: "Department", name: "department", required: "Department is required", type:"text", placeholder: "Enter Department" }
   ];

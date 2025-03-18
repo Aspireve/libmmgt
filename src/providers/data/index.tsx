@@ -40,6 +40,7 @@ export const dataProvider: CustomDataProvider = {
 
       url += `&${filterParams}`;
     }
+
     const response = await fetchWrapper(url, {
       method: "GET",
     });

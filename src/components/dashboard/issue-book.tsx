@@ -17,6 +17,8 @@ import { useCreate } from "@refinedev/core";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
+
+
 export default function IssueBook({
   setRefreshAction,
 }: {
@@ -26,18 +28,16 @@ export default function IssueBook({
   const { mutate, isLoading } = useCreate();
 
   const handleSubmit = (e: any) => {
-    e.preventDefault();
-    console.log(e);
+    e.preventDefault()
     mutate(
       {
-        resource:
-          action === ActionType.CHECK_IN
-            ? "book_v2/borrowed"
-            : "book_v2/returned",
+        resource:"/book_v2/update-book-log",
+          
         values: {
-          student_uuid: form.getFieldValue("studentId"),
-          barcode: form.getFieldValue("bookId"),
-          book_uuid: "",
+          student_id: form.getFieldValue("studentId"),
+          barcode: form.getFieldValue("barcode"),
+          book_copy_id: form.getFieldValue("bookId"),
+          action:"return"
         },
       },
       {
@@ -57,7 +57,7 @@ export default function IssueBook({
     defaultValues: {
       action: ActionType.CHECK_IN,
       bookId: "",
-      bookName: "",
+      barcode: "",
       studentId: "",
     },
   });
@@ -105,15 +105,15 @@ export default function IssueBook({
           )}
         </form.Field>
 
-        <form.Field name="bookName">
+        <form.Field name="barcode">
           {(field) => (
             <div className="flex-1 min-w-[200px]">
-              <Label htmlFor="bookName" className="text-[#1F2937] mb-1">
-                Name of the Book
+              <Label className="text-[#1F2937] mb-1">
+                Barcode of Book
               </Label>
               <Input
-                id="bookName"
-                placeholder="Enter Book Name"
+                id="barcode"
+                placeholder="Enter Book Barcode"
                 value={field.state.value}
                 onChange={(e) => field.handleChange(e.target.value)}
                 className="bg-white border border-[#D5D7DA] rounded-[8px] text-[#1F2937]"
