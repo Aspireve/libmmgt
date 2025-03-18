@@ -2,12 +2,12 @@
 
 import React from "react";
 import { borrowedBooksColumns } from "../student-profile/studentprofile";
-import { DataTable } from "@/components/data-tables/data-table";
+import { MainTable } from "@/components/data-tables/main-table";
 
 const StudentBorrowedDetails = () => {
   return (
-    <></>
-    // <DataTable columns={borrowedBooksColumns} resource="Book_v2/borrowed" />
+    <>
+    <MainTable columns={borrowedBooksColumns} resource="Book_v2/borrowed" /></>
   );
 };
 

@@ -15,21 +15,23 @@ export default function Activities({ refresh }: { refresh: number }) {
     console.log("cool");
   }, [refresh]);
 
+  // Ensure data?.data is an array before mapping
+  const activityLogs = Array.isArray(data?.data) ? data.data : [];
+
   return (
     <div className="transition-all duration-300 hover:shadow-lg border border-[#AEB1B9] max-w-[90%] h-110 rounded-[10px] bg-[#F3F4F6] ml-10 mt-5 p-6">
       <h2 className="text-2xl font-semibold mb-4">Activities</h2>
       {isLoading && <ActivityLog isLoading={true} />}
-      {data &&
-        data.data.map((item, idx) => (
-          <ActivityLog
-            key={`activity-${idx}`}
-            type={item?.action as ActivityType}
-            title={item?.new_booktitle[0].book_title}
-            studentName={item?.borrower_uuid}
-            time={item?.time}
-            isLoading={isLoading}
-          />
-        ))}
+      {activityLogs.map((item, idx) => (
+        <ActivityLog
+          key={`activity-${idx}`}
+          type={item?.action as ActivityType}
+          title={item?.new_booktitle?.[0]?.book_title || "Unknown Title"}
+          studentName={item?.borrower_uuid || "Unknown Student"}
+          time={item?.time || "Unknown Time"}
+          isLoading={isLoading}
+        />
+      ))}
     </div>
   );
 }
