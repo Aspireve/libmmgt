@@ -22,7 +22,7 @@ export default function IssueBook({
 }: {
   setRefreshAction: React.Dispatch<React.SetStateAction<number>>;
 }) {
-  const [action, setAction] = useState<ActionType>();
+  const [action, setAction] = useState<ActionType>(ActionType.CHECK_IN);
   const { mutate, isLoading } = useCreate();
 
   const handleSubmit = (e: any) => {
@@ -71,6 +71,7 @@ export default function IssueBook({
         <form.Field name="action">
           {(field) => (
             <Select
+
               value={action}
               onValueChange={(value) => setAction(value as ActionType)}
             >
@@ -98,6 +99,7 @@ export default function IssueBook({
                 value={field.state.value}
                 onChange={(e) => field.handleChange(e.target.value)}
                 className="bg-white border border-[#D5D7DA] rounded-[8px] text-[#1F2937]"
+                required
               />
             </div>
           )}
@@ -115,6 +117,7 @@ export default function IssueBook({
                 value={field.state.value}
                 onChange={(e) => field.handleChange(e.target.value)}
                 className="bg-white border border-[#D5D7DA] rounded-[8px] text-[#1F2937]"
+                required
               />
             </div>
           )}
@@ -132,6 +135,7 @@ export default function IssueBook({
                 value={field.state.value}
                 onChange={(e) => field.handleChange(e.target.value)}
                 className="bg-white border border-[#D5D7DA] rounded-[8px] text-[#1F2937]"
+                required
               />
             </div>
           )}
