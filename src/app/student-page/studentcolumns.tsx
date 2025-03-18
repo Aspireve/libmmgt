@@ -3,8 +3,9 @@
 import React, { useRef, useEffect } from "react";
 import { ColumnDef } from "@tanstack/react-table";
 import { useRouter } from "next/navigation";
-import Images from "@/images"
+import Images from "@/images";
 import Image from "next/image";
+import { Button } from "@/components/ui/button";
 
 export interface Student {
   student_id: string;
@@ -33,7 +34,9 @@ const StudentIDCell = ({ student }: { student: Student }) => {
     <div
       className="relative group cursor-pointer  font-bold"
       onClick={() =>
-        router.push(`/student-page/student-profile?student_uuid=${student.student_uuid}`)
+        router.push(
+          `/student-page/student-profile?student_uuid=${student.student_uuid}`
+        )
       }
     >
       {student.student_id}
@@ -55,7 +58,9 @@ const StudentNameCell = ({ student }: { student: Student }) => {
     <div
       className="relative group cursor-pointer"
       onClick={() =>
-        router.push(`/student-page/student-profile?student_uuid=${student.student_uuid}`)
+        router.push(
+          `/student-page/student-profile?student_uuid=${student.student_uuid}`
+        )
       }
     >
       {student.student_name}
@@ -140,18 +145,30 @@ export const useStudentColumns = ({
         const student = row.original;
         return (
           <div className="flex gap-2 ml-10">
-            <button
+            <Button
+              className="shadow-none p-0 m-0"
               onClick={() => handleEdit(student, router)}
               aria-label="Edit student"
             >
-              <Image src={Images.EditButton} alt="Edit" />
-            </button>
-            <button
+              <Image
+                height={20}
+                width={20}
+                src={Images.EditButton}
+                alt="Edit"
+              />
+            </Button>
+            <Button
+              className="shadow-none p-0 m-0"
               onClick={() => handleDelete(student.student_uuid)}
               aria-label="Delete student"
             >
-              <Image src={Images.DeleteButton} alt="Delete" />
-            </button>
+              <Image
+                height={20}
+                width={20}
+                src={Images.DeleteButton}
+                alt="Delete"
+              />
+            </Button>
           </div>
         );
       },
@@ -161,10 +178,7 @@ export const useStudentColumns = ({
   return [selectionColumn, ...columns];
 };
 
-const handleEdit = (
-  student: Student,
-  router: ReturnType<typeof useRouter>
-) => {
+const handleEdit = (student: Student, router: ReturnType<typeof useRouter>) => {
   console.log("Navigating with student_uuid:", student.student_uuid);
   // Ensure a leading slash so that the URL is correct.
   router.push(`/student-page/EditStudent?id=${student.student_uuid}`);
