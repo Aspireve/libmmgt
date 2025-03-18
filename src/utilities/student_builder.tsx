@@ -1,21 +1,30 @@
-import { StudentData } from "@/types/student";
-
+import { StudentData, StudentFromDatabase } from "@/types/student";
 
 export class StudentDataBuilder {
-  private studentEntry: Partial<StudentData> = {};
+  private studentEntry: Partial<StudentFromDatabase> = {};
 
   constructor(
-    private row: any,
-    private mapping: Record<string, string>,
-    private excelHeaders: string[]
+    private rowOrData: any,
+    private mapping: Record<string, string> = {},
+    private excelHeaders: string[] = []
   ) {}
 
-  setField(fieldKey: keyof StudentData, transform?: (value: any) => any) {
-    const column = this.mapping[fieldKey];
-    const colIndex = this.excelHeaders.indexOf(column);
+  setField(fieldKey: keyof StudentFromDatabase, transform?: (value: any) => any) {
+    if (Array.isArray(this.rowOrData)) {
+      // Excel row mode
+      const column = this.mapping[fieldKey];
+      const colIndex = this.excelHeaders.indexOf(column);
 
-    if (column && colIndex !== -1 && this.row[colIndex] !== undefined) {
-      let value = this.row[colIndex];
+      console.log({ column, colIndex });
+
+      if (column && colIndex !== -1 && this.rowOrData[colIndex] !== undefined) {
+        let value = this.rowOrData[colIndex];
+        if (transform) value = transform(value);
+        this.studentEntry[fieldKey] = value;
+      }
+    } else if (typeof this.rowOrData === "object") {
+      // Direct data mode
+      let value = this.rowOrData[fieldKey];
       if (transform) value = transform(value);
       this.studentEntry[fieldKey] = value;
     }
@@ -23,7 +32,7 @@ export class StudentDataBuilder {
     return this;
   }
 
-  build(): Partial<StudentData> {
+  build(): Partial<StudentFromDatabase> {
     return this.studentEntry;
   }
 }

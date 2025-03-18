@@ -4,7 +4,7 @@ import React, { useState, useEffect, Suspense } from "react";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useList, useDelete } from "@refinedev/core";
-import Header from "../Header/header";
+import Header from "@/components/custom/header";
 import { useStudentColumns, Student } from "./studentcolumns";
 import Search from "../../images/search.png";
 import Image from "next/image";
@@ -19,6 +19,8 @@ import StudentFilterDropdown from "./StudentFilterdropdown";
 import { Loader2 } from "lucide-react";
 import { MainTable } from "@/components/data-tables/main-table";
 
+const fallbackDepartments = ["Computer Science", "Mathematics", "Physics", "Chemistry"];
+const fallbackYears = ["2021", "2020", "2019", "2018"];
 
 const StudentDirectory = () => {
   const router = useRouter();
@@ -43,8 +45,6 @@ const StudentDirectory = () => {
 
   console.log({data, isDepartmentLoading})
   // Fallback values for filters
-  const fallbackDepartments = ["Computer Science", "Mathematics", "Physics", "Chemistry"];
-  const fallbackYears = ["2021", "2020", "2019", "2018"];
 
   // Fetch departments and years (endpoints disabled)
   const { data: departmentResponse } = useList<{ department: string }>({
