@@ -23,7 +23,7 @@ export const getBookColumns = (
         return (
           <div
             className="relative group cursor-pointer"
-            onClick={() => router.push(`/book-pages/book-details?name=${book.book_uuid}`)}
+            onClick={() => router.push(`/book-pages/book-details?book_uuid=${book.book_uuid}`)}
           >
             {book.book_title}
             <div className="absolute left-1/2 transform -translate-x-1/2 bottom-full mb-2 hidden group-hover:flex items-center justify-center bg-gray-800 text-white text-xs rounded-lg px-3 py-1 shadow-md whitespace-nowrap
@@ -36,13 +36,12 @@ export const getBookColumns = (
     },
     { accessorKey: 'book_author', header: 'Book Author' },
     { accessorKey: 'name_of_publisher', header: 'Book Publisher' },
-    { accessorKey: 'total_count', header: 'Book Count' },
+    { accessorKey: 'available_count', header: 'Book Count' },
     {
       accessorKey: 'year_of_publication',
       header: 'Year of Publication',
       cell: ({ row }) => <span>{formatDate(row.original.year_of_publication)}</span>,
     },
-    { accessorKey: "is_archived", header: "Status" },
     {
       id: 'actions',
       header: '',

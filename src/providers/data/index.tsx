@@ -86,7 +86,7 @@ export const dataProvider: CustomDataProvider = {
     const url = `${resource}`;
     const response = await fetchWrapper(url, {
       method: "PUT",
-      body: JSON.stringify({ value }),
+      body: JSON.stringify(value),
     });
     return {
       data: response,
@@ -96,7 +96,7 @@ export const dataProvider: CustomDataProvider = {
     const url = `${resource}`;
     const response = await fetchWrapper(url, {
       method: "PATCH",
-      body: JSON.stringify({ value }),
+      body: JSON.stringify(value),
     });
     return {
       data: response,

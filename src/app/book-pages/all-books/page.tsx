@@ -62,17 +62,12 @@ const BooksPage = () => {
         resource: `book_v2/deleteMany`,
         ids: DeleteIds,
       });
-
-      console.log("Deleted successfully:", response);
       toast.success("Selected records deleted successfully!");
     } catch (error) {
-      console.error("DeleteMany Error:", error);
       toast.error("Failed to delete selected items.");
     }
   }
   const confirmDelete = () => {
-    console.log('started');
-    console.log("selected book id", selectedBookId)
 
     if (selectedBookId) {
       mutate({

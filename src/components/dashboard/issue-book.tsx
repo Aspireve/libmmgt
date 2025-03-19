@@ -34,10 +34,10 @@ export default function IssueBook({
         resource:"/book_v2/update-book-log",
           
         values: {
-          student_id: form.getFieldValue("studentId"),
           barcode: form.getFieldValue("barcode"),
           book_copy_id: form.getFieldValue("bookId"),
-          action:"return"
+          student_id: form.getFieldValue("studentId"),
+          action: action === ActionType.CHECK_IN ? "borrow" : "return",
         },
       },
       {

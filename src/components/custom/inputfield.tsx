@@ -15,6 +15,7 @@ export const InputField: React.FC<InputFieldProps> = ({
     <div>
       <Label>{label}</Label>
       <Input
+      className="text-[#343232]"
         type={type}
         max={
           type === "date" ? new Date().toISOString().split("T")[0] : undefined

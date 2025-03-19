@@ -11,8 +11,8 @@ export default function Activities({ refresh }: { refresh: number }) {
   });
 
   useEffect(() => {
+    console.log(data)
     refetch();
-    console.log("cool");
   }, [refresh]);
 
   return (
@@ -20,7 +20,7 @@ export default function Activities({ refresh }: { refresh: number }) {
       <h2 className="text-2xl font-semibold mb-4">Activities</h2>
       {isLoading && <ActivityLog isLoading={true} />}
       {data &&
-        data.data.map((item, idx) => (
+        data?.data.map((item, idx) => (
           <ActivityLog
             key={`activity-${idx}`}
             type={item?.action as ActivityType}
