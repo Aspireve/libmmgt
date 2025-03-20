@@ -4,7 +4,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import Datatable from "./data-table";
 import { Student } from "../student-page/studentcolumns";
 import { Pagination } from "./pagination";
-import { useEffect, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import Headers from "./headers";
 import { useList } from "@refinedev/core";
 import { useDispatch, useSelector } from "react-redux";
@@ -12,50 +12,36 @@ import { RootState } from "@/redux/store/store";
 import { setPaginationValues } from "@/redux/paginationSlice";
 import { useRowSelection } from "@/hooks/checkbox-hook";
 
-export default function TestTable() {
-  // Make Props
-  const isSelectable = true;
-  const resource = "student/all";
-  const columns: ColumnDef<Partial<Student>>[] = [
-    { accessorKey: "student_id", header: "Student Id" },
-    { accessorKey: "email", header: "Email" },
-    { accessorKey: "address", header: "Address" },
-  ];
-  const data = [
-    {
-      id: 1,
-      email: "steve18fernandes@gmail.com",
-      address: "Home",
-    },
-    {
-      id: 2,
-      email: "steve18fernandes@gmail.com",
-      address: "Home",
-    },
-    {
-      id: 3,
-      email: "steve18fernandes@gmail.com",
-      address: "Home",
-    },
-  ];
-  const TP = ({
-    data,
-    filters,
-    setFilters,
-  }: {
-    data: any;
-    filters: any;
-    setFilters: any;
-  }) => {
-    return <div onClick={() => console.log(data)}>Hello</div>;
-  };
+const TP = ({
+  data,
+  filters,
+  setFilters,
+}: {
+  data: any;
+  filters: any;
+  setFilters: any;
+}) => {
+  return <div onClick={() => console.log(data)}>Hello</div>;
+};
 
+export default function MasterTable({
+  title,
+  isSelectable = true,
+  resource,
+  columns,
+  AddedOptions,
+}: {
+  title: string;
+  isSelectable?: boolean;
+  resource: string;
+  columns: ColumnDef<any>[];
+  AddedOptions?: ReactNode[];
+}) {
   // State
   const [search, setSearch] = useState("");
   const [filters, setFilters] = useState({
     ascending: [],
     descending: [],
-    search: [],
     filter: [],
   });
   const dispatch = useDispatch();
@@ -64,13 +50,16 @@ export default function TestTable() {
   const { data: listData, isLoading } = useList({
     resource,
     pagination: { current: page, pageSize: limit },
-    filters: Object.values(filters ?? {}).flat(),
+    filters: [
+      {
+        field: "_search",
+        operator: "eq",
+        value: search,
+      },
+    ],
   });
 
-  const {
-    selectedData,
-    columnsWithCheckbox,
-  } = useRowSelection<any>(
+  const { selectedData, columnsWithCheckbox } = useRowSelection<any>(
     (row) => row.student_id,
     isSelectable,
     columns,
@@ -91,15 +80,13 @@ export default function TestTable() {
     }
   }, [listData]);
 
-  console.log({ listData, isLoading });
-
   return (
-    <div className="m-10 border-2 border-[#E9EAEB] rounded-xl shadow-sm ">
+    <div className="m-10 border-2 border-[#E9EAEB] rounded-xl shadow-sm cursor-default">
       <Headers
-        title="Students"
+        title={title}
         search={search}
         setSearch={setSearch}
-        AddedOptions={[TP]}
+        AddedOptions={AddedOptions}
         selectedData={selectedData}
       />
       <Datatable

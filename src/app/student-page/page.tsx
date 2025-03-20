@@ -11,6 +11,8 @@ import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import MasterTable from "../test/page";
+import { StudentListTable } from "@/constants/students";
 
 export default function StudentDirectory() {
   // Filter and search states
@@ -95,13 +97,17 @@ export default function StudentDirectory() {
           { resource: "student/delete", id: selectedStudents[0] },
           {
             onSuccess: () => {
-              toast.success("Student deleted successfully!", { position: "top-center" });
+              toast.success("Student deleted successfully!", {
+                position: "top-center",
+              });
               setShowConfirmModal(false);
               refetch();
             },
             onError: (error: any) => {
               toast.error(
-                `Error deleting student: ${error.response?.data?.message || error.message}`,
+                `Error deleting student: ${
+                  error.response?.data?.message || error.message
+                }`,
                 { position: "top-center" }
               );
               setShowConfirmModal(false);
@@ -111,20 +117,27 @@ export default function StudentDirectory() {
         return;
       } else {
         // Bulk deletion using a DELETE fetch call.
-        const response = await fetch("https://lms-807p.onrender.com/student/bulk-delete", {
-          method: "DELETE",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(selectedStudents),
-        });
+        const response = await fetch(
+          "https://lms-807p.onrender.com/student/bulk-delete",
+          {
+            method: "DELETE",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(selectedStudents),
+          }
+        );
         if (!response.ok) {
           throw new Error("Failed to delete student(s)");
         }
-        toast.success("Students deleted successfully!", { position: "top-center" });
+        toast.success("Students deleted successfully!", {
+          position: "top-center",
+        });
       }
       setSelectedStudents([]);
       refetch();
     } catch (error: any) {
-      toast.error(`Error deleting student(s): ${error.message}`, { position: "top-center" });
+      toast.error(`Error deleting student(s): ${error.message}`, {
+        position: "top-center",
+      });
     }
   };
 
@@ -165,9 +178,9 @@ export default function StudentDirectory() {
           />
 
           <MainTable
-           columns={studentColumns}
-           resource="student/all"
-           search={searchTerm}
+            columns={studentColumns}
+            resource="student/all"
+            search={searchTerm}
           />
         </div>
       </section>
@@ -186,13 +199,26 @@ export default function StudentDirectory() {
               <Button onClick={handleCancelDelete} variant="outline">
                 Cancel
               </Button>
-              <Button onClick={handleConfirmDelete} className="bg-red-600 text-white hover:bg-red-700">
-                {isArchiving ? <Loader2 className="h-5 w-5 animate-spin" /> : "Confirm"}
+              <Button
+                onClick={handleConfirmDelete}
+                className="bg-red-600 text-white hover:bg-red-700"
+              >
+                {isArchiving ? (
+                  <Loader2 className="h-5 w-5 animate-spin" />
+                ) : (
+                  "Confirm"
+                )}
               </Button>
             </div>
           </div>
         </div>
       )}
+
+      <MasterTable
+        title="Students"
+        resource="student/all"
+        columns={StudentListTable}
+      />
     </>
   );
 }
