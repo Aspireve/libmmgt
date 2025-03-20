@@ -27,8 +27,8 @@ export default function Activities({ refresh }: { refresh: number }) {
           key={`activity-${idx}`}
           type={item?.action as ActivityType}
           title={item?.new_booktitle?.[0]?.book_title || "Unknown Title"}
-          studentName={item?.borrower_uuid || "Unknown Student"}
-          time={item?.time || "Unknown Time"}
+          studentName={item?.student_name || "Unknown Student"}
+          time={item?.created_at || "Unknown Time"}
           isLoading={isLoading}
         />
       ))}
