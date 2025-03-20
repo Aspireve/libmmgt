@@ -46,4 +46,5 @@ export interface InputFieldProps {
   validation?: object;
   errors: any;
   placeholder?: string;
+  defaultValue?: string | number;
 }

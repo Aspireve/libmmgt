@@ -10,6 +10,9 @@ export interface StudentProfileData {
   roll_no?: string;
   year_of_admission?: string;
   address?: string;
+  student_uuid?: string;
+  date_of_birth?:string | undefined;
+  gender?:string;
 }
 
 /** 2) Borrowed Book Interface & Sample Data */
