@@ -34,7 +34,7 @@ const AddStudent: React.FC = () => {
       email: "",
       phone_no: "",
       address: "",
-      roll_no: 0, // Default as number
+      roll_no: 0,
       year_of_admission: "",
       password: "",
       confirm_password: "",

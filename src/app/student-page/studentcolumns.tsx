@@ -3,9 +3,8 @@
 import React, { useRef, useEffect } from "react";
 import { ColumnDef } from "@tanstack/react-table";
 import { useRouter } from "next/navigation";
-import Images from "@/images";
 import Image from "next/image";
-import { Button } from "@/components/ui/button";
+import Images from "@/images"; // Ensure this path points to your image exports
 
 export interface Student {
   student_id: string;
@@ -27,12 +26,12 @@ export interface Student {
   confirm_password?: string;
 }
 
-// ✅ Component for ID Column
+// Component for ID Column
 const StudentIDCell = ({ student }: { student: Student }) => {
   const router = useRouter();
   return (
     <div
-      className="relative group cursor-pointer  font-bold"
+      className="relative group cursor-pointer font-bold"
       onClick={() =>
         router.push(
           `/student-page/student-profile?student_uuid=${student.student_uuid}`
@@ -40,10 +39,9 @@ const StudentIDCell = ({ student }: { student: Student }) => {
       }
     >
       {student.student_id}
-      {/* Chat bubble tooltip */}
       <div
         className="absolute left-1/2 transform -translate-x-1/2 bottom-full mb-2 hidden group-hover:flex items-center justify-center bg-gray-800 text-white text-xs rounded-lg px-3 py-1 shadow-md whitespace-nowrap
-      after:content-[''] after:absolute after:top-full after:left-1/2 after:-translate-x-1/2 after:border-4 after:border-transparent after:border-t-gray-800"
+          after:content-[''] after:absolute after:top-full after:left-1/2 after:-translate-x-1/2 after:border-4 after:border-transparent after:border-t-gray-800"
       >
         Student Profile
       </div>
@@ -51,7 +49,7 @@ const StudentIDCell = ({ student }: { student: Student }) => {
   );
 };
 
-// ✅ Component for Name Column
+// Component for Name Column
 const StudentNameCell = ({ student }: { student: Student }) => {
   const router = useRouter();
   return (
@@ -64,10 +62,9 @@ const StudentNameCell = ({ student }: { student: Student }) => {
       }
     >
       {student.student_name}
-      {/* Chat bubble tooltip */}
       <div
         className="absolute left-1/2 transform -translate-x-1/2 bottom-full mb-2 hidden group-hover:flex items-center justify-center bg-gray-800 text-white text-xs rounded-lg px-3 py-1 shadow-md whitespace-nowrap
-      after:content-[''] after:absolute after:top-full after:left-1/2 after:-translate-x-1/2 after:border-4 after:border-transparent after:border-t-gray-800"
+          after:content-[''] after:absolute after:top-full after:left-1/2 after:-translate-x-1/2 after:border-4 after:border-transparent after:border-t-gray-800"
       >
         Student Profile
       </div>
@@ -76,7 +73,8 @@ const StudentNameCell = ({ student }: { student: Student }) => {
 };
 
 /**
- * useStudentColumns hook returns a ColumnDef array that includes a selection column.
+ * useStudentColumns hook returns a ColumnDef array that includes a selection column and an actions column.
+ * It now accepts an onDeleteAction callback which is called when the delete button is clicked.
  */
 export const useStudentColumns = ({
   selectedStudents,
@@ -84,12 +82,14 @@ export const useStudentColumns = ({
   onSelectAllAction,
   isAllSelected,
   isIndeterminate,
+  onDeleteAction, // New callback
 }: {
   selectedStudents: string[];
   onToggleStudentAction: (uuid: string) => void;
   onSelectAllAction: () => void;
   isAllSelected: boolean;
   isIndeterminate: boolean;
+  onDeleteAction?: (uuid: string) => void;
 }): ColumnDef<Student>[] => {
   const router = useRouter();
 
@@ -145,30 +145,27 @@ export const useStudentColumns = ({
         const student = row.original;
         return (
           <div className="flex gap-2 ml-10">
-            <Button
-              className="shadow-none p-0 m-0"
-              onClick={() => handleEdit(student, router)}
+            <button
+              onClick={() => {
+                console.log("Navigating with student_uuid:", student.student_uuid);
+                router.push(`/student-page/EditStudent?id=${student.student_uuid}`);
+              }}
               aria-label="Edit student"
             >
-              <Image
-                height={20}
-                width={20}
-                src={Images.EditButton}
-                alt="Edit"
-              />
-            </Button>
-            <Button
-              className="shadow-none p-0 m-0"
-              onClick={() => handleDelete(student.student_uuid)}
+              <Image src={Images.EditButton} alt="Edit" height={20} width={20} />
+            </button>
+            <button
+              onClick={() => {
+                if (onDeleteAction) {
+                  onDeleteAction(student.student_uuid);
+                } else {
+                  console.log(`Delete student with UUID: ${student.student_uuid}`);
+                }
+              }}
               aria-label="Delete student"
             >
-              <Image
-                height={20}
-                width={20}
-                src={Images.DeleteButton}
-                alt="Delete"
-              />
-            </Button>
+              <Image src={Images.DeleteButton} alt="Delete" height={20} width={20} />
+            </button>
           </div>
         );
       },
@@ -176,14 +173,4 @@ export const useStudentColumns = ({
   ];
 
   return [selectionColumn, ...columns];
-};
-
-const handleEdit = (student: Student, router: ReturnType<typeof useRouter>) => {
-  console.log("Navigating with student_uuid:", student.student_uuid);
-  // Ensure a leading slash so that the URL is correct.
-  router.push(`/student-page/EditStudent?id=${student.student_uuid}`);
-};
-
-const handleDelete = (uuid: string) => {
-  console.log(`Delete student with UUID: ${uuid}`);
 };

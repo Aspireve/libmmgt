@@ -1,6 +1,7 @@
 import React from "react";
 import { studentActivitiesColumns } from "../student-profile/studentprofile";
-import { DataTable } from "@/components/data-tables/data-table";
+import { MainTable } from "@/components/data-tables/main-table";
+
 
 // If you have fallback data, define it here or fetch from your API
 const activitiesData = [
@@ -20,8 +21,10 @@ const activitiesData = [
 
 const StudentDetailActivities = () => {
   return (
-    <></>
-    // <DataTable columns={studentActivitiesColumns} resource="Book_v2/activities" />
+    <>
+    <MainTable columns={studentActivitiesColumns} resource="Book_v2/activities" />
+    </>
+    
   );
 };
 

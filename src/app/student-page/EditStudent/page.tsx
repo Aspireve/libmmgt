@@ -16,12 +16,21 @@ const EditStudent: React.FC = () => {
   const searchParams = useSearchParams();
   const studentUuid = searchParams.get("id");
 
-  const { register, handleSubmit, errors, isFetching, error, onSubmit, watch } =
-    useEditStudentForm(studentUuid || "");
+  const {
+    register,
+    handleSubmit,
+    errors,
+    isFetching,
+    error,
+    onSubmit,
+    watch,
+  } = useEditStudentForm(studentUuid || "");
 
   const password = watch("password");
   const { mutate, isLoading: isUpdating } = useUpdate<StudentFromDatabase>();
 
+  // Only show an error message if no data is available.
+  // (Assuming useEditStudentForm hook returns an "error" value.)
   if (isFetching) {
     return (
       <div className="p-10">
@@ -43,7 +52,10 @@ const EditStudent: React.FC = () => {
     );
   }
 
-  if (error) return <div>Error loading student data</div>;
+  // If there's an error and no data is available, show error.
+  if (error && !error.data) {
+    return <div>Error loading student data</div>;
+  }
 
   return (
     <Suspense fallback={<div>Loading...</div>}>
@@ -64,9 +76,7 @@ const EditStudent: React.FC = () => {
                   register={register}
                   errors={errors}
                   type="text"
-                  validation={{
-                    required: "Student Name is required",
-                  }}
+                  validation={{ required: "Student Name is required" }}
                   placeholder="Enter Student Name"
                 />
                 <InputField
@@ -85,16 +95,14 @@ const EditStudent: React.FC = () => {
                   type="email"
                   placeholder="Enter Email"
                 />
-                {/* Email */}
+                {/* Phone Number */}
                 <InputField
                   label="Phone Number"
                   name="phone_no"
                   register={register}
                   errors={errors}
                   type="text"
-                  validation={{
-                    required: "Phone Number is required",
-                  }}
+                  validation={{ required: "Phone Number is required" }}
                   placeholder="Enter Phone Number"
                 />
                 <InputField
@@ -103,9 +111,7 @@ const EditStudent: React.FC = () => {
                   register={register}
                   errors={errors}
                   type="text"
-                  validation={{
-                    required: "Address is required",
-                  }}
+                  validation={{ required: "Address is required" }}
                   placeholder="Enter Address"
                 />
                 <InputField
@@ -114,10 +120,7 @@ const EditStudent: React.FC = () => {
                   register={register}
                   errors={errors}
                   type="number"
-                  validation={{
-                    required: "Roll No. is required",
-                    valueAsNumber: true,
-                  }}
+                  validation={{ required: "Roll No. is required", valueAsNumber: true }}
                   placeholder="Enter Roll No."
                 />
                 <InputField
@@ -126,9 +129,7 @@ const EditStudent: React.FC = () => {
                   register={register}
                   errors={errors}
                   type="text"
-                  validation={{
-                    required: "Year of Admission is required",
-                  }}
+                  validation={{ required: "Year of Admission is required" }}
                   placeholder="Enter Year of Admission (e.g., 2023)"
                 />
                 <InputField
@@ -137,9 +138,7 @@ const EditStudent: React.FC = () => {
                   register={register}
                   errors={errors}
                   type="password"
-                  validation={{
-                    required: password ? "New password is required" : false,
-                  }}
+                  validation={{ required: password ? "New password is required" : false }}
                   placeholder="Enter New Password"
                 />
                 <InputField
@@ -149,9 +148,7 @@ const EditStudent: React.FC = () => {
                   errors={errors}
                   type="password"
                   validation={{
-                    required: password
-                      ? "Confirm new password is required"
-                      : false,
+                    required: password ? "Confirm new password is required" : false,
                   }}
                   placeholder="Confirm New Password"
                 />

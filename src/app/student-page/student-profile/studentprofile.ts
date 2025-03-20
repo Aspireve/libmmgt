@@ -154,12 +154,12 @@ export const profiledata = [
 /** 6) Student Profile Routes */
 export const studentprofileRoutes = [
   {
-    key: "student-profile",
+    key: "borrowed",
     label: "Borrowed Books",
     path: "/student-page/student-borrowed-details",
   },
   {
-    key: "import",
+    key: "activities",
     label: "Activities",
     path: "/student-page/student-details-activities",
   },
