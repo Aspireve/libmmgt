@@ -10,11 +10,14 @@ import Header from "@/app/Header/header";
 import { BookData } from "../types/data";
 import { dataProvider } from "@/providers/data";
 import { InputField } from "@/components/custom/inputfield";
+import { Loader2 } from "lucide-react";
 
 const EditBook = () => {
     const router = useRouter();
     const searchParams = useSearchParams();
     const book_uuid = searchParams.get("book_copy_uuid");
+    const [isLoading, setIsLoading] = useState(false)
+    
 
     const { data: bookData } = useOne<BookData>({
         resource: "book_v2/get_book_copy",
@@ -52,6 +55,7 @@ const EditBook = () => {
     }, [bookData, setValue]);
 
     const onSubmit = async (data: any) => {
+        setIsLoading(true)
         const formatDate = (dateString: string | undefined) => {
             if (!dateString) return null;
             const date = new Date(dateString);
@@ -66,7 +70,7 @@ const EditBook = () => {
             date_of_acquisition: formatDate(data.date_of_acquisition),
         };
         try {
-            const response = await dataProvider.patchUpdate({
+                await dataProvider.patchUpdate({
                 resource: 'book_v2/update_book_copy',
                 value: formattedData,
             })
@@ -184,17 +188,22 @@ const EditBook = () => {
                             {/* Action Buttons */}
                             <div className="flex justify-center gap-4">
 
-                                <Button
-                                    className="border-none text-gray-600 rounded-md px-6 py-2"
-                                    onClick={() => router.push("/book-pages/all-books")}
-                                >Cancel
+                                <Button variant="outline" onClick={() => router.back()}>
+                                    Cancel
                                 </Button>
-
-
                                 <Button
                                     type="submit"
-                                    className="bg-blue-600 text-white px-6 py-2 hover:bg-blue-600"
-                                >Update Book
+                                    className="bg-[#1E40AF] text-white rounded-[10px] hover:bg-[#1E40AF]"
+                                    disabled={isLoading}
+                                >
+                                    {isLoading ? (
+                                        <>
+                                            Updating Book...
+                                            <Loader2 className="h-5 w-5 animate-spin" />
+                                        </>
+                                    ) : (
+                                        "Update Book"
+                                    )}
                                 </Button>
                             </div>
                         </form>

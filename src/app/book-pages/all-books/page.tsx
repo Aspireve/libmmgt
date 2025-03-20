@@ -149,7 +149,6 @@ const columns = getBookColumns(handleEdit);
               <Link href={"/book-pages/add-book"}>
                 <Button
                   className="shadow-none border border-[#1E40AF] rounded-[8px] text-[#1E40AF] flex items-center px-4 py-2">
-                  {/* <Image src={images.addBook} alt="Add button" /> */}
                   Add Books
                 </Button>
               </Link>
@@ -167,11 +166,6 @@ const columns = getBookColumns(handleEdit);
                         onClick={() => { setUrl("all"); setTitle("Books"); setIsFilterOpen(false) }}
                         className="text-[#000] justify-start border border-[#fff]  cursor-pointer shadow-none w-[70%]"
                       >Books
-                      </Button>
-                      <Button
-                        onClick={() => { setUrl("get_all_available"); setTitle("Available Books"); setIsFilterOpen(false) }}
-                        className="text-[#000] justify-start border border-[#fff]  cursor-pointer shadow-none w-[70%]"
-                      >Available Books
                       </Button>
                       <Button
                         onClick={() => { setUrl("get_all_unavailable"); setTitle("Issued Books"); setIsFilterOpen(false) }}

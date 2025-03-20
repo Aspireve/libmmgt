@@ -232,8 +232,8 @@ const AddStudent: React.FC = () => {
               >
                 {createLoading ? (
                   <>
-                    <Loader2 className="h-5 w-5 animate-spin" />
                     Adding Student...
+                    <Loader2 className="h-5 w-5 animate-spin" />
                   </>
                 ) : (
                   "Add Student"
