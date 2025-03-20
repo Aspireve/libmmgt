@@ -50,9 +50,7 @@ export const useEditStudentForm = (studentUuid: string) => {
         roll_no: student.roll_no || 0,
         year_of_admission: student.year_of_admission || "",
       });
-    } else {
-      toast.error("Student not found.");
-    }
+    } 
   }, [data, reset, studentUuid]);
 
   const onSubmit = (formData: FieldValues, mutate: Function) => {
