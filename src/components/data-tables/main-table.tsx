@@ -1,4 +1,4 @@
-"Use Client"
+"use Client"
 
 import { BaseRecord, CrudFilters, CrudOperators, LogicalFilter, useList } from "@refinedev/core";
 import { useState } from "react";

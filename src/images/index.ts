@@ -20,7 +20,7 @@ const images = {
   Dropper: require("./Dropper.png"),
   Edit: require("./edit.png"),
   EditButton: require("./EditBtn.png"),
-  EditIcon: require("./editIcon.png"),
+  EditIcon: require("./editicon.png"),
   FeesPenalties: require("./FeesPenaltiesLogo.png"),
   Filter: require("./filter.png"),
   HomeIcon: require("./HomeIcon.png"),
