@@ -18,14 +18,14 @@ const EditStudent: React.FC = () => {
   const studentUuid = searchParams.get("id");
 
   // If no studentUuid is available, render a loading state (or you could redirect)
-  if (!studentUuid) {
-    return (
-      <div className="p-10">
-        <Header heading="Edit Student" subheading="Loading..." />
-        <Skeleton className="h-6 w-1/3" />
-      </div>
-    );
-  }
+  // if (!studentUuid) {
+  //   return (
+  //     <div className="p-10">
+  //       <Header heading="Edit Student" subheading="Loading..." />
+  //       <Skeleton className="h-6 w-1/3" />
+  //     </div>
+  //   );
+  // }
 
   // Fetch existing student data
   const {
