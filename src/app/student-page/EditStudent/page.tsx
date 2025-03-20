@@ -51,7 +51,7 @@ const EditStudent: React.FC = () => {
     reset,
     onSubmit,
     watch,
-  } = useEditStudentForm(studentUuid);
+  } = useEditStudentForm(studentUuid || "");
 
   // Populate form fields once data is available
   useEffect(() => {

@@ -31,7 +31,7 @@ interface ActivityRecord extends BaseRecord {
   count: number;
 }
 
-const page = () => {
+const ReportPage = () => {
   const COLORS = ["#8884d8", "#82ca9d", "#ff00ff"];
 
   const reports = [
@@ -212,4 +212,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default ReportPage;
