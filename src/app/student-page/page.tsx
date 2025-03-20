@@ -13,6 +13,7 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import MasterTable from "../test/page";
 import { StudentListTable } from "@/constants/students";
+import AddStudents from "@/components/students/add-students";
 
 export default function StudentDirectory() {
   // Filter and search states
@@ -218,6 +219,7 @@ export default function StudentDirectory() {
         title="Students"
         resource="student/all"
         columns={StudentListTable}
+        AddedOptions={[AddStudents]}
       />
     </>
   );
