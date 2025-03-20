@@ -26,7 +26,7 @@ export default function Activities({ refresh }: { refresh: number }) {
         <ActivityLog
           key={`activity-${idx}`}
           type={item?.action as ActivityType}
-          title={item?.new_booktitle?.[0]?.book_title || "Unknown Title"}
+          title={item?.new_book_title?.book_title || "Unknown Title"}
           studentName={item?.student_name || "Unknown Student"}
           time={item?.created_at || "Unknown Time"}
           isLoading={isLoading}

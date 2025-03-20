@@ -26,7 +26,7 @@ const AddBook = () => {
 
   const { data: bookData, refetch } = useOne<BookData>({
     resource: "book_v2/isbn",
-    id: `isbn=${isbn}`,
+    id: `_isbn=${isbn}`,
     queryOptions: {
       retry: 1,
       enabled: false,
@@ -86,9 +86,15 @@ const AddBook = () => {
       const date = new Date(dateString);
       return isNaN(date.getTime()) ? null : date.toISOString().split("T")[0];
     };
+    //TODO FIX 
+    delete data.title_images
+    delete data.remarks
     const formattedData: BookData = {
       ...data,
-      // no_of_pages: parseInt(data.no_of_pages.toString(), 10),
+
+      no_of_pages: data.no_of_pages.toString(),
+      no_of_preliminary: data.no_of_preliminary.toString(),
+
       year_of_publication: formatDate(data.year_of_publication),
       date_of_acquisition: formatDate(data.date_of_acquisition),
       institute_id: "828f0d33-258f-4a92-a235-9c1b30d8882b"
@@ -117,7 +123,7 @@ const AddBook = () => {
           <div className="container">
             {/* ISBN Number  */}
             <div>
-              <h2>ISBN Number</h2>
+              <h2 className='ml-[15px]'>ISBN Number</h2>
               <div className='grid grid-cols-4 gap-4 p-4'>
                 <div>
                   <Label>ISBN Number</Label>
@@ -135,7 +141,7 @@ const AddBook = () => {
             </div>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
               <div>
-                <h2>Cataloging</h2>
+                <h2 className='ml-[15px]'>Cataloging</h2>
                 <div className="grid grid-cols-4 gap-4 p-4">
                   <InputField
                     label="Book Title"
@@ -200,6 +206,19 @@ const AddBook = () => {
                       required: "Year of publication is required",
                     }}
                     placeholder="Enter Place of publication"
+                    readonly={isReadable}
+                    disabled={isDisable}
+                  />
+                  <InputField
+                    label="Language"
+                    name="language"
+                    register={register}
+                    errors={errors}
+                    type="text"
+                    validation={{
+                      required: "Language is required",
+                    }}
+                    placeholder="Enter Language"
                     readonly={isReadable}
                     disabled={isDisable}
                   />
@@ -283,7 +302,7 @@ const AddBook = () => {
                   />
                 </div>
 
-                <h2>Classification</h2>
+                <h2 className='ml-[15px]'>Classification</h2>
                 <div className="grid grid-cols-4 gap-4 p-4">
                   <InputField
                     label="Author Mark"
@@ -312,7 +331,7 @@ const AddBook = () => {
                     disabled={isDisable}
                   />
                 </div>
-                <h2>Acquisition Details</h2>
+                <h2 className='ml-[15px]'>Acquisition Details</h2>
                 <div className="grid grid-cols-4 gap-4 p-4">
                   <InputField
                     label="Source of Acquisition"
@@ -354,20 +373,19 @@ const AddBook = () => {
                     disabled={isDisable}
                   />
                 </div>
-                <h2>Inventory and Identification</h2>
+                <h2 className='ml-[15px]'>Inventory and Identification</h2>
                 <div className="grid grid-cols-4 gap-4 p-4">
                   <InputField
                     label="Inventory Number"
-                    name="inventoryNumber"
+                    name="inventory_number"
                     register={register}
                     errors={errors}
                     type="text"
                     validation={{
-                      required: "Source of Acquisition is required",
+                      required: "Inventory Number is required",
                     }}
-                    placeholder="Enter Source of Acquisition"
-                    readonly={isReadable}
-                    disabled={isDisable}
+                    placeholder="Enter Inventory Number"
+                   
                   />
                   <InputField
                     label="Accession Number"
@@ -379,8 +397,7 @@ const AddBook = () => {
                       required: "Accession Number is required",
                     }}
                     placeholder="Enter Accession Number"
-                    readonly={isReadable}
-                    disabled={isDisable}
+                    
                   />
                   <InputField
                     label="Barcode"
@@ -392,15 +409,29 @@ const AddBook = () => {
                       required: "Barcode is required",
                     }}
                     placeholder="Enter Barcode"
-                    readonly={isReadable}
-                    disabled={isDisable}
+                    
+                  
+                  />
+                  <InputField
+                    label="Item Type"
+                    name="item_type"
+                    register={register}
+                    errors={errors}
+                    type="text"
+                    validation={{
+                      required: "Item Type is required",
+                    }}
+                    placeholder="Enter Item Type"
+                  
                   />
                 </div>
               </div>
 
               <div className="flex justify-center">
 
-                <Button variant="outline" onClick={() => router.back()}>
+                <Button
+                className='shadow-none text-[#1E40AF] rounded-[10px]'
+                 onClick={() => router.back()}>
                   Cancel
                 </Button>
 

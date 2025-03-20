@@ -96,7 +96,7 @@ const columns = getBookColumns(handleEdit);
     <>
       <Header heading="Book List" subheading="Tanvir Chavan" />
 
-      <Tabbing routes={bookRoutes} className="w-[30%]" />
+      <Tabbing routes={bookRoutes} className="w-[20%]" />
 
       <section className="border border-[#E0E2E7] rounded-[10px] m-4">
         <div className="container">
@@ -115,7 +115,7 @@ const columns = getBookColumns(handleEdit);
               )}
               <div className="relative">
                 <Button
-                  className="bg-[#1E40AF] text-white rounded-[8px] px-4 py-2 hover:bg-[#1E40AF] hover:text-white"
+                  className="border border-[#1E40AF] text-[#1E40AF] rounded-[10px]"
                   onClick={() => setIsDepartmentOpen(!isDepartementOpen)}
                 >
                   Department
@@ -141,20 +141,20 @@ const columns = getBookColumns(handleEdit);
               </div>
               <Link href={"/book-pages/import-book"}>
                 <Button
-                  className="shadow-none border border-[#1E40AF] text-[#1E40AF] rounded-[10px]">
+                  className="border border-[#1E40AF] text-[#1E40AF] rounded-[10px]">
                   <Image src={images.Import} alt="Import button" />
                   Import
                 </Button>
               </Link>
               <Link href={"/book-pages/add-book"}>
                 <Button
-                  className="shadow-none border border-[#1E40AF] rounded-[8px] text-[#1E40AF] flex items-center px-4 py-2">
+                  className="border border-[#1E40AF] text-[#1E40AF] rounded-[10px]">
                   Add Books
                 </Button>
               </Link>
               <div className="relative">
                 <Button
-                  className="bg-[#1E40AF] text-white rounded-[8px] px-4 py-2 hover:bg-[#1E40AF] hover:text-white"
+                  className="border border-[#1E40AF] text-[#1E40AF] rounded-[10px]"
                   onClick={() => setIsFilterOpen(!isFilterOpen)}
                 >
                   Filter By
