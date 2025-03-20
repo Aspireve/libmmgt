@@ -28,7 +28,6 @@ export class StudentDataBuilder {
       if (transform) value = transform(value);
       this.studentEntry[fieldKey] = value;
     }
-    console.log({column, colIndex, v: this.row[colIndex]})
 
     return this;
   }

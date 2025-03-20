@@ -110,6 +110,7 @@ const Import_Books = () => {
       const entry: Partial<BookData> = {};
       Object.entries(mapping).forEach(([field, column]) => {
         const index = headers.indexOf(column);
+        //@ts-ignore
         if (index !== -1) entry[field as keyof BookData] = convertToProperType(row[index], field as keyof BookData);
       });
       if (!entry.isbn) {

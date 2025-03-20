@@ -11,19 +11,21 @@ import { RootState } from "@/redux/store/store";
 import { setPaginationValues } from "@/redux/paginationSlice";
 import { useRowSelection } from "@/hooks/checkbox-hook";
 
+interface PageProps {
+  title: string;
+  isSelectable?: boolean;
+  resource: string;
+  columns: (e: any) => ColumnDef<any>[];
+  AddedOptions?: any[];
+}
+
 export default function MasterTable({
   title,
   isSelectable = true,
   resource,
   columns,
   AddedOptions,
-}: {
-  title: string;
-  isSelectable?: boolean;
-  resource: string;
-  columns: ({ refetch }: any) => ColumnDef<any>[];
-  AddedOptions?: any[];
-}) {
+}: PageProps): any {
   // State
   const [search, setSearch] = useState("");
   const [filters, setFilters] = useState({
@@ -86,7 +88,7 @@ export default function MasterTable({
         refetch={refetch}
         resource={resource}
       />
-      <Datatable
+      <Datatable<any>
         columns={columnsWithCheckbox}
         data={listData?.data || []}
         isLoading={isLoading}

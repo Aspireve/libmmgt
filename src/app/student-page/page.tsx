@@ -11,7 +11,7 @@ import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import MasterTable from "../test/page";
+import MasterTable from "../test/table-page";
 import { StudentListTable } from "@/constants/students";
 import AddStudents from "@/components/students/add-students";
 import ImportStudentButton from "@/components/students/import-students-button";
