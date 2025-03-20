@@ -10,6 +10,8 @@ export const InputField: React.FC<InputFieldProps> = ({
   validation = {},
   errors,
   placeholder,
+  readonly,
+  disabled
 }) => {
   return (
     <div>
@@ -22,10 +24,13 @@ export const InputField: React.FC<InputFieldProps> = ({
         }
         {...register(name, validation)}
         placeholder={placeholder}
+        disabled={disabled}
+        readOnly= {readonly}
       />
       {errors[name] && (
         <p className="text-red-500 text-sm">{errors[name].message}</p>
       )}
+
     </div>
   );
 };

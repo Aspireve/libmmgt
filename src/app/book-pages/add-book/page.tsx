@@ -18,7 +18,10 @@ import { Loader2 } from 'lucide-react';
 const AddBook = () => {
   const router = useRouter();
   const [isbn, setIsbn] = useState("");
-  const { mutate, isLoading:createLoading } = useCreate();
+  const { mutate, isLoading: createLoading } = useCreate();
+  const [isReadable, setIsReadable] = useState(false)
+  const [isDisable, setIsDisable] = useState(true)
+
 
 
   const { data: bookData, refetch } = useOne<BookData>({
@@ -54,6 +57,7 @@ const AddBook = () => {
 
           if (!isbnResp || typeof isbnResp !== "object" || Object.keys(isbnResp).length === 0) {
             toast.error("No book found for this ISBN.");
+          setIsDisable(false)
             return;
           }
           Object.keys(isbnResp).forEach((key) => {
@@ -65,8 +69,10 @@ const AddBook = () => {
           });
 
           toast.success("Book data mapped successfully!");
+          setIsReadable(true)
         } catch (error) {
           toast.error("No ISBN is found.");
+          setIsDisable(false)
         }
       };
 
@@ -141,6 +147,8 @@ const AddBook = () => {
                       required: "Book Title is required",
                     }}
                     placeholder="Enter Book Title"
+                    readonly={isReadable}
+                    disabled={isDisable}
                   />
                   <InputField
                     label="Book Author"
@@ -152,6 +160,8 @@ const AddBook = () => {
                       required: "Book Author is required",
                     }}
                     placeholder="Enter Book Author"
+                    readonly={isReadable}
+                    disabled={isDisable}
                   />
 
                   <InputField
@@ -164,6 +174,8 @@ const AddBook = () => {
                       required: "SName of Publisher is required",
                     }}
                     placeholder="Enter Name of Publisher"
+                    readonly={isReadable}
+                    disabled={isDisable}
                   />
                   <InputField
                     label="Place of publication"
@@ -175,6 +187,8 @@ const AddBook = () => {
                       required: "Place of publication is required",
                     }}
                     placeholder="Enter Place of publication"
+                    readonly={isReadable}
+                    disabled={isDisable}
                   />
                   <InputField
                     label="Year of publication"
@@ -186,6 +200,8 @@ const AddBook = () => {
                       required: "Year of publication is required",
                     }}
                     placeholder="Enter Place of publication"
+                    readonly={isReadable}
+                    disabled={isDisable}
                   />
                   <InputField
                     label="Edition"
@@ -197,6 +213,8 @@ const AddBook = () => {
                       required: "Edition is required",
                     }}
                     placeholder="Enter Edition"
+                    readonly={isReadable}
+                    disabled={isDisable}
                   />
                   <InputField
                     label="ISBN"
@@ -208,6 +226,8 @@ const AddBook = () => {
                       required: "ISBN is required",
                     }}
                     placeholder="Enter ISBN"
+                    readonly={isReadable}
+                    disabled={isDisable}
                   />
                   <InputField
                     label="No. of Pages"
@@ -219,6 +239,8 @@ const AddBook = () => {
                       required: "No. of Pages is required",
                     }}
                     placeholder="Enter No. of Pages"
+                    readonly={isReadable}
+                    disabled={isDisable}
                   />
                   <InputField
                     label="No. of Preliminary Pages"
@@ -230,6 +252,8 @@ const AddBook = () => {
                       required: "No. of Preliminary Pages is required",
                     }}
                     placeholder="Enter No. of Preliminary Pages"
+                    readonly={isReadable}
+                    disabled={isDisable}
                   />
                   <InputField
                     label="Subject"
@@ -241,6 +265,8 @@ const AddBook = () => {
                       required: "Subject is required",
                     }}
                     placeholder="Enter Subject"
+                    readonly={isReadable}
+                    disabled={isDisable}
                   />
                   <InputField
                     label="Department"
@@ -252,6 +278,8 @@ const AddBook = () => {
                       required: "Department is required",
                     }}
                     placeholder="Enter Department"
+                    readonly={isReadable}
+                    disabled={isDisable}
                   />
                 </div>
 
@@ -267,6 +295,8 @@ const AddBook = () => {
                       required: "Author Mark is required",
                     }}
                     placeholder="Enter Author Mark"
+                    readonly={isReadable}
+                    disabled={isDisable}
                   />
                   <InputField
                     label="Call Number"
@@ -278,6 +308,8 @@ const AddBook = () => {
                       required: "Call Number is required",
                     }}
                     placeholder="Enter Call Number"
+                    readonly={isReadable}
+                    disabled={isDisable}
                   />
                 </div>
                 <h2>Acquisition Details</h2>
@@ -292,6 +324,8 @@ const AddBook = () => {
                       required: "Source of Acquisition is required",
                     }}
                     placeholder="Enter Source of Acquisition"
+                    readonly={isReadable}
+                    disabled={isDisable}
                   />
                   <InputField
                     label="Date of Acquisition"
@@ -303,6 +337,8 @@ const AddBook = () => {
                       required: "Date of Acquisition is required",
                     }}
                     placeholder="Enter Date of Acquisition"
+                    readonly={isReadable}
+                    disabled={isDisable}
                   />
                   <InputField
                     label="Bill Number"
@@ -314,6 +350,8 @@ const AddBook = () => {
                       required: "Bill Number is required",
                     }}
                     placeholder="Enter Bill Number"
+                    readonly={isReadable}
+                    disabled={isDisable}
                   />
                 </div>
                 <h2>Inventory and Identification</h2>
@@ -328,6 +366,8 @@ const AddBook = () => {
                       required: "Source of Acquisition is required",
                     }}
                     placeholder="Enter Source of Acquisition"
+                    readonly={isReadable}
+                    disabled={isDisable}
                   />
                   <InputField
                     label="Accession Number"
@@ -339,6 +379,8 @@ const AddBook = () => {
                       required: "Accession Number is required",
                     }}
                     placeholder="Enter Accession Number"
+                    readonly={isReadable}
+                    disabled={isDisable}
                   />
                   <InputField
                     label="Barcode"
@@ -350,14 +392,18 @@ const AddBook = () => {
                       required: "Barcode is required",
                     }}
                     placeholder="Enter Barcode"
+                    readonly={isReadable}
+                    disabled={isDisable}
                   />
                 </div>
               </div>
 
               <div className="flex justify-center">
-               
-                  <Button>Cancel</Button>
-               
+
+                <Button variant="outline" onClick={() => router.back()}>
+                  Cancel
+                </Button>
+
                 <Button
                   type="submit"
                   className="bg-[#1E40AF] text-white rounded-[10px] hover:bg-[#1E40AF]"
@@ -365,8 +411,8 @@ const AddBook = () => {
                 >
                   {createLoading ? (
                     <>
-                      <Loader2 className="h-5 w-5 animate-spin" />
                       Adding Student...
+                      <Loader2 className="h-5 w-5 animate-spin" />
                     </>
                   ) : (
                     "Add Student"

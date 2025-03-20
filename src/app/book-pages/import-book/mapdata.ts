@@ -13,7 +13,7 @@ export const initialMapping: MappingType = {
   edition: "",
   isbn: "",
   no_of_pages: "",
-  no_of_preliminary_pages: "",
+  no_of_preliminary: "",
   subject: "",
   department: "",
   call_number: "",

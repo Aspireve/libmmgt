@@ -11,13 +11,16 @@ import { BookData } from "../types/data";
 import { Skeleton } from "@/components/ui/skeleton";
 import { dataProvider } from "@/providers/data";
 import { InputField } from "@/components/custom/inputfield";
+import { Loader2 } from "lucide-react";
 
 const EditBook = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const book_uuid = searchParams.get("book_uuid");
   const [isLoadingInput, setIsLoadingInput] = useState(true)
+  const [isLoading, setIsLoading] = useState(false)
 
+  
   const { data: bookData } = useOne<BookData>({
     resource: "book_v2/get_book_title_details",
     id: `_book_uuid=${book_uuid}` || ""
@@ -51,6 +54,7 @@ const EditBook = () => {
   }, [bookData, setValue]);
 
   const onSubmit = async (data: any) => {
+    setIsLoading(true)
     const formatDate = (dateString: string | undefined) => {
       if (!dateString) return null;
       const date = new Date(dateString);
@@ -68,6 +72,7 @@ const EditBook = () => {
         resource: 'book_v2/update_book_title',
         value: formattedData,
       })
+
       toast.success("Book title updated successfully!");
       window.history.back();
     } catch (error: any) {
@@ -83,7 +88,7 @@ const EditBook = () => {
         <section className="p-10">
           <div className="container">
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-            
+
               <div>
                 <h2>Cataloging</h2>
                 <div className="grid grid-cols-4 gap-4 p-4">
@@ -132,7 +137,7 @@ const EditBook = () => {
                     }}
                     placeholder="Enter Place of publication"
                   />
-                   <InputField
+                  <InputField
                     label="Year of publication"
                     name="year_of_publication"
                     register={register}
@@ -236,23 +241,28 @@ const EditBook = () => {
                     }}
                     placeholder="Enter Author Mark"
                   />
-                  
+
                 </div>
               </div>
 
               {/* Action Buttons */}
               <div className="flex justify-center gap-4">
-                <Button
-                  className="border-none text-gray-600 rounded-md px-6 py-2"
-                  onClick={() => router.push("/book-pages/all-books")}
-                >
+                <Button variant="outline" onClick={() => router.back()}>
                   Cancel
                 </Button>
                 <Button
                   type="submit"
-                  className="bg-blue-600 text-white px-6 py-2 hover:bg-blue-600"
+                  className="bg-[#1E40AF] text-white rounded-[10px] hover:bg-[#1E40AF]"
+                  disabled={isLoading}
                 >
-                  Update Book
+                  {isLoading ? (
+                    <>
+                      Updating Book...
+                      <Loader2 className="h-5 w-5 animate-spin" />
+                    </>
+                  ) : (
+                    "Update Book"
+                  )}
                 </Button>
               </div>
             </form>
