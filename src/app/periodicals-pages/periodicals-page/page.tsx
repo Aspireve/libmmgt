@@ -114,7 +114,7 @@ const JournalPage = () => {
       <>
         <Header heading="Periodicals" subheading="Tanvir Chavan" />
 
-        <Tabbing routes={bookRoutes} className="w-[30%]" />
+        <Tabbing routes={bookRoutes} className="w-[20%]" />
 
         <section className="border border-[#E0E2E7] rounded-[10px] m-4">
           <div className='container'>

@@ -28,7 +28,7 @@ export const getBookColumns = (
 
   return [
 
-    { accessorKey: 'book_uuid', header: 'Book ID' },
+    { accessorKey: 'book_title_id', header: 'Book ID' },
     {
       accessorKey: 'book_title',
       header: 'Book Name',
@@ -52,6 +52,8 @@ export const getBookColumns = (
     { accessorKey: 'book_author', header: 'Book Author' },
     { accessorKey: 'name_of_publisher', header: 'Book Publisher' },
     { accessorKey: 'available_count', header: 'Book Count' },
+    { accessorKey: 'isbn', header: 'ISBN' },
+
     {
       accessorKey: 'year_of_publication',
       header: 'Year of Publication',

@@ -33,4 +33,5 @@ export const menuItems: MenuItem[] = [
     icon: Images.PenIcon,
     route: "/book-activities",
   },
+  { id: "Reports", title: "Reports", icon: Images.Reports, route: "/Reports" },
 ];
