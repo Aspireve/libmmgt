@@ -8,14 +8,12 @@ import { RootState } from "@/redux/store/store";
 
 const Headers = ({
   title,
-  // total = 0,
   search,
   setSearch,
   AddedOptions,
   selectedData,
 }: {
   title: string;
-  // total: number;
   search: string;
   setSearch: (e: string) => void;
   AddedOptions: any;

@@ -10,6 +10,7 @@ import { useList } from "@refinedev/core";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store/store";
 import { setPaginationValues } from "@/redux/paginationSlice";
+import { useRowSelection } from "@/hooks/checkbox-hook";
 
 export default function TestTable() {
   // Make Props
@@ -51,7 +52,6 @@ export default function TestTable() {
 
   // State
   const [search, setSearch] = useState("");
-  const [selectedData, setSelectedData] = useState<any>([]);
   const [filters, setFilters] = useState({
     ascending: [],
     descending: [],
@@ -67,50 +67,15 @@ export default function TestTable() {
     filters: Object.values(filters ?? {}).flat(),
   });
 
-  const isRowSelected = (row: any) => {
-    return selectedData?.some(
-      (selected: any) => selected.student_id === row.student_id
-    );
-  };
-
-  const toggleRowSelection = (row: any) => {
-    setSelectedData((prev: any) =>
-      isRowSelected(row)
-        ? prev.filter((selected: any) => selected.student_id !== row.student_id)
-        : [...prev, row]
-    );
-  };
-
-  const toggleAllRows = (isChecked: boolean) => {
-    console.log(listData);
-    setSelectedData(isChecked ? listData?.data || [] : []);
-  };
-
-  const columnsWithCheckbox: ColumnDef<any, any>[] = isSelectable
-    ? [
-        {
-          id: "select",
-          header: () => (
-            <input
-              type="checkbox"
-              checked={
-                selectedData.length === listData?.data?.length &&
-                (listData?.data?.length || 0) > 0
-              }
-              onChange={(e) => toggleAllRows(e.target.checked)}
-            />
-          ),
-          cell: ({ row }) => (
-            <input
-              type="checkbox"
-              checked={isRowSelected(row.original)}
-              onChange={() => toggleRowSelection(row.original)}
-            />
-          ),
-        },
-        ...columns,
-      ]
-    : columns;
+  const {
+    selectedData,
+    columnsWithCheckbox,
+  } = useRowSelection<any>(
+    (row) => row.student_id,
+    isSelectable,
+    columns,
+    listData?.data || []
+  );
 
   useEffect(() => {
     if (listData?.pagination) {
@@ -132,7 +97,6 @@ export default function TestTable() {
     <div className="m-10 border-2 border-[#E9EAEB] rounded-xl shadow-sm ">
       <Headers
         title="Students"
-        // total={6}
         search={search}
         setSearch={setSearch}
         AddedOptions={[TP]}
