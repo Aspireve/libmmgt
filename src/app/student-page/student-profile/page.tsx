@@ -21,7 +21,9 @@ const Page = () => {
   const searchParams = useSearchParams();
   const studentUuid = searchParams.get("student_uuid");
 
-  const [activeTab, setActiveTab] = useState<"borrowed" | "activities">("borrowed");
+  const [activeTab, setActiveTab] = useState<"borrowed" | "activities">(
+    "borrowed"
+  );
 
   const { data, isLoading } = useOne<StudentProfileData>({
     resource: "student/detail",
@@ -43,22 +45,23 @@ const Page = () => {
   return (
     <div>
       <Header
-        heading={studentData.student_name || "Student"}
+        heading={studentData.student_name || ""}
         subheading={studentData.student_id || ""}
+        isLoading={isLoading}
       />
       <div className="max-w-5xl ml-5 p-6 rounded-lg">
         {isLoading ? (
           <div className="space-y-4 animate-pulse">
-            <Skeleton className="h-6 w-1/3" />
-            <div className="grid grid-cols-2 gap-4">
-              <Skeleton className="h-10" />
-              <Skeleton className="h-10" />
-              <Skeleton className="h-10" />
-              <Skeleton className="h-10" />
+            <div className="grid grid-cols-4 gap-6">
+              <Skeleton className="h-10 w-full animate-pulse bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 bg-[length:200%_100%]" />
+              <Skeleton className="h-10 w-full animate-pulse bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 bg-[length:200%_100%]" />
+              <Skeleton className="h-10 w-full animate-pulse bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 bg-[length:200%_100%]" />
+              <Skeleton className="h-10 w-full animate-pulse bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 bg-[length:200%_100%]" />
+              <Skeleton className="h-10 w-full animate-pulse bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 bg-[length:200%_100%]" />
+              <Skeleton className="h-10 w-full animate-pulse bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 bg-[length:200%_100%]" />
             </div>
-            <div className="flex justify-center gap-4">
-              <Skeleton className="h-10 w-24" />
-              <Skeleton className="h-10 w-24" />
+            <div className="flex justify-center gap-4 mt-4">
+              <Skeleton className="h-20 w-full animate-pulse bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 bg-[length:200%_100%]" />
             </div>
           </div>
         ) : !data?.data ? (
