@@ -12,12 +12,16 @@ const Headers = ({
   setSearch,
   AddedOptions,
   selectedData,
+  refetch,
+  resource
 }: {
   title: string;
   search: string;
   setSearch: (e: string) => void;
   AddedOptions: any;
   selectedData: any;
+  refetch: () => void;
+  resource: string
 }) => {
   const { total } = useSelector((state: RootState) => state.pagination);
   return (
@@ -30,7 +34,7 @@ const Headers = ({
       </div>
       <div className="flex  gap-4 items-center">
         {AddedOptions.map((Component: any, index: any) => (
-          <Component key={index} data={selectedData} />
+          <Component key={index} data={selectedData} refetch={refetch} resource={resource}/>
         ))}
         <div className="relative w-72">
           <Image

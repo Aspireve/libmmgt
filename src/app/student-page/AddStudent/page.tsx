@@ -4,92 +4,15 @@ import React from "react";
 import Header from "@/components/custom/header";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { useForm, FieldValues } from "react-hook-form";
-import { useCreate } from "@refinedev/core";
 import { useRouter } from "next/navigation";
-import { toast } from "sonner";
-import { useSelector } from "react-redux";
-import { RootState } from "@/redux/store/store";
 import { Loader2 } from "lucide-react";
-import { StudentDataBuilder } from "@/utilities/student_builder";
 import { InputField } from "@/components/custom/inputfield";
-import type { StudentFromDatabase } from "@/types/student";
-
-const hardcodedInstituteId = "828f0d33-258f-4a92-a235-9c1b30d8882b";
-const hardcodedInstituteName = "TIA";
+import { useAddStudentForm } from "@/hooks/add-student-form";
 
 const AddStudent: React.FC = () => {
   const router = useRouter();
-  const auth = useSelector((state: RootState) => state.auth);
-  const { mutate, isLoading: createLoading } = useCreate();
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<Partial<StudentFromDatabase>>({
-    defaultValues: {
-      student_name: "",
-      department: "",
-      email: "",
-      phone_no: "",
-      address: "",
-      roll_no: 0,
-      year_of_admission: "",
-      password: "",
-      confirm_password: "",
-      date_of_birth: "",
-      gender: "",
-    },
-  });
-
-  const onSubmit = (data: FieldValues) => {
-    const student = new StudentDataBuilder(data)
-      .setField("roll_no", (value) => {
-        const num = Number(value);
-        return isNaN(num) ? 0 : num;
-      })
-      .setField("date_of_birth", (value) => {
-        const parsedDate = new Date(value);
-        return !isNaN(parsedDate.getTime())
-          ? parsedDate.toISOString().split("T")[0]
-          : "";
-      })
-      .setField(
-        "institute_id",
-        () => auth.institute_uuid || hardcodedInstituteId
-      )
-      .setField(
-        "institute_name",
-        () => auth.institute_name || hardcodedInstituteName
-      )
-      .setField("student_id", () => "")
-      .setField("address")
-      .setField("student_uuid", () => "")
-      .setField("student_name")
-      .setField("department")
-      .setField("email")
-      .setField("phone_no")
-      .setField("address")
-      .setField("year_of_admission")
-      .setField("password")
-      .setField("confirm_password")
-      .setField("gender")
-      .setField("is_archived", () => false)
-      .build();
-
-    mutate(
-      { resource: "student/create", values: student },
-      {
-        onSuccess: () => {
-          toast.success("Student added successfully!");
-          router.push("/student-page");
-        },
-        onError: (error: any) =>
-          toast.error("Error adding student: " + error.message),
-      }
-    );
-  };
+  const { onSubmit, register, handleSubmit, errors, isLoading } =
+    useAddStudentForm();
 
   return (
     <>
@@ -99,105 +22,114 @@ const AddStudent: React.FC = () => {
         <div className="container mx-auto">
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             <div className="grid grid-cols-2 gap-4">
+              {/* Student Name */}
               <InputField
+                errors={errors}
                 label="Full Name"
                 name="student_name"
-                validation={{
-                  required: "Full Name is required",
-                }}
-                errors={errors}
                 register={register}
                 type="text"
-                placeholder={"Enter Full Name"}
+                placeholder="Enter Full Name"
+                validation={{ required: "Full Name is required" }}
               />
               <InputField
+                errors={errors}
                 label="Date of Birth"
                 name="date_of_birth"
-                validation={{
-                  required: "Date of Birth is required",
-                }}
-                errors={errors}
                 register={register}
                 type="date"
-                placeholder={"Enter Date of Birth"}
+                placeholder="Enter Date of Birth"
+                validation={{ required: "Date of Birth is required" }}
               />
               <InputField
-                type="text"
-                register={register}
-                validation={{ required: "Department is required" }}
                 errors={errors}
                 label="Department"
                 name="department"
-                placeholder="Enter Department"
-              />
-              <InputField
-                type="email"
                 register={register}
-                validation={{ required: "Email is required" }}
+                type="text"
+                placeholder="Enter Department"
+                validation={{ required: "Department is required" }}
+              />
+
+              <InputField
                 errors={errors}
                 label="Email"
                 name="email"
-                placeholder="Enter Email"
-              />
-              <InputField
-                type="text"
                 register={register}
-                validation={{ required: "Phone Number is required" }}
+                type="email"
+                placeholder="Enter Email"
+                validation={{ required: "Email is required" }}
+              />
+
+              <InputField
                 errors={errors}
                 label="Phone Number"
                 name="phone_no"
-                placeholder="Enter Phone Number"
-              />
-              <InputField
-                type="text"
                 register={register}
-                validation={{ required: "Address is required" }}
+                type="text"
+                placeholder="Enter Phone Number"
+                validation={{ required: "Phone Number is required" }}
+              />
+
+              <InputField
                 errors={errors}
                 label="Address"
                 name="address"
-                placeholder="Enter Address"
-              />
-
-              <InputField
-                type="number"
                 register={register}
-                validation={{ required: "Roll No. is required" }}
+                type="text"
+                placeholder="Enter Address"
+                validation={{ required: "Address is required" }}
+              />
+              <InputField
                 errors={errors}
                 label="Roll No."
                 name="roll_no"
-                placeholder="Enter Roll No."
-              />
-
-              <InputField
-                type="text"
                 register={register}
-                validation={{ required: "Year of Admission is required" }}
+                type="number"
+                placeholder="Enter Roll No."
+                validation={{
+                  required: "Roll No. is required",
+                  valueAsNumber: true,
+                }}
+              />
+              <InputField
                 errors={errors}
                 label="Year of Admission"
                 name="year_of_admission"
-                placeholder="Enter Year of Admission"
-              />
-
-              <InputField
-                type="password"
                 register={register}
-                validation={{ required: "Password is required" }}
+                type="text"
+                placeholder="Enter Year of Admission"
+                validation={{ required: "Year of Admission is required" }}
+              />
+              <InputField
                 errors={errors}
                 label="Password"
                 name="password"
-                placeholder="Enter Password"
-              />
-
-              <InputField
-                type="password"
                 register={register}
-                validation={{ required: "Confirm Password is required" }}
+                type="password"
+                placeholder="Enter Password"
+                validation={{ required: "Password is required" }}
+              />
+              <InputField
                 errors={errors}
                 label="Confirm Password"
                 name="confirm_password"
+                register={register}
+                type="password"
                 placeholder="Enter Confirm Password"
+                validation={{
+                  required: "Confirm Password is required",
+                  validate: (value: string | undefined) => {
+                    // Custom validation: check if passwords match
+                    const password = document.querySelector(
+                      'input[name="password"]'
+                    ) as HTMLInputElement;
+                    return (
+                      value === password?.value || "Passwords do not match"
+                    );
+                  },
+                }}
               />
-
               {/* Gender */}
               <div>
                 <Label>Gender</Label>
@@ -222,17 +154,21 @@ const AddStudent: React.FC = () => {
               </div>
             </div>
             <div className="flex justify-center gap-4">
-              <Button variant="outline" onClick={() => router.back()}>
+              <Button
+                className="shadow-none"
+                type="button"
+                onClick={() => router.push("/student-page")}
+              >
                 Cancel
               </Button>
               <Button
                 type="submit"
-                className="bg-[#1E40AF] text-white rounded-[10px] hover:bg-[#1E40AF]"
-                disabled={createLoading}
+                disabled={isLoading}
+                className="bg-[#1E40AF] w-full hover:bg-[#152148] transition-all duration-300 text-white rounded-[10px]"
               >
-                {createLoading ? (
+                {isLoading ? (
                   <>
-                    Adding Student...
+                    Adding Student
                     <Loader2 className="h-5 w-5 animate-spin" />
                   </>
                 ) : (

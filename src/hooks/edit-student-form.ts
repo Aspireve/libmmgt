@@ -3,8 +3,10 @@ import { useForm, FieldValues } from "react-hook-form";
 import { useOne } from "@refinedev/core";
 import { toast } from "sonner";
 import { StudentData, StudentFromDatabase } from "@/types/student";
+import { useRouter } from "next/navigation";
 
 export const useEditStudentForm = (studentUuid: string) => {
+  const router = useRouter();
   const {
     register,
     handleSubmit,
@@ -73,10 +75,10 @@ export const useEditStudentForm = (studentUuid: string) => {
       student_uuid: validStudentUuid,
       institute_id: hardcodedInstituteId,
     };
-    
+
     const passwordValue = formData.password?.trim();
     const confirmPasswordValue = formData.confirm_password?.trim();
-    
+
     if (!passwordValue) {
       delete studentData.password;
     }
@@ -84,7 +86,7 @@ export const useEditStudentForm = (studentUuid: string) => {
     if (!confirmPasswordValue) {
       delete studentData.confirm_password;
     }
-    
+
     if (
       passwordValue &&
       confirmPasswordValue &&
@@ -93,13 +95,13 @@ export const useEditStudentForm = (studentUuid: string) => {
       toast.error("Passwords do not match.");
       return;
     }
-    
+
     if (passwordValue) {
-      studentData.password = passwordValue; 
+      studentData.password = passwordValue;
     }
-    
+
     if (confirmPasswordValue) {
-      studentData.confirm_password = confirmPasswordValue; 
+      studentData.confirm_password = confirmPasswordValue;
     }
 
     mutate(
@@ -112,6 +114,7 @@ export const useEditStudentForm = (studentUuid: string) => {
       {
         onSuccess: () => {
           toast.success("Student updated successfully!");
+          router.back();
         },
         onError: (error: any) => {
           toast.error(
