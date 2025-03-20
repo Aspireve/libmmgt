@@ -21,8 +21,8 @@ export default function MasterTable({
   title: string;
   isSelectable?: boolean;
   resource: string;
-  columns: ColumnDef<any>[];
-  AddedOptions?: (() => React.JSX.Element)[];
+  columns: ({ refetch }: any) => ColumnDef<any>[];
+  AddedOptions?: any[];
 }) {
   // State
   const [search, setSearch] = useState("");
@@ -54,7 +54,7 @@ export default function MasterTable({
     useRowSelection<any>(
       (row) => row.student_id,
       isSelectable,
-      columns,
+      columns({ refetch }),
       listData?.data || []
     );
 

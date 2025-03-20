@@ -159,7 +159,7 @@ export default function StudentDirectory() {
     <>
       <Header heading="Student Directory" subheading="Tanvir Chavan" />
       {/* <section className="border border-[#E0E2E7] rounded-[10px] w-[90%] ml-10 mt-6"> */}
-        {/* <div className="p-4">
+      {/* <div className="p-4">
           <DataTableControls
             heading="Students"
             entryCount={students.length}
@@ -219,6 +219,32 @@ export default function StudentDirectory() {
         columns={StudentListTable}
         AddedOptions={[DeleteStudent, AddStudents, ImportStudentButton]}
       />
+
+      {/* <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+        <div className="bg-white p-6 w-80 rounded-xl">
+          <h3 className="text-xl font-semibold mb-4">Confirm Delete</h3>
+          <p className="mb-6">
+            {selectedStudents.length === 1
+              ? "Are you sure you want to delete this student?"
+              : "Are you sure you want to delete these students?"}
+          </p>
+          <div className="flex justify-end gap-4">
+            <Button onClick={() => {}} className="shadow-none">
+              Cancel
+            </Button>
+            <Button
+              onClick={() => {}}
+              className="bg-red-600 text-white hover:bg-red-700 rounded-xl w-full"
+            >
+              {isArchiving ? (
+                <Loader2 className="h-5 w-5 animate-spin" />
+              ) : (
+                "Confirm"
+              )}
+            </Button>
+          </div>
+        </div>
+      </div> */}
     </>
   );
 }

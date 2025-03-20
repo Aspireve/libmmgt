@@ -42,7 +42,11 @@ export const fieldLabels: Record<keyof StudentData, string> = {
   institute_name: "Institute Name",
 };
 
-export const StudentListTable: ColumnDef<Partial<StudentFromDatabase>>[] = [
+export const StudentListTable = ({
+  refetch,
+}: {
+  refetch: () => void;
+}): ColumnDef<Partial<StudentFromDatabase>>[] => [
   {
     accessorKey: "student_id",
     header: "ID",
@@ -62,7 +66,7 @@ export const StudentListTable: ColumnDef<Partial<StudentFromDatabase>>[] = [
     header: "Actions",
     cell: ({ row }) => {
       const student = row.original;
-      return <StudentActions student={student} />;
+      return <StudentActions student={student} refetch={refetch} />;
     },
   },
 ];

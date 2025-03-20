@@ -2,6 +2,9 @@ import { StudentFromDatabase } from "@/types/student";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Images from "@/images";
+import useDisclosure from "@/hooks/disclosure-hook";
+import DeleteStudentModal from "@/components/students/delete-student-modal";
+import { Button } from "@/components/ui/button";
 
 export const StudentIDCell = ({
   student,
@@ -50,33 +53,37 @@ export const StudentNameCell = ({
 
 export const StudentActions = ({
   student,
+  refetch,
 }: {
   student: Partial<StudentFromDatabase>;
+  refetch: () => void;
 }) => {
   const router = useRouter();
+  const { isOpen, close, open } = useDisclosure();
   return (
     <div className="flex gap-2 ml-10">
-      <button
+      <Button
+        className="p-0 shadow-none"
         onClick={() => {
-          console.log("Navigating with student_uuid:", student.student_uuid);
           router.push(`/student-page/EditStudent?id=${student.student_uuid}`);
         }}
         aria-label="Edit student"
       >
         <Image src={Images.EditButton} alt="Edit" height={20} width={20} />
-      </button>
-      <button
-        onClick={() => {
-          //   if (onDeleteAction) {
-          //     onDeleteAction(student.student_uuid);
-          //   } else {
-          //     console.log(`Delete student with UUID: ${student.student_uuid}`);
-          //   }
-        }}
+      </Button>
+      <Button
+        onClick={open}
+        className="p-0 shadow-none"
         aria-label="Delete student"
       >
         <Image src={Images.DeleteButton} alt="Delete" height={20} width={20} />
-      </button>
+      </Button>
+      <DeleteStudentModal
+        data={[student]}
+        close={close}
+        isOpen={isOpen}
+        refetch={refetch}
+      />
     </div>
   );
 };

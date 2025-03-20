@@ -12,7 +12,7 @@ import Images from "@/images"; // Import calendar icon
 import { StudentProfileData } from "@/app/student-page/student-profile/studentprofile";
 import { useOne } from "@refinedev/core";
 import Tabbing from "@/components/custom/tabbing";
-import ProfileSkeleton from "@/components/students/skeletons";
+import { ProfileSkeleton } from "@/components/students/skeletons";
 
 enum LibraryTabs {
   BORROWED = "borrowed",
