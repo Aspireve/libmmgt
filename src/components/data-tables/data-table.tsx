@@ -6,8 +6,9 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import Image from "next/image";
-import Images from '@/images/index'
+import Images from '@/images/index';
 import { BaseRecord } from "@refinedev/core";
+import noBooksIllustration from "@/images/Vector.png"
 
 interface DataTableProps<TData> {
   columns: ColumnDef<TData, any>[];
@@ -19,7 +20,6 @@ interface DataTableProps<TData> {
   setPage: (page: number | ((prev: number) => number)) => void;
   totalPages: number;
 }
-
 
 export function DataTable<TData extends BaseRecord>({
   columns,
@@ -43,7 +43,7 @@ export function DataTable<TData extends BaseRecord>({
 
   const SkeletonRow = ({ index }: { index: number }) => (
     <TableRow
-    className="animate-fade-in"
+      className="animate-fade-in"
       style={{ animationDelay: `${index * 100}ms` }}
     >
       {columns.map((_, colIndex) => (
@@ -53,6 +53,7 @@ export function DataTable<TData extends BaseRecord>({
       ))}
     </TableRow>
   );
+
   return (
     <>
       <div className="rounded-md flex flex-col gap-4">
@@ -84,30 +85,46 @@ export function DataTable<TData extends BaseRecord>({
 
           <TableBody>
             {isLoading ? (
-              Array(5).fill(null).map((_, index) => <SkeletonRow key={index} index={index} />)
+              Array(5)
+                .fill(null)
+                .map((_, index) => <SkeletonRow key={index} index={index} />)
             ) : table.getRowModel().rows.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
                   className="border-b border-gray-300 text-center transition-opacity duration-300 hover:bg-gray-50"
-                >{row.getVisibleCells().map((cell) => (
-                  <TableCell
-                    key={cell.id}
-                    className="py-4 text-[#535862] text-sm"
-                  >{flexRender(
-                    cell.column.columnDef.cell,
-                    cell.getContext()
-                  )}
-                  </TableCell>
-                ))}
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell
+                      key={cell.id}
+                      className="py-4 text-[#535862] text-sm"
+                    >
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </TableCell>
+                  ))}
                 </TableRow>
               ))
             ) : (
               <TableRow>
                 <TableCell
                   colSpan={columns.length}
-                  className="text-center py-4 text-gray-500 animate-fade-in"
-                >No data available
+                  className="text-center py-4 animate-fade-in"
+                >
+                  <div className="flex flex-col items-center justify-center">
+                    <Image
+                      src={noBooksIllustration}
+                      alt="No data available"
+                      width={200}
+                      height={200}
+                    />
+                    <h2 className="text-xl font-semibold mt-4">📚 No data available</h2>
+                    <p className="text-gray-600 mt-2">
+                      There is no data available at the moment.
+                    </p>
+                  </div>
                 </TableCell>
               </TableRow>
             )}
@@ -121,7 +138,8 @@ export function DataTable<TData extends BaseRecord>({
           onClick={() => setPage((prev: number) => Math.max(prev - 1, 1))}
           disabled={page === 1 || isLoading}
           className="transition-all duration-200 hover:scale-105 disabled:opacity-50 ml-10"
-        ><Image src={Images.ArrowLeft} alt="Previous Icon" />
+        >
+          <Image src={Images.ArrowLeft} alt="Previous Icon" />
           Previous
         </Button>
 
@@ -132,10 +150,9 @@ export function DataTable<TData extends BaseRecord>({
             ) : (
               <>
                 <span className="animate-fade-in">
-                  {page} ...{" "}
-                  {totalPages}
+                  {page} ... {totalPages}
                 </span>
-                <Select onValueChange={(value) => setLimit?.(Number(value))}>
+                <Select onValueChange={(value) => setLimit(Number(value))}>
                   <SelectTrigger className="w-[120px] border-[#717680] rounded-[10px]">
                     <SelectValue placeholder="No of rows" />
                   </SelectTrigger>
@@ -154,6 +171,7 @@ export function DataTable<TData extends BaseRecord>({
             )}
           </div>
         </div>
+
         <Button
           onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))}
           disabled={page === totalPages || isLoading}

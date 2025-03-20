@@ -2,18 +2,22 @@
 
 import React, { useState } from "react";
 import Header from "../Header/header";
-import { DataTable } from "@/components/data-tables/data-table";
-import { visitLogColumns, fallbackVisitLogData, VisitLog } from "./columns";
+import { visitLogColumns,VisitLog } from "./columns";
 import { useList } from "@refinedev/core";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { Input } from "@/components/ui/input";
 import filter from "../../images/filter.png";
 import searchIcon from "../../images/search.png";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
 import { DateRange } from "react-day-picker";
+import { MainTable } from "@/components/data-tables/main-table";
 
 const Page = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -25,25 +29,36 @@ const Page = () => {
     refetch();
   };
 
-  const { data, isLoading, refetch } = useList<VisitLog>({
+  const { data,refetch } = useList<VisitLog>({
     // resource: "alllogs",
     // pagination: { current: 1, pageSize: 5 },
     filters: [
       ...(dateRange?.from && dateRange?.to
-        ? [{
-          field: "date",
-          operator: "between" as const,
-          value: [format(dateRange.from, "yyyy-MM-dd"), format(dateRange.to, "yyyy-MM-dd")],
-        }]
+        ? [
+            {
+              field: "date",
+              operator: "between" as const,
+              value: [
+                format(dateRange.from, "yyyy-MM-dd"),
+                format(dateRange.to, "yyyy-MM-dd"),
+              ],
+            },
+          ]
         : []),
-      ...(timeFrom ? [{ field: "in_time", operator: "gte" as const, value: timeFrom }] : []),
-      ...(timeTo ? [{ field: "out_time", operator: "lte" as const, value: timeTo }] : []),
+      ...(timeFrom
+        ? [{ field: "in_time", operator: "gte" as const, value: timeFrom }]
+        : []),
+      ...(timeTo
+        ? [{ field: "out_time", operator: "lte" as const, value: timeTo }]
+        : []),
       ...(searchTerm.trim()
-        ? [{
-          field: "visitor_name",
-          operator: "contains" as const,
-          value: searchTerm.trim(),
-        }]
+        ? [
+            {
+              field: "visitor_name",
+              operator: "contains" as const,
+              value: searchTerm.trim(),
+            },
+          ]
         : []),
     ],
     queryOptions: {
@@ -51,9 +66,9 @@ const Page = () => {
       cacheTime: 10 * 60 * 1000,
     },
   });
-  const [page, setPage] = useState<number>(1);
-      const [limit, setLimit] = useState<number>(5);
-  const visitLogs: VisitLog[] = Array.isArray(data?.data) ? data.data : fallbackVisitLogData;
+  const visitLogs: VisitLog[] = Array.isArray(data?.data)
+    ? data.data
+    : [];
 
   return (
     <>
@@ -65,9 +80,15 @@ const Page = () => {
             <label className="text-sm font-medium">Date Range</label>
             <Popover>
               <PopoverTrigger asChild>
-                <Button variant="outline" className="w-full text-left flex items-center justify-between px-4 py-2 border border-gray-300 rounded-md">
+                <Button
+                  variant="outline"
+                  className="w-full text-left flex items-center justify-between px-4 py-2 border border-gray-300 rounded-md"
+                >
                   {dateRange?.from && dateRange?.to
-                    ? `${format(dateRange.from, "MMM dd, yyyy")} - ${format(dateRange.to, "MMM dd, yyyy")}`
+                    ? `${format(dateRange.from, "MMM dd, yyyy")} - ${format(
+                        dateRange.to,
+                        "MMM dd, yyyy"
+                      )}`
                     : "Select date range"}
                 </Button>
               </PopoverTrigger>
@@ -75,7 +96,9 @@ const Page = () => {
                 <Calendar
                   mode="range"
                   selected={dateRange}
-                  onSelect={setDateRange as (range: DateRange | undefined) => void}
+                  onSelect={
+                    setDateRange as (range: DateRange | undefined) => void
+                  }
                   numberOfMonths={2}
                 />
               </PopoverContent>
@@ -83,17 +106,31 @@ const Page = () => {
           </div>
           <div>
             <label className="text-sm font-medium">From Time</label>
-            <Input type="time" value={timeFrom} onChange={(e) => setTimeFrom(e.target.value)} />
+            <Input
+              type="time"
+              value={timeFrom}
+              onChange={(e) => setTimeFrom(e.target.value)}
+            />
           </div>
           <div>
             <label className="text-sm font-medium">To Time</label>
-            <Input type="time" value={timeTo} onChange={(e) => setTimeTo(e.target.value)} />
+            <Input
+              type="time"
+              value={timeTo}
+              onChange={(e) => setTimeTo(e.target.value)}
+            />
           </div>
           <Button
             onClick={handleRefetch}
             className="shadow-none border border-[#1E40AF] text-[#1E40AF] rounded-[10px] w-[100px] flex items-center justify-center mt-6"
           >
-            <Image src={filter} height={19} width={19} alt="filter" className="mr-2" />
+            <Image
+              src={filter}
+              height={19}
+              width={19}
+              alt="filter"
+              className="mr-2"
+            />
             Filter
           </Button>
         </div>
@@ -105,7 +142,11 @@ const Page = () => {
             {visitLogs.length || 0} Entries
           </p>
           <div className="relative w-64">
-            <Image src={searchIcon} alt="Search" className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
+            <Image
+              src={searchIcon}
+              alt="Search"
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"
+            />
             <Input
               placeholder="Search"
               className="w-full pl-10 rounded-[8px] border border-[#D5D7DA] text-[#BBBBBB]"
@@ -113,17 +154,14 @@ const Page = () => {
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
-          <Button className="bg-blue-600 text-white px-4 py-2 rounded">Search</Button>
+          <Button className="bg-blue-600 text-white px-4 py-2 rounded">
+            Search
+          </Button>
         </div>
-        <DataTable
+        <MainTable<VisitLog, unknown>
           columns={visitLogColumns}
-          data={fallbackVisitLogData}
-          isLoading={false}
-          page={0}
-          limit={0}
-          setLimit={setLimit}
-          setPage={setPage}
-          totalPages={10} />
+          resource="student/alllog"
+        />
       </section>
     </>
   );
