@@ -12,7 +12,7 @@ export default function Activities({ refresh }: { refresh: number }) {
 
   useEffect(() => {
     console.log(data)
-    refetch();
+    refetch();  
   }, [refresh]);
 
   return (

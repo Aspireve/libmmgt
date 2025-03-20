@@ -47,8 +47,8 @@ export const getBookColumns = (
       header: '',
       cell: ({ row }) => (
         <div className="flex gap-2">
-          <Button variant="ghost" size="icon" onClick={() => handleEdit(row.original)}>
-            <Image src={images.Edit} alt='Edit button' />
+          <Button variant="ghost" size="icon" className='w-[20px]' onClick={() => handleEdit(row.original)}>
+            <Image src={images.EditButton} alt='Edit button'  />
           </Button>
         </div>
       ),

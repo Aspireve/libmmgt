@@ -3,7 +3,6 @@ import React from 'react'
 
 import Header from '@/app/Header/header'
 import { useRouter, useSearchParams } from "next/navigation";
-import { Skeleton } from '@/components/ui/skeleton';
 import { MainTable } from '@/components/data-tables/main-table';
 import { BookData } from '../types/data';
 import { useInvalidate, useOne, useUpdate } from '@refinedev/core';
@@ -24,7 +23,7 @@ const Book_details = () => {
     const BookID =  bookData?.data?.title?.[0]?.book_uuid
     
     const handleEdit = (book: BookData) => {
-        router.push(`/book-pages/edit-book-page?book_copy_uuid=${book.book_copy_uuid}`);
+        router.push(`/book-pages/editbookCopy-page?book_copy_uuid=${book.book_copy_uuid}`);
     };
     const handleDelete = async (book: BookData) => {
         console.log("Book Id", typeof book.book_copy_uuid)

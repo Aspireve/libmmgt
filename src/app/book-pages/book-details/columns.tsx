@@ -48,8 +48,8 @@ export const getBookColumns = (handleEdit: (book: BookData) => void, handleDelet
         header: '',
         cell: ({ row }) => (
             <div className="flex gap-2">
-                <Button variant="ghost" size="icon" onClick={() => handleEdit(row.original)}>
-                    <Image src={images.Edit} alt='Edit Icon'/>
+                <Button variant="ghost" size="icon" className='w-[20px]' onClick={() => handleEdit(row.original)}>
+                    <Image src={images.EditButton} alt='Edit Icon'/>
                 </Button>
                 <Button variant="ghost" size="icon" onClick={() => handleDelete(row.original)}>
                 <Image src={images.Thrash} alt='Edit Icon'/>

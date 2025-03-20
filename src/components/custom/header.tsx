@@ -42,8 +42,6 @@ const Header: React.FC<HeadersProps> = ({ heading, subheading }) => {
   //   if (pathname === "/fees-penalties-page") newHeading = "Fees & Penalities";
   //   if (pathname === "/visitlog-page") newHeading = "Visit Activities";
   //   if (pathname === "/book-pages/all-books") newHeading = "Books List";
-  //   if (pathname === "/book-pages/available-books")newHeading = "Available Books";
-  //   if (pathname === "/book-pages/issued-books") newHeading = "Issued Books";
   //   if (pathname === "/book-pages/issue-books") newHeading = "Issue Books";
   //   if (pathname === "/book-pages/add-book") newHeading = "Add Book";
   //   if (pathname === "/book-pages/add-journal") newHeading = "Add Journal";

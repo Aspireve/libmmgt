@@ -11,19 +11,15 @@ import { toast } from 'sonner';
 import Header from '@/app/Header/header';
 import Tabbing from '@/app/Tab/Tab';
 import { addbookRoutes, BookData } from '../types/data';
-import Link from 'next/link';
-import { Skeleton } from '@/components/ui/skeleton';
 import isbn3 from 'isbn3';
-import { inputFields } from '../types/inputFields-title';
+import { InputField } from '@/components/custom/inputfield';
+import { Loader2 } from 'lucide-react';
 
 const AddBook = () => {
   const router = useRouter();
   const [isbn, setIsbn] = useState("");
-  const [isReadOnly, setIsReadOnly] = useState(false);
-  const [isDisabled, setIsDisabled] = useState(true)
-  const [isLoading, setIsLoading] = useState(false);
-  const { mutate } = useCreate();
-  const [isLoadingInput, setIsLoadingInput] = useState(false)
+  const { mutate, isLoading:createLoading } = useCreate();
+
 
   const { data: bookData, refetch } = useOne<BookData>({
     resource: "book_v2/isbn",
@@ -45,31 +41,21 @@ const AddBook = () => {
       const sortedIsbn = isbn.replace(/-/g, "").toUpperCase();
       const parsedISBN = isbn3.parse(sortedIsbn);
 
-      console.log("Start fetching ISBN:", sortedIsbn);
-
       if (!parsedISBN) {
         toast.error("Invalid ISBN format. Please enter a valid ISBN-10 or ISBN-13.");
         return;
       }
-
-      setIsLoadingInput(true);
-
       const fetchData = async () => {
         try {
           const resource = await refetch();
-          console.log("Full API Response:", resource);
 
           const isbnResp = resource?.data?.data;
-          console.log("Extracted Book Data:", isbnResp);
 
 
           if (!isbnResp || typeof isbnResp !== "object" || Object.keys(isbnResp).length === 0) {
-            console.error("API Error: No data returned (Potential 404)");
             toast.error("No book found for this ISBN.");
-            setIsDisabled(false);
             return;
           }
-          setIsReadOnly(true);
           Object.keys(isbnResp).forEach((key) => {
             let value = isbnResp[key as keyof BookData];
             if (key === "year_of_publication" || key === "date_of_acquisition") {
@@ -80,13 +66,7 @@ const AddBook = () => {
 
           toast.success("Book data mapped successfully!");
         } catch (error) {
-          setIsReadOnly(false);
-          setIsDisabled(false);
           toast.error("No ISBN is found.");
-          console.error("Network/Fetch Error:", error);
-          toast.error("Failed to fetch book data. Please check your internet connection.");
-        } finally {
-          setIsLoadingInput(false);
         }
       };
 
@@ -95,7 +75,6 @@ const AddBook = () => {
   }, [isbn, refetch, setValue]);
 
   const onSubmit = (data: any) => {
-    console.log("working",data)
     const formatDate = (dateString: string | undefined) => {
       if (!dateString) return null;
       const date = new Date(dateString);
@@ -104,10 +83,6 @@ const AddBook = () => {
     const formattedData: BookData = {
       ...data,
       // no_of_pages: parseInt(data.no_of_pages.toString(), 10),
-      // no_of_preliminary: parseInt(data.no_of_preliminary.toString(), 10),
-      // inventory_number: parseInt(data.inventory_number.toString(), 10),
-      // accession_number: parseInt(data.accession_number.toString(), 10),
-      // bill_no: parseInt(data.bill_no.toString(), 10),
       year_of_publication: formatDate(data.year_of_publication),
       date_of_acquisition: formatDate(data.date_of_acquisition),
       institute_id: "828f0d33-258f-4a92-a235-9c1b30d8882b"
@@ -125,32 +100,7 @@ const AddBook = () => {
   };
 
 
-  const FormSection = ({ title, fields }: { title: string; fields: any[] }) => (
-    <div>
-      <h2>{title}</h2>
-      <div className="grid grid-cols-4 gap-4 p-4">
-        {fields.map((field) => (
-          <div key={field.name}>
-            <Label>{field.label}</Label>
-            {isLoadingInput ? (
-              <Skeleton className="h-4 w-[100%] animate-pulse bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 bg-[length:200%_100%]" />
-            ) : (
-              <Input
-                className="text-[#343232]"
-                type={field.type}
-                readOnly={isReadOnly}
-                disabled={isDisabled}
-                {...register(field.name, { required: field.required })}
-                placeholder={field.placeholder}
-                max={field.type === "date" ? new Date().toISOString().split("T")[0] : undefined}
-              />
-            )}
-            {errors[field.name] && <p className="text-red-500 text-sm">{[field.required]}</p>}
-          </div>
-        ))}
-      </div>
-    </div>
-  );
+
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <>
@@ -178,19 +128,252 @@ const AddBook = () => {
               </div>
             </div>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-              {inputFields.map((section) => (
-                <FormSection key={section.title} title={section.title} fields={section.fields} />
-              ))}
+              <div>
+                <h2>Cataloging</h2>
+                <div className="grid grid-cols-4 gap-4 p-4">
+                  <InputField
+                    label="Book Title"
+                    name="book_title"
+                    register={register}
+                    errors={errors}
+                    type="text"
+                    validation={{
+                      required: "Book Title is required",
+                    }}
+                    placeholder="Enter Book Title"
+                  />
+                  <InputField
+                    label="Book Author"
+                    name="book_author"
+                    register={register}
+                    errors={errors}
+                    type="text"
+                    validation={{
+                      required: "Book Author is required",
+                    }}
+                    placeholder="Enter Book Author"
+                  />
+
+                  <InputField
+                    label="Name of Publisher"
+                    name="name_of_publisher"
+                    register={register}
+                    errors={errors}
+                    type="text"
+                    validation={{
+                      required: "SName of Publisher is required",
+                    }}
+                    placeholder="Enter Name of Publisher"
+                  />
+                  <InputField
+                    label="Place of publication"
+                    name="place_of_publication"
+                    register={register}
+                    errors={errors}
+                    type="text"
+                    validation={{
+                      required: "Place of publication is required",
+                    }}
+                    placeholder="Enter Place of publication"
+                  />
+                  <InputField
+                    label="Year of publication"
+                    name="year_of_publication"
+                    register={register}
+                    errors={errors}
+                    type="date"
+                    validation={{
+                      required: "Year of publication is required",
+                    }}
+                    placeholder="Enter Place of publication"
+                  />
+                  <InputField
+                    label="Edition"
+                    name="edition"
+                    register={register}
+                    errors={errors}
+                    type="text"
+                    validation={{
+                      required: "Edition is required",
+                    }}
+                    placeholder="Enter Edition"
+                  />
+                  <InputField
+                    label="ISBN"
+                    name="isbn"
+                    register={register}
+                    errors={errors}
+                    type="text"
+                    validation={{
+                      required: "ISBN is required",
+                    }}
+                    placeholder="Enter ISBN"
+                  />
+                  <InputField
+                    label="No. of Pages"
+                    name="no_of_pages"
+                    register={register}
+                    errors={errors}
+                    type="text"
+                    validation={{
+                      required: "No. of Pages is required",
+                    }}
+                    placeholder="Enter No. of Pages"
+                  />
+                  <InputField
+                    label="No. of Preliminary Pages"
+                    name="no_of_preliminary"
+                    register={register}
+                    errors={errors}
+                    type="text"
+                    validation={{
+                      required: "No. of Preliminary Pages is required",
+                    }}
+                    placeholder="Enter No. of Preliminary Pages"
+                  />
+                  <InputField
+                    label="Subject"
+                    name="subject"
+                    register={register}
+                    errors={errors}
+                    type="text"
+                    validation={{
+                      required: "Subject is required",
+                    }}
+                    placeholder="Enter Subject"
+                  />
+                  <InputField
+                    label="Department"
+                    name="department"
+                    register={register}
+                    errors={errors}
+                    type="text"
+                    validation={{
+                      required: "Department is required",
+                    }}
+                    placeholder="Enter Department"
+                  />
+                </div>
+
+                <h2>Classification</h2>
+                <div className="grid grid-cols-4 gap-4 p-4">
+                  <InputField
+                    label="Author Mark"
+                    name="author_mark"
+                    register={register}
+                    errors={errors}
+                    type="text"
+                    validation={{
+                      required: "Author Mark is required",
+                    }}
+                    placeholder="Enter Author Mark"
+                  />
+                  <InputField
+                    label="Call Number"
+                    name="call_number"
+                    register={register}
+                    errors={errors}
+                    type="text"
+                    validation={{
+                      required: "Call Number is required",
+                    }}
+                    placeholder="Enter Call Number"
+                  />
+                </div>
+                <h2>Acquisition Details</h2>
+                <div className="grid grid-cols-4 gap-4 p-4">
+                  <InputField
+                    label="Source of Acquisition"
+                    name="source_of_acquisition"
+                    register={register}
+                    errors={errors}
+                    type="text"
+                    validation={{
+                      required: "Source of Acquisition is required",
+                    }}
+                    placeholder="Enter Source of Acquisition"
+                  />
+                  <InputField
+                    label="Date of Acquisition"
+                    name="date_of_acquisition"
+                    register={register}
+                    errors={errors}
+                    type="date"
+                    validation={{
+                      required: "Date of Acquisition is required",
+                    }}
+                    placeholder="Enter Date of Acquisition"
+                  />
+                  <InputField
+                    label="Bill Number"
+                    name="bill_no"
+                    register={register}
+                    errors={errors}
+                    type="text"
+                    validation={{
+                      required: "Bill Number is required",
+                    }}
+                    placeholder="Enter Bill Number"
+                  />
+                </div>
+                <h2>Inventory and Identification</h2>
+                <div className="grid grid-cols-4 gap-4 p-4">
+                  <InputField
+                    label="Inventory Number"
+                    name="inventoryNumber"
+                    register={register}
+                    errors={errors}
+                    type="text"
+                    validation={{
+                      required: "Source of Acquisition is required",
+                    }}
+                    placeholder="Enter Source of Acquisition"
+                  />
+                  <InputField
+                    label="Accession Number"
+                    name="accession_number"
+                    register={register}
+                    errors={errors}
+                    type="text"
+                    validation={{
+                      required: "Accession Number is required",
+                    }}
+                    placeholder="Enter Accession Number"
+                  />
+                  <InputField
+                    label="Barcode"
+                    name="barcode"
+                    register={register}
+                    errors={errors}
+                    type="text"
+                    validation={{
+                      required: "Barcode is required",
+                    }}
+                    placeholder="Enter Barcode"
+                  />
+                </div>
+              </div>
 
               <div className="flex justify-center">
-                <Link href={"/book-pages/all-books"}>
+               
                   <Button>Cancel</Button>
-                </Link>
-                <Button type="submit" className="shadow-none border border-[#1E40AF] text-white bg-[#1E40AF] rounded-[10px] hover:bg-[#1E40AF]">
-                  Add Book
+               
+                <Button
+                  type="submit"
+                  className="bg-[#1E40AF] text-white rounded-[10px] hover:bg-[#1E40AF]"
+                  disabled={createLoading}
+                >
+                  {createLoading ? (
+                    <>
+                      <Loader2 className="h-5 w-5 animate-spin" />
+                      Adding Student...
+                    </>
+                  ) : (
+                    "Add Student"
+                  )}
                 </Button>
               </div>
-            </form>;
+            </form>
           </div>
         </section>
       </>

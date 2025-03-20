@@ -15,7 +15,6 @@ import "../styles/global.css";
 // Import your pages
 // import Dashboard from "@/pages/dashboard";
 
-import IssuedBooks from "@/app/book-pages/issued-books/page";
 import IssueBooks from "@/app/book-pages/issue-books/page";
 
 import BooksPage from "@/app/book-pages/all-books/page";
@@ -120,11 +119,6 @@ const App = (props: React.PropsWithChildren<AppProps>) => {
                   name: "all-books",
                   list: BooksPage,
                   meta: { label: "All Books" },
-                },
-                {
-                  name: "issued-books",
-                  list: IssuedBooks,
-                  meta: { label: "Issued Books" },
                 },
                 {
                   name: "issue-books",

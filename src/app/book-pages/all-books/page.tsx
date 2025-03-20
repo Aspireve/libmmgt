@@ -1,6 +1,6 @@
 'use client';
-import React, { useEffect, useState } from 'react';
-import { useList, useInvalidate, useDeleteMany, useUpdate } from '@refinedev/core';
+import React, { useState } from 'react';
+import { useList, useDeleteMany, useUpdate } from '@refinedev/core';
 import { bookRoutes, BookData } from '../types/data';
 
 import { Button } from '@/components/ui/button';
@@ -28,7 +28,6 @@ const BooksPage = () => {
   
   const { mutateAsync } = useDeleteMany()
   const { mutate } = useUpdate()
-  const invalidate = useInvalidate();
   const router = useRouter();
 
   const { data } = useList<BookData>( {pagination:{pageSize:5} });
@@ -80,9 +79,7 @@ const BooksPage = () => {
           },
           onSuccess: () => {
             toast.success("Student deleted sucessfuly!!!")
-            invalidate({
-              resource: `book_v2/${url}`, invalidates: ["list"]
-            });
+            window.history.back();
           },
         },
       )

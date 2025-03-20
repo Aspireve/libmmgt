@@ -225,7 +225,6 @@ const AddStudent: React.FC = () => {
               <Button variant="outline" onClick={() => router.back()}>
                 Cancel
               </Button>
-
               <Button
                 type="submit"
                 className="bg-[#1E40AF] text-white rounded-[10px] hover:bg-[#1E40AF]"

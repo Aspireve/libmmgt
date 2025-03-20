@@ -4,9 +4,7 @@ import React, { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "@refinedev/react-hook-form";
 import { useOne } from "@refinedev/core";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
 import { toast } from 'sonner';
 import Header from "@/app/Header/header";
 import { BookData } from "../types/data";
@@ -20,30 +18,6 @@ const EditBook = () => {
   const book_uuid = searchParams.get("book_uuid");
   const [isLoadingInput, setIsLoadingInput] = useState(true)
 
-  // const FormSection = ({ title, fields }: { title: string; fields: any[] }) => (
-  //   <div>
-  //     <h2>{title}</h2>
-  //     <div className="grid grid-cols-4 gap-4 p-4">
-  //       {fields.map((field) => (
-  //         <div key={field.name}>
-  //           <Label>{field.label}</Label>
-  //           {isLoadingInput ? (
-  //             <Skeleton className="h-4 w-[100%] animate-pulse bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 bg-[length:200%_100%]" />
-  //           ) : (
-  //             <Input
-  //               className="text-[#343232]"
-  //               type={field.type}
-  //               {...register(field.name)}
-  //               placeholder={field.placeholder}
-  //               max={field.type === "date" ? new Date().toISOString().split("T")[0] : undefined}
-  //             />
-  //           )}
-  //           {errors[field.name] && <p className="text-red-500 text-sm">{[field.required]}</p>}
-  //         </div>
-  //       ))}
-  //     </div>
-  //   </div>
-  // );
   const { data: bookData } = useOne<BookData>({
     resource: "book_v2/get_book_title_details",
     id: `_book_uuid=${book_uuid}` || ""
@@ -95,6 +69,7 @@ const EditBook = () => {
         value: formattedData,
       })
       toast.success("Book title updated successfully!");
+      window.history.back();
     } catch (error: any) {
       toast.error(error.message);
     }
@@ -108,9 +83,7 @@ const EditBook = () => {
         <section className="p-10">
           <div className="container">
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-              {/* {inputFields.map((section) => (
-                <FormSection key={section.title} title={section.title} fields={section.fields} />
-              ))} */}
+            
               <div>
                 <h2>Cataloging</h2>
                 <div className="grid grid-cols-4 gap-4 p-4">
@@ -267,18 +240,14 @@ const EditBook = () => {
                 </div>
               </div>
 
-
               {/* Action Buttons */}
               <div className="flex justify-center gap-4">
-
                 <Button
                   className="border-none text-gray-600 rounded-md px-6 py-2"
                   onClick={() => router.push("/book-pages/all-books")}
                 >
                   Cancel
                 </Button>
-
-
                 <Button
                   type="submit"
                   className="bg-blue-600 text-white px-6 py-2 hover:bg-blue-600"

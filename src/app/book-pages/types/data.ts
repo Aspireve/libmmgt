@@ -70,13 +70,12 @@ export interface JournalData {
 // Routes 
 export const bookRoutes = [
   { key: "all-books", label: "All Books", path: "/book-pages/all-books" },
-  { key: "journal-page", label: "Journals", path: "/book-pages/journal-page" },
-  { key: "magazine-page", label: "Magazines", path: "/book-pages/magazine-page" },
+  { key: "periodicals-page", label: "Periodicals", path: "/periodicals-pages/periodicals-page" },
 ];
 
 export const addbookRoutes = [
   { key: "add-book", label: "Add Book", path: "/book-pages/add-book" },
-  { key: "add-journal", label: "Add Journal/Magazine", path: "/book-pages/add-journal" },
+  { key: "add-periodicals", label: "Add periodicals", path: "/periodicals-pages/add-periodicals" },
 ]
 
 export const bookdetailsRoutes = [

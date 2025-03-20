@@ -1,7 +1,7 @@
 "use client";
 
 import React, { Suspense, useEffect, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { useForm } from "@refinedev/react-hook-form";
 import { useOne, useUpdate } from "@refinedev/core";
 import { Input } from "@/components/ui/input";
@@ -10,15 +10,14 @@ import { Label } from "@/components/ui/label";
 import { toast } from 'sonner';
 import Header from "@/app/Header/header";
 import Link from "next/link";
-import { JournalData } from "../types/data";
 import { Skeleton } from "@/components/ui/skeleton";
-import { inputJournalFields } from "../types/inputFields-title";
+import { JournalData } from "@/app/book-pages/types/data";
+import { inputJournalFields } from "@/app/book-pages/types/inputFields-title";
 
 const EditJournal = () => {
     const [isLoadingInput, setIsLoadingInput] = useState(true)
     const searchParams = useSearchParams();
     const journal_uuid = searchParams.get("journal_uuid")
-     const router = useRouter();
     
       
       const { data: journalData, isLoading } = useOne<JournalData>({

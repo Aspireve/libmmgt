@@ -40,7 +40,6 @@ const EditBook = () => {
         }
         Object.keys(book).forEach((key) => {
             let value = book[key as keyof BookData];
-
             if (key === "date_of_acquisition") {
                 value = value ? new Date(value).toISOString().split("T")[0] : "";
             }
@@ -60,10 +59,10 @@ const EditBook = () => {
         };
         const formattedData: BookData = {
             ...data,
-            accession_number: (() => {
-                const num = data.accession_number.match(/\d+/g);
-                return num ? parseInt(num[0], 10) : null;
-            })(),
+            // accession_number: (() => {
+            //     const num = data.accession_number.match(/\d+/g);
+            //     return num ? parseInt(num[0], 10) : null;
+            // })(),
             date_of_acquisition: formatDate(data.date_of_acquisition),
         };
         try {
