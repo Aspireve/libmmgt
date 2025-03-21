@@ -5,7 +5,7 @@ import Datatable from "./data-table";
 import { Pagination } from "./pagination";
 import { useEffect, useState } from "react";
 import Headers from "./headers";
-import { useList } from "@refinedev/core";
+import { LogicalFilter, useList } from "@refinedev/core";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store/store";
 import { setPaginationValues } from "@/redux/paginationSlice";
@@ -17,6 +17,7 @@ interface PageProps {
   resource: string;
   columns: (e: any) => ColumnDef<any>[];
   AddedOptions?: any[];
+  query?: LogicalFilter[];
 }
 
 export default function MasterTable({
@@ -25,6 +26,7 @@ export default function MasterTable({
   resource,
   columns,
   AddedOptions,
+  query = [],
 }: PageProps): any {
   // State
   const [search, setSearch] = useState("");
@@ -49,6 +51,7 @@ export default function MasterTable({
         operator: "eq",
         value: search,
       },
+      ...(query),
     ],
   });
 

@@ -10,10 +10,11 @@ import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import Header from '@/app/Header/header';
 import Tabbing from '@/app/Tab/Tab';
-import { addbookRoutes, BookData } from '../types/data';
+import { BookData } from '../types/data';
 import isbn3 from 'isbn3';
 import { InputField } from '@/components/custom/inputfield';
 import { Loader2 } from 'lucide-react';
+import { addbookRoutes } from '../types/routes';
 
 const AddBook = () => {
   const router = useRouter();
@@ -22,9 +23,9 @@ const AddBook = () => {
   const [isReadable, setIsReadable] = useState(false)
   const [isDisable, setIsDisable] = useState(true)
 
+ 
 
-
-  const { data: bookData, refetch } = useOne<BookData>({
+  const { data, refetch } = useOne<BookData>({
     resource: "book_v2/isbn",
     id: `_isbn=${isbn}`,
     queryOptions: {
@@ -51,13 +52,10 @@ const AddBook = () => {
       const fetchData = async () => {
         try {
           const resource = await refetch();
-
           const isbnResp = resource?.data?.data;
-
-
           if (!isbnResp || typeof isbnResp !== "object" || Object.keys(isbnResp).length === 0) {
             toast.error("No book found for this ISBN.");
-          setIsDisable(false)
+            setIsDisable(false)
             return;
           }
           Object.keys(isbnResp).forEach((key) => {
@@ -70,6 +68,7 @@ const AddBook = () => {
 
           toast.success("Book data mapped successfully!");
           setIsReadable(true)
+          setIsDisable(false)
         } catch (error) {
           toast.error("No ISBN is found.");
           setIsDisable(false)
@@ -86,15 +85,14 @@ const AddBook = () => {
       const date = new Date(dateString);
       return isNaN(date.getTime()) ? null : date.toISOString().split("T")[0];
     };
-    //TODO FIX 
+    // FIXED
     delete data.title_images
     delete data.remarks
+
     const formattedData: BookData = {
       ...data,
-
       no_of_pages: data.no_of_pages.toString(),
       no_of_preliminary: data.no_of_preliminary.toString(),
-
       year_of_publication: formatDate(data.year_of_publication),
       date_of_acquisition: formatDate(data.date_of_acquisition),
       institute_id: "828f0d33-258f-4a92-a235-9c1b30d8882b"
@@ -118,7 +116,7 @@ const AddBook = () => {
       <>
         <Header heading="Add Book" subheading="Tanvir Chavan" />
 
-        <Tabbing routes={addbookRoutes} className='w-[30%]' />
+        <Tabbing routes={addbookRoutes} className='w-[20%]' />
         <section className='p-10'>
           <div className="container">
             {/* ISBN Number  */}
@@ -385,7 +383,10 @@ const AddBook = () => {
                       required: "Inventory Number is required",
                     }}
                     placeholder="Enter Inventory Number"
-                   
+                    disabled={isDisable}
+                    readonly={false}
+
+
                   />
                   <InputField
                     label="Accession Number"
@@ -397,7 +398,10 @@ const AddBook = () => {
                       required: "Accession Number is required",
                     }}
                     placeholder="Enter Accession Number"
-                    
+                    disabled={isDisable}
+                    readonly={false}
+
+
                   />
                   <InputField
                     label="Barcode"
@@ -409,8 +413,11 @@ const AddBook = () => {
                       required: "Barcode is required",
                     }}
                     placeholder="Enter Barcode"
-                    
-                  
+                    disabled={isDisable}
+                    readonly={false}
+
+
+
                   />
                   <InputField
                     label="Item Type"
@@ -422,7 +429,7 @@ const AddBook = () => {
                       required: "Item Type is required",
                     }}
                     placeholder="Enter Item Type"
-                  
+                    disabled={isDisable}
                   />
                 </div>
               </div>
@@ -430,8 +437,9 @@ const AddBook = () => {
               <div className="flex justify-center">
 
                 <Button
-                className='shadow-none text-[#1E40AF] rounded-[10px]'
-                 onClick={() => router.back()}>
+                  type='button'
+                  className='shadow-none text-[#1E40AF] rounded-[10px]'
+                  onClick={() => router.back()}>
                   Cancel
                 </Button>
 

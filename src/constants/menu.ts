@@ -27,11 +27,5 @@ export const menuItems: MenuItem[] = [
     icon: Images.VisitLogo,
     route: "/visitlog-page",
   },
-  {
-    id: "book-activities",
-    title: "Book Activities",
-    icon: Images.PenIcon,
-    route: "/book-activities",
-  },
   { id: "Reports", title: "Reports", icon: Images.Reports, route: "/Reports" },
 ];

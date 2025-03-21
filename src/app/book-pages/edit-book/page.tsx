@@ -247,7 +247,10 @@ const EditBook = () => {
 
               {/* Action Buttons */}
               <div className="flex justify-center gap-4">
-                <Button variant="outline" onClick={() => router.back()}>
+                <Button
+                type="button"
+                className="shadow-none text-[#1E40AF] rounded-[10px]"
+                onClick={() => router.back()}>
                   Cancel
                 </Button>
                 <Button
