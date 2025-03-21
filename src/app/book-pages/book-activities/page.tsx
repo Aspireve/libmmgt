@@ -3,11 +3,11 @@
 import { Button } from '@/components/ui/button'
 import { useList } from '@refinedev/core';
 import { Input } from '@/components/ui/input';
-import Search from '../../images/search.png'
 import Image from 'next/image';
 import { FileText } from "lucide-react";
 import { useState } from 'react';
 import { useRouter } from "next/navigation";
+import images from '@/images';
 
 interface BookLog {
   booklog_id: string,
@@ -84,7 +84,7 @@ const BookActivities = () => {
               </Button>
               {/* Search Input with Icon */}
               <div className="relative max-w-sm w-72">
-                <Image src={Search} alt='search-icon' className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
+                <Image src={images.Search} alt='search-icon' className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
                 <Input
                   placeholder="Search"
                   className="pl-10 rounded-[8px] border border-[#D5D7DA] text-[#BBBBBB]"

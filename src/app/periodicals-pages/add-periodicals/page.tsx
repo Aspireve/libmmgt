@@ -12,10 +12,10 @@ import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import Header from '@/app/Header/header';
 import Tabbing from '@/app/Tab/Tab';
-import { inputJournalFields } from '../../book-pages/types/inputFields-title';
-import { addbookRoutes, JournalData } from '@/app/book-pages/types/data';
+import { JournalData } from '@/app/book-pages/types/data';
 import { Loader2 } from 'lucide-react';
 import { InputField } from '@/components/custom/inputfield';
+import { addbookRoutes } from '@/app/book-pages/types/routes';
 
 const AddJournal = () => {
 

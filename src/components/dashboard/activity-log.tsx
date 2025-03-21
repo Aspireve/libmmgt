@@ -16,6 +16,7 @@ type ActivityProps = {
   title: string;
   studentName: string;
   time: string;
+  book_id:string;
 };
 
 type ActivityLogProps = LoadingProps | ActivityProps;
@@ -72,7 +73,9 @@ const ActivityLog = (props: ActivityLogProps) => {
       <div className="bg-white w-full p-2 rounded-[5px]">
         <p className="text-sm">
           {/* @ts-ignore */}
-          <span className="font-semibold">{props.title}</span>{" "}
+          <span className="font-semibold">{props.book_id}</span>{" "}
+          {/* @ts-ignore */}
+          <span className="font-semibold">|</span>{props.title}{" "}
           {/* @ts-ignore */}
           <span className="font-semibold">|</span> {props.studentName}{" "}
           {/* @ts-ignore */}

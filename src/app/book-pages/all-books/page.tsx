@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { bookRoutes, BookData } from '../types/data';
+import { BookData } from '../types/data';
 
 import { useRouter } from "next/navigation";
 import Header from '@/app/Header/header';
@@ -11,6 +11,8 @@ import MasterTable from '@/app/test/table-page';
 
 import ImportBookButton from '@/components/books/import-books-button';
 import AddBookButton from '@/components/books/add-book-button';
+import { bookRoutes } from '../types/routes';
+
 
 const BooksPage = () => {
   const [url, setUrl] = useState("all")
@@ -22,14 +24,15 @@ const BooksPage = () => {
   };
 const columns = getBookColumns(handleEdit);
 
+
   return (
     <>
       <Header heading="Book List" subheading="Tanvir Chavan" />
 
-      <Tabbing routes={bookRoutes} className="w-[20%]" />
 
       <section>
         <div className="container">
+           <Tabbing routes={bookRoutes} className="w-[20%]" />
              
               {/* <div className="relative">
                 <Button

@@ -27,7 +27,7 @@ const Tabbing: React.FC<TabbingProps> = ({ routes, className }) => {
 
   return (
     <div
-      className={`mt-8 flex justify-evenly bg-white border border-[#e4e4e4] rounded-[8px] gap-[6px] m-4 p-[10px] ${className}`}
+      className={`mt-8 flex justify-evenly bg-white border border-[#e4e4e4] rounded-[8px] gap-[6px] m-10 p-[10px] ${className}`}
     >
       {routes.map(({ key, label, path }) => {
         // Use startsWith to support dynamic paths (e.g., query params)
