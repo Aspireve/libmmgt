@@ -5,10 +5,12 @@ import { formatDate } from '../hooks/formatDate';
 import Image from 'next/image';
 import images from '@/images';
 
-export const getBookColumns = (handleEdit: (book: BookData) => void, handleDelete: (book: BookData) => void): ColumnDef<BookData>[] => [
+// handleDelete: (book: BookData) => void
+
+export const getBookColumns = (handleEdit: (book: BookData) => void): ColumnDef<BookData>[] => [
     {
         accessorKey: 'book_copy_id',
-        header: 'Book ID'
+        header: 'Book ID',
     },
     {
         accessorKey: 'source_of_acquisition',
@@ -51,10 +53,9 @@ export const getBookColumns = (handleEdit: (book: BookData) => void, handleDelet
                 <Button variant="ghost" size="icon" className='w-[20px]' onClick={() => handleEdit(row.original)}>
                     <Image src={images.EditButton} alt='Edit Icon'/>
                 </Button>
-                <Button variant="ghost" size="icon" onClick={() => handleDelete(row.original)}>
+                {/* <Button variant="ghost" size="icon" onClick={() => handleDelete(row.original)}>
                 <Image src={images.Thrash} alt='Edit Icon'/>
-
-                </Button>
+                </Button> */}
             </div>
         )
     },
