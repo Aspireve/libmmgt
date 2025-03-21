@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label";
 import { toast } from 'sonner';
 import Header from "@/app/Header/header";
 import { JournalData } from "@/app/book-pages/types/data";
-import { inputJournalFields } from "@/app/book-pages/types/inputFields-title";
+// import { inputJournalFields } from "@/app/book-pages/types/inputFields-title";
 import { Loader2 } from "lucide-react";
 
 const EditJournal = () => {
