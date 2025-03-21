@@ -7,7 +7,7 @@ import { ActivityType } from "@/types/book";
 import { Skeleton } from "../ui/skeleton";
 
 type LoadingProps = {
-  isLoading: true;
+  isLoading?: true;
 };
 
 type ActivityProps = {
@@ -54,11 +54,13 @@ const ActivityLog = (props: ActivityLogProps) => {
       <div className="bg-white w-fit p-3 rounded-full flex items-center justify-center aspect-square">
         <Image
           src={
+            // @ts-ignore
             props.type === ActivityType.Returned
               ? Images.BookReturned
               : Images.BookBorrowed
           }
           alt={
+            // @ts-ignore
             props.type === ActivityType.Returned
               ? "Book Returned"
               : "Book Borrowed"
@@ -69,8 +71,11 @@ const ActivityLog = (props: ActivityLogProps) => {
       </div>
       <div className="bg-white w-full p-2 rounded-[5px]">
         <p className="text-sm">
+          {/* @ts-ignore */}
           <span className="font-semibold">{props.title}</span>{" "}
+          {/* @ts-ignore */}
           <span className="font-semibold">|</span> {props.studentName}{" "}
+          {/* @ts-ignore */}
           <span className="font-semibold">|</span> {formatDate(props.time)}
         </p>
       </div>

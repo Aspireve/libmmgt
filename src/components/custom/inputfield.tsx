@@ -10,8 +10,8 @@ export const InputField: React.FC<InputFieldProps> = ({
   validation = {},
   errors,
   placeholder,
-  readonly,
-  disabled
+  readonly=false,
+  disabled=false
 }) => {
   return (
     <div>

@@ -1,4 +1,4 @@
-"Use Client"
+"use client"
 
 import { BaseRecord, CrudFilters, CrudOperators, LogicalFilter, useList } from "@refinedev/core";
 import { useState } from "react";
@@ -40,6 +40,7 @@ export function MainTable<TData extends BaseRecord, TValue>({
         <>
             <DataTable
                 columns={columns}
+                // @ts-ignore TODO: Change type
                 data={data?.data?.copies ?? data?.data ?? []}
                 isLoading={isLoading}
                 page={page}

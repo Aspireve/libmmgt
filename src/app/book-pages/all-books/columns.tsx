@@ -6,12 +6,34 @@ import { useRouter } from "next/navigation";
 import images from "@/images/index";
 import { formatDate } from '../hooks/formatDate';
 
+<<<<<<< HEAD
 interface BookTitleCellProps {
   book: BookData;
 }
 
 const BookTitleCell: React.FC<BookTitleCellProps> = ({ book }) => {
   const router = useRouter();
+=======
+// TODO: change Any
+const BookTitleCell = ({book} : any) => {
+  const router = useRouter();
+  return <div
+  className="relative group cursor-pointer"
+  onClick={() => router.push(`/book-pages/book-details?book_uuid=${book.book_uuid}`)}
+>
+  {book.book_title}
+  <div className="absolute left-1/2 transform -translate-x-1/2 bottom-full mb-2 hidden group-hover:flex items-center justify-center bg-gray-800 text-white text-xs rounded-lg px-3 py-1 shadow-md whitespace-nowrap
+    after:content-[''] after:absolute after:top-full after:left-1/2 after:-translate-x-1/2 after:border-4 after:border-transparent after:border-t-gray-800">
+    Book Details
+  </div>
+</div>
+}
+
+export const getBookColumns = (
+
+  handleEdit: (book: BookData) => void,
+): ColumnDef<BookData>[] => {
+>>>>>>> d2ea6f1023dddd2cde033ad23a2a0361d9a62a05
 
   return (
     <div
@@ -48,7 +70,26 @@ export const getBookColumns = (
     {
       accessorKey: 'book_title',
       header: 'Book Name',
+<<<<<<< HEAD
       cell: ({ row }) => <BookTitleCell book={row.original} />,
+=======
+      cell: ({ row }) => {
+        const book = row.original;
+        return (
+          <BookTitleCell book={book}/>
+          // <div
+          //   className="relative group cursor-pointer"
+          //   onClick={() => router.push(`/book-pages/book-details?book_uuid=${book.book_uuid}`)}
+          // >
+          //   {book.book_title}
+          //   <div className="absolute left-1/2 transform -translate-x-1/2 bottom-full mb-2 hidden group-hover:flex items-center justify-center bg-gray-800 text-white text-xs rounded-lg px-3 py-1 shadow-md whitespace-nowrap
+          //     after:content-[''] after:absolute after:top-full after:left-1/2 after:-translate-x-1/2 after:border-4 after:border-transparent after:border-t-gray-800">
+          //     Book Details
+          //   </div>
+          // </div>
+        );
+      },
+>>>>>>> d2ea6f1023dddd2cde033ad23a2a0361d9a62a05
     },
     { accessorKey: 'book_author', header: 'Book Author' },
     { accessorKey: 'name_of_publisher', header: 'Book Publisher' },

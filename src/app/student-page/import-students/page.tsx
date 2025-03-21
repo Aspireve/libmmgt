@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useCreate } from "@refinedev/core";
 import { Loader2 } from "lucide-react";
 import { StudentDataBuilder } from "@/utilities/student_builder";
@@ -20,7 +20,16 @@ const ImportStudents = () => {
     setMapping((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleMapData = () => {
+  const handleMapData = (e: React.MouseEvent<HTMLFormElement, MouseEvent>) => {
+    e.preventDefault()
+    if (Object.values(mapping).some((value) => value === "")) {
+      for (const key in mapping) {
+        if (mapping[key as keyof StudentData] === "") {
+          mapping[key as keyof StudentData] = key;
+        }
+      }
+    }
+
     const mapped = importData.data
       .map((row) =>
         new StudentDataBuilder(row, mapping, importData.headers)
@@ -81,7 +90,7 @@ const ImportStudents = () => {
         clearSelectedFile={clearData}
       />
       {importData.title && importData.headers.length > 0 && (
-        <>
+        <form onClick={handleMapData}>
           <h3 className="text-lg font-medium mb-4">Map Columns</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {Object.keys(fieldLabels).map((field) => {
@@ -98,6 +107,7 @@ const ImportStudents = () => {
                         ? fieldKey
                         : mapping[fieldKey] || ""
                     }
+                    required={true}
                     onChange={(e) =>
                       handleMappingChange(fieldKey, e.target.value)
                     }
@@ -115,7 +125,7 @@ const ImportStudents = () => {
             })}
           </div>
           <Button
-            onClick={handleMapData}
+            type="submit"
             disabled={isLoading}
             className={`my-6 bg-[#1E40AF] hover:bg-[#1E40AF] transition-all duration-300 cursor-pointer w-full text-white px-4 py-2 rounded flex items-center justify-center ${
               isLoading ? "opacity-50 cursor-not-allowed" : ""
@@ -130,7 +140,7 @@ const ImportStudents = () => {
               "Import Data"
             )}
           </Button>
-        </>
+        </form>
       )}
     </div>
   );

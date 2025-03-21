@@ -18,6 +18,8 @@ export default function Activities({ refresh }: { refresh: number }) {
   // Ensure data?.data is an array before mapping
   const activityLogs = Array.isArray(data?.data) ? data.data : [];
 
+  console.log({activityLogs})
+
   return (
     <div className="transition-all duration-300 hover:shadow-lg border border-[#AEB1B9] max-w-[90%] h-110 rounded-[10px] bg-[#F3F4F6] ml-10 mt-5 p-6">
       <h2 className="text-2xl font-semibold mb-4">Activities</h2>
