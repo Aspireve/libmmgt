@@ -1,9 +1,6 @@
 import React from "react";
 import { Button } from "../ui/button";
-import { useDeleteMany } from "@refinedev/core";
 import { StudentFromDatabase } from "@/types/student";
-import { Loader2 } from "lucide-react";
-import { toast } from "sonner";
 import useDisclosure from "@/hooks/disclosure-hook";
 import DeleteStudentModal from "./delete-student-modal";
 

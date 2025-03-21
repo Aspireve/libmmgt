@@ -13,6 +13,9 @@ import { StudentProfileData } from "@/app/student-page/student-profile/studentpr
 import { useOne } from "@refinedev/core";
 import Tabbing from "@/components/custom/tabbing";
 import { ProfileSkeleton } from "@/components/students/skeletons";
+import MasterTable from "@/app/test/table-page";
+import { borrowedBooksColumns } from "../student-profile/studentprofile";
+import { studentActivitiesColumns } from "../student-profile/studentprofile";
 
 enum LibraryTabs {
   BORROWED = "borrowed",
@@ -103,8 +106,16 @@ const Page = () => {
       <Tabbing
         tabs={TABS}
         content={{
-          [LibraryTabs.ACTIVITY]: <>Where is the Pagination (Backend)</>,
-          [LibraryTabs.BORROWED]: <>Where is the Pagination (Backend)</>,
+          [LibraryTabs.ACTIVITY]: <><MasterTable
+          title="Activities"
+          resource="Book_v2/borrowed"
+          columns={()=>studentActivitiesColumns}
+          AddedOptions={[]}/></>,
+          [LibraryTabs.BORROWED]: <><MasterTable
+          resource="Book_v2/activities"
+          title="Borrowed"
+          columns={()=> borrowedBooksColumns}
+          AddedOptions={[]}/></>,
         }}
       />
     </div>

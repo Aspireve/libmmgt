@@ -3,7 +3,6 @@ import { studentActivitiesColumns } from "../student-profile/studentprofile";
 import { MainTable } from "@/components/data-tables/main-table";
 
 
-// If you have fallback data, define it here or fetch from your API
 const activitiesData = [
   {
     activity_id: "A101",
@@ -22,7 +21,7 @@ const activitiesData = [
 const StudentDetailActivities = () => {
   return (
     <>
-    <MainTable columns={studentActivitiesColumns} resource="Book_v2/activities" />
+   
     </>
     
   );

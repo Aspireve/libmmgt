@@ -8,7 +8,7 @@ export interface Penalties {
   department: string;
   book_id: string;
   book_category: string;
-  Issued_date: Date;
+  created_at: Date;
   return_date: Date;
   penalties: string;
   student_uuid?: string;
@@ -36,10 +36,10 @@ export const PenaltiesColumns: ColumnDef<Penalties>[] = [
     header: "Book Category",
   },
   {
-    accessorKey: "Issued_date",
+    accessorKey: "created_at",
     header: "Issued Date",
     cell: ({ row }) => {
-      const dateValue = row.getValue("Issued_date");
+      const dateValue = row.getValue("created_at");
       if (!dateValue) return "";
       const date =
         typeof dateValue === "string" ? new Date(dateValue) : dateValue;
@@ -81,7 +81,7 @@ export const fallbackData: Penalties[] = [
     department: "Electronics",
     book_id: "B001", // Added Book_id
     book_category: "Fiction",
-    Issued_date: new Date("2023-12-10"),
+    created_at: new Date("2023-12-10"),
     return_date: new Date("2023-12-15"),
     penalties: "₹100",
     student_uuid: "uuid-3066",
@@ -92,7 +92,7 @@ export const fallbackData: Penalties[] = [
     department: "Electronics",
     book_id: "B002",
     book_category: "Non-Fiction",
-    Issued_date: new Date("2023-12-07"),
+    created_at: new Date("2023-12-07"),
     return_date: new Date("2023-12-20"),
     penalties: "₹100",
     student_uuid: "uuid-3065",
@@ -103,7 +103,7 @@ export const fallbackData: Penalties[] = [
     department: "Electronics",
     book_id: "B003",
     book_category: "Science",
-    Issued_date: new Date("2023-11-25"),
+    created_at: new Date("2023-11-25"),
     return_date: new Date("2023-11-30"),
     penalties: "₹100",
     student_uuid: "uuid-3064",
@@ -114,7 +114,7 @@ export const fallbackData: Penalties[] = [
     department: "Electronics",
     book_id: "B004",
     book_category: "History",
-    Issued_date: new Date("2023-12-05"),
+    created_at: new Date("2023-12-05"),
     return_date: new Date("2023-12-10"),
     penalties: "₹100",
     student_uuid: "uuid-3063",
@@ -125,7 +125,7 @@ export const fallbackData: Penalties[] = [
     department: "Electronics",
     book_id: "B005",
     book_category: "Fiction",
-    Issued_date: new Date("2023-12-01"),
+    created_at: new Date("2023-12-01"),
     return_date: new Date("2023-12-05"),
     penalties: "₹100",
     student_uuid: "uuid-3062",
