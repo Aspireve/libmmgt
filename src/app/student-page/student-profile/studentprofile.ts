@@ -92,19 +92,23 @@ export const borrowedBooksColumns = [
 export const studentActivitiesColumns = [
   {
     accessorKey: "activity_id",
-    header: "Activity ID",
+    header: "Book ID",
   },
   {
     accessorKey: "activity_type",
-    header: "Activity Type",
+    header: "Book Name",
   },
   {
-    accessorKey: "activity_date",
-    header: "Activity Date",
+    accessorKey: "new_book_title.department",
+    header: "Department",
   },
   {
-    accessorKey: "description",
-    header: "Description",
+    accessorKey: "action",
+    header: "Action",
+  },
+  {
+    accessorKey: "date",
+    header: "Time",
   },
 ];
 

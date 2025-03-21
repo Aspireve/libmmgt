@@ -29,14 +29,14 @@ const TABS = [
 
 const Page = () => {
   const searchParams = useSearchParams();
-  const studentUuid = searchParams.get("student_uuid");
+  const studentId = searchParams.get("student_id");
 
   const { data, isLoading } = useOne<StudentProfileData>({
     resource: "student/detail",
-    id: `student_uuid=${studentUuid}`,
+    id: `student_id=${studentId}`,
     queryOptions: {
       retry: 1,
-      enabled: !!studentUuid,
+      enabled: !!studentId,
     },
   });
 
@@ -106,16 +106,40 @@ const Page = () => {
       <Tabbing
         tabs={TABS}
         content={{
-          [LibraryTabs.ACTIVITY]: <><MasterTable
-          title="Activities"
-          resource="Book_v2/borrowed"
-          columns={()=>studentActivitiesColumns}
-          AddedOptions={[]}/></>,
-          [LibraryTabs.BORROWED]: <><MasterTable
-          resource="Book_v2/activities"
-          title="Borrowed"
-          columns={()=> borrowedBooksColumns}
-          AddedOptions={[]}/></>,
+          [LibraryTabs.BORROWED]: (
+            <>
+              <MasterTable
+                title="Borrowed"
+                resource="book_v2/get_logs_of_student"
+                columns={() => studentActivitiesColumns}
+                AddedOptions={[]}
+                query={[
+                  {
+                    field: "_student_id",
+                    operator: "eq",
+                    value: studentId,
+                  },
+                ]}
+              />
+            </>
+          ),
+          [LibraryTabs.ACTIVITY]: (
+            <>
+              <MasterTable
+                resource="student/visitlog_by_id"
+                title="Borrowed"
+                columns={() => borrowedBooksColumns}
+                AddedOptions={[]}
+                query={[
+                  {
+                    field: "_student_id",
+                    operator: "eq",
+                    value: studentId,
+                  },
+                ]}
+              />
+            </>
+          ),
         }}
       />
     </div>
