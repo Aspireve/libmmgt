@@ -9,6 +9,7 @@ import { useInvalidate, useOne, useUpdate } from '@refinedev/core';
 import { getBookColumns } from './columns';
 import { toast } from 'sonner';
 import { dataProvider } from '@/providers/data';
+import MasterTable from '@/app/test/table-page';
 
 const Book_details = () => {
     const book_uuid = useSearchParams().get("book_uuid");
@@ -50,14 +51,24 @@ const Book_details = () => {
     return (
         <>
             <Header heading={BookTitle} subheading={BookID} />
-            <section className='border border-[#E0E2E7] rounded-[10px] m-4'>
+            <section>
                 <div className="container">
-                    <MainTable
+                    {/* <MainTable
                         columns={columns}
                         resource="book_v2/get_copies_with_title"
                         filters={[
                             { field: "_book_uuid", operator: "eq", value: `${book_uuid}` }
                         ]}
+                    /> */}
+                    <MasterTable
+                    title='Book Copies'
+                    resource="book_v2/get_copies_with_title"
+                    columns={(e)=>columns}
+                    query={[
+                        { field: "_book_uuid", operator: "eq", value: `${book_uuid}` }
+                    ]}
+                    AddedOptions={[]}
+
                     />
 
                 </div>

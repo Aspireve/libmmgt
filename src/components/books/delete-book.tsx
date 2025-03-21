@@ -2,9 +2,9 @@ import React from "react";
 import { Button } from "../ui/button";
 import { StudentFromDatabase } from "@/types/student";
 import useDisclosure from "@/hooks/disclosure-hook";
-import DeleteStudentModal from "./delete-student-modal";
+import DeleteBookModal from "./delete-book-modal";
 
-const DeleteStudent = <TData extends StudentFromDatabase>({
+const DeleteBook = <TData extends StudentFromDatabase>({
   data,
   refetch,
 }: {
@@ -23,7 +23,7 @@ const DeleteStudent = <TData extends StudentFromDatabase>({
         >
           {data?.length === 1 ? "Delete" : "Delete All"}
         </Button>
-        <DeleteStudentModal
+        <DeleteBookModal
           data={data}
           close={close}
           isOpen={isOpen}
@@ -34,4 +34,4 @@ const DeleteStudent = <TData extends StudentFromDatabase>({
   );
 };
 
-export default DeleteStudent;
+export default DeleteBook;
