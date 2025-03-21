@@ -22,8 +22,6 @@ const AddBook = () => {
   const [isReadable, setIsReadable] = useState(false)
   const [isDisable, setIsDisable] = useState(true)
 
-
-
   const { data: bookData, refetch } = useOne<BookData>({
     resource: "book_v2/isbn",
     id: `_isbn=${isbn}`,
@@ -51,13 +49,10 @@ const AddBook = () => {
       const fetchData = async () => {
         try {
           const resource = await refetch();
-
           const isbnResp = resource?.data?.data;
-
-
           if (!isbnResp || typeof isbnResp !== "object" || Object.keys(isbnResp).length === 0) {
             toast.error("No book found for this ISBN.");
-          setIsDisable(false)
+            setIsDisable(false)
             return;
           }
           Object.keys(isbnResp).forEach((key) => {
@@ -91,10 +86,8 @@ const AddBook = () => {
     delete data.remarks
     const formattedData: BookData = {
       ...data,
-
       no_of_pages: data.no_of_pages.toString(),
       no_of_preliminary: data.no_of_preliminary.toString(),
-
       year_of_publication: formatDate(data.year_of_publication),
       date_of_acquisition: formatDate(data.date_of_acquisition),
       institute_id: "828f0d33-258f-4a92-a235-9c1b30d8882b"
@@ -385,7 +378,7 @@ const AddBook = () => {
                       required: "Inventory Number is required",
                     }}
                     placeholder="Enter Inventory Number"
-                   
+
                   />
                   <InputField
                     label="Accession Number"
@@ -397,7 +390,7 @@ const AddBook = () => {
                       required: "Accession Number is required",
                     }}
                     placeholder="Enter Accession Number"
-                    
+
                   />
                   <InputField
                     label="Barcode"
@@ -409,8 +402,8 @@ const AddBook = () => {
                       required: "Barcode is required",
                     }}
                     placeholder="Enter Barcode"
-                    
-                  
+
+
                   />
                   <InputField
                     label="Item Type"
@@ -422,7 +415,7 @@ const AddBook = () => {
                       required: "Item Type is required",
                     }}
                     placeholder="Enter Item Type"
-                  
+
                   />
                 </div>
               </div>
@@ -430,8 +423,8 @@ const AddBook = () => {
               <div className="flex justify-center">
 
                 <Button
-                className='shadow-none text-[#1E40AF] rounded-[10px]'
-                 onClick={() => router.back()}>
+                  className='shadow-none text-[#1E40AF] rounded-[10px]'
+                  onClick={() => router.back()}>
                   Cancel
                 </Button>
 
