@@ -20,7 +20,7 @@ const Book_details = () => {
         id: `_book_uuid=${book_uuid}` || ""
     });
     const BookTitle =  bookData?.data?.title?.[0]?.book_title
-    const BookID =  bookData?.data?.title?.[0]?.book_uuid
+    const BookID =  bookData?.data?.title?.[0]?.book_title_id
     
     const handleEdit = (book: BookData) => {
         router.push(`/book-pages/editbookCopy-page?book_copy_uuid=${book.book_copy_uuid}`);

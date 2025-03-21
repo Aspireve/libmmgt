@@ -38,7 +38,6 @@ const BooksPage = () => {
   };
 
   const handleDeleteClick = (bookId: string) => {
-    console.log(typeof bookId)
     setSelectedBookId(bookId);
     setIsModalOpen(true);
   };

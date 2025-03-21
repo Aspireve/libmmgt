@@ -7,7 +7,7 @@ import images from '@/images';
 
 export const getBookColumns = (handleEdit: (book: BookData) => void, handleDelete: (book: BookData) => void): ColumnDef<BookData>[] => [
     {
-        accessorKey: 'book_copy_uuid',
+        accessorKey: 'book_copy_id',
         header: 'Book ID'
     },
     {
