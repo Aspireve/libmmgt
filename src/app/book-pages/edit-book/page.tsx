@@ -102,6 +102,7 @@ const EditBook = () => {
                       required: "Book Title is required",
                     }}
                     placeholder="Enter Book Title"
+                    loading={isLoadingInput}
                   />
                   <InputField
                     label="Book Author"
@@ -113,6 +114,8 @@ const EditBook = () => {
                       required: "Book Author is required",
                     }}
                     placeholder="Enter Book Author"
+                    loading={isLoadingInput}
+                    
                   />
 
                   <InputField
@@ -125,6 +128,8 @@ const EditBook = () => {
                       required: "SName of Publisher is required",
                     }}
                     placeholder="Enter Name of Publisher"
+                    loading={isLoadingInput}
+
                   />
                   <InputField
                     label="Place of publication"
@@ -136,6 +141,8 @@ const EditBook = () => {
                       required: "Place of publication is required",
                     }}
                     placeholder="Enter Place of publication"
+                    loading={isLoadingInput}
+
                   />
                   <InputField
                     label="Year of publication"
@@ -147,6 +154,8 @@ const EditBook = () => {
                       required: "Year of publication is required",
                     }}
                     placeholder="Enter Place of publication"
+                    loading={isLoadingInput}
+
                   />
                   <InputField
                     label="Edition"
@@ -158,6 +167,8 @@ const EditBook = () => {
                       required: "Edition is required",
                     }}
                     placeholder="Enter Edition"
+                    loading={isLoadingInput}
+
                   />
                   <InputField
                     label="ISBN"
@@ -169,6 +180,8 @@ const EditBook = () => {
                       required: "ISBN is required",
                     }}
                     placeholder="Enter ISBN"
+                    loading={isLoadingInput}
+
                   />
                   <InputField
                     label="No. of Pages"
@@ -180,6 +193,8 @@ const EditBook = () => {
                       required: "No. of Pages is required",
                     }}
                     placeholder="Enter No. of Pages"
+                    loading={isLoadingInput}
+
                   />
                   <InputField
                     label="No. of Preliminary Pages"
@@ -191,6 +206,8 @@ const EditBook = () => {
                       required: "No. of Preliminary Pages is required",
                     }}
                     placeholder="Enter No. of Preliminary Pages"
+                    loading={isLoadingInput}
+
                   />
                   <InputField
                     label="Subject"
@@ -202,6 +219,8 @@ const EditBook = () => {
                       required: "Subject is required",
                     }}
                     placeholder="Enter Subject"
+                    loading={isLoadingInput}
+
                   />
                   <InputField
                     label="Department"
@@ -213,6 +232,8 @@ const EditBook = () => {
                       required: "Department is required",
                     }}
                     placeholder="Enter Department"
+                    loading={isLoadingInput}
+
                   />
                 </div>
 
@@ -228,6 +249,8 @@ const EditBook = () => {
                       required: "Call Number is required",
                     }}
                     placeholder="Enter Call Number"
+                    loading={isLoadingInput}
+
                   />
 
                   <InputField
@@ -240,6 +263,8 @@ const EditBook = () => {
                       required: "Author Mark is required",
                     }}
                     placeholder="Enter Author Mark"
+                    loading={isLoadingInput}
+
                   />
 
                 </div>
