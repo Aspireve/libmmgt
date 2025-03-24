@@ -21,7 +21,7 @@ const ImportStudents = () => {
   };
 
   const handleMapData = (e: React.MouseEvent<HTMLFormElement, MouseEvent>) => {
-    e.preventDefault()
+    e.preventDefault();
     if (Object.values(mapping).some((value) => value === "")) {
       for (const key in mapping) {
         if (mapping[key as keyof StudentData] === "") {
@@ -66,12 +66,13 @@ const ImportStudents = () => {
       { resource: "student/bulk-create", values: mapped },
       {
         onSuccess: ({ data }) => {
-          if (!data?.body?.locked) {
-            toast.error("Import Failed");
-            return;
-          }
+          console.log("API response:", data);
+          // if (data?.body?.success) {
           toast.success("Students Added Successfully");
           clearData();
+          // } else {
+          //   toast.error("Import Failed");
+          // }
         },
         onError: () => toast.error("Import Failed"),
       }

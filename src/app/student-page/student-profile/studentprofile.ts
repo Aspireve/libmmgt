@@ -91,21 +91,29 @@ export const borrowedBooksColumns = [
 /** 4) Student Activities Columns (add if needed) */
 export const studentActivitiesColumns = [
   {
-    accessorKey: "activity_id",
-    header: "Activity ID",
+    accessorKey: "book_id",
+    header: "Book ID",
   },
   {
-    accessorKey: "activity_type",
-    header: "Activity Type",
+    accessorKey: "book_name",
+    header: "Book Name",
   },
   {
-    accessorKey: "activity_date",
-    header: "Activity Date",
+    accessorKey: "department",
+    header: "Department",
   },
   {
-    accessorKey: "description",
-    header: "Description",
+    accessorKey: "issue_date",
+    header: "Issue Date",
   },
+  {
+    accessorKey: "return_date",
+    header: "Return Date",
+  },
+  {
+    accessorKey:"Penalties",
+    header: "Penalties"
+  }
 ];
 
 /** 5) Profile Data Fields (used for displaying student info) */

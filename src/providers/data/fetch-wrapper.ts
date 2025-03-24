@@ -20,14 +20,12 @@ const customFetch = async (url: string, options: RequestInit) => {
     ? url
     : `${API_URL}${url.startsWith("/") ? url : `/${url}`}`
 
-  // console.log({ fullUrl, options });
-
   // return fetch(fullUrl, options);
   return fetch(fullUrl, {
     ...options,
-    mode: 'cors', // Add this if your API supports CORS
+    mode: 'cors',
     headers: {
-      ...(options.headers || {}), // Ensure headers exist
+      ...(options.headers || {}),
       "Content-Type": "application/json",
     },
   });
@@ -43,7 +41,6 @@ export const fetchWrapper = async (url: string, options: RequestInit) => {
       return null;
     }
 
-    // ✅ Handle other non-200 responses
     if (!response.ok) {
       let errorMessage = `HTTP error! Status: ${response.status}`;
 
@@ -56,18 +53,18 @@ export const fetchWrapper = async (url: string, options: RequestInit) => {
 
       throw new Error(errorMessage);
     }
-    // ✅ Handle JSON responses properly
+   
     const contentType = response.headers.get("content-type");
     if (contentType && contentType.includes("application/json")) {
       try {
         return await response.json();
       } catch (jsonError) {
         console.warn(`⚠️ Empty JSON response from ${url}`);
-        return null; // ✅ Prevents crashes on empty responses
+        return null; 
       }
     }
 
-    return response; // ✅ Return raw response for non-JSON data
+    return response;
   } catch (error) {
     console.error("🚨 FetchWrapper Error:", error);
     throw error;

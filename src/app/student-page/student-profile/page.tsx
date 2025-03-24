@@ -16,6 +16,7 @@ import { ProfileSkeleton } from "@/components/students/skeletons";
 import MasterTable from "@/app/test/table-page";
 import { borrowedBooksColumns } from "../student-profile/studentprofile";
 import { studentActivitiesColumns } from "../student-profile/studentprofile";
+import StudentBorrowedDetails from "../student-borrowed-details/page";
 
 enum LibraryTabs {
   BORROWED = "borrowed",
@@ -30,13 +31,14 @@ const TABS = [
 const Page = () => {
   const searchParams = useSearchParams();
   const studentUuid = searchParams.get("student_uuid");
+  const student_id = searchParams.get("student_id")   
 
   const { data, isLoading } = useOne<StudentProfileData>({
     resource: "student/detail",
-    id: `student_uuid=${studentUuid}`,
+    id: `student_id=${student_id}`,
     queryOptions: {
       retry: 1,
-      enabled: !!studentUuid,
+      enabled: !!student_id,
     },
   });
 
@@ -106,15 +108,21 @@ const Page = () => {
       <Tabbing
         tabs={TABS}
         content={{
-          [LibraryTabs.ACTIVITY]: <><MasterTable
+          [LibraryTabs.BORROWED]: <><MasterTable
           title="Activities"
           resource="Book_v2/borrowed"
-          columns={()=>studentActivitiesColumns}
+          columns={()=>borrowedBooksColumns}
+          query={[
+            { field: "student_id", operator: "eq", value: `${student_id}` }
+        ]}
           AddedOptions={[]}/></>,
-          [LibraryTabs.BORROWED]: <><MasterTable
+          [LibraryTabs.ACTIVITY]: <><MasterTable
           resource="Book_v2/activities"
           title="Borrowed"
-          columns={()=> borrowedBooksColumns}
+          columns={()=>studentActivitiesColumns}
+          query={[
+            { field: "student_id", operator: "eq", value: `${student_id}` }
+        ]}
           AddedOptions={[]}/></>,
         }}
       />
