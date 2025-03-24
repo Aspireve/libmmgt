@@ -200,7 +200,7 @@ export default function StudentDirectory() {
             <div className="flex justify-end gap-4">
               <Button onClick={handleCancelDelete} variant="outline">
                 Cancel
-              </Button>
+              </Button> 
               <Button
                 onClick={handleConfirmDelete}
                 className="bg-red-600 text-white hover:bg-red-700"

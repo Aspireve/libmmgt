@@ -187,12 +187,13 @@ const EditBook = () => {
 
                             {/* Action Buttons */}
                             <div className="flex justify-center gap-4">
-
                                 <Button
+                                type="button"
                                 className="shadow-none text-[#1E40AF] rounded-[10px]"
-                                onClick={() => router.back()}>
-                                    Cancel
+                                onClick={() => window.history.back()}>
+                                Cancel
                                 </Button>
+
                                 <Button
                                     type="submit"
                                     className="bg-[#1E40AF] text-white rounded-[10px] hover:bg-[#1E40AF]"

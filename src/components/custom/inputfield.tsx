@@ -11,7 +11,7 @@ export const InputField: React.FC<InputFieldProps> = ({
   errors,
   placeholder,
   readonly=false,
-  disabled=false
+  disabled=false,
 }) => {
   return (
     <div>
