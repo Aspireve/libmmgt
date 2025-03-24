@@ -30,7 +30,6 @@ const TABS = [
 
 const Page = () => {
   const searchParams = useSearchParams();
-<<<<<<< HEAD
   const studentUuid = searchParams.get("student_uuid");
   const student_id = searchParams.get("student_id")   
 
@@ -40,16 +39,6 @@ const Page = () => {
     queryOptions: {
       retry: 1,
       enabled: !!student_id,
-=======
-  const studentId = searchParams.get("student_id");
-
-  const { data, isLoading } = useOne<StudentProfileData>({
-    resource: "student/detail",
-    id: `student_id=${studentId}`,
-    queryOptions: {
-      retry: 1,
-      enabled: !!studentId,
->>>>>>> ba40c3f7a70a018986dcbe812696eca71baeca3d
     },
   });
 
@@ -119,7 +108,6 @@ const Page = () => {
       <Tabbing
         tabs={TABS}
         content={{
-<<<<<<< HEAD
           [LibraryTabs.BORROWED]: <><MasterTable
           title="Activities"
           resource="Book_v2/borrowed"
@@ -136,42 +124,6 @@ const Page = () => {
             { field: "student_id", operator: "eq", value: `${student_id}` }
         ]}
           AddedOptions={[]}/></>,
-=======
-          [LibraryTabs.BORROWED]: (
-            <>
-              <MasterTable
-                title="Borrowed"
-                resource="book_v2/get_logs_of_student"
-                columns={() => studentActivitiesColumns}
-                AddedOptions={[]}
-                query={[
-                  {
-                    field: "_student_id",
-                    operator: "eq",
-                    value: studentId,
-                  },
-                ]}
-              />
-            </>
-          ),
-          [LibraryTabs.ACTIVITY]: (
-            <>
-              <MasterTable
-                resource="student/visitlog_by_id"
-                title="Borrowed"
-                columns={() => borrowedBooksColumns}
-                AddedOptions={[]}
-                query={[
-                  {
-                    field: "_student_id",
-                    operator: "eq",
-                    value: studentId,
-                  },
-                ]}
-              />
-            </>
-          ),
->>>>>>> ba40c3f7a70a018986dcbe812696eca71baeca3d
         }}
       />
     </div>
