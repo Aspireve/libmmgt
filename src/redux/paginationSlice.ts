@@ -49,9 +49,22 @@ const paginationSlice = createSlice({
       state.limit = action.payload.limit;
       state.total = action.payload.total;
     },
+    resetValues: (state) => {
+      state.page = 1;
+      state.totalPages = 0;
+      state.total = 0;
+      state.limit = 15;
+    },
   },
 });
 
-export const { setPage, setLimit, setTotalPages, nextPage, prevPage, setPaginationValues } =
-  paginationSlice.actions;
+export const {
+  setPage,
+  setLimit,
+  setTotalPages,
+  nextPage,
+  prevPage,
+  setPaginationValues,
+  resetValues,
+} = paginationSlice.actions;
 export default paginationSlice.reducer;
