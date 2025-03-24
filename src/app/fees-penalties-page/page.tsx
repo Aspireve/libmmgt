@@ -2,7 +2,6 @@
 
 import React, { Suspense, useState } from "react";
 import Header from "../Header/header";
-import { DataTable } from "@/components/data-tables/data-table";
 import { PenaltiesColumns, fallbackData, Penalties } from "./columns";
 import { useList } from "@refinedev/core";
 import { Button } from "@/components/ui/button";
@@ -20,6 +19,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { MainTable } from "@/components/data-tables/main-table";
+import MasterTable from "../test/table-page";
 
 // Define Department interface
 interface Department {
@@ -121,40 +121,13 @@ const FeesPenaltiesPage = () => {
             </Button>
           </div>
         </div>
-        <section className="border border-[#E0E2E7] rounded-[10px] w-[90%] ml-10 mt-6 p-4 mb-10">
+        <section>
           <div>
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-4">
-                <h1 className="text-3xl font-semibold ml-4">Fees & Penalties</h1>
-                <p className="bg-[#F9F5FF] rounded-2xl text-[#6941C6] px-2">
-                  5 Entries
-                </p>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="relative w-64">
-                  <Image
-                    src={searchIcon}
-                    alt="Search"
-                    className="absolute left-3 top-1/2 -translate-y-1/2"
-                  />
-                  <Input
-                    placeholder="Search"
-                    className="w-full pl-10 rounded-[8px] border border-[#D5D7DA] text-[#BBBBBB]"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                  />
-                </div>
-                <Button
-
-                  className="bg-blue-600 text-white px-4 py-2 rounded"
-                >
-                  Search
-                </Button>
-              </div>
-            </div>
-            <MainTable
-            columns={PenaltiesColumns}
-            resource="book_v2/get_full_feelist"
+            <MasterTable
+            title="Fees&Penalties"
+            columns={()=> PenaltiesColumns}
+            resource="book_v2/get_full_feelist_student"
+            AddedOptions={[]}
             />
           </div>
         </section>

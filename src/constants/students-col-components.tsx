@@ -17,7 +17,7 @@ export const StudentIDCell = ({
       className="relative group cursor-pointer font-bold text-[#1E40AF]"
       onClick={() =>
         router.push(
-          `/student-page/student-profile?student_uuid=${student.student_uuid}`
+          `/student-page/student-profile?student_id=${student.student_id}`
         )
       }
     >

@@ -18,6 +18,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
 import { DateRange } from "react-day-picker";
 import { MainTable } from "@/components/data-tables/main-table";
+import MasterTable from "../test/table-page";
 
 const Page = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -135,32 +136,12 @@ const Page = () => {
           </Button>
         </div>
       </div>
-      <section className="border border-[#E0E2E7] rounded-[10px] w-[90%] ml-10 mt-6 p-4 mb-10">
-        <div className="flex items-center justify-between">
-          <h1 className="text-3xl font-semibold ml-4">Visit Log</h1>
-          <p className="bg-[#F9F5FF] rounded-2xl text-[#6941C6] px-2">
-            {visitLogs.length || 0} Entries
-          </p>
-          <div className="relative w-64">
-            <Image
-              src={searchIcon}
-              alt="Search"
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"
-            />
-            <Input
-              placeholder="Search"
-              className="w-full pl-10 rounded-[8px] border border-[#D5D7DA] text-[#BBBBBB]"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-          </div>
-          <Button className="bg-blue-600 text-white px-4 py-2 rounded">
-            Search
-          </Button>
-        </div>
-        <MainTable<VisitLog, unknown>
-          columns={visitLogColumns}
+      <section>
+        <MasterTable
+        title="Visit Logs"
+          columns={() =>visitLogColumns}
           resource="student/alllog"
+          AddedOptions={[]}
         />
       </section>
     </>

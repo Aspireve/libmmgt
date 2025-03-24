@@ -16,6 +16,7 @@ import { StudentListTable } from "@/constants/students";
 import AddStudents from "@/components/students/add-students";
 import ImportStudentButton from "@/components/students/import-students-button";
 import DeleteStudent from "@/components/students/delete-student";
+import ExportStudent from "@/components/students/export-students-button";
 
 export default function StudentDirectory() {
   // Filter and search states
@@ -155,6 +156,8 @@ export default function StudentDirectory() {
   //   setShowConfirmModal(false);
   // };
 
+
+
   return (
     <>
       <Header heading="Student Directory" subheading="Tanvir Chavan" />
@@ -197,7 +200,7 @@ export default function StudentDirectory() {
             <div className="flex justify-end gap-4">
               <Button onClick={handleCancelDelete} variant="outline">
                 Cancel
-              </Button>
+              </Button> 
               <Button
                 onClick={handleConfirmDelete}
                 className="bg-red-600 text-white hover:bg-red-700"
@@ -217,7 +220,7 @@ export default function StudentDirectory() {
         title="Students"
         resource="student/all"
         columns={StudentListTable}
-        AddedOptions={[DeleteStudent, AddStudents, ImportStudentButton]}
+        AddedOptions={[DeleteStudent, AddStudents, ImportStudentButton,ExportStudent]}
       />
 
       {/* <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">

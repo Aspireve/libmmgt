@@ -1,11 +1,11 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Header from "@/components/custom/header";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { useRouter } from "next/navigation";
-import { Loader2 } from "lucide-react";
+import { Loader2, Eye, EyeOff } from "lucide-react";
 import { InputField } from "@/components/custom/inputfield";
 import { useAddStudentForm } from "@/hooks/add-student-form";
 
@@ -13,6 +13,10 @@ const AddStudent: React.FC = () => {
   const router = useRouter();
   const { onSubmit, register, handleSubmit, errors, isLoading } =
     useAddStudentForm();
+
+  // States to control password visibility
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   return (
     <>
@@ -50,7 +54,6 @@ const AddStudent: React.FC = () => {
                 placeholder="Enter Department"
                 validation={{ required: "Department is required" }}
               />
-
               <InputField
                 errors={errors}
                 label="Email"
@@ -60,7 +63,6 @@ const AddStudent: React.FC = () => {
                 placeholder="Enter Email"
                 validation={{ required: "Email is required" }}
               />
-
               <InputField
                 errors={errors}
                 label="Phone Number"
@@ -70,7 +72,6 @@ const AddStudent: React.FC = () => {
                 placeholder="Enter Phone Number"
                 validation={{ required: "Phone Number is required" }}
               />
-
               <InputField
                 errors={errors}
                 label="Address"
@@ -101,37 +102,65 @@ const AddStudent: React.FC = () => {
                 placeholder="Enter Year of Admission"
                 validation={{ required: "Year of Admission is required" }}
               />
-              <InputField
-                errors={errors}
-                label="Password"
-                name="password"
-                register={register}
-                type="password"
-                placeholder="Enter Password"
-                validation={{ required: "Password is required" }}
-              />
-              <InputField
-                errors={errors}
-                label="Confirm Password"
-                name="confirm_password"
-                register={register}
-                type="password"
-                placeholder="Enter Confirm Password"
-                validation={{
-                  required: "Confirm Password is required",
-                  validate: (value: string | undefined) => {
-                    // Custom validation: check if passwords match
-                    const password = document.querySelector(
-                      'input[name="password"]'
-                    ) as HTMLInputElement;
-                    return (
-                      value === password?.value || "Passwords do not match"
-                    );
-                  },
-                }}
-              />
+              {/* Password Field with Toggle */}
+              <div className="relative col-span-1">
+                <InputField
+                  errors={errors}
+                  label="Password"
+                  name="password"
+                  register={register}
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Enter Password"
+                  validation={{ required: "Password is required" }}
+                />
+                <button
+                  type="button"
+                  className="absolute mt-3 top-0 right-0 flex items-center pr-3"
+                  onClick={() => setShowPassword((prev) => !prev)}
+                >
+                  {showPassword ? (
+                    <EyeOff className="h-5 w-5 text-gray-500 mt-5" />
+                  ) : (
+                    <Eye className="h-5 w-5 text-gray-500 mt-5" />
+                  )}
+                </button>
+              </div>
+              {/* Confirm Password Field with Toggle */}
+              <div className="relative col-span-1">
+                <InputField
+                  errors={errors}
+                  label="Confirm Password"
+                  name="confirm_password"
+                  register={register}
+                  type={showConfirmPassword ? "text" : "password"}
+                  placeholder="Enter Confirm Password"
+                  validation={{
+                    required: "Confirm Password is required",
+                    validate: (value: string | undefined) => {
+                      // Custom validation: check if passwords match
+                      const password = document.querySelector(
+                        'input[name="password"]'
+                      ) as HTMLInputElement;
+                      return (
+                        value === password?.value || "Passwords do not match"
+                      );
+                    },
+                  }}
+                />
+                <button
+                  type="button"
+                  className="absolute mt-3 top-0 right-0 flex items-center pr-3"
+                  onClick={() => setShowConfirmPassword((prev) => !prev)}
+                >
+                  {showConfirmPassword ? (
+                    <EyeOff className="h-5 w-5 text-gray-500 mt-5" />
+                  ) : (
+                    <Eye className="h-5 w-5 text-gray-500 mt-5" />
+                  )}
+                </button>
+              </div>
               {/* Gender */}
-              <div>
+              <div className="col-span-2">
                 <Label>Gender</Label>
                 <select
                   {...register("gender", {
