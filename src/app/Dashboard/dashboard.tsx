@@ -7,6 +7,7 @@ import Tabbing from "@/components/custom/tabbing";
 import { MainTable } from "@/components/data-tables/main-table";
 import MasterTable from "../test/table-page";
 import { Button } from "@/components/ui/button";
+import DashboardData from "@/components/dashboard/dashboard-data-count";
 
 enum LibraryTabs {
   ISSUE = "issue",
@@ -49,6 +50,7 @@ export default function Dashboard() {
         content={{
           [LibraryTabs.ISSUE]: (
             <>
+            <DashboardData/>
               <IssueBook setRefreshAction={setRefresh} />
               <Activities refresh={refresh} />
             </>

@@ -10,11 +10,17 @@ import { toast } from "sonner";
 import { fieldLabels, initialMapping } from "@/constants/students";
 import { useFileProcessor } from "@/hooks/file-processsor";
 import type { StudentData, StudentMappingType } from "@/types/student";
+import { RootState } from "@/redux/store/store";
+import { useSelector } from "react-redux";
+import { CustomBreadcrumb } from "@/components/breadcrumb";
 
 const ImportStudents = () => {
   const [mapping, setMapping] = useState<StudentMappingType>(initialMapping);
   const { mutate, isLoading } = useCreate();
   const { processFile, importData, clearData } = useFileProcessor();
+
+  const institute_uuid = useSelector((state: RootState) => state.auth.institute_uuid);
+  const institute_name = useSelector((state: RootState) => state.auth.institute_name);
 
   const handleMappingChange = (field: keyof StudentData, value: string) => {
     setMapping((prev) => ({ ...prev, [field]: value }));
@@ -52,8 +58,9 @@ const ImportStudents = () => {
           .setField("password")
           .setField("confirm_password")
           .setField("gender")
-          .setField("institute_id")
-          .setField("institute_name")
+          .setField("institute_id", () => institute_uuid)
+          .setField("institute_name", () => institute_name)
+
           .build()
       )
       .filter((entry) => Object.keys(entry).length > 0);
@@ -62,6 +69,7 @@ const ImportStudents = () => {
       toast.error("Insufficient Data Provided");
       return;
     }
+
     mutate(
       { resource: "student/bulk-create", values: mapped },
       {
@@ -79,8 +87,17 @@ const ImportStudents = () => {
     );
   };
 
+  const breadcrumbItems = [
+    { label: "Student Directory", href: "/student-page" },
+    { label: "Import Student", href: "/student-page/import-students" },
+  ]
+
   return (
-    <div className="container mx-auto p-6">
+    <>
+        <CustomBreadcrumb items={breadcrumbItems} />
+
+      <div className="container mx-auto p-6">
+      
       <h2 className="text-xl font-semibold mb-4">Import Student Data</h2>
       <p className="text-gray-600 text-sm mb-4">
         Upload an Excel or CSV file and map columns.
@@ -91,7 +108,7 @@ const ImportStudents = () => {
         clearSelectedFile={clearData}
       />
       {importData.title && importData.headers.length > 0 && (
-        <form onClick={handleMapData}>
+        <form onSubmit={handleMapData}>
           <h3 className="text-lg font-medium mb-4">Map Columns</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {Object.keys(fieldLabels).map((field) => {
@@ -128,9 +145,8 @@ const ImportStudents = () => {
           <Button
             type="submit"
             disabled={isLoading}
-            className={`my-6 bg-[#1E40AF] hover:bg-[#1E40AF] transition-all duration-300 cursor-pointer w-full text-white px-4 py-2 rounded flex items-center justify-center ${
-              isLoading ? "opacity-50 cursor-not-allowed" : ""
-            }`}
+            className={`my-6 bg-[#1E40AF] hover:bg-[#1E40AF] transition-all duration-300 cursor-pointer w-full text-white px-4 py-2 rounded flex items-center justify-center ${isLoading ? "opacity-50 cursor-not-allowed" : ""
+              }`}
           >
             {isLoading ? (
               <>
@@ -144,6 +160,8 @@ const ImportStudents = () => {
         </form>
       )}
     </div>
+    </>
+    
   );
 };
 

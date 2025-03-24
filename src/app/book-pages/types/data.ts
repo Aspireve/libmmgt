@@ -25,7 +25,7 @@ export interface BookData {
   accession_number: string;
   barcode?: string;
   item_type?: string;
-  bill_no: number;
+  bill_no: string;
   institute_uuid: string;
   created_at: string;
   updated_at: string;

@@ -16,7 +16,8 @@ import { ProfileSkeleton } from "@/components/students/skeletons";
 import MasterTable from "@/app/test/table-page";
 import { borrowedBooksColumns } from "../student-profile/studentprofile";
 import { studentActivitiesColumns } from "../student-profile/studentprofile";
-import StudentBorrowedDetails from "../student-borrowed-details/page";
+import { CustomBreadcrumb } from "@/components/breadcrumb";
+
 
 enum LibraryTabs {
   BORROWED = "borrowed",
@@ -29,8 +30,11 @@ const TABS = [
 ];
 
 const Page = () => {
+  const breadcrumbItems =[
+    {label:"Student Directory", href:"/student-page"},
+    {label:"Student Profile", href:"/student-page/student-profile"},
+  ]
   const searchParams = useSearchParams();
-<<<<<<< HEAD
   const studentUuid = searchParams.get("student_uuid");
   const student_id = searchParams.get("student_id")   
 
@@ -40,22 +44,14 @@ const Page = () => {
     queryOptions: {
       retry: 1,
       enabled: !!student_id,
-=======
-  const studentId = searchParams.get("student_id");
-
-  const { data, isLoading } = useOne<StudentProfileData>({
-    resource: "student/detail",
-    id: `student_id=${studentId}`,
-    queryOptions: {
-      retry: 1,
-      enabled: !!studentId,
->>>>>>> ba40c3f7a70a018986dcbe812696eca71baeca3d
     },
   });
 
   // Conditional rendering inside returned JSX instead of early returns
   return (
     <div>
+     <CustomBreadcrumb items={breadcrumbItems}/>
+   
       <Header
         heading={data?.data.student_name || ""}
         subheading={data?.data.student_id || ""}
@@ -119,59 +115,22 @@ const Page = () => {
       <Tabbing
         tabs={TABS}
         content={{
-<<<<<<< HEAD
           [LibraryTabs.BORROWED]: <><MasterTable
-          title="Activities"
-          resource="Book_v2/borrowed"
+          title="Borrowed"
+          resource="Book_v2/get_logs_of_student"
           columns={()=>borrowedBooksColumns}
           query={[
-            { field: "student_id", operator: "eq", value: `${student_id}` }
+            { field: "_student_id", operator: "eq", value: `${student_id}` }
         ]}
           AddedOptions={[]}/></>,
           [LibraryTabs.ACTIVITY]: <><MasterTable
-          resource="Book_v2/activities"
-          title="Borrowed"
+          resource="student/visitlog_by_id"
+          title="Activities"
           columns={()=>studentActivitiesColumns}
           query={[
-            { field: "student_id", operator: "eq", value: `${student_id}` }
+            { field: "_student_id", operator: "eq", value: `${student_id}` }
         ]}
           AddedOptions={[]}/></>,
-=======
-          [LibraryTabs.BORROWED]: (
-            <>
-              <MasterTable
-                title="Borrowed"
-                resource="book_v2/get_logs_of_student"
-                columns={() => studentActivitiesColumns}
-                AddedOptions={[]}
-                query={[
-                  {
-                    field: "_student_id",
-                    operator: "eq",
-                    value: studentId,
-                  },
-                ]}
-              />
-            </>
-          ),
-          [LibraryTabs.ACTIVITY]: (
-            <>
-              <MasterTable
-                resource="student/visitlog_by_id"
-                title="Borrowed"
-                columns={() => borrowedBooksColumns}
-                AddedOptions={[]}
-                query={[
-                  {
-                    field: "_student_id",
-                    operator: "eq",
-                    value: studentId,
-                  },
-                ]}
-              />
-            </>
-          ),
->>>>>>> ba40c3f7a70a018986dcbe812696eca71baeca3d
         }}
       />
     </div>

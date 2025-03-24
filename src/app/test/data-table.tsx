@@ -17,6 +17,8 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import React from "react";
+import Image from "next/image";
+import noBooksIllustration from "@/images/noBookillustration.png";
 
 interface DataTableProps<TData> {
   columns: ColumnDef<TData, any>[];
@@ -53,7 +55,10 @@ export function Datatable<TData extends BaseRecord>({
       <Table className="font-inter w-full">
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow key={headerGroup.id} className="border-b border-[#E9EAEB] bg-[#FAFAFA]">
+            <TableRow
+              key={headerGroup.id}
+              className="border-b border-[#E9EAEB] bg-[#FAFAFA]"
+            >
               {headerGroup.headers.map((header) => (
                 <TableHead
                   key={header.id}
@@ -100,7 +105,20 @@ export function Datatable<TData extends BaseRecord>({
                 colSpan={columns.length}
                 className="text-center py-4 text-gray-500 animate-fade-in"
               >
-                No data available
+                <div className="flex flex-col items-center justify-center">
+                  <Image
+                    src={noBooksIllustration}
+                    alt="No data available"
+                    width={200}
+                    height={200}
+                  />
+                  <h2 className="text-xl font-semibold mt-4">
+                    📚 No data available
+                  </h2>
+                  <p className="text-gray-600 mt-2">
+                    There is no data available at the moment.
+                  </p>
+                </div>
               </TableCell>
             </TableRow>
           )}

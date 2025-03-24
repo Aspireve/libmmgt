@@ -14,8 +14,6 @@ export interface Student {
   email: string;
   phone_no: string;
   address: string;
-  institute_id: string;
-  institute_name: string;
   is_archived: boolean;
   date_of_birth: string;
   gender: "male" | "female" | "";
@@ -24,6 +22,8 @@ export interface Student {
   password: string;
   current_password?: string;
   confirm_password?: string;
+  institute_id:string;
+  institute_name:string;
 }
 
 // Component for ID Column

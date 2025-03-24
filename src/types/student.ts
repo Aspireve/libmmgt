@@ -6,7 +6,7 @@ export interface StudentData {
   email: string;
   phone_no: string;
   address: string;
-  roll_no: number; // This is a number
+  roll_no: number;
   year_of_admission: string;
   password: string;
   confirm_password: string;
@@ -14,8 +14,12 @@ export interface StudentData {
   gender: string;
   institute_name: string;
   institute_id: string;
+  institute_uuid: string;
+  student_id: string;
+  student_uuid?: string;
+  image_field?: string | File | null; // Add this (adjust type as needed)
+  is_archived?: boolean; // Add this
 }
-
 export interface StudentFromDatabase {
   student_id: string;
   student_uuid: string;
@@ -49,4 +53,5 @@ export interface InputFieldProps {
   readonly?:boolean;
   disabled?:boolean;
   defaultValue?: string | number;
+  loading?:boolean
 }

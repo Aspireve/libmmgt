@@ -8,7 +8,7 @@ import Headers from "./headers";
 import { LogicalFilter, useList } from "@refinedev/core";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store/store";
-import { setPaginationValues } from "@/redux/paginationSlice";
+import { resetValues, setPaginationValues } from "@/redux/paginationSlice";
 import { useRowSelection } from "@/hooks/checkbox-hook";
 
 interface PageProps {
@@ -51,7 +51,7 @@ export default function MasterTable({
         operator: "eq",
         value: search,
       },
-      ...(query),
+      ...query,
     ],
   });
 
@@ -78,7 +78,11 @@ export default function MasterTable({
     if (listData?.data) {
       setSelectedData([]);
     }
-  }, [listData]);
+    return () => {
+      dispatch(resetValues());
+      setSelectedData([]);
+    };
+  }, [listData, resource]);
 
   return (
     <div className="m-10 border-2 border-[#E9EAEB] rounded-xl shadow-sm cursor-default">

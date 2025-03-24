@@ -32,6 +32,11 @@ export class StudentDataBuilder {
     return this;
   }
 
+  setCustomField(fieldKey: string, value: any) {
+    this.studentEntry[fieldKey as keyof StudentFromDatabase] = value;
+    return this;
+  }
+
   build(): Partial<StudentFromDatabase> {
     return this.studentEntry;
   }

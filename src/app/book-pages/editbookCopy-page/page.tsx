@@ -19,7 +19,7 @@ const EditBook = () => {
     const [isLoading, setIsLoading] = useState(false)
     
 
-    const { data: bookData } = useOne<BookData>({
+    const { data: bookData, isLoading:LoadingDetails } = useOne<BookData>({
         resource: "book_v2/get_book_copy",
         id: `_identifier=${book_uuid}` || ""
     });
@@ -101,6 +101,7 @@ const EditBook = () => {
                                             required: "Source of Acquisition is required",
                                         }}
                                         placeholder="Enter Source of Acquisition"
+                                        loading={LoadingDetails}
                                     />
 
                                     <InputField
@@ -113,6 +114,7 @@ const EditBook = () => {
                                             required: "Date of Acquisition is required",
                                         }}
                                         placeholder="Enter Date of Acquisition"
+                                        loading={LoadingDetails}
                                     />
                                     <InputField
                                         label="Language"
@@ -124,6 +126,7 @@ const EditBook = () => {
                                             required: "Language is required",
                                         }}
                                         placeholder="Enter Language"
+                                        loading={LoadingDetails}
                                     />
                                     <InputField
                                         label="Barcode"
@@ -135,6 +138,7 @@ const EditBook = () => {
                                             required: "Barcode is required",
                                         }}
                                         placeholder="Enter barcode"
+                                        loading={LoadingDetails}
                                     />
                                     <InputField
                                         label="Item Type"
@@ -146,6 +150,7 @@ const EditBook = () => {
                                             required: "Item Type is required",
                                         }}
                                         placeholder="Enter Item Type"
+                                        loading={LoadingDetails}
                                     />
                                     <InputField
                                         label="Bill no"
@@ -157,6 +162,7 @@ const EditBook = () => {
                                             required: "ISBN is required",
                                         }}
                                         placeholder="Enter ISBN"
+                                        loading={LoadingDetails}
                                     />
                                     <InputField
                                         label="Inventory Number"
@@ -168,6 +174,7 @@ const EditBook = () => {
                                             required: "Inventory Number is required",
                                         }}
                                         placeholder="Enter Inventory Number"
+                                        loading={LoadingDetails}
                                     />
                                     <InputField
                                         label="Accession Number"
@@ -179,6 +186,7 @@ const EditBook = () => {
                                             required: "No. of Preliminary Pages is required",
                                         }}
                                         placeholder="Enter Accession Number"
+                                        loading={LoadingDetails}
                                     />
 
                                 </div>
