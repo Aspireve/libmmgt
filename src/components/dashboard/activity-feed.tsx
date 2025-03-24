@@ -6,13 +6,14 @@ import { ActivityType } from "@/types/book";
 import { useList } from "@refinedev/core";
 import { Button } from "../ui/button";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 
 export default function Activities({ refresh }: { refresh: number }) {
     const router = useRouter();
   
   const { data, isLoading, refetch } = useList({
-    resource: "book_v2/get_all_logs",
+    resource: "book_v2/get_all_logs"
   });
 
   useEffect(() => {

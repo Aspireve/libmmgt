@@ -49,4 +49,5 @@ export interface InputFieldProps {
   readonly?:boolean;
   disabled?:boolean;
   defaultValue?: string | number;
+  loading?:boolean
 }
