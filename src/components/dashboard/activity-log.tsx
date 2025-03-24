@@ -75,7 +75,7 @@ const ActivityLog = (props: ActivityLogProps) => {
           {/* @ts-ignore */}
           <span className="font-semibold">{props.book_id}</span>{" "}
           {/* @ts-ignore */}
-          <span className="font-semibold">|</span>{props.title}{" "}
+          <span className="font-semibold">|</span> {props.title}{" "}
           {/* @ts-ignore */}
           <span className="font-semibold">|</span> {props.studentName}{" "}
           {/* @ts-ignore */}

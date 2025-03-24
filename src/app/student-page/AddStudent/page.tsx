@@ -21,6 +21,12 @@ import Image from "next/image";
 import Profile from "@/images/ProfileImage.png";
 
 const AddStudent: React.FC = () => {
+
+  const breadcrumbItems =[
+    {label:"Student Directory", href:"/student-page"},
+    {label:"Add Student", href:"/student-page/AddStudent"},
+  ]
+
   const router = useRouter();
   const { onSubmit, register, handleSubmit, isLoading } = useAddStudentForm();
   const [showPassword, setShowPassword] = useState(false);

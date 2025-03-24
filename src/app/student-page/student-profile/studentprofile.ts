@@ -1,5 +1,9 @@
 // studentprofile.ts
 
+
+import { formatDate } from "@/app/book-pages/hooks/formatDate";
+import { ColumnDef } from "@tanstack/react-table";
+
 /** 1) Student Profile Interface */
 export interface StudentProfileData {
   student_id?: string;
@@ -17,89 +21,67 @@ export interface StudentProfileData {
 
 /** 2) Borrowed Book Interface & Sample Data */
 export interface BorrowedBook {
-  book_id: string;
-  book_name: string;
+  book_copy_id: string;
+  book_title: string;
   department: string;
-  issue_date: string;
-  return_date: string;
+  created_at: string;
+  returned_at?: string;
 }
 
-export const borrowedBooks: BorrowedBook[] = [
-  {
-    book_id: "3066",
-    book_name: "HC Verma",
-    department: "Computer Science",
-    issue_date: "12-2-2025",
-    return_date: "16-2-2025",
-  },
-  {
-    book_id: "3065",
-    book_name: "RD Sharma",
-    department: "Computer Science",
-    issue_date: "05-2-2025",
-    return_date: "12-2-2025",
-  },
-  {
-    book_id: "3064",
-    book_name: "Digital Signal Processing",
-    department: "Electronics",
-    issue_date: "26-1-2025",
-    return_date: "05-2-2025",
-  },
-  {
-    book_id: "3063",
-    book_name: "Strength of Materials",
-    department: "Electronics",
-    issue_date: "12-1-2025",
-    return_date: "26-1-2025",
-  },
-  {
-    book_id: "3062",
-    book_name: "Surveying Vol. 1",
-    department: "Electronics",
-    issue_date: "05-1-2025",
-    return_date: "12-1-2025",
-  },
-];
+export interface Activites {
+  visitlog_id: string;
+  action: string;
+  department: string;
+  student_uuid:string;
+  visitor_name:string;
+  in_time: string;
+  out_time: string;
+  student_id:string;
+}
+export const borrowedBooksColumns:ColumnDef<BorrowedBook>[] = [
 
-/** 3) Borrowed Books Columns */
-export const borrowedBooksColumns = [
+    {
+      accessorKey: "book_copy_id",
+      header: "Book ID",
+
+    },
+    {
+      accessorKey: "book_title",
+      header: "Book Name",
+    },
+    {
+      accessorKey: "department",
+      header: "Department",
+    },
+    {
+      accessorKey: "created_at",
+      header: "Issue Date",
+      cell: ({ row }) => {
+        return formatDate(row.original.created_at)
+      },
+      
+    },
+    {
+      accessorKey: "returned_at",
+      header: "Return Date",
+      cell: ({ row }) => {
+       return row.original.returned_at ? formatDate(row.original.returned_at) : "-"
+      }
+    },
+  ];
+
+
+export const studentActivitiesColumns:ColumnDef<Activites>[] =  [
   {
-    accessorKey: "book_id",
-    header: "Book ID",
-    // Format book ID with a '#' prefix
-    cell: ({ row }: any) => `#${row.original.book_id}`,
+    accessorKey: "student_id",
+    header: "Student",
   },
   {
-    accessorKey: "book_name",
-    header: "Book Name",
+    accessorKey: "visitor_name",
+    header: "Vistor Name",
   },
   {
     accessorKey: "department",
-    header: "Department",
-  },
-  {
-    accessorKey: "issue_date",
-    header: "Issue Date",
-  },
-  {
-    accessorKey: "return_date",
-    header: "Return Date",
-  },
-];
-
-/** 4) Student Activities Columns (add if needed) */
-export const studentActivitiesColumns = [
-  {
-    accessorKey: "activity_id",
-    header: "Book ID",
-  },
-  {
-    accessorKey: "activity_type",
-    header: "Book Name",
-  },
-  {
-    accessorKey: "new_book_title.department",
     header: "Department",
   },
   {
@@ -107,16 +89,18 @@ export const studentActivitiesColumns = [
     header: "Action",
   },
   {
-    accessorKey: "date",
-    header: "Time",
+    accessorKey: "in_time",
+    header: "In Time",
+    cell :({row}) => {
+      return formatDate(row.original.in_time);
+    }
   },
   {
-    accessorKey: "return_date",
-    header: "Return Date",
-  },
-  {
-    accessorKey:"Penalties",
-    header: "Penalties"
+    accessorKey: "out_time",
+    header: "Out Time",
+    cell :({row}) => {
+      return formatDate(row.original.out_time);
+    }
   }
 ];
 
