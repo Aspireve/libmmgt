@@ -91,9 +91,9 @@ const AddStudent: React.FC = () => {
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             <div className="flex gap-6">
               {/* First Container - Profile Image */}
-              <div className="w-1/6 flex flex-col items-center">
+              <div className="w-1/6 flex flex-col border border-[#E0E2E7] bg-[#F9F9FC] items-center justify-center">
                 <div className="mb-4">
-                  <div className="w-24 h-24 rounded-full bg-blue-100 flex items-center justify-center overflow-hidden">
+                  <div className="w-24 h-24 rounded-full flex items-center justify-center overflow-hidden bg-blue-50">
                     {profileImage ? (
                       <Image
                         src={profileImage}
