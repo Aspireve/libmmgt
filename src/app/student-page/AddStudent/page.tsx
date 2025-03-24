@@ -21,6 +21,7 @@ import Image from "next/image";
 import Profile from "@/images/ProfileImage.png";
 import { UserRound } from "lucide-react";
 import { InputField } from "@/components/custom/inputfield";
+import Institute_Dropdown from "@/app/Input-test/page";
 
 const AddStudent: React.FC = () => {
   const breadcrumbItems = [
@@ -145,6 +146,10 @@ const AddStudent: React.FC = () => {
                     placeholder="Enter Full Name"
                   />
                   {/* // TODO: make this the input dropdown */}
+                  {/* <Institute_Dropdown
+                    setValue={(e) => {}}
+                    options={["COMP", "HMMM"]}
+                  /> */}
                   <div>
                     <Label>Department</Label>
                     <Input
