@@ -8,8 +8,15 @@ import { useRouter } from "next/navigation";
 import { Loader2, Eye, EyeOff } from "lucide-react";
 import { InputField } from "@/components/custom/inputfield";
 import { useAddStudentForm } from "@/hooks/add-student-form";
+import { CustomBreadcrumb } from "@/components/breadcrumb";
 
 const AddStudent: React.FC = () => {
+
+  const breadcrumbItems =[
+    {label:"Student Directory", href:"/student-page"},
+    {label:"Add Student", href:"/student-page/AddStudent"},
+  ]
+
   const router = useRouter();
   const { onSubmit, register, handleSubmit, errors, isLoading } =
     useAddStudentForm();
@@ -20,6 +27,8 @@ const AddStudent: React.FC = () => {
 
   return (
     <>
+    
+         <CustomBreadcrumb items={breadcrumbItems}/>
       <Header heading="Add Student" subheading="Tanvir Chavan" />
 
       <section className="p-10">

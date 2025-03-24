@@ -12,6 +12,7 @@ import { useFileProcessor } from "@/hooks/file-processsor";
 import type { StudentData, StudentMappingType } from "@/types/student";
 import { RootState } from "@/redux/store/store";
 import { useSelector } from "react-redux";
+import { CustomBreadcrumb } from "@/components/breadcrumb";
 
 const ImportStudents = () => {
   const [mapping, setMapping] = useState<StudentMappingType>(initialMapping);
@@ -57,7 +58,7 @@ const ImportStudents = () => {
           .setField("password")
           .setField("confirm_password")
           .setField("gender")
-          .setField("institute_id", () =>institute_uuid)
+          .setField("institute_id", () => institute_uuid)
           .setField("institute_name", () => institute_name)
 
           .build()
@@ -86,8 +87,17 @@ const ImportStudents = () => {
     );
   };
 
+  const breadcrumbItems = [
+    { label: "Student Directory", href: "/student-page" },
+    { label: "Import Student", href: "/student-page/import-students" },
+  ]
+
   return (
-    <div className="container mx-auto p-6">
+    <>
+        <CustomBreadcrumb items={breadcrumbItems} />
+
+      <div className="container mx-auto p-6">
+      
       <h2 className="text-xl font-semibold mb-4">Import Student Data</h2>
       <p className="text-gray-600 text-sm mb-4">
         Upload an Excel or CSV file and map columns.
@@ -150,6 +160,8 @@ const ImportStudents = () => {
         </form>
       )}
     </div>
+    </>
+    
   );
 };
 

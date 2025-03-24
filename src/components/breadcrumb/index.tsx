@@ -1,24 +1,42 @@
-"use client";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
+import { FaChevronRight } from "react-icons/fa";
 
-import { useBreadcrumb } from "@refinedev/core";
-import Link from "next/link";
+// Define the type for breadcrumb items
+interface BreadcrumbItem {
+  label: string;
+  href: string;
+}
 
-export const Breadcrumb = () => {
-  const { breadcrumbs } = useBreadcrumb();
+interface BreadcrumbProps {
+  items: BreadcrumbItem[];
+}
 
+export function CustomBreadcrumb({ items }: BreadcrumbProps) {
   return (
-    <ul className="breadcrumb">
-      {breadcrumbs.map((breadcrumb) => {
-        return (
-          <li key={`breadcrumb-${breadcrumb.label}`}>
-            {breadcrumb.href ? (
-              <Link href={breadcrumb.href}>{breadcrumb.label}</Link>
+    <div className="mt-5 ml-8">
+    <Breadcrumb>
+      <BreadcrumbList>
+        {items.map((item, index) => (
+          <BreadcrumbItem key={index}>
+            {index < items.length - 1 ? (
+              <>
+                <BreadcrumbLink className="text-[#5C59E8] font-[500] text-base" href={item.href}>{item.label}</BreadcrumbLink>
+                <BreadcrumbSeparator/>
+              </>
             ) : (
-              <span>{breadcrumb.label}</span>
+              <BreadcrumbPage className="text-[#667085] font-[500] text-base">{item.label}</BreadcrumbPage>
             )}
-          </li>
-        );
-      })}
-    </ul>
+          </BreadcrumbItem>
+        ))}
+      </BreadcrumbList>
+    </Breadcrumb>
+    </div>
   );
-};
+}

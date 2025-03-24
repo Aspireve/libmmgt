@@ -12,8 +12,13 @@ import { InputField } from "@/components/custom/inputfield";
 
 import type { StudentFromDatabase } from "@/types/student";
 import { EditSkeleton } from "@/components/students/skeletons";
+import { CustomBreadcrumb } from "@/components/breadcrumb";
 
 const EditStudent: React.FC = () => {
+  const breadcrumbItems =[
+    {label:"Student Directory", href:"/student-page"},
+    {label:"Edit Student", href:"/student-page/EditStudent"},
+  ]
   const router = useRouter();
   const searchParams = useSearchParams();
   const studentUuid = searchParams.get("id");
@@ -32,6 +37,8 @@ const EditStudent: React.FC = () => {
   // 3) Render the form
   return (
     <>
+ 
+         <CustomBreadcrumb items={breadcrumbItems}/>
       <Header heading="Edit Student" subheading="Tanvir Chavan" />
       <section className="p-10">
         <div className="container mx-auto">

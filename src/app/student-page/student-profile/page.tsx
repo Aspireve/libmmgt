@@ -16,7 +16,8 @@ import { ProfileSkeleton } from "@/components/students/skeletons";
 import MasterTable from "@/app/test/table-page";
 import { borrowedBooksColumns } from "../student-profile/studentprofile";
 import { studentActivitiesColumns } from "../student-profile/studentprofile";
-import StudentBorrowedDetails from "../student-borrowed-details/page";
+import { CustomBreadcrumb } from "@/components/breadcrumb";
+
 
 enum LibraryTabs {
   BORROWED = "borrowed",
@@ -29,6 +30,10 @@ const TABS = [
 ];
 
 const Page = () => {
+  const breadcrumbItems =[
+    {label:"Student Directory", href:"/student-page"},
+    {label:"Student Profile", href:"/student-page/student-profile"},
+  ]
   const searchParams = useSearchParams();
   const studentUuid = searchParams.get("student_uuid");
   const student_id = searchParams.get("student_id")   
@@ -45,6 +50,8 @@ const Page = () => {
   // Conditional rendering inside returned JSX instead of early returns
   return (
     <div>
+     <CustomBreadcrumb items={breadcrumbItems}/>
+   
       <Header
         heading={data?.data.student_name || ""}
         subheading={data?.data.student_id || ""}
