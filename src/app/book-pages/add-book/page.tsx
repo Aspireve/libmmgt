@@ -15,6 +15,9 @@ import isbn3 from 'isbn3';
 import { InputField } from '@/components/custom/inputfield';
 import { Loader2 } from 'lucide-react';
 import { addbookRoutes } from '../types/routes';
+import { useSelector } from "react-redux";
+import { RootState } from '@/redux/store/store';
+
 
 const AddBook = () => {
   const router = useRouter();
@@ -22,6 +25,8 @@ const AddBook = () => {
   const { mutate, isLoading: createLoading } = useCreate();
   const [isReadable, setIsReadable] = useState(false)
   const [isDisable, setIsDisable] = useState(true)
+
+  const institute_uuid = useSelector((state: RootState) => state.auth.institute_uuid);
 
  
 
@@ -95,7 +100,7 @@ const AddBook = () => {
       no_of_preliminary: data.no_of_preliminary.toString(),
       year_of_publication: formatDate(data.year_of_publication),
       date_of_acquisition: formatDate(data.date_of_acquisition),
-      institute_id: "828f0d33-258f-4a92-a235-9c1b30d8882b"
+      institute_uuid,
     };
     mutate(
       { resource: "book_v2/create", values: formattedData },
