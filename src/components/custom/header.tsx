@@ -6,6 +6,7 @@ import { RootState } from "@/redux/store/store";
 import Images from "@/images";
 import Image from "next/image";
 import { Skeleton } from "../ui/skeleton";
+import InstituteSelector from "./institute-selector";
 
 interface HeadersProps {
   heading: string;
@@ -18,7 +19,7 @@ const Header: React.FC<HeadersProps> = ({
   subheading,
   isLoading = false,
 }) => {
-  const { header_image, logo } =
+  const { currentInstitute } =
     useSelector((state: RootState) => state.auth) || {};
 
   return (
@@ -30,40 +31,36 @@ const Header: React.FC<HeadersProps> = ({
         </div>
       ) : (
         <div className="flex-1">
-          <h1 className="ml-[22px] text-black text-3xl font-bold">{heading}</h1>
+          <h1 className="ml-[22px] text-black text-3xl font-bold">
+            {currentInstitute?.institute_name}
+          </h1>
           <p className="ml-[22px] text-gray-500 mt-[5px] font-medium text-lg">
             {subheading}
           </p>
         </div>
       )}
       <div className="border-2 border-blue-500 rounded-xl  bg-white overflow-hidden w-[145px] h-[57px] flex items-center justify-between px-2 mt-2 mr-[50px] transition-all duration-300 hover:shadow-lg cursor-pointer">
-        <div className="flex items-center -ml-[15px]">
-          
+        <div className="flex items-center p-2 justify-between w-full">
           <Image
-            src={logo || Images.TIA}
+            src={currentInstitute?.logo || Images.TIA}
             alt="logo"
-            className="w-[45px] h-[45px] ml-4"
+            width={40}
+            height={40}
           />
-          
-          <div className="w-[1px] h-[24px] bg-blue mx-[8px]" />
-          
-          {header_image ? (
-            <img
-              src={header_image || ""}
-              alt="Institute Header"
-              className="w-[145px] h-[57px] object-cover rounded-lg border border-blue-500"
-            />
-          ) : (
-            <span className="text-[blue] font-bold text-[16px]">TIA</span>
-          )}
-          
+
+          <div className="w-[2px] h-[30px] bg-[#1F2937]" />
+          <span className="text-[blue] font-bold text-[16px]">
+            {currentInstitute?.institute_name.match(/[A-Z]/g)?.join("") || ""}
+          </span>
+
           <Image
             src={Images.Dropper}
             alt="dropdownIcon"
-            className="ml-[5px] h-[10px] cursor-pointer"
+            className="h-[10px] cursor-pointer"
           />
         </div>
       </div>
+      <InstituteSelector />
     </div>
   );
 };
