@@ -25,7 +25,7 @@ const AddBook = () => {
 
  
 
-  const { data, refetch } = useOne<BookData>({
+  const { data, refetch} = useOne<BookData>({
     resource: "book_v2/isbn",
     id: `_isbn=${isbn}`,
     queryOptions: {
@@ -166,6 +166,7 @@ const AddBook = () => {
                     placeholder="Enter Book Author"
                     readonly={isReadable}
                     disabled={isDisable}
+
                   />
 
                   <InputField
@@ -430,6 +431,7 @@ const AddBook = () => {
                     }}
                     placeholder="Enter Item Type"
                     disabled={isDisable}
+                    readonly={false}
                   />
                 </div>
               </div>

@@ -6,7 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { BookData } from '../types/data';
 import { getBookColumns } from './columns';
 import MasterTable from '@/app/test/table-page';
-import { useList, useOne } from '@refinedev/core';
+import { useList } from '@refinedev/core';
 
 const Book_details = () => {
     const book_uuid = useSearchParams().get("book_uuid");
@@ -40,12 +40,16 @@ const Book_details = () => {
      
     const { data: bookData } = useList<BookData>({
         resource: "book_v2/get_copies_with_title",
-        filters: [{ field: "book_uuid", operator: "eq", value: book_uuid }],
+        filters: [{ field: "_book_uuid", operator: "eq", value: book_uuid }],
     });
 
     const firstBook = bookData?.data?.[0];  
-    const bookTitle = firstBook?.book_title || "Unknown Title";
-    const bookID = firstBook?.book_title_id || "Unknown ID";
+    const bookTitle = firstBook?.book_title;
+    const bookID = firstBook?.book_title_id;
+
+    useEffect(()=>{
+        console.log(bookTitle,bookID)
+    },[])
 
     return (
         <>
