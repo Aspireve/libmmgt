@@ -41,7 +41,11 @@ const images = {
   Vector: require("./Vector.png"),
   VighnotechLogo: require("./VighnotechLogo.png"),
   VisitLogo: require("./VisitLogo.png"),
-  Reports: require("./Reports.png")
+  Reports: require("./Reports.png"),
+  BookShelf: require("./bookshelf.png"),
+  TotalIssuedBooks: require("./TotalIssuedBooks.png"),
+  Overdues: require("./Overdues.png"),
+  TotalMembers:require("./TotalMembers.png")
 };
 
 export default images;

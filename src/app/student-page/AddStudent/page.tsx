@@ -1,204 +1,275 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import Header from "@/components/custom/header";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { useRouter } from "next/navigation";
 import { Loader2, Eye, EyeOff } from "lucide-react";
-import { InputField } from "@/components/custom/inputfield";
+import { Input } from "@/components/ui/input";
 import { useAddStudentForm } from "@/hooks/add-student-form";
+import PhoneNumber from "@/components/phone-number.tsx/PhoneNumber";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import Image from "next/image";
+import Profile from "@/images/ProfileImage.png";
 
 const AddStudent: React.FC = () => {
   const router = useRouter();
-  const { onSubmit, register, handleSubmit, errors, isLoading } =
-    useAddStudentForm();
-
-  // States to control password visibility
+  const { onSubmit, register, handleSubmit, isLoading } = useAddStudentForm();
   const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [profileImage, setProfileImage] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Function to handle image upload
+  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files[0]) {
+      const file = event.target.files[0];
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        if (e.target?.result) {
+          setProfileImage(e.target.result as string);
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  // Function to get current form values for barcode generation
+  const getFormValues = () => {
+    const form = document.querySelector("form");
+    if (!form) return {};
+
+    const formData = new FormData(form as HTMLFormElement);
+    const data: Record<string, any> = {};
+
+    formData.forEach((value, key) => {
+      data[key] = value;
+    });
+
+    const genderElement = document.querySelector(
+      'select[name="gender"]'
+    ) as HTMLSelectElement;
+    if (genderElement) {
+      data["gender"] = genderElement.value || "";
+    }
+
+    return data;
+  };
+
+  // Function to handle the print button (generate and download barcode)
+  const handlePrint = () => {
+    const currentData = getFormValues();
+    const fileName = `Student_Barcode_${currentData.student_name || "Unknown"}`;
+    const barcodeValue = currentData.roll_no
+      ? `${currentData.roll_no}${Date.now().toString().slice(-6)}`
+      : Date.now().toString();
+
+    console.log(
+      `Generating barcode with value ${barcodeValue} and filename ${fileName}`
+    );
+  };
 
   return (
     <>
-      <Header heading="Add Student" subheading="Tanvir Chavan" />
+      <Header heading="Add Student" subheading="Student Registration" />
 
       <section className="p-10">
         <div className="container mx-auto">
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-            <div className="grid grid-cols-2 gap-4">
-              {/* Student Name */}
-              <InputField
-                errors={errors}
-                label="Full Name"
-                name="student_name"
-                register={register}
-                type="text"
-                placeholder="Enter Full Name"
-                validation={{ required: "Full Name is required" }}
-              />
-              <InputField
-                errors={errors}
-                label="Date of Birth"
-                name="date_of_birth"
-                register={register}
-                type="date"
-                placeholder="Enter Date of Birth"
-                validation={{ required: "Date of Birth is required" }}
-              />
-              <InputField
-                errors={errors}
-                label="Department"
-                name="department"
-                register={register}
-                type="text"
-                placeholder="Enter Department"
-                validation={{ required: "Department is required" }}
-              />
-              <InputField
-                errors={errors}
-                label="Email"
-                name="email"
-                register={register}
-                type="email"
-                placeholder="Enter Email"
-                validation={{ required: "Email is required" }}
-              />
-              <InputField
-                errors={errors}
-                label="Phone Number"
-                name="phone_no"
-                register={register}
-                type="text"
-                placeholder="Enter Phone Number"
-                validation={{ required: "Phone Number is required" }}
-              />
-              <InputField
-                errors={errors}
-                label="Address"
-                name="address"
-                register={register}
-                type="text"
-                placeholder="Enter Address"
-                validation={{ required: "Address is required" }}
-              />
-              <InputField
-                errors={errors}
-                label="Roll No."
-                name="roll_no"
-                register={register}
-                type="number"
-                placeholder="Enter Roll No."
-                validation={{
-                  required: "Roll No. is required",
-                  valueAsNumber: true,
-                }}
-              />
-              <InputField
-                errors={errors}
-                label="Year of Admission"
-                name="year_of_admission"
-                register={register}
-                type="text"
-                placeholder="Enter Year of Admission"
-                validation={{ required: "Year of Admission is required" }}
-              />
-              {/* Password Field with Toggle */}
-              <div className="relative col-span-1">
-                <InputField
-                  errors={errors}
-                  label="Password"
-                  name="password"
-                  register={register}
-                  type={showPassword ? "text" : "password"}
-                  placeholder="Enter Password"
-                  validation={{ required: "Password is required" }}
+            <div className="flex gap-6">
+              {/* First Container - Profile Image */}
+              <div className="w-1/6 flex flex-col items-center">
+                <div className="mb-4">
+                  <div className="w-24 h-24 rounded-full bg-blue-100 flex items-center justify-center overflow-hidden">
+                    {profileImage ? (
+                      <Image
+                        src={profileImage}
+                        alt="Profile"
+                        width={96}
+                        height={96}
+                        style={{ objectFit: "cover" }}
+                      />
+                    ) : (
+                      <Image
+                        src={Profile}
+                        alt="Default Profile"
+                        width={40}
+                        height={40}
+                        style={{ objectFit: "cover" }}
+                      />
+                    )}
+                  </div>
+                </div>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handleImageUpload}
                 />
-                <button
+                <Button
                   type="button"
-                  className="absolute mt-3 top-0 right-0 flex items-center pr-3"
-                  onClick={() => setShowPassword((prev) => !prev)}
+                  className="cursor-pointer bg-blue-200 text-blue-700 px-6 py-2 rounded-[5px] text-sm"
+                  onClick={() => fileInputRef.current?.click()}
                 >
-                  {showPassword ? (
-                    <EyeOff className="h-5 w-5 text-gray-500 mt-5" />
-                  ) : (
-                    <Eye className="h-5 w-5 text-gray-500 mt-5" />
-                  )}
-                </button>
+                  Add Image
+                </Button>
               </div>
-              {/* Confirm Password Field with Toggle */}
-              <div className="relative col-span-1">
-                <InputField
-                  errors={errors}
-                  label="Confirm Password"
-                  name="confirm_password"
-                  register={register}
-                  type={showConfirmPassword ? "text" : "password"}
-                  placeholder="Enter Confirm Password"
-                  validation={{
-                    required: "Confirm Password is required",
-                    validate: (value: string | undefined) => {
-                      // Custom validation: check if passwords match
-                      const password = document.querySelector(
-                        'input[name="password"]'
-                      ) as HTMLInputElement;
-                      return (
-                        value === password?.value || "Passwords do not match"
-                      );
-                    },
-                  }}
-                />
-                <button
-                  type="button"
-                  className="absolute mt-3 top-0 right-0 flex items-center pr-3"
-                  onClick={() => setShowConfirmPassword((prev) => !prev)}
-                >
-                  {showConfirmPassword ? (
-                    <EyeOff className="h-5 w-5 text-gray-500 mt-5" />
-                  ) : (
-                    <Eye className="h-5 w-5 text-gray-500 mt-5" />
-                  )}
-                </button>
-              </div>
-              {/* Gender */}
-              <div className="col-span-2">
-                <Label>Gender</Label>
-                <select
-                  {...register("gender", {
-                    required: "Gender is required",
-                    validate: (value) =>
-                      (value && ["male", "female"].includes(value)) ||
-                      "Gender must be 'male' or 'female'",
-                  })}
-                  className="w-full p-2 border border-[#717680] rounded"
-                >
-                  <option value="">Select Gender</option>
-                  <option value="male">Male</option>
-                  <option value="female">Female</option>
-                </select>
-                {errors.gender && (
-                  <p className="text-red-500 text-sm">
-                    {errors.gender.message}
-                  </p>
-                )}
+
+              {/* Second Container - Input Fields Grid */}
+              <div className="w-5/6">
+                <div className="grid grid-cols-3 gap-4">
+                  {/* First Row */}
+                  <div>
+                    <Label>Full Name</Label>
+                    <Input
+                      {...register("student_name")}
+                      type="text"
+                      placeholder="Enter Full Name"
+                    />
+                  </div>
+
+                  <div>
+                    <Label>Department</Label>
+                    <Input
+                      {...register("department")}
+                      type="text"
+                      placeholder="Enter Department"
+                    />
+                  </div>
+
+                  <div>
+                    <Label>Email</Label>
+                    <Input
+                      {...register("email")}
+                      type="email"
+                      placeholder="Enter Email"
+                    />
+                  </div>
+
+                  {/* Second Row */}
+                  <div>
+                    <Label>Roll No.</Label>
+                    <Input
+                      {...register("roll_no", { valueAsNumber: true })}
+                      type="number"
+                      placeholder="0"
+                    />
+                  </div>
+
+                  <div>
+                    <Label>Year of Admission</Label>
+                    <Input
+                      {...register("year_of_admission")}
+                      type="text"
+                      placeholder="Enter Year of Admission"
+                    />
+                  </div>
+
+                  <div>
+                    <Label>Phone Number</Label>
+                    <PhoneNumber
+                      name="phone_no"
+                      readOnly={false}
+                      setValue={(name, value) => console.log(name, value)}
+                    />
+                  </div>
+
+                  {/* Third Row */}
+                  <div className="relative">
+                    <Label>Password</Label>
+                    <div className="relative">
+                      <Input
+                        {...register("password")}
+                        type={showPassword ? "text" : "password"}
+                        placeholder="Enter Password"
+                      />
+                      <button
+                        type="button"
+                        className="absolute right-3 top-1/2 transform -translate-y-1/2"
+                        onClick={() => setShowPassword((prev) => !prev)}
+                      >
+                        {showPassword ? (
+                          <EyeOff className="h-5 w-5 text-gray-500" />
+                        ) : (
+                          <Eye className="h-5 w-5 text-gray-500" />
+                        )}
+                      </button>
+                    </div>
+                  </div>
+
+                  <div>
+                    <Label>Gender</Label>
+                    <Select
+                      onValueChange={(value) =>
+                        register("gender").onChange({
+                          target: { value, name: "gender" },
+                        })
+                      }
+                    >
+                      <SelectTrigger className="w-full p-2 border border-[#717680] rounded">
+                        <SelectValue placeholder="Select Gender" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="male">Male</SelectItem>
+                        <SelectItem value="female">Female</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label>Date of Birth</Label>
+                    <Input
+                      {...register("date_of_birth")}
+                      type="date"
+                      placeholder="dd-mm-yyyy"
+                    />
+                  </div>
+                </div>
               </div>
             </div>
-            <div className="flex justify-center gap-4">
+
+            {/* Address - Full width at the bottom */}
+            <div>
+              <Label>Address</Label>
+              <Textarea
+                {...register("address")}
+                placeholder="Enter Address"
+                className="w-full p-2 border border-[#717680] rounded h-24"
+              />
+            </div>
+
+            {/* Buttons */}
+            <div className="flex justify-end gap-4 mt-6">
               <Button
-                className="shadow-none"
+                className="shadow-none bg-gray-200 text-gray-700 hover:bg-gray-300"
                 type="button"
                 onClick={() => router.push("/student-page")}
               >
                 Cancel
               </Button>
               <Button
+                type="button"
+                onClick={handlePrint}
+                className="bg-green-500 hover:bg-green-600 transition-all duration-300 text-white rounded-[10px]"
+              >
+                Generate Barcode
+              </Button>
+              <Button
                 type="submit"
                 disabled={isLoading}
-                className="bg-[#1E40AF] w-full hover:bg-[#152148] transition-all duration-300 text-white rounded-[10px]"
+                className="bg-[#1E40AF] hover:bg-[#152148] transition-all duration-300 text-white rounded-[10px]"
               >
                 {isLoading ? (
                   <>
                     Adding Student
-                    <Loader2 className="h-5 w-5 animate-spin" />
+                    <Loader2 className="h-5 w-5 animate-spin ml-2" />
                   </>
                 ) : (
                   "Add Student"

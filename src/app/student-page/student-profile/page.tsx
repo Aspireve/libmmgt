@@ -16,7 +16,7 @@ import { ProfileSkeleton } from "@/components/students/skeletons";
 import MasterTable from "@/app/test/table-page";
 import { borrowedBooksColumns } from "../student-profile/studentprofile";
 import { studentActivitiesColumns } from "../student-profile/studentprofile";
-import StudentBorrowedDetails from "../student-borrowed-details/page";
+
 
 enum LibraryTabs {
   BORROWED = "borrowed",
@@ -30,17 +30,6 @@ const TABS = [
 
 const Page = () => {
   const searchParams = useSearchParams();
-<<<<<<< HEAD
-  const studentUuid = searchParams.get("student_uuid");
-  const student_id = searchParams.get("student_id")   
-
-  const { data, isLoading } = useOne<StudentProfileData>({
-    resource: "student/detail",
-    id: `student_id=${student_id}`,
-    queryOptions: {
-      retry: 1,
-      enabled: !!student_id,
-=======
   const studentId = searchParams.get("student_id");
 
   const { data, isLoading } = useOne<StudentProfileData>({
@@ -49,7 +38,6 @@ const Page = () => {
     queryOptions: {
       retry: 1,
       enabled: !!studentId,
->>>>>>> ba40c3f7a70a018986dcbe812696eca71baeca3d
     },
   });
 
@@ -119,30 +107,12 @@ const Page = () => {
       <Tabbing
         tabs={TABS}
         content={{
-<<<<<<< HEAD
-          [LibraryTabs.BORROWED]: <><MasterTable
-          title="Activities"
-          resource="Book_v2/borrowed"
-          columns={()=>borrowedBooksColumns}
-          query={[
-            { field: "student_id", operator: "eq", value: `${student_id}` }
-        ]}
-          AddedOptions={[]}/></>,
-          [LibraryTabs.ACTIVITY]: <><MasterTable
-          resource="Book_v2/activities"
-          title="Borrowed"
-          columns={()=>studentActivitiesColumns}
-          query={[
-            { field: "student_id", operator: "eq", value: `${student_id}` }
-        ]}
-          AddedOptions={[]}/></>,
-=======
           [LibraryTabs.BORROWED]: (
             <>
               <MasterTable
                 title="Borrowed"
                 resource="book_v2/get_logs_of_student"
-                columns={() => studentActivitiesColumns}
+                columns={() => borrowedBooksColumns}
                 AddedOptions={[]}
                 query={[
                   {
@@ -158,8 +128,8 @@ const Page = () => {
             <>
               <MasterTable
                 resource="student/visitlog_by_id"
-                title="Borrowed"
-                columns={() => borrowedBooksColumns}
+                title="Activities"
+                columns={() => studentActivitiesColumns}
                 AddedOptions={[]}
                 query={[
                   {
@@ -171,7 +141,6 @@ const Page = () => {
               />
             </>
           ),
->>>>>>> ba40c3f7a70a018986dcbe812696eca71baeca3d
         }}
       />
     </div>

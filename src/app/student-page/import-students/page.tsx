@@ -91,7 +91,7 @@ const ImportStudents = () => {
         clearSelectedFile={clearData}
       />
       {importData.title && importData.headers.length > 0 && (
-        <form onClick={handleMapData}>
+        <form onSubmit={handleMapData}>
           <h3 className="text-lg font-medium mb-4">Map Columns</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {Object.keys(fieldLabels).map((field) => {

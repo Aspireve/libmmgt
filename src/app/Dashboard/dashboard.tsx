@@ -4,6 +4,7 @@ import Header from "@/components/custom/header";
 import IssueBook from "@/components/dashboard/issue-book";
 import Activities from "@/components/dashboard/activity-feed";
 import Tabbing from "@/components/custom/tabbing";
+import DashboardData from "@/components/dashboard/dashboard-data-count";
 
 enum LibraryTabs {
   ISSUE = "issue",
@@ -28,6 +29,7 @@ export default function Dashboard() {
         content={{
           [LibraryTabs.ISSUE]: (
             <>
+            <DashboardData/>
               <IssueBook setRefreshAction={setRefresh} />
               <Activities refresh={refresh} />
             </>

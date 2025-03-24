@@ -91,22 +91,6 @@ export const borrowedBooksColumns = [
 /** 4) Student Activities Columns (add if needed) */
 export const studentActivitiesColumns = [
   {
-<<<<<<< HEAD
-    accessorKey: "book_id",
-    header: "Book ID",
-  },
-  {
-    accessorKey: "book_name",
-    header: "Book Name",
-  },
-  {
-    accessorKey: "department",
-    header: "Department",
-  },
-  {
-    accessorKey: "issue_date",
-    header: "Issue Date",
-=======
     accessorKey: "activity_id",
     header: "Book ID",
   },
@@ -125,7 +109,6 @@ export const studentActivitiesColumns = [
   {
     accessorKey: "date",
     header: "Time",
->>>>>>> ba40c3f7a70a018986dcbe812696eca71baeca3d
   },
   {
     accessorKey: "return_date",
