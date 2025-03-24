@@ -1,3 +1,10 @@
+export interface InstituteList {
+  institute_uuid: string;
+  institute_name: string;
+  logo: string;
+  header: string;
+}
+
 export interface AuthState {
   token: string | null;
   institute_uuid: string | null;
@@ -9,6 +16,8 @@ export interface AuthState {
   phone: string | null;
   logo: string | null;
   header_image: string | null;
+  currentInstitute: InstituteList ;
+  instituteList: InstituteList[] ;
 }
 
 export interface ImportData {
