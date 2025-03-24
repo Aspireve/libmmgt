@@ -5,7 +5,7 @@ type ErrorResponse = {
 };
 
 // Siddhesh URL
-export const API_URL = "https://lms-o9sv.onrender.com";
+export const API_URL = "https://lms-o9sv.onrender.com"; 
 
 //Leon Url
 

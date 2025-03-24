@@ -116,19 +116,19 @@ const Page = () => {
         tabs={TABS}
         content={{
           [LibraryTabs.BORROWED]: <><MasterTable
-          title="Activities"
-          resource="Book_v2/borrowed"
+          title="Borrowed"
+          resource="Book_v2/get_logs_of_student"
           columns={()=>borrowedBooksColumns}
           query={[
-            { field: "student_id", operator: "eq", value: `${student_id}` }
+            { field: "_student_id", operator: "eq", value: `${student_id}` }
         ]}
           AddedOptions={[]}/></>,
           [LibraryTabs.ACTIVITY]: <><MasterTable
-          resource="Book_v2/activities"
-          title="Borrowed"
+          resource="student/visitlog_by_id"
+          title="Activities"
           columns={()=>studentActivitiesColumns}
           query={[
-            { field: "student_id", operator: "eq", value: `${student_id}` }
+            { field: "_student_id", operator: "eq", value: `${student_id}` }
         ]}
           AddedOptions={[]}/></>,
         }}
