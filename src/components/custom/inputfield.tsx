@@ -13,7 +13,7 @@ export const InputField: React.FC<InputFieldProps> = ({
   placeholder,
   readonly=false,
   disabled=false,
-  loading = true
+  loading = false
 }) => {
   return (
     <div>
