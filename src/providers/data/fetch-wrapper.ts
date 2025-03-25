@@ -5,15 +5,11 @@ type ErrorResponse = {
 };
 
 // Siddhesh URL
-<<<<<<< HEAD
-//export const API_URL = "https://lms-o9sv.onrender.com";
-=======
-export const API_URL = "https://lms-o9sv.onrender.com"; 
->>>>>>> 2d865a6c2f4b61f80f680b06f3c2af472a5beeac
+export const API_URL = "https://lms-o9sv.onrender.com";
 
 //Leon Url
 
-export const API_URL = "https://lms-807p.onrender.com";
+// export const API_URL = "https://lms-807p.onrender.com";
 
 //Jigisha Url
 
