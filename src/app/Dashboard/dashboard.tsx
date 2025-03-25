@@ -28,10 +28,14 @@ const columns = [
   {
     accessorKey: "book_title_id",
     header: "Action",
-    cell: ({ row }) => (
+    cell: ({ row }: any) => (
       <div className="flex gap-2 justify-center items-center ">
-        <Button variant="ghost" className="text-[#0D894F]">Accept</Button>
-        <Button variant="ghost" className="text-[#F04438]">Decline</Button>
+        <Button variant="ghost" className="text-[#0D894F]">
+          Accept
+        </Button>
+        <Button variant="ghost" className="text-[#F04438]">
+          Decline
+        </Button>
       </div>
     ),
   },
@@ -40,35 +44,32 @@ const columns = [
 export default function Dashboard() {
   const [refresh, setRefresh] = useState(0);
 
-  const heading = "Library Management";
-  const subheading = "Tanvir Chavan";
   return (
     <>
-      <Header heading={heading} subheading={subheading} />
-      <Tabbing
-        tabs={TABS}
-        content={{
-          [LibraryTabs.ISSUE]: (
-            <>
-            <DashboardData/>
-              <IssueBook setRefreshAction={setRefresh} />
-              <Activities refresh={refresh} />
-            </>
-          ),
-          [LibraryTabs.REQUEST]: (
-            <MasterTable
-              title="Requests"
-              AddedOptions={[]}
-              columns={() => columns}
-              isSelectable={false}
-              // Please change this
-              resource="student/all"
-            />
-          ),
-        }}
-      />
-
-      <div className="py-10" />
+      <Header heading="Library Management" subheading="Tanvir Chavan" />
+      <div className="mx-[40px]">
+        <Tabbing
+          tabs={TABS}
+          content={{
+            [LibraryTabs.ISSUE]: (
+              <>
+                <DashboardData />
+                <IssueBook setRefreshAction={setRefresh} />
+                <Activities refresh={refresh} />
+              </>
+            ),
+            [LibraryTabs.REQUEST]: (
+              <MasterTable
+                title="Requests"
+                AddedOptions={[]}
+                columns={() => columns}
+                isSelectable={false}
+                resource="student/all"
+              />
+            ),
+          }}
+        />
+      </div>
     </>
   );
 }

@@ -6,7 +6,6 @@ import { ActivityType } from "@/types/book";
 import { useList } from "@refinedev/core";
 import { Button } from "../ui/button";
 import { useRouter } from "next/navigation";
-import { toast } from "sonner";
 
 
 export default function Activities({ refresh }: { refresh: number }) {
@@ -27,7 +26,7 @@ export default function Activities({ refresh }: { refresh: number }) {
   console.log({activityLogs})
 
   return (
-    <div className="transition-all duration-300 hover:shadow-lg border border-[#AEB1B9] max-w-[90%] h-110 rounded-[10px] bg-[#F3F4F6] ml-10 mt-5 p-6">
+    <div className="transition-all duration-300 hover:shadow-lg border border-[#AEB1B9] rounded-[10px] bg-[#F3F4F6] my-5 p-6">
       <h2 className="text-2xl font-semibold mb-4">Activities</h2>
       {isLoading && <ActivityLog isLoading={true} />}
       {activityLogs.slice(0, 6).map((item, idx) => (

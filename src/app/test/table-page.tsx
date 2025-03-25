@@ -85,7 +85,7 @@ export default function MasterTable({
   }, [listData, resource]);
 
   return (
-    <div className="m-10 border-2 border-[#E9EAEB] rounded-xl shadow-sm cursor-default">
+    <div className="my-6 border-2 border-[#E9EAEB] rounded-xl shadow-sm cursor-default">
       <Headers
         title={title}
         search={search}

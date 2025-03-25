@@ -52,7 +52,7 @@ const CustomCountrySelect = forwardRef<
       ref={ref}
       value={value}
       onChange={(event) => onChange(event.target.value)}
-      className="block w-32 px-3 border-transparent focus:outline-none sm:text-sm text-md py-2 rounded-md "
+      className="block w-16 px-3 border-transparent focus:outline-none sm:text-sm text-md py-2 rounded-md "
       {...rest} // Spreading remaining props
     >
       {options.map((option) => (
