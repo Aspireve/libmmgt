@@ -56,43 +56,44 @@ const InstituteSelector = () => {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="border-2 border-blue-500 w-full mt-4 bg-white rounded-xl cursor-pointer">
-        {instituteList.map((institute, idx) => (
-          <DropdownMenuItem
-            className={`hover:bg-[#aaaaaa66] transition-all duration-300 ${
-              idx !== instituteList.length - 1
-                ? "border-b-2 "
-                : " rounded-b-xl "
-            } ${idx === 0 && " rounded-t-xl "}`}
-            onClick={() =>
-              dispatch(
-                setCurrentInstitute({
-                  institute_uuid: institute.institute_uuid,
-                })
-              )
-            }
-          >
-            <div className="flex items-center w-full gap-3 py-1">
-              <Image
-                src={institute?.logo || Images.TIA}
-                alt="logo"
-                width={40}
-                height={40}
-              />
+        {instituteList
+          .map((institute, idx) => (
+            <DropdownMenuItem
+              className={`hover:bg-[#aaaaaa66] transition-all duration-300 ${
+                idx !== instituteList.length - 1
+                  ? "border-b-2 "
+                  : " rounded-b-xl "
+              } ${idx === 0 && " rounded-t-xl "}`}
+              onClick={() =>
+                dispatch(
+                  setCurrentInstitute({
+                    institute_uuid: institute.institute_uuid,
+                  })
+                )
+              }
+            >
+              <div className="flex items-center w-full gap-3 py-1">
+                <Image
+                  src={institute?.logo || Images.TIA}
+                  alt="logo"
+                  width={40}
+                  height={40}
+                />
 
-              <span className="text-[blue] font-bold text-[16px]">
-                {institute?.institute_name.match(/[A-Z]/g)?.join("") || ""}
-              </span>
+                <span className="text-[blue] font-bold text-[16px]">
+                  {institute?.institute_name.match(/[A-Z]/g)?.join("") || ""}
+                </span>
 
-              {/* <Image
+                {/* <Image
                 src={Images.Dropper}
                 alt="dropdownIcon"
                 className="h-[10px] cursor-pointer"
               /> */}
-            </div>
-            {/* Profile
+              </div>
+              {/* Profile
             <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut> */}
-          </DropdownMenuItem>
-        ))}
+            </DropdownMenuItem>
+          ))}
 
         {/* <DropdownMenuSeparator />
         <DropdownMenuGroup>

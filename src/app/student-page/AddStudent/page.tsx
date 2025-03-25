@@ -19,16 +19,19 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import Image from "next/image";
 import Profile from "@/images/ProfileImage.png";
+import { UserRound } from "lucide-react";
+import { InputField } from "@/components/custom/inputfield";
+import Institute_Dropdown from "@/app/Input-test/page";
 
 const AddStudent: React.FC = () => {
-
-  const breadcrumbItems =[
-    {label:"Student Directory", href:"/student-page"},
-    {label:"Add Student", href:"/student-page/AddStudent"},
-  ]
+  const breadcrumbItems = [
+    { label: "Student Directory", href: "/student-page" },
+    { label: "Add Student", href: "/student-page/AddStudent" },
+  ];
 
   const router = useRouter();
-  const { onSubmit, register, handleSubmit, isLoading } = useAddStudentForm();
+  const { onSubmit, register, handleSubmit, isLoading, setValue, errors } =
+    useAddStudentForm();
   const [showPassword, setShowPassword] = useState(false);
   const [profileImage, setProfileImage] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -91,24 +94,22 @@ const AddStudent: React.FC = () => {
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             <div className="flex gap-6">
               {/* First Container - Profile Image */}
-              <div className="w-1/6 flex flex-col items-center">
+              <div className="w-1/6 flex flex-col border border-[#E0E2E7] bg-[#F9F9FC] items-center justify-center rounded-xl">
                 <div className="mb-4">
-                  <div className="w-24 h-24 rounded-full bg-blue-100 flex items-center justify-center overflow-hidden">
+                  <div className="w-24 h-24 rounded-full flex items-center justify-center overflow-hidden">
                     {profileImage ? (
                       <Image
                         src={profileImage}
                         alt="Profile"
-                        width={96}
-                        height={96}
+                        width={150}
+                        height={150}
                         style={{ objectFit: "cover" }}
                       />
                     ) : (
-                      <Image
-                        src={Profile}
-                        alt="Default Profile"
-                        width={40}
-                        height={40}
-                        style={{ objectFit: "cover" }}
+                      <UserRound
+                        className="text-[#1E40AF] bg-[#0066FF3D] p-3 rounded-full border-8 border-[#789DFFAB]"
+                        strokeWidth={2.5}
+                        size={70}
                       />
                     )}
                   </div>
@@ -122,10 +123,10 @@ const AddStudent: React.FC = () => {
                 />
                 <Button
                   type="button"
-                  className="cursor-pointer bg-blue-200 text-blue-700 px-6 py-2 rounded-[5px] text-sm"
+                  className="cursor-pointer bg-[#0066FF3D] text-[#1E40AF] px-6 py-2 rounded-[5px] text-sm"
                   onClick={() => fileInputRef.current?.click()}
                 >
-                  Add Image
+                  {profileImage ? "Change Image" : "Add Image"}
                 </Button>
               </div>
 
@@ -133,15 +134,22 @@ const AddStudent: React.FC = () => {
               <div className="w-5/6">
                 <div className="grid grid-cols-3 gap-4">
                   {/* First Row */}
-                  <div>
-                    <Label>Full Name</Label>
-                    <Input
-                      {...register("student_name")}
-                      type="text"
-                      placeholder="Enter Full Name"
-                    />
-                  </div>
-
+                  <InputField
+                    errors={errors}
+                    label="Full Name"
+                    name="student_name"
+                    register={register}
+                    type="text"
+                    validation={{
+                      required: "Full Name is required",
+                    }}
+                    placeholder="Enter Full Name"
+                  />
+                  {/* // TODO: make this the input dropdown */}
+                  {/* <Institute_Dropdown
+                    setValue={(e) => {}}
+                    options={["COMP", "HMMM"]}
+                  /> */}
                   <div>
                     <Label>Department</Label>
                     <Input
@@ -151,24 +159,61 @@ const AddStudent: React.FC = () => {
                     />
                   </div>
 
+                  <InputField
+                    errors={errors}
+                    label="Roll No."
+                    name="roll_no"
+                    register={register}
+                    type="number"
+                    validation={{
+                      valueAsNumber: true,
+                      required: "Roll No. is required",
+                    }}
+                    placeholder="Enter Roll No."
+                  />
+
+                  <InputField
+                    errors={errors}
+                    label="Email"
+                    name="email"
+                    register={register}
+                    type="email"
+                    validation={{
+                      required: "Email is required",
+                    }}
+                    placeholder="Enter Email"
+                  />
+
+                  {/* TODO: Add Validation */}
                   <div>
-                    <Label>Email</Label>
-                    <Input
-                      {...register("email")}
-                      type="email"
-                      placeholder="Enter Email"
+                    <Label>Phone Number</Label>
+                    <PhoneNumber
+                      name="phone_no"
+                      readOnly={false}
+                      setValue={(name, value) => setValue("phone_no", value)}
                     />
+                  </div>
+                  <div>
+                    <Label>Gender</Label>
+                    <Select
+                      onValueChange={(value) =>
+                        register("gender").onChange({
+                          target: { value, name: "gender" },
+                        })
+                      }
+                      required
+                    >
+                      <SelectTrigger className="w-full p-2 border border-[#717680] rounded">
+                        <SelectValue placeholder="Select Gender" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-white">
+                        <SelectItem value="male">Male</SelectItem>
+                        <SelectItem value="female">Female</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
 
                   {/* Second Row */}
-                  <div>
-                    <Label>Roll No.</Label>
-                    <Input
-                      {...register("roll_no", { valueAsNumber: true })}
-                      type="number"
-                      placeholder="0"
-                    />
-                  </div>
 
                   <div>
                     <Label>Year of Admission</Label>
@@ -176,15 +221,6 @@ const AddStudent: React.FC = () => {
                       {...register("year_of_admission")}
                       type="text"
                       placeholder="Enter Year of Admission"
-                    />
-                  </div>
-
-                  <div>
-                    <Label>Phone Number</Label>
-                    <PhoneNumber
-                      name="phone_no"
-                      readOnly={false}
-                      setValue={(name, value) => console.log(name, value)}
                     />
                   </div>
 
@@ -211,24 +247,6 @@ const AddStudent: React.FC = () => {
                     </div>
                   </div>
 
-                  <div>
-                    <Label>Gender</Label>
-                    <Select
-                      onValueChange={(value) =>
-                        register("gender").onChange({
-                          target: { value, name: "gender" },
-                        })
-                      }
-                    >
-                      <SelectTrigger className="w-full p-2 border border-[#717680] rounded">
-                        <SelectValue placeholder="Select Gender" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="male">Male</SelectItem>
-                        <SelectItem value="female">Female</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
                   <div>
                     <Label>Date of Birth</Label>
                     <Input
