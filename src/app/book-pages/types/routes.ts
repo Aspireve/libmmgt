@@ -6,7 +6,7 @@ export const bookRoutes = [
   
   export const addbookRoutes = [
     { key: "add-book", label: "Add Book", path: "/book-pages/add-book" },
-    { key: "add-periodicals", label: "Add periodicals", path: "/periodicals-pages/add-periodicals" },
+    { key: "add-periodicals", label: "Add periodicals", path: "/periodicals-pages/add-periodical" },
   ]
   
   export const bookdetailsRoutes = [

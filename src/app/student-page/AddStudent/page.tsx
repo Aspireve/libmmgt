@@ -8,7 +8,15 @@ import { useRouter } from "next/navigation";
 import { Loader2, Eye, EyeOff } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useAddStudentForm } from "@/hooks/add-student-form";
+import { useForm } from "react-hook-form";
 import PhoneNumber from "@/components/phone-number.tsx/PhoneNumber";
+import { Textarea } from "@/components/ui/textarea";
+import Image from "next/image";
+import JsBarcode from "jsbarcode";
+import { UserRound } from "lucide-react";
+import { InputField } from "@/components/custom/inputfield";
+import { CustomBreadcrumb } from "@/components/breadcrumb";
+import InstituteDropdown from "@/components/InputDropdown/page";
 import {
   Select,
   SelectContent,
@@ -16,13 +24,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
-import Image from "next/image";
-import Profile from "@/images/ProfileImage.png";
-import { UserRound } from "lucide-react";
-import { InputField } from "@/components/custom/inputfield";
-import Institute_Dropdown from "@/components/InputDropdown/page";
-import { CustomBreadcrumb } from "@/components/breadcrumb";
 
 const AddStudent: React.FC = () => {
   const breadcrumbItems = [
@@ -36,6 +37,53 @@ const AddStudent: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [profileImage, setProfileImage] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const methods = useForm(); // Create form methods
+  const departmentList = [
+    "Computer Science", 
+    "Information Technology", 
+    "Mechanical Engineering", 
+    "Electrical Engineering"
+  ];
+
+  // Function to generate unique barcode
+  const generateBarcode = (phoneNo?: string) => {
+    const barcodeValue = phoneNo 
+      ? `${phoneNo}${Date.now().toString().slice(-6)}` 
+      : Date.now().toString();
+  
+    const canvas = document.createElement("canvas");
+    JsBarcode(canvas, barcodeValue, {
+      format: "CODE128",
+      displayValue: true,
+      fontSize: 12,
+      height: 50,
+      margin: 5,
+      textMargin: 2,
+    });
+  
+    const barcodeDataUrl = canvas.toDataURL("image/png");
+  
+    const downloadLink = document.createElement("a");
+    downloadLink.href = barcodeDataUrl;
+    downloadLink.download = `Student_Barcode_${phoneNo || 'Unknown'}.png`;
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
+  };
+
+  // Modified onSubmit to include barcode generation
+  const handleStudentSubmit = async (data: any) => {
+    try {
+      // First submit the student data
+      await onSubmit(data);
+      
+      // Then generate and download the barcode
+      generateBarcode(data.roll_no);
+    } catch (error) {
+      console.error("Error adding student:", error);
+    }
+  };
 
   // Function to handle image upload
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -51,41 +99,6 @@ const AddStudent: React.FC = () => {
     }
   };
 
-  // Function to get current form values for barcode generation
-  const getFormValues = () => {
-    const form = document.querySelector("form");
-    if (!form) return {};
-
-    const formData = new FormData(form as HTMLFormElement);
-    const data: Record<string, any> = {};
-
-    formData.forEach((value, key) => {
-      data[key] = value;
-    });
-
-    const genderElement = document.querySelector(
-      'select[name="gender"]'
-    ) as HTMLSelectElement;
-    if (genderElement) {
-      data["gender"] = genderElement.value || "";
-    }
-
-    return data;
-  };
-
-  // Function to handle the print button (generate and download barcode)
-  const handlePrint = () => {
-    const currentData = getFormValues();
-    const fileName = `Student_Barcode_${currentData.student_name || "Unknown"}`;
-    const barcodeValue = currentData.roll_no
-      ? `${currentData.roll_no}${Date.now().toString().slice(-6)}`
-      : Date.now().toString();
-
-    console.log(
-      `Generating barcode with value ${barcodeValue} and filename ${fileName}`
-    );
-  };
-
   return (
     <>
     <CustomBreadcrumb items={breadcrumbItems}/>
@@ -93,7 +106,7 @@ const AddStudent: React.FC = () => {
 
       <section className="p-10">
         <div className="container mx-auto">
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+          <form onSubmit={handleSubmit(handleStudentSubmit)} className="space-y-6">
             <div className="flex gap-6">
               {/* First Container - Profile Image */}
               <div className="w-1/6 flex flex-col border border-[#E0E2E7] bg-[#F9F9FC] items-center justify-center rounded-xl">
@@ -132,7 +145,6 @@ const AddStudent: React.FC = () => {
                 </Button>
               </div>
 
-              {/* Second Container - Input Fields Grid */}
               <div className="w-5/6">
                 <div className="grid grid-cols-3 gap-4">
                   {/* First Row */}
@@ -147,19 +159,17 @@ const AddStudent: React.FC = () => {
                     }}
                     placeholder="Enter Full Name"
                   />
-                  {/* // TODO: make this the input dropdown */}
-                  {/* <Institute_Dropdown
-                    setValue={(e) => {}}
-                    options={["COMP", "HMMM"]}
-                  /> */}
-                  <div>
-                    <Label>Department</Label>
-                    <Input
-                      {...register("department")}
-                      type="text"
-                      placeholder="Enter Department"
-                    />
-                  </div>
+
+                  <InstituteDropdown 
+                    options={departmentList}
+                    label="Department"
+                    placeholder="Select Department"
+                    onSelect={(value) => 
+                      register("department").onChange({
+                        target: { value, name: "department" },
+                      })
+                    }
+                  />
 
                   <InputField
                     errors={errors}
@@ -186,7 +196,6 @@ const AddStudent: React.FC = () => {
                     placeholder="Enter Email"
                   />
 
-                  {/* TODO: Add Validation */}
                   <div>
                     <Label>Phone Number</Label>
                     <PhoneNumber
@@ -195,6 +204,7 @@ const AddStudent: React.FC = () => {
                       setValue={(name, value) => setValue("phone_no", value)}
                     />
                   </div>
+
                   <div>
                     <Label>Gender</Label>
                     <Select
@@ -215,8 +225,6 @@ const AddStudent: React.FC = () => {
                     </Select>
                   </div>
 
-                  {/* Second Row */}
-
                   <div>
                     <Label>Year of Admission</Label>
                     <Input
@@ -226,7 +234,6 @@ const AddStudent: React.FC = () => {
                     />
                   </div>
 
-                  {/* Third Row */}
                   <div className="relative">
                     <Label>Password</Label>
                     <div className="relative">
@@ -281,13 +288,6 @@ const AddStudent: React.FC = () => {
                 Cancel
               </Button>
               <Button
-                type="button"
-                onClick={handlePrint}
-                className="bg-green-500 hover:bg-green-600 transition-all duration-300 text-white rounded-[10px]"
-              >
-                Generate Barcode
-              </Button>
-              <Button
                 type="submit"
                 disabled={isLoading}
                 className="bg-[#1E40AF] hover:bg-[#152148] transition-all duration-300 text-white rounded-[10px]"
@@ -307,6 +307,6 @@ const AddStudent: React.FC = () => {
       </section>
     </>
   );
-};
+}; 
 
 export default AddStudent;

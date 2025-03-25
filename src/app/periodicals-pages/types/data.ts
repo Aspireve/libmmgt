@@ -1,4 +1,5 @@
 export interface JournalData {
+    journal_copy_uuid:string;
     journal_uuid: string;
     journal_title_id: string;
     journal_title: string;
