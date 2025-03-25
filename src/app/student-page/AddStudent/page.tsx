@@ -19,19 +19,61 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import Image from "next/image";
 import Profile from "@/images/ProfileImage.png";
+import JsBarcode from "jsbarcode";
 
 const AddStudent: React.FC = () => {
-
-  const breadcrumbItems =[
-    {label:"Student Directory", href:"/student-page"},
-    {label:"Add Student", href:"/student-page/AddStudent"},
-  ]
+  const breadcrumbItems = [
+    { label: "Student Directory", href: "/student-page" },
+    { label: "Add Student", href: "/student-page/AddStudent" },
+  ];
 
   const router = useRouter();
   const { onSubmit, register, handleSubmit, isLoading } = useAddStudentForm();
   const [showPassword, setShowPassword] = useState(false);
   const [profileImage, setProfileImage] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Function to generate unique barcode
+  const generateBarcode = (phoneNo?: string) => {
+    // Create a unique barcode value
+    const barcodeValue = phoneNo 
+      ? `${phoneNo}${Date.now().toString().slice(-6)}` 
+      : Date.now().toString();
+  
+    // Create a canvas for the barcode
+    const canvas = document.createElement("canvas");
+    JsBarcode(canvas, barcodeValue, {
+      format: "CODE128",
+      displayValue: true,
+      fontSize: 12,
+      height: 50,
+      margin: 5,
+      textMargin: 2,
+    });
+  
+    // Convert canvas to data URL
+    const barcodeDataUrl = canvas.toDataURL("image/png");
+  
+    // Download the barcode
+    const downloadLink = document.createElement("a");
+    downloadLink.href = barcodeDataUrl;
+    downloadLink.download = `Student_Barcode_${phoneNo || 'Unknown'}.png`;
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
+  };
+  // Modified onSubmit to include barcode generation
+  const handleStudentSubmit = async (data: any) => {
+    try {
+      // First submit the student data
+      await onSubmit(data);
+      
+      // Then generate and download the barcode
+      generateBarcode(data.roll_no);
+    } catch (error) {
+      console.error("Error adding student:", error);
+    }
+  };
 
   // Function to handle image upload
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -47,48 +89,13 @@ const AddStudent: React.FC = () => {
     }
   };
 
-  // Function to get current form values for barcode generation
-  const getFormValues = () => {
-    const form = document.querySelector("form");
-    if (!form) return {};
-
-    const formData = new FormData(form as HTMLFormElement);
-    const data: Record<string, any> = {};
-
-    formData.forEach((value, key) => {
-      data[key] = value;
-    });
-
-    const genderElement = document.querySelector(
-      'select[name="gender"]'
-    ) as HTMLSelectElement;
-    if (genderElement) {
-      data["gender"] = genderElement.value || "";
-    }
-
-    return data;
-  };
-
-  // Function to handle the print button (generate and download barcode)
-  const handlePrint = () => {
-    const currentData = getFormValues();
-    const fileName = `Student_Barcode_${currentData.student_name || "Unknown"}`;
-    const barcodeValue = currentData.roll_no
-      ? `${currentData.roll_no}${Date.now().toString().slice(-6)}`
-      : Date.now().toString();
-
-    console.log(
-      `Generating barcode with value ${barcodeValue} and filename ${fileName}`
-    );
-  };
-
   return (
     <>
       <Header heading="Add Student" subheading="Student Registration" />
 
       <section className="p-10">
         <div className="container mx-auto">
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+          <form onSubmit={handleSubmit(handleStudentSubmit)} className="space-y-6">
             <div className="flex gap-6">
               {/* First Container - Profile Image */}
               <div className="w-1/6 flex flex-col border border-[#E0E2E7] bg-[#F9F9FC] items-center justify-center">
@@ -129,7 +136,7 @@ const AddStudent: React.FC = () => {
                 </Button>
               </div>
 
-              {/* Second Container - Input Fields Grid */}
+              {/* Rest of the form remains the same as previous implementation */}
               <div className="w-5/6">
                 <div className="grid grid-cols-3 gap-4">
                   {/* First Row */}
@@ -211,7 +218,7 @@ const AddStudent: React.FC = () => {
                     </div>
                   </div>
 
-                  <div>
+                  <div className="relative">
                     <Label>Gender</Label>
                     <Select
                       onValueChange={(value) =>
@@ -220,15 +227,16 @@ const AddStudent: React.FC = () => {
                         })
                       }
                     >
-                      <SelectTrigger className="w-full p-2 border border-[#717680] rounded">
+                      <SelectTrigger className="w-full p-2 border border-[#717680] relative">
                         <SelectValue placeholder="Select Gender" />
                       </SelectTrigger>
-                      <SelectContent>
+                      <SelectContent className="absolute z-50 bg-white shadow-lg">
                         <SelectItem value="male">Male</SelectItem>
                         <SelectItem value="female">Female</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
+
                   <div>
                     <Label>Date of Birth</Label>
                     <Input
@@ -259,13 +267,6 @@ const AddStudent: React.FC = () => {
                 onClick={() => router.push("/student-page")}
               >
                 Cancel
-              </Button>
-              <Button
-                type="button"
-                onClick={handlePrint}
-                className="bg-green-500 hover:bg-green-600 transition-all duration-300 text-white rounded-[10px]"
-              >
-                Generate Barcode
               </Button>
               <Button
                 type="submit"
