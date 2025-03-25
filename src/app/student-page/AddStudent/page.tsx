@@ -8,7 +8,15 @@ import { useRouter } from "next/navigation";
 import { Loader2, Eye, EyeOff } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useAddStudentForm } from "@/hooks/add-student-form";
+import { useForm } from "react-hook-form";
 import PhoneNumber from "@/components/phone-number.tsx/PhoneNumber";
+import { Textarea } from "@/components/ui/textarea";
+import Image from "next/image";
+import JsBarcode from "jsbarcode";
+import { UserRound } from "lucide-react";
+import { InputField } from "@/components/custom/inputfield";
+import { CustomBreadcrumb } from "@/components/breadcrumb";
+import InstituteDropdown from "@/components/InputDropdown/page";
 import {
   Select,
   SelectContent,
@@ -16,14 +24,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
-import Image from "next/image";
-import Profile from "@/images/ProfileImage.png";
-import JsBarcode from "jsbarcode";
-import { UserRound } from "lucide-react";
-import { InputField } from "@/components/custom/inputfield";
-import Institute_Dropdown from "@/components/InputDropdown/page";
-import { CustomBreadcrumb } from "@/components/breadcrumb";
 
 const AddStudent: React.FC = () => {
   const breadcrumbItems = [
@@ -38,14 +38,20 @@ const AddStudent: React.FC = () => {
   const [profileImage, setProfileImage] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  const methods = useForm(); // Create form methods
+  const departmentList = [
+    "Computer Science", 
+    "Information Technology", 
+    "Mechanical Engineering", 
+    "Electrical Engineering"
+  ];
+
   // Function to generate unique barcode
   const generateBarcode = (phoneNo?: string) => {
-    // Create a unique barcode value
     const barcodeValue = phoneNo 
       ? `${phoneNo}${Date.now().toString().slice(-6)}` 
       : Date.now().toString();
   
-    // Create a canvas for the barcode
     const canvas = document.createElement("canvas");
     JsBarcode(canvas, barcodeValue, {
       format: "CODE128",
@@ -56,10 +62,8 @@ const AddStudent: React.FC = () => {
       textMargin: 2,
     });
   
-    // Convert canvas to data URL
     const barcodeDataUrl = canvas.toDataURL("image/png");
   
-    // Download the barcode
     const downloadLink = document.createElement("a");
     downloadLink.href = barcodeDataUrl;
     downloadLink.download = `Student_Barcode_${phoneNo || 'Unknown'}.png`;
@@ -67,6 +71,7 @@ const AddStudent: React.FC = () => {
     downloadLink.click();
     document.body.removeChild(downloadLink);
   };
+
   // Modified onSubmit to include barcode generation
   const handleStudentSubmit = async (data: any) => {
     try {
@@ -140,7 +145,6 @@ const AddStudent: React.FC = () => {
                 </Button>
               </div>
 
-              {/* Rest of the form remains the same as previous implementation */}
               <div className="w-5/6">
                 <div className="grid grid-cols-3 gap-4">
                   {/* First Row */}
@@ -155,19 +159,17 @@ const AddStudent: React.FC = () => {
                     }}
                     placeholder="Enter Full Name"
                   />
-                  {/* // TODO: make this the input dropdown */}
-                  {/* <Institute_Dropdown
-                    setValue={(e) => {}}
-                    options={["COMP", "HMMM"]}
-                  /> */}
-                  <div>
-                    <Label>Department</Label>
-                    <Input
-                      {...register("department")}
-                      type="text"
-                      placeholder="Enter Department"
-                    />
-                  </div>
+
+                  <InstituteDropdown 
+                    options={departmentList}
+                    label="Department"
+                    placeholder="Select Department"
+                    onSelect={(value) => 
+                      register("department").onChange({
+                        target: { value, name: "department" },
+                      })
+                    }
+                  />
 
                   <InputField
                     errors={errors}
@@ -194,7 +196,6 @@ const AddStudent: React.FC = () => {
                     placeholder="Enter Email"
                   />
 
-                  {/* TODO: Add Validation */}
                   <div>
                     <Label>Phone Number</Label>
                     <PhoneNumber
@@ -203,6 +204,7 @@ const AddStudent: React.FC = () => {
                       setValue={(name, value) => setValue("phone_no", value)}
                     />
                   </div>
+
                   <div>
                     <Label>Gender</Label>
                     <Select
@@ -223,8 +225,6 @@ const AddStudent: React.FC = () => {
                     </Select>
                   </div>
 
-                  {/* Second Row */}
-
                   <div>
                     <Label>Year of Admission</Label>
                     <Input
@@ -234,7 +234,6 @@ const AddStudent: React.FC = () => {
                     />
                   </div>
 
-                  {/* Third Row */}
                   <div className="relative">
                     <Label>Password</Label>
                     <div className="relative">
@@ -255,25 +254,6 @@ const AddStudent: React.FC = () => {
                         )}
                       </button>
                     </div>
-                  </div>
-
-                  <div className="relative">
-                    <Label>Gender</Label>
-                    <Select
-                      onValueChange={(value) =>
-                        register("gender").onChange({
-                          target: { value, name: "gender" },
-                        })
-                      }
-                    >
-                      <SelectTrigger className="w-full p-2 border border-[#717680] relative">
-                        <SelectValue placeholder="Select Gender" />
-                      </SelectTrigger>
-                      <SelectContent className="absolute z-50 bg-white shadow-lg">
-                        <SelectItem value="male">Male</SelectItem>
-                        <SelectItem value="female">Female</SelectItem>
-                      </SelectContent>
-                    </Select>
                   </div>
 
                   <div>
@@ -327,6 +307,6 @@ const AddStudent: React.FC = () => {
       </section>
     </>
   );
-};
+}; 
 
 export default AddStudent;

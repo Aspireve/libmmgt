@@ -5,7 +5,7 @@ type ErrorResponse = {
 };
 
 // Siddhesh URL
-// export const API_URL = "https://lms-o9sv.onrender.com";
+export const API_URL = "https://lms-o9sv.onrender.com";
 
 //Leon Url
 
@@ -14,7 +14,7 @@ type ErrorResponse = {
 
 //Jigisha Url
 
-export const API_URL = "https://lms-q8fb.onrender.com"
+//export const API_URL = "https://lms-q8fb.onrender.com"
 
 const customFetch = async (url: string, options: RequestInit) => {
   const fullUrl = url.startsWith("https")

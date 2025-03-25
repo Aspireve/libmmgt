@@ -44,15 +44,16 @@ const CustomCountrySelect = forwardRef<
     disabled?: boolean;
     readOnly?: boolean;
     options: { value: string; label: string }[];
+    iconComponent?: React.ReactNode; // Ignore this prop to prevent the error
   }
->(({ value, onChange, options, ...rest }, ref) => {
+>(({ value, onChange, options, iconComponent, ...rest }, ref) => {
   return (
     <select
       ref={ref}
       value={value}
       onChange={(event) => onChange(event.target.value)}
       className="block w-32 px-3 border-transparent focus:outline-none sm:text-sm text-md py-2 rounded-md "
-      {...rest}
+      {...rest} // Spreading remaining props
     >
       {options.map((option) => (
         <option key={option.value} value={option.value}>
@@ -62,6 +63,7 @@ const CustomCountrySelect = forwardRef<
     </select>
   );
 });
+
 
 const PhoneNumber: React.FC<PhoneNumberProps> = ({ name, readOnly, setValue }) => {
   const [value, setLocalValue] = React.useState<E164Number | undefined>();
