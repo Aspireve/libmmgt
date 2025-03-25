@@ -5,6 +5,7 @@ class CloudinaryUploader {
     private readonly CLOUDINARY_URL = "https://api.cloudinary.com/v1_1/dut0muwrt/raw/upload";
     private readonly UPLOAD_PRESET = "ml_default";
 
+    // is this the correct way tho?
     private constructor() {}
 
     public static getInstance(): CloudinaryUploader {
