@@ -27,7 +27,7 @@ const CustomPhoneInput = forwardRef<HTMLInputElement, CustomInputProps>(
     <input
       {...props}
       ref={ref}
-      className="block w-full px-3 border rounded-md shadow-sm focus:outline-none sm:text-sm text-md py-2"
+      className="block w-full px-3 border rounded-md border-input focus:outline-none sm:text-sm text-md py-2 "
     />
   )
 );
@@ -51,7 +51,7 @@ const CustomCountrySelect = forwardRef<
       ref={ref}
       value={value}
       onChange={(event) => onChange(event.target.value)}
-      className="block w-32 px-3 border rounded-md shadow-sm focus:outline-none sm:text-sm text-md py-2"
+      className="block w-32 px-3 border-transparent focus:outline-none sm:text-sm text-md py-2 rounded-md "
       {...rest}
     >
       {options.map((option) => (
@@ -84,7 +84,7 @@ const PhoneNumber: React.FC<PhoneNumberProps> = ({ name, readOnly, setValue }) =
 
   return (
     <div className="w-full flex flex-col gap-2">
-      <div className="flex items-center gap-3">
+      {/* <div className="flex items-center gap-3"> */}
         <div className="flex items-center gap-2">
           <PhoneInput
             defaultCountry="IN"
@@ -100,7 +100,7 @@ const PhoneNumber: React.FC<PhoneNumberProps> = ({ name, readOnly, setValue }) =
             className="w-full flex flex-row gap-2 m-0 p-0 items-center"
           />
         </div>
-      </div>
+      {/* </div> */}
     </div>
   );
 };

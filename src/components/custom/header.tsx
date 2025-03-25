@@ -39,7 +39,7 @@ const Header: React.FC<HeadersProps> = ({
           </p>
         </div>
       )}
-      <div className="border-2 border-blue-500 rounded-xl  bg-white overflow-hidden w-[145px] h-[57px] flex items-center justify-between px-2 mt-2 mr-[50px] transition-all duration-300 hover:shadow-lg cursor-pointer">
+      {/* <div className="border-2 border-blue-500 rounded-xl  bg-white overflow-hidden w-[145px] h-[57px] flex items-center justify-between px-2 mt-2 mr-[50px] transition-all duration-300 hover:shadow-lg cursor-pointer">
         <div className="flex items-center p-2 justify-between w-full">
           <Image
             src={currentInstitute?.logo || Images.TIA}
@@ -59,7 +59,7 @@ const Header: React.FC<HeadersProps> = ({
             className="h-[10px] cursor-pointer"
           />
         </div>
-      </div>
+      </div> */}
       <InstituteSelector />
     </div>
   );
