@@ -2,8 +2,8 @@ import UploadRequestBuilder from "./file-upload-builder";
 
 class CloudinaryUploader {
     static instance: CloudinaryUploader;
-    private readonly CLOUDINARY_URL = "https://api.cloudinary.com/v1_1/dut0muwrt/raw/upload";
     private readonly UPLOAD_PRESET = "ml_default";
+    private readonly CLOUDINARY_URL = "https://api.cloudinary.com/v1_1/dut0muwrt/raw/upload";
 
     // is this the correct way tho?
     private constructor() {}
