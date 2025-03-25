@@ -17,24 +17,39 @@ import {
 } from "cmdk";
 
 const InstituteDropdown = ({
-  options,
+  options = [],
   label = "Institute",
   placeholder = "Select Option",
   onSelect,
 }: {
-  options: string[];
+  options?: string[];
   label?: string;
   placeholder?: string;
   onSelect?: (value: string) => void;
 }) => {
   const [open, setOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState("");
+  const [dropdownOptions, setDropdownOptions] = useState<string[]>(options);
 
   const handleSelect = (option: string) => {
     setSelectedOption(option);
     setOpen(false);
     if (onSelect) {
       onSelect(option);
+    }
+  };
+
+  const handleInputChange = (value: string) => {
+    setSelectedOption(value);
+  };
+
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Enter" && selectedOption.trim() !== "") {
+      if (!dropdownOptions.includes(selectedOption)) {
+        setDropdownOptions([...dropdownOptions, selectedOption]);
+      }
+      handleSelect(selectedOption);
+      event.preventDefault();
     }
   };
 
@@ -55,25 +70,22 @@ const InstituteDropdown = ({
         <PopoverContent className="w-full p-0 z-50 relative bg-white shadow-md border border-gray-200">
           <Command>
             <CommandInput
-              placeholder={`Search ${label.toLowerCase()}...`}
+              placeholder={`Search or add ${label.toLowerCase()}...`}
               value={selectedOption}
-              onValueChange={setSelectedOption}
+              onValueChange={handleInputChange}
+              onKeyDown={handleKeyDown}
             />
-            <CommandEmpty>No results found.</CommandEmpty>
+            <CommandEmpty>No results found. Press Enter to add.</CommandEmpty>
             <CommandGroup className="cursor-pointer">
-              {options
-                .filter((opt) =>
-                  opt.toLowerCase().includes(selectedOption.toLowerCase())
-                )
-                .map((option) => (
-                  <CommandItem
-                    key={option}
-                    onSelect={() => handleSelect(option)}
-                    className="hover:bg-gray-100"
-                  >
-                    {option}
-                  </CommandItem>
-                ))}
+              {dropdownOptions.map((option) => (
+                <CommandItem
+                  key={option}
+                  onSelect={() => handleSelect(option)}
+                  className="hover:bg-gray-100"
+                >
+                  {option}
+                </CommandItem>
+              ))}
             </CommandGroup>
           </Command>
         </PopoverContent>
