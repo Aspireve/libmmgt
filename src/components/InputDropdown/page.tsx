@@ -1,21 +1,15 @@
-"use client"
+"use client";
 
-import { Input } from '@/components/ui/input';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from 'cmdk';
-import React, { useState } from 'react';
+import { useState } from "react";
+import { Input } from "@/components/ui/input";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "cmdk";
 
-const institutes = [
-    "TIA",
-    "TCSC",
-    "TIM",
-  ];    
+const InstituteDropdown = ({ institutes }: { institutes: string[] }) => {
+  const [open, setOpen] = useState(false);
+  const [selectedInstitute, setSelectedInstitute] = useState("");
 
-const Institute_Dropdown = () => {
-    const [open, setOpen] = useState(false);
-    const [selectedInstitute, setSelectedInstitute] = useState("");
-  
-  return  (
+  return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Input
@@ -24,12 +18,14 @@ const Institute_Dropdown = () => {
           className="w-[200px] cursor-pointer"
           value={selectedInstitute}
           onChange={(e) => setSelectedInstitute(e.target.value)}
+          onFocus={() => setOpen(true)}
         />
       </PopoverTrigger>
       <PopoverContent className="w-[200px] p-0">
         <Command>
+          <CommandInput placeholder="Search institute..." />
           <CommandEmpty>No results found.</CommandEmpty>
-          <CommandGroup className='cursor-pointer'>
+          <CommandGroup className="cursor-pointer">
             {institutes
               .filter((inst) => inst.toLowerCase().includes(selectedInstitute.toLowerCase()))
               .map((institute) => (
@@ -37,6 +33,7 @@ const Institute_Dropdown = () => {
                   key={institute}
                   onSelect={() => {
                     setSelectedInstitute(institute);
+                    setOpen(false);
                   }}
                 >
                   {institute}
@@ -47,6 +44,6 @@ const Institute_Dropdown = () => {
       </PopoverContent>
     </Popover>
   );
-}
+};
 
-export default Institute_Dropdown;
+export default InstituteDropdown;

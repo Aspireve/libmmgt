@@ -21,7 +21,8 @@ import Image from "next/image";
 import Profile from "@/images/ProfileImage.png";
 import { UserRound } from "lucide-react";
 import { InputField } from "@/components/custom/inputfield";
-import Institute_Dropdown from "@/app/Input-test/page";
+import Institute_Dropdown from "@/components/InputDropdown/page";
+import { CustomBreadcrumb } from "@/components/breadcrumb";
 
 const AddStudent: React.FC = () => {
   const breadcrumbItems = [
@@ -87,6 +88,7 @@ const AddStudent: React.FC = () => {
 
   return (
     <>
+    <CustomBreadcrumb items={breadcrumbItems}/>
       <Header heading="Add Student" subheading="Student Registration" />
 
       <section className="p-10">
