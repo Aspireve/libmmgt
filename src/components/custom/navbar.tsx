@@ -50,7 +50,7 @@ const Navbar: React.FC = () => {
         {tabs.map((tab) => (
           <div
             key={tab.id}
-            className={`px-4 py-2 flex items-center rounded-3xl cursor-pointer
+            className={`px-4 py-2 flex items-center rounded-[6px] cursor-pointer
                ${activeTab === tab.id ? "bg-blue-300" : "hover:bg-blue-200"}`}
             onClick={() => setActiveTab(tab.id)}
           >

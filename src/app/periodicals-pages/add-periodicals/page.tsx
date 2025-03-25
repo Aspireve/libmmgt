@@ -12,40 +12,16 @@ import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import Header from '@/app/Header/header';
 import Tabbing from '@/app/Tab/Tab';
-import { JournalData } from '@/app/book-pages/types/data';
 import { Loader2 } from 'lucide-react';
 import { InputField } from '@/components/custom/inputfield';
 import { addbookRoutes } from '@/app/book-pages/types/routes';
+import { JournalData } from '../types/data';
 
 const AddJournal = () => {
 
   const router = useRouter();
   const [isLoadingInput, setIsLoadingInput] = useState(false)
 
-
-  // const FormSection = ({ title, fields }: { title: string; fields: any[] }) => (
-  //   <div>
-  //     <h2>{title}</h2>
-  //     <div className="grid grid-cols-4 gap-4 p-4">
-  //       {fields.map((field) => (
-  //         <div key={field.name}>
-  //           <Label>{field.label}</Label>
-  //           {isLoadingInput ? (
-  //             <Skeleton className="h-4 w-[100%] animate-pulse bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 bg-[length:200%_100%]" />
-  //           ) : (
-  //             <Input
-  //               type={field.type}
-  //               className='text-[#343232]'
-  //               {...register(field.name, { required: field.required })}
-  //               placeholder={field.placeholder}
-  //             />
-  //           )}
-  //           {errors[field.name] && <p className="text-red-500 text-sm">{[field.required]}</p>}
-  //         </div>
-  //       ))}
-  //     </div>
-  //   </div>
-  // );
   const {
     register,
     handleSubmit,
@@ -60,16 +36,16 @@ const AddJournal = () => {
       subscription_price: parseInt(data.subscription_price.toString(), 10),
       // volume_number: parseInt(data.volume_number.toString(), 10),
       // issue_number:parseInt(data.issue_number.toString(),10),
-      frequency: parseInt(data.frequency.toString(), 10),
-      year_of_publication: "2023-10-04",
-      language: "english",
-      department: "Computer Science",
-      is_archived: false,
-      total_count: 20,
-      available_count: 10,
-      created_at: "2024-06-11",
-      updated_at: "2024-06-11",
-      acquisition_date: "2024-06-11"
+      // frequency: parseInt(data.frequency.toString(), 10),
+      // year_of_publication: "2023-10-04",
+      // language: "english",
+      // department: "Computer Science",
+      // is_archived: false,
+      // total_count: 20,
+      // available_count: 10,
+      // created_at: "2024-06-11",
+      // updated_at: "2024-06-11",
+      // acquisition_date: "2024-06-11"
     }
     console.log(formattedData)
     mutate(
@@ -127,8 +103,8 @@ const AddJournal = () => {
                 <h2>General Information</h2>
                 <div className="grid grid-cols-4 gap-4 p-4">
                   <InputField
-                    label="Name of Journal"
-                    name="name_of_journal"
+                    label="Title of Journal"
+                    name="journal_title"
                     register={register}
                     errors={errors}
                     type="text"
@@ -149,8 +125,8 @@ const AddJournal = () => {
                     placeholder="Enter Name of Publisher"
                   />
                   <InputField
-                    label="Place of Publisher"
-                    name="place_of_publisher"
+                    label="Place of Publication"
+                    name="place_of_publication"
                     register={register}
                     errors={errors}
                     type="date"

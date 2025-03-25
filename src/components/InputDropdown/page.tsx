@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -21,37 +21,21 @@ const InstituteDropdown = ({
   label = "Institute",
   placeholder = "Select Option",
   onSelect,
+  selectedValue = "", // Add this prop
 }: {
   options?: string[];
   label?: string;
   placeholder?: string;
   onSelect?: (value: string) => void;
+  selectedValue?: string; // Allow passing an initial selected value
 }) => {
   const [open, setOpen] = useState(false);
-  const [selectedOption, setSelectedOption] = useState("");
+  const [selectedOption, setSelectedOption] = useState(selectedValue); // Initialize with selectedValue
   const [dropdownOptions, setDropdownOptions] = useState<string[]>(options);
 
-  const handleSelect = (option: string) => {
-    setSelectedOption(option);
-    setOpen(false);
-    if (onSelect) {
-      onSelect(option);
-    }
-  };
-
-  const handleInputChange = (value: string) => {
-    setSelectedOption(value);
-  };
-
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === "Enter" && selectedOption.trim() !== "") {
-      if (!dropdownOptions.includes(selectedOption)) {
-        setDropdownOptions([...dropdownOptions, selectedOption]);
-      }
-      handleSelect(selectedOption);
-      event.preventDefault();
-    }
-  };
+  useEffect(() => {
+    setSelectedOption(selectedValue); // Update when selectedValue changes
+  }, [selectedValue]);
 
   return (
     <div>
@@ -72,15 +56,18 @@ const InstituteDropdown = ({
             <CommandInput
               placeholder={`Search or add ${label.toLowerCase()}...`}
               value={selectedOption}
-              onValueChange={handleInputChange}
-              onKeyDown={handleKeyDown}
+              onValueChange={setSelectedOption}
             />
             <CommandEmpty>No results found. Press Enter to add.</CommandEmpty>
             <CommandGroup className="cursor-pointer">
               {dropdownOptions.map((option) => (
                 <CommandItem
                   key={option}
-                  onSelect={() => handleSelect(option)}
+                  onSelect={() => {
+                    setSelectedOption(option);
+                    if (onSelect) onSelect(option);
+                    setOpen(false);
+                  }}
                   className="hover:bg-gray-100"
                 >
                   {option}
@@ -93,5 +80,6 @@ const InstituteDropdown = ({
     </div>
   );
 };
+
 
 export default InstituteDropdown;

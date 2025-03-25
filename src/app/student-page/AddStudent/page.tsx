@@ -200,7 +200,7 @@ const AddStudent: React.FC = () => {
                     <PhoneNumber
                       name="phone_no"
                       readOnly={false}
-                      setValue={(name, value) => setValue("phone_no", value)}
+                      setValue={(_name, value) => setValue("phone_no", value ?? "")}
                     />
                   </div>
 

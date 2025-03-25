@@ -1,22 +1,24 @@
-import { useEffect } from "react";
-import { useForm, FieldValues } from "react-hook-form";
-import { useOne } from "@refinedev/core";
-import { toast } from "sonner";
-import { StudentData, StudentFromDatabase } from "@/types/student";
-import { useRouter } from "next/navigation";
-import { useSelector } from "react-redux";
+import { useEffect } from "react"; 
+import { useForm, FieldValues } from "react-hook-form"; 
+import { useOne } from "@refinedev/core"; 
+import { toast } from "sonner"; 
+import { StudentData, StudentFromDatabase } from "@/types/student"; 
+import { useRouter } from "next/navigation"; 
+import { useSelector } from "react-redux"; 
 import { RootState } from "@/redux/store/store";
 
 export const useEditStudentForm = (studentUuid: string) => {
   const router = useRouter();
   const institute_id = useSelector((state: RootState) => state.auth.institute_uuid);
+
   const {
     register,
     handleSubmit,
     reset,
     watch,
+    setValue, // ✅ Ensure setValue is included here
     formState: { errors },
-  } = useForm<Partial<StudentData>>({
+  } = useForm<StudentData>({
     defaultValues: {
       student_name: "",
       department: "",
@@ -27,6 +29,10 @@ export const useEditStudentForm = (studentUuid: string) => {
       year_of_admission: "",
       password: "",
       confirm_password: "",
+      date_of_birth: "",
+      gender: "",
+      institute_name: "",
+      image_field: null,
     },
   });
 
@@ -45,7 +51,8 @@ export const useEditStudentForm = (studentUuid: string) => {
 
   useEffect(() => {
     if (data?.data) {
-      const student = data.data;
+      const student: StudentFromDatabase = data.data;
+      
       reset({
         student_name: student.student_name || "",
         department: student.department || "",
@@ -54,17 +61,22 @@ export const useEditStudentForm = (studentUuid: string) => {
         address: student.address || "",
         roll_no: student.roll_no || 0,
         year_of_admission: student.year_of_admission || "",
+        date_of_birth: student.date_of_birth || "",
+        gender: student.gender?.toLowerCase() || "",  
+        institute_name: student.institute_name || "",
+        image_field: null,
       });
+  
+      setValue("gender", student.gender?.toLowerCase() || ""); 
     }
-  }, [data, reset, studentUuid]);
+  }, [data, reset, studentUuid, setValue]);
+  
+  
+  
 
   const onSubmit = (formData: FieldValues, mutate: Function) => {
-    
-
-    const validStudentUuid =
-      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
-        studentUuid
-      )
+    const validStudentUuid = 
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(studentUuid)
         ? studentUuid
         : "";
 
@@ -73,12 +85,30 @@ export const useEditStudentForm = (studentUuid: string) => {
       return;
     }
 
-    const studentData: Partial<StudentFromDatabase> = {
+    const studentData: Partial<StudentData> = {
       ...formData,
       student_uuid: validStudentUuid,
-      institute_id:institute_id ?? "",
+      institute_id: institute_id ?? "",
     };
 
+    // Optional fields handling
+    const optionalFields: (keyof StudentData)[] = [
+      'address',
+      'roll_no',
+      'year_of_admission',
+      'date_of_birth',
+      'gender',
+      'institute_name',
+      'image_field'
+    ];
+
+    optionalFields.forEach(field => {
+      if (!formData[field]) {
+        delete studentData[field];
+      }
+    });
+
+    // Password validation
     const passwordValue = formData.password?.trim();
     const confirmPasswordValue = formData.confirm_password?.trim();
 
@@ -90,21 +120,9 @@ export const useEditStudentForm = (studentUuid: string) => {
       delete studentData.confirm_password;
     }
 
-    if (
-      passwordValue &&
-      confirmPasswordValue &&
-      passwordValue !== confirmPasswordValue
-    ) {
+    if (passwordValue && confirmPasswordValue && passwordValue !== confirmPasswordValue) {
       toast.error("Passwords do not match.");
       return;
-    }
-
-    if (passwordValue) {
-      studentData.password = passwordValue;
-    }
-
-    if (confirmPasswordValue) {
-      studentData.confirm_password = confirmPasswordValue;
     }
 
     mutate(
@@ -121,9 +139,7 @@ export const useEditStudentForm = (studentUuid: string) => {
         },
         onError: (error: any) => {
           toast.error(
-            `Error updating student: ${
-              error.message || "Please try again later."
-            }`
+            `Error updating student: ${error.message || "Please try again later."}`
           );
         },
       }
@@ -139,5 +155,6 @@ export const useEditStudentForm = (studentUuid: string) => {
     reset,
     watch,
     onSubmit,
+    setValue, // ✅ Ensure setValue is returned
   };
 };

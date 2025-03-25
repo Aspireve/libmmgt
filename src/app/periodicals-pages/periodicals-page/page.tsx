@@ -13,13 +13,12 @@ import { toast } from 'sonner';
 import Header from '@/app/Header/header';
 import Tabbing from '@/app/Tab/Tab';
 import { formatDate } from '../../book-pages/hooks/formatDate'
-import { MainTable } from '@/components/data-tables/main-table';
-import { JournalData } from '@/app/book-pages/types/data';
 import images from '@/images';
 import { bookRoutes } from '@/app/book-pages/types/routes';
 import MasterTable from '@/app/test/table-page';
 import AddBookButton from '@/components/books/add-book-button';
 import ImportBookButton from '@/components/books/import-books-button';
+import { JournalData } from '../types/data';
 
 
 const JournalPage = () => {
@@ -69,10 +68,10 @@ const JournalPage = () => {
   };
 
   const columns: ColumnDef<JournalData>[] = [
-    { accessorKey: 'journal_uuid', header: 'Sr no' },
+    { accessorKey: 'journal_title_id', header: 'ID' },
     { 
-      accessorKey: 'name_of_journal', 
-      header: 'Name',
+      accessorKey: 'journal_title', 
+      header: 'Title',
       cell:({row})=>{
         const periodical = row.original;
         return (
@@ -89,9 +88,14 @@ const JournalPage = () => {
         );
       }
     },
-    { accessorKey: 'editor_name', header: 'Name of Editor', },
+    { accessorKey: 'editor_name', header: 'Editor', },
     { accessorKey: 'name_of_publisher', header: 'Book Publisher' },
+    { accessorKey: 'place_of_publication', header: 'Publication Place' },
     { accessorKey: 'available_count', header: 'Total Count' },
+    { accessorKey: 'issn', header: 'ISSN' },
+    { accessorKey: 'volume_no', header: 'Volume No' },
+
+
     {
       accessorKey: 'subscription_start_date', header: 'Start Date',
       cell: ({ row }) => <span>{formatDate(row.original.subscription_start_date)}</span>
@@ -123,33 +127,6 @@ const JournalPage = () => {
           <div className='container'>
         <Tabbing routes={bookRoutes} className="w-[20%]" />
             
-
-{/* 
-                <div className="relative">
-                  <Button
-                    className="bg-[#1E40AF] text-white rounded-[8px] px-4 py-2 hover:bg-[#1E40AF] hover:text-white"
-                    onClick={() => setIsFilterOpen(!isFilterOpen)}
-                  >
-                    Filter By
-                  </Button>
-                  {isFilterOpen && (
-                    <div className="absolute right-0 mt-2 w-48 border border-gray-300 rounded-md shadow-lg">
-                      <ul className="py-2 text-gray-700">
-                        <Button
-                          onClick={() => { setUrl("all"); setTitle("Journals") }}
-                          className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                        >Journals
-                        </Button>
-                        <Button
-                          onClick={() => { setUrl("issued-jou"); setTitle("Issued Journals") }}
-                          className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
-                          Issued Journals
-                        </Button>
-                      </ul>
-                    </div>
-                  )}*/}
-            
-            {/* <MainTable columns={columns} resource={`journals/${url}`} /> */}
             <MasterTable
             title='Periodicals'
             columns={()=>columns}
