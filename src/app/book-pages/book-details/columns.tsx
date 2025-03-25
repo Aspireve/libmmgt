@@ -4,10 +4,49 @@ import { Button } from '@/components/ui/button';
 import { formatDate } from '../hooks/formatDate';
 import Image from 'next/image';
 import images from '@/images';
+import useDisclosure from '@/hooks/disclosure-hook';
+import { useRouter } from 'next/navigation';
+import DeleteBookModal from '@/components/books/delete-book-modal';
 
-// handleDelete: (book: BookData) => void
 
-export const getBookColumns = (handleEdit: (book: BookData) => void): ColumnDef<BookData>[] => [
+export const BookActions = ({
+  book,
+  refetch,
+}: {
+  book: Partial<BookData>;
+  refetch: () => void;
+}) => {
+  const router = useRouter();
+  const { isOpen, close, open } = useDisclosure();
+  return (
+    <div className="flex gap-2 ml-10">
+      <Button
+        className="p-0 shadow-none"
+        onClick={() => {
+          router.push(`/book-pages/editbookCopy-page?book_copy_uuid=${book.book_copy_uuid}`);
+        }}
+        aria-label="Edit student"
+      >
+        <Image src={images.EditButton} alt="Edit" height={20} width={20} />
+      </Button>
+      <Button
+        onClick={open}
+        className="p-0 shadow-none"
+        aria-label="Delete Book"
+      >
+        <Image src={images.DeleteButton} alt="Delete" height={20} width={20} />
+      </Button>
+      <DeleteBookModal
+        data={[book]}
+        close={close}
+        isOpen={isOpen}
+        refetch={refetch}
+      />
+    </div>
+  );
+};
+
+export const getBookColumns = ({ refetch }:{ refetch: () => void }): ColumnDef<BookData>[] => [
     {
         accessorKey: 'book_copy_id',
         header: 'Book ID',
@@ -48,15 +87,9 @@ export const getBookColumns = (handleEdit: (book: BookData) => void): ColumnDef<
     {
         id: 'action',
         header: '',
-        cell: ({ row }) => (
-            <div className="flex gap-2">
-                <Button variant="ghost" size="icon" className='w-[20px]' onClick={() => handleEdit(row.original)}>
-                    <Image src={images.EditButton} alt='Edit Icon'/>
-                </Button>
-                {/* <Button variant="ghost" size="icon" onClick={() => handleDelete(row.original)}>
-                <Image src={images.Thrash} alt='Edit Icon'/>
-                </Button> */}
-            </div>
-        )
+        cell: ({ row }) => {
+             return <BookActions book={row.original} refetch={refetch} />
+        }
+        
     },
 ];

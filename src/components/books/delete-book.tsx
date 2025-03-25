@@ -1,10 +1,10 @@
 import React from "react";
 import { Button } from "../ui/button";
-import { StudentFromDatabase } from "@/types/student";
 import useDisclosure from "@/hooks/disclosure-hook";
 import DeleteBookModal from "./delete-book-modal";
+import { BookData } from "@/app/book-pages/types/data";
 
-const DeleteBook = <TData extends StudentFromDatabase>({
+const DeleteBook = <TData extends BookData>({
   data,
   refetch,
 }: {

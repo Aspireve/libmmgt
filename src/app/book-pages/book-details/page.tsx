@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect } from 'react'
+import React from 'react'
 
 import Header from '@/app/Header/header'
 import { useRouter, useSearchParams } from "next/navigation";
@@ -7,36 +7,18 @@ import { BookData } from '../types/data';
 import { getBookColumns } from './columns';
 import MasterTable from '@/app/test/table-page';
 import { useList } from '@refinedev/core';
+import DeleteBook from '@/components/books/delete-book';
+import useDisclosure from '@/hooks/disclosure-hook';
 
 const Book_details = () => {
     const book_uuid = useSearchParams().get("book_uuid");
     const router = useRouter();
+
     
 
-    const handleEdit = (book: BookData) => {
-        router.push(`/book-pages/editbookCopy-page?book_copy_uuid=${book.book_copy_uuid}`);
-    };
-    // const handleDelete = async (book: BookData) => {
-    //     console.log("Book Id", typeof book.book_copy_uuid)
-    //     const BookID = book.book_copy_uuid
-    //     console.log("Payload:", );
-          
-    //        try {
-    //               await dataProvider.putArchive({
-    //               resource: 'book_v2/archive_book_copy',
-    //               value: {book_copy_uuid:BookID},
-    //             })
-    //             toast.success("Book Deleted successfully!");
-    //             invalidate({
-    //                 resource: "book_v2/get_copies_with_title",
-    //                 invalidates: ["list"], 
-    //             });
-    //           } catch (error: any) {
-    //             toast.error(error.message);
-    //           }
-        
-    //   };
-    const columns = getBookColumns(handleEdit);
+    // const handleEdit = (book: BookData) => {
+    //     router.push(`/book-pages/editbookCopy-page?book_copy_uuid=${book.book_copy_uuid}`);
+    // }
      
     const { data: bookData } = useList<BookData>({
         resource: "book_v2/get_copies_with_title",
@@ -47,10 +29,6 @@ const Book_details = () => {
     const bookTitle = firstBook?.book_title;
     const bookID = firstBook?.book_title_id;
 
-    useEffect(()=>{
-        console.log(bookTitle,bookID)
-    },[])
-
     return (
         <>
             <Header heading={bookTitle} subheading={bookID} />
@@ -60,13 +38,11 @@ const Book_details = () => {
                     <MasterTable
                     title='Book Copies'
                     resource="book_v2/get_copies_with_title"
-                    columns={(e)=>columns}
+                    columns={getBookColumns}
                     query={[
                         { field: "_book_uuid", operator: "eq", value: `${book_uuid}` }
                     ]}
-                    AddedOptions={[]}
-                    isSelectable={false}
-
+                    AddedOptions={[DeleteBook]}
                     />
 
                 </div>
@@ -77,3 +53,4 @@ const Book_details = () => {
 }
 
 export default Book_details
+

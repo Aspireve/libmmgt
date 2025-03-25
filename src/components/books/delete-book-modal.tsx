@@ -20,7 +20,7 @@ const DeleteBookModal = ({
   const handleDelete = async () => {
     mutate({
       resource: "book_v2/bulk-delete",
-      ids: data.map((item) => item.book_uuid),
+      ids: data.map((item) => item.book_copy_uuid),
       invalidates: ["list", "all"],
       successNotification: (data, ids, resource) => {
         close();
