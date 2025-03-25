@@ -79,18 +79,26 @@ export const useEditStudentForm = (studentUuid: string) => {
       /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(studentUuid)
         ? studentUuid
         : "";
-
+  
     if (!validStudentUuid) {
       toast.error("Invalid student UUID format.");
       return;
     }
-
+  
+    let phoneNo = formData.phone_no?.trim();
+    
+    // Remove country code if it starts with +91
+    if (phoneNo.startsWith("+91")) {
+      phoneNo = phoneNo.slice(3).trim();
+    }
+  
     const studentData: Partial<StudentData> = {
       ...formData,
       student_uuid: validStudentUuid,
       institute_id: institute_id ?? "",
+      phone_no: phoneNo, // ✅ Updated phone number
     };
-
+  
     // Optional fields handling
     const optionalFields: (keyof StudentData)[] = [
       'address',
@@ -101,30 +109,30 @@ export const useEditStudentForm = (studentUuid: string) => {
       'institute_name',
       'image_field'
     ];
-
+  
     optionalFields.forEach(field => {
       if (!formData[field]) {
         delete studentData[field];
       }
     });
-
+  
     // Password validation
     const passwordValue = formData.password?.trim();
     const confirmPasswordValue = formData.confirm_password?.trim();
-
+  
     if (!passwordValue) {
       delete studentData.password;
     }
-
+  
     if (!confirmPasswordValue) {
       delete studentData.confirm_password;
     }
-
+  
     if (passwordValue && confirmPasswordValue && passwordValue !== confirmPasswordValue) {
       toast.error("Passwords do not match.");
       return;
     }
-
+  
     mutate(
       {
         resource: "student/edit",
@@ -145,6 +153,7 @@ export const useEditStudentForm = (studentUuid: string) => {
       }
     );
   };
+  
 
   return {
     register,
