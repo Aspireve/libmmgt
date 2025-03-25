@@ -78,7 +78,7 @@ const AddStudent: React.FC = () => {
       await onSubmit(data);
       
       // Then generate and download the barcode
-      generateBarcode(data.roll_no);
+      generateBarcode(data.phoneNo);
     } catch (error) {
       console.error("Error adding student:", error);
     }
