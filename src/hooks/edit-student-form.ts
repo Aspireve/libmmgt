@@ -4,9 +4,12 @@ import { useOne } from "@refinedev/core";
 import { toast } from "sonner";
 import { StudentData, StudentFromDatabase } from "@/types/student";
 import { useRouter } from "next/navigation";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store/store";
 
 export const useEditStudentForm = (studentUuid: string) => {
   const router = useRouter();
+  const institute_id = useSelector((state: RootState) => state.auth.institute_uuid);
   const {
     register,
     handleSubmit,
@@ -56,7 +59,7 @@ export const useEditStudentForm = (studentUuid: string) => {
   }, [data, reset, studentUuid]);
 
   const onSubmit = (formData: FieldValues, mutate: Function) => {
-    const hardcodedInstituteId = "828f0d33-258f-4a92-a235-9c1b30d8882b";
+    
 
     const validStudentUuid =
       /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
@@ -73,7 +76,7 @@ export const useEditStudentForm = (studentUuid: string) => {
     const studentData: Partial<StudentFromDatabase> = {
       ...formData,
       student_uuid: validStudentUuid,
-      institute_id: hardcodedInstituteId,
+      institute_id:institute_id ?? "",
     };
 
     const passwordValue = formData.password?.trim();
