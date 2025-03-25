@@ -6,7 +6,6 @@ class CloudinaryUploader {
     private readonly UPLOAD_PRESET = "ml_default";
 
     // is this the correct way tho?
-    // is it actually?
     private constructor() {}
 
     public static getInstance(): CloudinaryUploader {
