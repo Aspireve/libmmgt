@@ -91,6 +91,7 @@ const AddStudent: React.FC = () => {
       const reader = new FileReader();
       reader.onload = (e) => {
         if (e.target?.result) {
+          setValue("image_field", e.target.result as string)
           setProfileImage(e.target.result as string);
         }
       };
