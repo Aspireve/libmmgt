@@ -37,32 +37,3 @@ export interface BookData {
   remarks:string
 }
 
-export interface JournalData {
-  journal_uuid: string;
-  journal_id: string;
-  name_of_journal: string;
-  name_of_publisher: string;
-  place_of_publisher: string;
-  editor_name: string;
-  year_of_publication: string; //frontend
-  language: string; //frontend
-  department: string; //frontend
-  subscription_price: string;
-  subscription_start_date: string;
-  subscription_end_date: string;
-  volume_number: string; //Changes
-  issue_number: string;
-  is_archived: boolean; //frontend
-  total_count: number; //frontend
-  available_count: number; //frontend
-  frequency: number;
-  item_type: string;
-  issn: string;
-  call_number: string;
-  created_at: string; //frontend
-  updated_at: string; //frontend
-  vendor_name: string;
-  library_name: string;
-  acquisition_date: string; //frontend
-}
-

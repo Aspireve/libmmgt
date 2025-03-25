@@ -14,7 +14,7 @@ type ErrorResponse = {
 
 //Jigisha Url
 
-export const API_URL = "https://lms-q8fb.onrender.com"
+export const API_URL = "https://lms-8pd1.onrender.com"
 
 const customFetch = async (url: string, options: RequestInit) => {
   const fullUrl = url.startsWith("https")
