@@ -8,7 +8,6 @@ import { useRouter } from "next/navigation";
 import { Loader2, Eye, EyeOff } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useAddStudentForm } from "@/hooks/add-student-form";
-import { useForm } from "react-hook-form";
 import PhoneNumber from "@/components/phone-number.tsx/PhoneNumber";
 import { Textarea } from "@/components/ui/textarea";
 import Image from "next/image";
@@ -38,7 +37,7 @@ const AddStudent: React.FC = () => {
   const [profileImage, setProfileImage] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const methods = useForm(); // Create form methods
+  
   const departmentList = [
     "Computer Science", 
     "Information Technology", 
@@ -79,7 +78,7 @@ const AddStudent: React.FC = () => {
       await onSubmit(data);
       
       // Then generate and download the barcode
-      generateBarcode(data.roll_no);
+      generateBarcode(data.phoneNo);
     } catch (error) {
       console.error("Error adding student:", error);
     }
@@ -92,6 +91,7 @@ const AddStudent: React.FC = () => {
       const reader = new FileReader();
       reader.onload = (e) => {
         if (e.target?.result) {
+          setValue("image_field", e.target.result as string)
           setProfileImage(e.target.result as string);
         }
       };
@@ -169,7 +169,7 @@ const AddStudent: React.FC = () => {
                         target: { value, name: "department" },
                       })
                     }
-                  />
+                  />  
 
                   <InputField
                     errors={errors}
