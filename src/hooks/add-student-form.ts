@@ -26,6 +26,7 @@ export const useAddStudentForm = () => {
     watch,
     formState: { errors },
     clearErrors,
+    setError
   } = useForm<Partial<StudentData>>({
     defaultValues: {
       student_name: "",
@@ -116,5 +117,6 @@ export const useAddStudentForm = () => {
     setValue,
     watch,
     clearErrors,
+    setError
   };
 };

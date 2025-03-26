@@ -45,6 +45,7 @@ const InstituteSelector = () => {
       <DropdownMenuContent className="border-2 border-blue-500 w-full mt-2 bg-white rounded-xl cursor-pointer">
         {instituteList.map((institute, idx) => (
           <DropdownMenuItem
+            key={`institute-dropdown-${idx}`}
             className={`hover:bg-[#aaaaaa66] transition-all duration-300 ${
               idx !== instituteList.length - 1
                 ? "border-b-2 "

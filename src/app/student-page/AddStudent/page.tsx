@@ -42,9 +42,14 @@ const AddStudent: React.FC = () => {
     errors,
     watch,
     clearErrors,
+    setError,
   } = useAddStudentForm();
 
-  const { data: departmentList, isLoading: isDepartmentLoading, error } = useList<string[]>({
+  const {
+    data: departmentList,
+    isLoading: isDepartmentLoading,
+    error,
+  } = useList<string[]>({
     resource: `student/departments`,
   });
 
@@ -52,7 +57,9 @@ const AddStudent: React.FC = () => {
     if (isDepartmentLoading) return ["Loading..."];
     if (error) return ["Error loading departments"];
     if (!departmentList?.data) return ["NA"];
-    return Array.isArray(departmentList.data) ? departmentList.data.flat() : ["NA"];
+    return Array.isArray(departmentList.data)
+      ? departmentList.data.flat()
+      : ["NA"];
   };
 
   const profileImage = watch("image_field");
@@ -82,7 +89,8 @@ const AddStudent: React.FC = () => {
 
   const handleStudentSubmit = async (data: any) => {
     try {
-      if (data.phone_no && !isPossiblePhoneNumber(data.phone_no as string)) {
+      if (!isPossiblePhoneNumber(data.phone_no as string)) {
+        setError("phone_no", { message: "Incorrect Format" });
         return; // Let the PhoneNumber component handle its own error
       }
       const studentData: any = await onSubmit(data);
@@ -114,8 +122,9 @@ const AddStudent: React.FC = () => {
         onSubmit={handleSubmit(handleStudentSubmit)}
         className="my-10 mx-[40px] space-y-6"
       >
+          {/* <Label>Profile Image</Label> */}
         <div className="flex gap-6">
-          <div className="flex flex-col border gap-4 border-[#E0E2E7] bg-[#F9F9FC] items-center justify-center rounded-xl p-2">
+          <div className="flex flex-col border gap-4 border-[#E0E2E7] bg-[#F9F9FC] items-center justify-center rounded-xl p-2 px-6">
             {profileImage ? (
               <Image
                 src={profileImage as string}
@@ -193,7 +202,9 @@ const AddStudent: React.FC = () => {
             />
 
             <div>
-              <Label>Phone Number</Label>
+              <Label>
+                Phone Number <span className="text-red-500"> *</span>
+              </Label>
               <PhoneNumber
                 name="phone_no"
                 readOnly={false}
@@ -208,7 +219,9 @@ const AddStudent: React.FC = () => {
             </div>
 
             <div className="text-[#717680]">
-              <Label>Gender</Label>
+              <Label>
+                Gender <span className="text-red-500"> *</span>
+              </Label>
               <Select
                 onValueChange={(value) => {
                   setValue("gender", value);

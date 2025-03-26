@@ -23,6 +23,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import PhoneNumber from "@/components/phone-number.tsx/PhoneNumber";
 import InstituteDropdown from "@/components/InputDropdown/page";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const EditStudent: React.FC = () => {
   const breadcrumbItems = [
@@ -83,7 +84,11 @@ const EditStudent: React.FC = () => {
   return (
     <>
       <CustomBreadcrumb items={breadcrumbItems} />
-      <Header heading="Edit Student" subheading="Update Student Information" />
+      <Header
+        heading="Edit Student"
+        subheading="Update Student Information"
+        isLoading={isFetching}
+      />
 
       <section className="p-10">
         <div className="container mx-auto">
@@ -95,7 +100,7 @@ const EditStudent: React.FC = () => {
               <div className="w-1/6 flex flex-col border border-[#E0E2E7] bg-[#F9F9FC] items-center justify-center rounded-xl">
                 <div className="mb-4">
                   <div className="w-24 h-24 rounded-full flex items-center justify-center overflow-hidden">
-                    {profileImage ? (
+                    {!isFetching && profileImage ? (
                       <Image
                         src={profileImage}
                         alt="Profile"
@@ -262,14 +267,19 @@ const EditStudent: React.FC = () => {
               </div>
             </div>
 
-            <div>
-              <Label>Address</Label>
-              <Textarea
-                {...register("address")}
-                placeholder="Enter Address"
-                className="w-full p-2 border border-[#717680] rounded h-24"
-              />
-            </div>
+            {isFetching ? (
+              <Skeleton className="h-40 rounded-xl w-full animate-pulse bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 bg-[length:200%_100%]" />
+            ) : (
+              <div>
+                <Label>Address</Label>
+
+                <Textarea
+                  {...register("address")}
+                  placeholder="Enter Address"
+                  className="w-full p-2 border border-[#717680] rounded h-24"
+                />
+              </div>
+            )}
 
             <div className="flex justify-end gap-4 mt-6">
               <Button

@@ -105,17 +105,17 @@ export const useEditStudentForm = (studentUuid: string) => {
   }, [data, reset, studentUuid]);
 
   const onSubmit = (formData: FieldValues, mutate: Function) => {
-    const validStudentUuid =
-      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
-        studentUuid
-      )
-        ? studentUuid
-        : "";
+    // const validStudentUuid =
+    //   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
+    //     studentUuid
+    //   )
+    //     ? studentUuid
+    //     : "";
 
-    if (!validStudentUuid) {
-      toast.error("Invalid student UUID format.");
-      return;
-    }
+    // if (!validStudentUuid) {
+    //   toast.error("Invalid student UUID format.");
+    //   return;
+    // }
 
     let phoneNo = formData.phone_no?.trim();
 
@@ -125,7 +125,7 @@ export const useEditStudentForm = (studentUuid: string) => {
 
     const studentData: Partial<StudentData> = {
       ...formData,
-      student_uuid: validStudentUuid,
+      // student_uuid: validStudentUuid,
       institute_id: institute_id ?? "",
       phone_no: phoneNo,
     };
@@ -149,8 +149,8 @@ export const useEditStudentForm = (studentUuid: string) => {
     mutate(
       {
         resource: "student/edit",
-        id: validStudentUuid,
-        meta: { query: { student_uuid: validStudentUuid } },
+        id: data?.data.student_uuid,
+        meta: { query: { student_uuid: data?.data.student_uuid } },
         values: studentData,
       },
       {

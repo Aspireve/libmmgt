@@ -53,7 +53,6 @@ const paginationSlice = createSlice({
       state.page = 1;
       state.totalPages = 0;
       state.total = 0;
-      state.limit = 15;
     },
   },
 });
