@@ -1,5 +1,3 @@
-import { Student } from "@/app/student-page/studentcolumns";
-import { RootState } from "@/redux/store/store";
 import { StudentData } from "@/types/student";
 import UploaderFactory from "@/utilities/file-upload/upload-factory";
 import { useCreate } from "@refinedev/core";
@@ -7,9 +5,9 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { FieldValues, useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store/store";
 import { toast } from "sonner";
 
-// useAddStudentForm.ts
 export const useAddStudentForm = () => {
   const router = useRouter();
   const [imageUpload, setImageUpload] = useState(false);
@@ -26,9 +24,8 @@ export const useAddStudentForm = () => {
     handleSubmit,
     setValue,
     watch,
-    setError,
-    clearErrors,
     formState: { errors },
+    clearErrors,
   } = useForm<Partial<StudentData>>({
     defaultValues: {
       student_name: "",
@@ -45,35 +42,27 @@ export const useAddStudentForm = () => {
       institute_uuid: undefined,
       image_field: undefined,
     },
-    // Add validation resolver
-    mode: "onSubmit",
+    mode: "onSubmit", // Trigger validation on form submission
+    // Define validation rules for required fields
+    resolver: async (data) => {
+      const errors: any = {};
+      if (!data.student_name) errors.student_name = { message: "Full Name is required" };
+      if (!data.department) errors.department = { message: "Department is required" };
+      if (!data.roll_no) errors.roll_no = { message: "Roll No. is required" };
+      if (!data.email) errors.email = { message: "Email is required" };
+      if (!data.gender) errors.gender = { message: "Gender is required" };
+
+      return {
+        values: Object.keys(errors).length === 0 ? data : {},
+        errors,
+      };
+    },
   });
 
   const { mutate, isLoading } = useCreate();
 
   const onSubmit = async (data: FieldValues) => {
-    // Required field validation
-    if (!data.student_name) {
-      setError("student_name", { message: "Full Name is required" });
-      return;
-    }
-    if (!data.email) {
-      setError("email", { message: "Email is required" });
-      return;
-    }
-    if (!data.roll_no) {
-      setError("roll_no", { message: "Roll No. is required" });
-      return;
-    }
-    if (!data.department) {
-      setError("department", { message: "Department is required" });
-      return;
-    }
-    if (!data.gender) {
-      setError("gender", { message: "Gender is required" });
-      return;
-    }
-
+    // If we reach here, all required fields are valid (handled by resolver)
     if (data.image_field) {
       setImageUpload(true);
       const uploader = UploaderFactory.createUploader("cloudinary");
@@ -126,7 +115,6 @@ export const useAddStudentForm = () => {
     isLoading: isLoading || imageUpload,
     setValue,
     watch,
-    setError,
     clearErrors,
   };
 };

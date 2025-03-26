@@ -41,7 +41,6 @@ const AddStudent: React.FC = () => {
     setValue,
     errors,
     watch,
-    setError,
     clearErrors,
   } = useAddStudentForm();
 
@@ -49,14 +48,10 @@ const AddStudent: React.FC = () => {
     resource: `student/departments`,
   });
 
-  console.log("Department List:", departmentList?.data);
-
   const getDepartmentOptions = (): string[] => {
     if (isDepartmentLoading) return ["Loading..."];
     if (error) return ["Error loading departments"];
     if (!departmentList?.data) return ["NA"];
-
-    // Flatten the array if it's a string[][]
     return Array.isArray(departmentList.data) ? departmentList.data.flat() : ["NA"];
   };
 
@@ -87,9 +82,8 @@ const AddStudent: React.FC = () => {
 
   const handleStudentSubmit = async (data: any) => {
     try {
-      if (!isPossiblePhoneNumber(data.phone_no as string)) {
-        setError("phone_no", { message: "Wrong Phone Number Format" });
-        return;
+      if (data.phone_no && !isPossiblePhoneNumber(data.phone_no as string)) {
+        return; // Let the PhoneNumber component handle its own error
       }
       const studentData: any = await onSubmit(data);
       generateBarcode(studentData?.studentId || "No ID Provided");
@@ -160,9 +154,6 @@ const AddStudent: React.FC = () => {
               name="student_name"
               register={register}
               type="text"
-              validation={{
-                required: "Full Name is required",
-              }}
               placeholder="Enter Full Name"
             />
 
@@ -189,10 +180,6 @@ const AddStudent: React.FC = () => {
               name="roll_no"
               register={register}
               type="number"
-              validation={{
-                valueAsNumber: true,
-                required: "Roll No. is required",
-              }}
               placeholder="Enter Roll No."
             />
 
@@ -202,9 +189,6 @@ const AddStudent: React.FC = () => {
               name="email"
               register={register}
               type="email"
-              validation={{
-                required: "Email is required",
-              }}
               placeholder="Enter Email"
             />
 
