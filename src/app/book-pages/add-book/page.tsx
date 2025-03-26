@@ -90,7 +90,7 @@ const AddBook = () => {
       const date = new Date(dateString);
       return isNaN(date.getTime()) ? null : date.toISOString().split("T")[0];
     };
-    // FIXED
+    // To Fix
     delete data.title_images
     delete data.remarks
 

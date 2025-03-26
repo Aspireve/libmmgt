@@ -43,6 +43,7 @@ const EditStudent: React.FC = () => {
     onSubmit,
     watch,
     setValue,
+    isFormInitialized,
   } = useEditStudentForm(studentUuid || "");
 
   const {
@@ -64,7 +65,8 @@ const EditStudent: React.FC = () => {
     }
   };
 
-  if (isFetching) {
+  // Show the skeleton until the form is fully initialized
+  if (isFetching || !isFormInitialized) {
     return <EditSkeleton />;
   }
 
@@ -191,12 +193,12 @@ const EditStudent: React.FC = () => {
                     />
                   </div>
 
-                  <div>
+                  <div className="text-[#717680]">
                     <Label>Gender</Label>
                     <Select
                       onValueChange={(value) =>
                         register("gender").onChange({
-                          target: { value, name: "gender" },
+                          target: { name: "gender", value },
                         })
                       }
                       value={watch("gender") || ""}
