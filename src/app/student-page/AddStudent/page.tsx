@@ -24,6 +24,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useList } from "@refinedev/core";
+import { isPossiblePhoneNumber } from "react-phone-number-input";
 
 const AddStudent: React.FC = () => {
   const breadcrumbItems = [
@@ -40,6 +41,8 @@ const AddStudent: React.FC = () => {
     setValue,
     errors,
     watch,
+    setError,
+    clearErrors
   } = useAddStudentForm();
 
   const { data: departmentList } = useList<{ data: string[] }>({
@@ -78,10 +81,14 @@ const AddStudent: React.FC = () => {
   // Modified onSubmit to include barcode generation
   const handleStudentSubmit = async (data: any) => {
     try {
+      if (!isPossiblePhoneNumber(data.phone_no as string)) {
+        setError("phone_no", { message: "Wrong Phone Number Format" });
+        return;
+      }
       // First submit the student data
       const studentData: any = await onSubmit(data);
       generateBarcode(studentData?.studentId || "No ID Provided");
-      router.push("/student-page")
+      router.push("/student-page");
     } catch (error) {
       console.error("Error adding student:", error);
     }
@@ -100,6 +107,11 @@ const AddStudent: React.FC = () => {
     }
   };
 
+  // useEffect(() => {
+  //   setError("phone_no", { message: "Wrong Number" });
+  //   console.log("here");
+  // }, []);
+
   return (
     <>
       <CustomBreadcrumb items={breadcrumbItems} />
@@ -113,20 +125,20 @@ const AddStudent: React.FC = () => {
           {/* First Container - Profile Image */}
           <div className="flex flex-col border gap-4 border-[#E0E2E7] bg-[#F9F9FC] items-center justify-center rounded-xl p-2">
             {profileImage ? (
-                <Image
-                  src={profileImage as string}
-                  alt="Profile"
-                  width={150}
-                  height={150}
-                  style={{ objectFit: "cover" }}
-                />
-              ) : (
-                <UserRound
-                  className="text-[#1E40AF] bg-[#0066FF22] p-3 rounded-full border-8 border-[#789DFF66]"
-                  strokeWidth={2.5}
-                  size={70}
-                />
-              )}
+              <Image
+                src={profileImage as string}
+                alt="Profile"
+                width={150}
+                height={150}
+                style={{ objectFit: "cover" }}
+              />
+            ) : (
+              <UserRound
+                className="text-[#1E40AF] bg-[#0066FF22] p-3 rounded-full border-8 border-[#789DFF66]"
+                strokeWidth={2.5}
+                size={70}
+              />
+            )}
             <input
               ref={fileInputRef}
               type="file"
@@ -199,7 +211,13 @@ const AddStudent: React.FC = () => {
               <PhoneNumber
                 name="phone_no"
                 readOnly={false}
-                setValue={(name, value) => setValue("phone_no", value)}
+                error={errors}
+                setValue={(name, value) => {
+                  setValue("phone_no", value);
+                  if(isPossiblePhoneNumber(value as string)) {
+                    clearErrors("phone_no");
+                  }
+                }}
               />
             </div>
 

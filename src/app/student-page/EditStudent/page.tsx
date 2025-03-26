@@ -42,7 +42,7 @@ const EditStudent: React.FC = () => {
     isFetching,
     onSubmit,
     watch,
-    setValue,
+    setValue
   } = useEditStudentForm(studentUuid || "");
 
   const password = watch("password");
@@ -171,6 +171,7 @@ const EditStudent: React.FC = () => {
                       name="phone_no"
                       value={watch("phone_no") || ""}
                       setValue={setValue}
+                      error={errors}
                     />
                   </div>
 

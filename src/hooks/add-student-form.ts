@@ -25,6 +25,8 @@ export const useAddStudentForm = () => {
     handleSubmit,
     setValue,
     watch,
+    setError,
+    clearErrors,
     formState: { errors },
   } = useForm<Partial<StudentData>>({
     defaultValues: {
@@ -85,12 +87,12 @@ export const useAddStudentForm = () => {
             toast.success("Student added successfully!");
             // router.push("/student-page");
             // console.log({ data });
-            resolve(data.data)
+            resolve(data.data);
             // return data;
           },
           onError: (error: any) => {
             toast.error("Error adding student: " + error.message);
-            reject(error)
+            reject(error);
           },
         }
       );
@@ -105,5 +107,7 @@ export const useAddStudentForm = () => {
     isLoading: isLoading || imageUpload,
     setValue,
     watch,
+    setError,
+    clearErrors
   };
 };
