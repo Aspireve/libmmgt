@@ -172,6 +172,7 @@ const EditStudent: React.FC = () => {
                     <Label>Phone Number</Label>
                     <PhoneNumber
                       name="phone_no"
+                      error={errors}
                       value={watch("phone_no") || ""}
                       setValue={setValue}
                     />

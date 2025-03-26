@@ -1,8 +1,11 @@
-import React, { ForwardedRef, forwardRef, useEffect, useState } from 'react';
-import PhoneInput, { getCountries } from 'react-phone-number-input';
-import { E164Number } from 'libphonenumber-js';
-import 'react-phone-number-input/style.css';
-import { StudentData } from '@/types/student';
+import React, { ForwardedRef, forwardRef, useEffect, useState } from "react";
+import PhoneInput, {
+  getCountries,
+  isValidPhoneNumber,
+} from "react-phone-number-input";
+import { E164Number } from "libphonenumber-js";
+import "react-phone-number-input/style.css";
+import { StudentData } from "@/types/student";
 
 // Define props type for the component
 interface PhoneNumberProps {
@@ -10,6 +13,7 @@ interface PhoneNumberProps {
   value?: string; // Accept external value
   readOnly?: boolean;
   setValue: (name: keyof StudentData, value: string | undefined) => void;
+  error: any;
 }
 
 // Define props type for the custom input
@@ -66,9 +70,17 @@ const CustomCountrySelect = forwardRef<
   );
 });
 
-const PhoneNumber: React.FC<PhoneNumberProps> = ({ name, value, readOnly, setValue }) => {
-  const [phoneValue, setPhoneValue] = useState<E164Number | undefined>(value as E164Number);
-  const [selectedCountry, setSelectedCountry] = useState<string>('IN');
+const PhoneNumber: React.FC<PhoneNumberProps> = ({
+  name,
+  value,
+  readOnly,
+  setValue,
+  error,
+}) => {
+  const [phoneValue, setPhoneValue] = useState<E164Number | undefined>(
+    value as E164Number
+  );
+  const [selectedCountry, setSelectedCountry] = useState<string>("IN");
 
   // Sync external value changes
   useEffect(() => {
@@ -100,9 +112,15 @@ const PhoneNumber: React.FC<PhoneNumberProps> = ({ name, value, readOnly, setVal
           onCountryChange={handleCountryChange}
           countrySelectComponent={CustomCountrySelect}
           inputComponent={CustomPhoneInput}
+          // error
+          // error={phoneValue ? (isValidPhoneNumber(phoneValue) ? undefined : 'Invalid phone number') : 'Phone number required'}
           className="w-full flex flex-row gap-2 m-0 p-0 items-center"
         />
+
       </div>
+        {error?.[name] && (
+          <p className="text-red-500 text-sm">{error[name]?.message}</p>
+        )}
     </div>
   );
 };
