@@ -53,8 +53,12 @@ const InstituteDropdown = ({
       handleSelect(selectedOption);
       event.preventDefault();
     }
-  };
-
+  }
+  useEffect(() => {
+    if (selectedValue) {
+      setSelectedOption(selectedValue);
+    }
+  }, [selectedValue]);
   return (
     <div>
       <Label>{label}</Label>

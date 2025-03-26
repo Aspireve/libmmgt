@@ -4,7 +4,7 @@ import React, { useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Loader2, Eye, EyeOff, UserRound } from "lucide-react";
 import { useEditStudentForm } from "@/hooks/edit-student-form";
-import { useUpdate } from "@refinedev/core";
+import { useList, useUpdate } from "@refinedev/core";
 import Header from "@/components/custom/header";
 import { Button } from "@/components/ui/button";
 import { InputField } from "@/components/custom/inputfield";
@@ -29,6 +29,10 @@ const EditStudent: React.FC = () => {
     { label: "Student Directory", href: "/student-page" },
     { label: "Edit Student", href: "/student-page/EditStudent" },
   ];
+
+  const { data: departmentList } = useList<{ data: string[] }>({
+    resource: `student/departments`,
+  });
 
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -60,13 +64,6 @@ const EditStudent: React.FC = () => {
   if (isFetching) {
     return <EditSkeleton />;
   }
-
-  const departmentList = [
-    "Computer Science",
-    "Information Technology",
-    "Mechanical Engineering",
-    "Electrical Engineering",
-  ];
 
   return (
     <>
@@ -132,17 +129,23 @@ const EditStudent: React.FC = () => {
                     placeholder="Enter Full Name"
                   />
 
+
                   <InstituteDropdown
-                    options={departmentList}
+                    // @ts-ignore
+                    options={departmentList?.data || ["NA"]}
                     label="Department"
                     placeholder="Select Department"
-                    onSelect={(value) => setValue("department", value)}
+                    onSelect={(value) =>
+                      register("department").onChange({
+                        target: { value, name: "department" },
+                      })
+                    }
                     selectedValue={watch("department")}
                   />
 
                   <InputField
                     errors={errors}
-                    label="Roll No."
+                    label="Roll No"
                     name="roll_no"
                     register={register}
                     type="number"
@@ -177,8 +180,8 @@ const EditStudent: React.FC = () => {
                   <div>
                     <Label>Gender</Label>
                     <Select
-                      {...register("gender")} 
-                      value={watch("gender") || ""} 
+                      {...register("gender")}
+                      value={watch("gender") || ""}
                       onValueChange={(value) =>
                         register("gender").onChange({
                           target: { name: "gender", value },
@@ -186,6 +189,14 @@ const EditStudent: React.FC = () => {
                       }
                       required
                     >
+
+                    {/* <Select
+                      {...register("gender")}
+                      value={watch("gender") || ""}
+                      onValueChange={(value) => setValue("gender", value)}
+                      required
+                    > */}
+
                       <SelectTrigger className="w-full p-2 border border-[#717680] rounded">
                         <SelectValue placeholder="Select Gender" />
                       </SelectTrigger>
