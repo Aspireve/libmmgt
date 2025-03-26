@@ -33,8 +33,8 @@ const JournalPage = () => {
 
 
         <section>
-          <div className='container'>
         <Tabbing routes={bookRoutes} className="w-[20%]" />
+          <div className="mx-[40px]">
             
             <MasterTable
             title='Periodicals'
