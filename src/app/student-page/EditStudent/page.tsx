@@ -21,7 +21,7 @@ const EditStudent: React.FC = () => {
   ]
   const router = useRouter();
   const searchParams = useSearchParams();
-  const studentUuid = searchParams.get("id");
+  const studentUuid = searchParams.get("student_id");
 
   const { mutate, isLoading } = useUpdate();
 
