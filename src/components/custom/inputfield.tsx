@@ -22,7 +22,7 @@ export const InputField: React.FC<InputFieldProps> = ({
         <Skeleton className="h-10 w-full animate-pulse bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 bg-[length:200%_100%]" />
       ) : (
         <Input
-          className="text-[#343232]"
+          className="text-[#717680]"
           type={type}
           max={type === "date" ? new Date().toISOString().split("T")[0] : undefined}
           {...register(name, validation)} // Correct usage
