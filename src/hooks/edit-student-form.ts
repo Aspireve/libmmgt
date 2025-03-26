@@ -16,7 +16,7 @@ export const useEditStudentForm = (studentUuid: string) => {
     handleSubmit,
     reset,
     watch,
-    setValue, // ✅ Ensure setValue is included here
+    setValue,
     formState: { errors },
   } = useForm<StudentData>({
     defaultValues: {
@@ -30,7 +30,7 @@ export const useEditStudentForm = (studentUuid: string) => {
       password: "",
       confirm_password: "",
       date_of_birth: "",
-      gender: "",
+      gender: "", // Ensure this is an empty string, not undefined
       institute_name: "",
       image_field: null,
     },
