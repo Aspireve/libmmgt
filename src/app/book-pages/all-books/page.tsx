@@ -31,9 +31,8 @@ const columns = getBookColumns(handleEdit);
 
 
       <section>
-        <div className="container">
            <Tabbing routes={bookRoutes} className="w-[20%]" />
-             
+        <div className="mx-[40px]">
               {/* <div className="relative">
                 <Button
                   className="border border-[#1E40AF] text-[#1E40AF] rounded-[10px]"

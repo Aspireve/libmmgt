@@ -8,7 +8,17 @@ import { getBookColumns } from './columns';
 import MasterTable from '@/app/test/table-page';
 import { useList } from '@refinedev/core';
 import DeleteBook from '@/components/books/delete-book';
-import useDisclosure from '@/hooks/disclosure-hook';
+import Tabbing from '@/components/custom/tabbing';
+
+enum LibraryTabs {
+    BOOKDETAILS = "Book Details",
+    ACTIVITY = "Activities",
+  }
+
+  const TABS = [
+    { key: LibraryTabs.BOOKDETAILS, label: "Books Details" },
+    { key: LibraryTabs.ACTIVITY, label: "Activities" },
+  ];
 
 const Book_details = () => {
     const book_uuid = useSearchParams().get("book_uuid");
@@ -35,15 +45,26 @@ const Book_details = () => {
             <section>
                 <div className="container">
                 
-                    <MasterTable
-                    title='Book Copies'
-                    resource="book_v2/get_copies_with_title"
-                    columns={getBookColumns}
-                    query={[
-                        { field: "_book_uuid", operator: "eq", value: `${book_uuid}` }
-                    ]}
-                    AddedOptions={[DeleteBook]}
-                    />
+                    
+                    <Tabbing
+                            tabs={TABS}
+                            content={{
+                              [LibraryTabs.BOOKDETAILS]:
+                            <>
+                              <MasterTable
+                              title='Book Copies'
+                              resource="book_v2/get_copies_with_title"
+                              columns={getBookColumns}
+                              query={[
+                                  { field: "_book_uuid", operator: "eq", value: `${book_uuid}` }
+                              ]}
+                              AddedOptions={[DeleteBook]}
+                              /></>,
+                              [LibraryTabs.ACTIVITY]: <>
+                                <p>ACTIVITIES</p>
+                              </>,
+                            }}
+                          />
 
                 </div>
             </section>

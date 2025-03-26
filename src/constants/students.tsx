@@ -60,7 +60,7 @@ export const StudentListTable = ({
   { accessorKey: "roll_no", header: "Roll no" },
   { accessorKey: "department", header: "Department" },
   { accessorKey: "email", header: "Email" },
-  { accessorKey: "year_of_admission", header: "Year of Admission" },
+  { accessorFn: (data) => data.year_of_admission ?? "Not Provided", header: "Year of Admission" },
   {
     id: "actions",
     header: "Actions",

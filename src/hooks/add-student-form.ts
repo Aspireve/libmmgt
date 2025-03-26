@@ -4,12 +4,14 @@ import { StudentData } from "@/types/student";
 import UploaderFactory from "@/utilities/file-upload/upload-factory";
 import { useCreate } from "@refinedev/core";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { FieldValues, useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 import { toast } from "sonner";
 
 export const useAddStudentForm = () => {
   const router = useRouter();
+  const [imageUpload, setImageUpload] = useState(false);
 
   const institute_id = useSelector(
     (state: RootState) => state.auth.institute_uuid
@@ -22,6 +24,7 @@ export const useAddStudentForm = () => {
     register,
     handleSubmit,
     setValue,
+    watch,
     formState: { errors },
   } = useForm<Partial<StudentData>>({
     defaultValues: {
@@ -45,9 +48,11 @@ export const useAddStudentForm = () => {
 
   const onSubmit = async (data: FieldValues) => {
     if (data.image_field) {
+      setImageUpload(true);
       const uploader = UploaderFactory.createUploader("cloudinary");
       const uploadedFileUrl = await uploader.uploadFile(data.image_field);
       data.image_field = uploadedFileUrl;
+      setImageUpload(false);
     }
     // const uploader = UploaderFactory.createUploader("cloudinary");
 
@@ -72,19 +77,33 @@ export const useAddStudentForm = () => {
       institute_name: institute_name ?? "",
     };
 
-    mutate(
-      { resource: "student/create", values: studentData },
-      {
-        onSuccess: () => {
-          toast.success("Student added successfully!");
-          router.push("/student-page");
-        },
-        onError: (error: any) => {
-          toast.error("Error adding student: " + error.message);
-        },
-      }
-    );
+    return new Promise((resolve, reject) => {
+      mutate(
+        { resource: "student/create", values: studentData },
+        {
+          onSuccess: (data) => {
+            toast.success("Student added successfully!");
+            // router.push("/student-page");
+            // console.log({ data });
+            resolve(data.data)
+            // return data;
+          },
+          onError: (error: any) => {
+            toast.error("Error adding student: " + error.message);
+            reject(error)
+          },
+        }
+      );
+    });
   };
 
-  return { register, handleSubmit, errors, onSubmit, isLoading, setValue };
+  return {
+    register,
+    handleSubmit,
+    errors,
+    onSubmit,
+    isLoading: isLoading || imageUpload,
+    setValue,
+    watch,
+  };
 };

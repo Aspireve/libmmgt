@@ -17,8 +17,6 @@ import { useCreate } from "@refinedev/core";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
-
-
 export default function IssueBook({
   setRefreshAction,
 }: {
@@ -28,13 +26,12 @@ export default function IssueBook({
   const { mutate, isLoading } = useCreate();
 
   const handleSubmit = (e: any) => {
-    e.preventDefault()
+    e.preventDefault();
     mutate(
       {
-        resource:"/book_v2/update-book-log",
-          
+        resource: "/book_v2/update-book-log",
+
         values: {
-          barcode: form.getFieldValue("barcode"),
           book_copy_id: form.getFieldValue("bookId"),
           student_id: form.getFieldValue("studentId"),
           action: action === ActionType.CHECK_IN ? "borrow" : "return",
@@ -57,13 +54,12 @@ export default function IssueBook({
     defaultValues: {
       action: ActionType.CHECK_IN,
       bookId: "",
-      barcode: "",
       studentId: "",
     },
   });
 
   return (
-    <div className="transition-all duration-300 hover:shadow-lg border border-[#AEB1B9] shadow-[#AEB1B9] max-w-[90%] h-[190px] rounded-[12px] bg-[#F3F4F6] ml-10 mt-5 p-6">
+    <div className="transition-all duration-300 hover:shadow-lg border border-[#AEB1B9] shadow-[#AEB1B9] rounded-[12px] bg-[#F3F4F6] my-6 p-6">
       <div className="flex items-center mb-4 gap-6">
         <h2 className="text-2xl font-semibold">
           {action === ActionType.CHECK_IN ? "Issue Book" : "Return a Book"}
@@ -71,7 +67,6 @@ export default function IssueBook({
         <form.Field name="action">
           {(field) => (
             <Select
-
               value={action}
               onValueChange={(value) => setAction(value as ActionType)}
             >
@@ -87,6 +82,23 @@ export default function IssueBook({
         </form.Field>
       </div>
       <form onSubmit={handleSubmit} className="flex flex-wrap gap-4">
+        <form.Field name="studentId">
+          {(field) => (
+            <div className="flex-1 min-w-[200px]">
+              <Label htmlFor="studentId" className="text-[#1F2937] mb-1">
+                Student ID
+              </Label>
+              <Input
+                id="studentId"
+                placeholder="Enter Student ID"
+                value={field.state.value}
+                onChange={(e) => field.handleChange(e.target.value)}
+                className="bg-white border border-[#D5D7DA] rounded-[8px] text-[#1F2937]"
+                required
+              />
+            </div>
+          )}
+        </form.Field>
         <form.Field name="bookId">
           {(field) => (
             <div className="flex-1 min-w-[200px]">
@@ -105,12 +117,10 @@ export default function IssueBook({
           )}
         </form.Field>
 
-        <form.Field name="barcode">
+        {/* <form.Field name="barcode">
           {(field) => (
             <div className="flex-1 min-w-[200px]">
-              <Label className="text-[#1F2937] mb-1">
-                Barcode of Book
-              </Label>
+              <Label className="text-[#1F2937] mb-1">Barcode of Book</Label>
               <Input
                 id="barcode"
                 placeholder="Enter Book Barcode"
@@ -121,25 +131,7 @@ export default function IssueBook({
               />
             </div>
           )}
-        </form.Field>
-
-        <form.Field name="studentId">
-          {(field) => (
-            <div className="flex-1 min-w-[200px]">
-              <Label htmlFor="studentId" className="text-[#1F2937] mb-1">
-                Student ID
-              </Label>
-              <Input
-                id="studentId"
-                placeholder="Enter Student ID"
-                value={field.state.value}
-                onChange={(e) => field.handleChange(e.target.value)}
-                className="bg-white border border-[#D5D7DA] rounded-[8px] text-[#1F2937]"
-                required
-              />
-            </div>
-          )}
-        </form.Field>
+        </form.Field> */}
 
         <div className="flex items-center gap-2 ml-auto">
           <Button

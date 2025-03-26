@@ -65,7 +65,7 @@ const AddJournal = () => {
       <>
         <Header heading="Add Journal" subheading="Tanvir Chavan" />
 
-        <Tabbing routes={addbookRoutes} className='w-[30%]' />
+        <Tabbing routes={addbookRoutes} className='w-[20%]' />
         <section className='p-10'>
           <div className="container">
             {/* Dropdown  */}

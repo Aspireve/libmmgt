@@ -19,7 +19,7 @@ export const Tabbing = <T extends string>({ tabs, content }: TabsProps<T>) => {
 
   return (
     <>
-      <div className="ml-10 mt-8 flex justify-evenly bg-white border border-[#e4e4e4] rounded-[8px] gap-[6px] m-4 p-[5px] w-fit">
+      <div className="mt-8 mb-4 flex justify-evenly bg-white border border-[#e4e4e4] rounded-[8px] gap-[6px] p-[5px] w-fit">
         {tabs.map((tab) => (
           <Button
             key={tab.key}

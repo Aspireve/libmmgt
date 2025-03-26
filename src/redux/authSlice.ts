@@ -6,7 +6,7 @@ const initialState: AuthState = {
   institute_uuid: "828f0d33-258f-4a92-a235-9c1b30d8882b",
   employee_uuid: null,
   first_name: null,
-  institute_name: "TIA",
+  institute_name: "Thakur Institute of Aviation",
   organization_uuid: null,
   email: null,
   phone: null,

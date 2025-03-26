@@ -1,16 +1,16 @@
-import { useEffect } from "react"; 
-import { useForm, FieldValues } from "react-hook-form"; 
-import { useOne } from "@refinedev/core"; 
-import { toast } from "sonner"; 
-import { StudentData, StudentFromDatabase } from "@/types/student"; 
-import { useRouter } from "next/navigation"; 
-import { useSelector } from "react-redux"; 
+import { useEffect } from "react";
+import { useForm, FieldValues } from "react-hook-form";
+import { useOne } from "@refinedev/core";
+import { toast } from "sonner";
+import { StudentData, StudentFromDatabase } from "@/types/student";
+import { useRouter } from "next/navigation";
+import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store/store";
 
 export const useEditStudentForm = (studentUuid: string) => {
   const router = useRouter();
-  const institute_id = useSelector((state: RootState) => state.auth.institute_uuid);
 
+  const institute_id = useSelector((state: RootState) => state.auth.institute_uuid);
   const {
     register,
     handleSubmit,
@@ -75,8 +75,11 @@ export const useEditStudentForm = (studentUuid: string) => {
   
 
   const onSubmit = (formData: FieldValues, mutate: Function) => {
-    const validStudentUuid = 
-      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(studentUuid)
+    
+    const validStudentUuid =
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
+        studentUuid
+      )
         ? studentUuid
         : "";
   
@@ -96,27 +99,8 @@ export const useEditStudentForm = (studentUuid: string) => {
       ...formData,
       student_uuid: validStudentUuid,
       institute_id: institute_id ?? "",
-      phone_no: phoneNo, // ✅ Updated phone number
     };
-  
-    // Optional fields handling
-    const optionalFields: (keyof StudentData)[] = [
-      'address',
-      'roll_no',
-      'year_of_admission',
-      'date_of_birth',
-      'gender',
-      'institute_name',
-      'image_field'
-    ];
-  
-    optionalFields.forEach(field => {
-      if (!formData[field]) {
-        delete studentData[field];
-      }
-    });
-  
-    // Password validation
+
     const passwordValue = formData.password?.trim();
     const confirmPasswordValue = formData.confirm_password?.trim();
   
