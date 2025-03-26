@@ -30,7 +30,7 @@ export const useEditStudentForm = (studentUuid: string) => {
       password: "",
       confirm_password: "",
       date_of_birth: "",
-      gender: "", // Ensure this is an empty string, not undefined
+      gender: "", 
       institute_name: "",
       image_field: null,
     },
@@ -70,7 +70,6 @@ export const useEditStudentForm = (studentUuid: string) => {
       setValue("gender", student.gender?.toLowerCase() || ""); 
     }
   }, [data, reset, studentUuid, setValue]);
-  
   
   
 

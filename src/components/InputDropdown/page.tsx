@@ -15,7 +15,22 @@ import {
   CommandInput,
   CommandItem,
 } from "cmdk";
-import { InputField } from "../custom/inputfield";
+import { UseFormRegister, FieldErrors } from "react-hook-form";
+
+interface InstituteDropdownProps {
+  options?: string[];
+  label?: string;
+  placeholder?: string;
+  onSelect?: (value: string) => void;
+  selectedValue?: string;
+  register: UseFormRegister<any>; // You can replace `any` with your form data type
+  errors?: FieldErrors;
+  name: string;
+  validation?: Record<string, any>;
+  disabled?: boolean;
+  readonly?: boolean;
+  required?: boolean;
+}
 
 const InstituteDropdown = ({
   register,
@@ -25,28 +40,25 @@ const InstituteDropdown = ({
   label = "Institute",
   placeholder = "Select Option",
   onSelect,
-  selectedValue = "", // Add this prop
-  validation = {},
+  selectedValue = "",
+  validation,
   disabled = false,
   readonly = false,
-}: {
-  options?: string[];
-  label?: string;
-  placeholder?: string;
-  onSelect?: (value: string) => void;
-  selectedValue?: string; // Allow passing an initial selected value
-  register: any;
-  errors: any;
-  name: string;
-  validation: any;
-  disabled: boolean;
-  readonly: boolean;
-}) => {
+  required = false,
+}: InstituteDropdownProps) => {
   const [open, setOpen] = useState(false);
-  const [selectedOption, setSelectedOption] = useState("");
-  const [dropdownOptions, setDropdownOptions] = useState<string[]>(
-    options || []
-  );
+  const [selectedOption, setSelectedOption] = useState(selectedValue);
+  const [dropdownOptions, setDropdownOptions] = useState<string[]>(options);
+
+  // Sync selectedOption with selectedValue prop
+  useEffect(() => {
+    setSelectedOption(selectedValue);
+  }, [selectedValue]);
+
+  // Sync dropdownOptions with options prop
+  useEffect(() => {
+    setDropdownOptions(options);
+  }, [options]);
 
   const handleSelect = (option: string) => {
     setSelectedOption(option);
@@ -58,6 +70,9 @@ const InstituteDropdown = ({
 
   const handleInputChange = (value: string) => {
     setSelectedOption(value);
+    if (onSelect) {
+      onSelect(value); // Update form value as user types
+    }
   };
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -72,35 +87,22 @@ const InstituteDropdown = ({
 
   return (
     <div>
-      <Label>{label}</Label>
+      <Label>
+        {label}
+        {required && <span className="text-red-500"> *</span>}
+      </Label>
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
-          {/* <InputField
-            errors={errors}
-            label={label}
-            name={name}
-            register={register}
-            type="text" 
-            // validation={{required}}
-           /> */}
           <Input
             className="text-[#717680]"
             type="text"
-            defaultValue={selectedOption}
-            {...register(name, validation)} // ✅ Type-safe register
+            value={selectedOption} // Controlled input
+            {...register(name, validation)}
             placeholder={placeholder}
             disabled={disabled}
             readOnly={readonly}
+            onClick={() => !disabled && !readonly && setOpen(true)}
           />
-          {/* <Input
-            type="text"
-            placeholder={placeholder}
-            className="w-full cursor-pointer text-[#717680]"
-            value={selectedOption}
-            readOnly
-            onClick={() => setOpen(true)}
-            {...register("")}
-          /> */}
         </PopoverTrigger>
         <PopoverContent className="w-full p-0 z-50 relative bg-white shadow-md border border-gray-200">
           <Command>
@@ -111,11 +113,11 @@ const InstituteDropdown = ({
               onKeyDown={handleKeyDown}
               className="p-2"
             />
-            {/* <CommandEmpty>No results found. Press Enter to add.</CommandEmpty> */}
-            <CommandGroup className="cursor-pointer w-full">
-              {dropdownOptions.map((option) => (
+            <CommandEmpty>No results found.</CommandEmpty>
+            <CommandGroup className="cursor-pointer w-full max-h-[200px] overflow-auto">
+              {dropdownOptions.map((option, index) => (
                 <CommandItem
-                  key={option}
+                  key={`${option}-${index}`}
                   onSelect={() => handleSelect(option)}
                   className="hover:bg-gray-100 px-2 py-2"
                 >
@@ -126,7 +128,11 @@ const InstituteDropdown = ({
           </Command>
         </PopoverContent>
       </Popover>
-      {errors?.[name] && <p className="text-red-500 text-sm">{errors[name]?.message}</p>}
+      {errors?.[name] && (
+        <p className="text-red-500 text-sm mt-1">
+          {errors[name]?.message as string}
+        </p>
+      )}
     </div>
   );
 };

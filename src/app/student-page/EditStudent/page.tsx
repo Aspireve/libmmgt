@@ -4,7 +4,7 @@ import React, { useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Loader2, Eye, EyeOff, UserRound } from "lucide-react";
 import { useEditStudentForm } from "@/hooks/edit-student-form";
-import { useUpdate } from "@refinedev/core";
+import { useList, useUpdate } from "@refinedev/core";
 import Header from "@/components/custom/header";
 import { Button } from "@/components/ui/button";
 import { InputField } from "@/components/custom/inputfield";
@@ -42,10 +42,17 @@ const EditStudent: React.FC = () => {
     isFetching,
     onSubmit,
     watch,
-    setValue
+    setValue,
   } = useEditStudentForm(studentUuid || "");
 
-  const password = watch("password");
+  const {
+    data: departmentList,
+    isLoading: isDepartmentLoading,
+    error,
+  } = useList<string[]>({
+    resource: `student/departments`,
+  });
+
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [profileImage, setProfileImage] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
@@ -61,12 +68,15 @@ const EditStudent: React.FC = () => {
     return <EditSkeleton />;
   }
 
-  const departmentList = [
-    "Computer Science",
-    "Information Technology",
-    "Mechanical Engineering",
-    "Electrical Engineering",
-  ];
+  const getDepartmentOptions = (): string[] => {
+    if (isDepartmentLoading) return ["Loading..."];
+    if (error) return ["Error loading departments"];
+    if (!departmentList?.data) return ["NA"];
+
+    return Array.isArray(departmentList.data)
+      ? departmentList.data.flat()
+      : ["NA"];
+  };
 
   return (
     <>
@@ -80,7 +90,6 @@ const EditStudent: React.FC = () => {
             className="space-y-6"
           >
             <div className="flex gap-6">
-              {/* First Container - Profile Image */}
               <div className="w-1/6 flex flex-col border border-[#E0E2E7] bg-[#F9F9FC] items-center justify-center rounded-xl">
                 <div className="mb-4">
                   <div className="w-24 h-24 rounded-full flex items-center justify-center overflow-hidden">
@@ -119,7 +128,6 @@ const EditStudent: React.FC = () => {
 
               <div className="w-5/6">
                 <div className="grid grid-cols-3 gap-4">
-                  {/* First Row */}
                   <InputField
                     errors={errors}
                     label="Full Name"
@@ -133,11 +141,19 @@ const EditStudent: React.FC = () => {
                   />
 
                   <InstituteDropdown
-                    options={departmentList}
+                    options={getDepartmentOptions()}
                     label="Department"
                     placeholder="Select Department"
-                    onSelect={(value) => setValue("department", value)}
+                    onSelect={(value) => {
+                      setValue("department", value);
+                    }}
                     selectedValue={watch("department")}
+                    register={register}
+                    name="department"
+                    validation={{ required: "Department is required" }}
+                    disabled={false}
+                    readonly={false}
+                    errors={errors}
                   />
 
                   <InputField
@@ -178,13 +194,12 @@ const EditStudent: React.FC = () => {
                   <div>
                     <Label>Gender</Label>
                     <Select
-                      {...register("gender")} 
-                      value={watch("gender") || ""} 
                       onValueChange={(value) =>
                         register("gender").onChange({
-                          target: { name: "gender", value },
+                          target: { value, name: "gender" },
                         })
                       }
+                      value={watch("gender") || ""}
                       required
                     >
                       <SelectTrigger className="w-full p-2 border border-[#717680] rounded">
@@ -195,6 +210,11 @@ const EditStudent: React.FC = () => {
                         <SelectItem value="female">Female</SelectItem>
                       </SelectContent>
                     </Select>
+                    {errors.gender && (
+                      <p className="text-red-500 text-sm mt-1">
+                        {errors.gender.message || "Gender is required"}
+                      </p>
+                    )}
                   </div>
 
                   <div>
@@ -240,7 +260,6 @@ const EditStudent: React.FC = () => {
               </div>
             </div>
 
-            {/* Address - Full width at the bottom */}
             <div>
               <Label>Address</Label>
               <Textarea
@@ -250,7 +269,6 @@ const EditStudent: React.FC = () => {
               />
             </div>
 
-            {/* Buttons */}
             <div className="flex justify-end gap-4 mt-6">
               <Button
                 className="shadow-none bg-gray-200 text-gray-700 hover:bg-gray-300"
