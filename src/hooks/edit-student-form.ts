@@ -42,7 +42,7 @@ export const useEditStudentForm = (studentUuid: string) => {
     error,
   } = useOne<StudentFromDatabase>({
     resource: "student/detail",
-    id: studentUuid ? `student_uuid=${studentUuid}` : "",
+    id: studentUuid ? `student_id=${studentUuid}` : "",
     queryOptions: {
       retry: 1,
       enabled: !!studentUuid,

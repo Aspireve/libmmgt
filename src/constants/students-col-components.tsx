@@ -65,7 +65,7 @@ export const StudentActions = ({
       <Button
         className="p-0 shadow-none"
         onClick={() => {
-          router.push(`/student-page/EditStudent?id=${student.student_uuid}`);
+          router.push(`/student-page/EditStudent?student_id=${student.student_id}`);
         }}
         aria-label="Edit student"
       >
