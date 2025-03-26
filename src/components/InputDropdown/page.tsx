@@ -15,23 +15,38 @@ import {
   CommandInput,
   CommandItem,
 } from "cmdk";
+import { InputField } from "../custom/inputfield";
 
 const InstituteDropdown = ({
+  register,
+  errors,
+  name,
   options = [],
   label = "Institute",
   placeholder = "Select Option",
   onSelect,
   selectedValue = "", // Add this prop
+  validation = {},
+  disabled = false,
+  readonly = false,
 }: {
   options?: string[];
   label?: string;
   placeholder?: string;
   onSelect?: (value: string) => void;
   selectedValue?: string; // Allow passing an initial selected value
+  register: any;
+  errors: any;
+  name: string;
+  validation: any;
+  disabled: boolean;
+  readonly: boolean;
 }) => {
   const [open, setOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState("");
-  const [dropdownOptions, setDropdownOptions] = useState<string[]>(options || []);
+  const [dropdownOptions, setDropdownOptions] = useState<string[]>(
+    options || []
+  );
 
   const handleSelect = (option: string) => {
     setSelectedOption(option);
@@ -60,15 +75,32 @@ const InstituteDropdown = ({
       <Label>{label}</Label>
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
+          {/* <InputField
+            errors={errors}
+            label={label}
+            name={name}
+            register={register}
+            type="text" 
+            // validation={{required}}
+           /> */}
           <Input
+            className="text-[#717680]"
+            type="text"
+            defaultValue={selectedOption}
+            {...register(name, validation)} // ✅ Type-safe register
+            placeholder={placeholder}
+            disabled={disabled}
+            readOnly={readonly}
+          />
+          {/* <Input
             type="text"
             placeholder={placeholder}
             className="w-full cursor-pointer text-[#717680]"
             value={selectedOption}
             readOnly
             onClick={() => setOpen(true)}
-            // {...regis}
-          />
+            {...register("")}
+          /> */}
         </PopoverTrigger>
         <PopoverContent className="w-full p-0 z-50 relative bg-white shadow-md border border-gray-200">
           <Command>
@@ -94,6 +126,7 @@ const InstituteDropdown = ({
           </Command>
         </PopoverContent>
       </Popover>
+      {errors?.[name] && <p className="text-red-500 text-sm">{errors[name]?.message}</p>}
     </div>
   );
 };

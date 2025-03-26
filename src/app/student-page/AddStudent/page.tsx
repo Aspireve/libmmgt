@@ -42,7 +42,7 @@ const AddStudent: React.FC = () => {
     errors,
     watch,
     setError,
-    clearErrors
+    clearErrors,
   } = useAddStudentForm();
 
   const { data: departmentList } = useList<{ data: string[] }>({
@@ -172,13 +172,16 @@ const AddStudent: React.FC = () => {
             <InstituteDropdown
               // @ts-ignore
               options={departmentList?.data || ["NA"]}
+              name="department"
               label="Department"
               placeholder="Select Department"
-              onSelect={(value) =>
-                register("department").onChange({
-                  target: { value, name: "department" },
-                })
-              }
+              register={register}
+              errors={errors}
+              onSelect={(value) => {
+                setValue("department", value);
+                clearErrors("department");
+              }}
+              validation={{ required: "Department is required" }}
             />
 
             <InputField
@@ -214,7 +217,7 @@ const AddStudent: React.FC = () => {
                 error={errors}
                 setValue={(name, value) => {
                   setValue("phone_no", value);
-                  if(isPossiblePhoneNumber(value as string)) {
+                  if (isPossiblePhoneNumber(value as string)) {
                     clearErrors("phone_no");
                   }
                 }}

@@ -29,7 +29,7 @@ export const InputField = <T extends FieldValues>({
   loading = false,
 }: InputFieldProps<T>) => {
   return (
-    <div>
+    <div className="transition-all duration-200">
       <Label>{label}</Label>
       {loading ? (
         <Skeleton className="h-10 w-full animate-pulse bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 bg-[length:200%_100%]" />
