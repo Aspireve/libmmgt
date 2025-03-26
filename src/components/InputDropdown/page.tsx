@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -21,11 +21,13 @@ const InstituteDropdown = ({
   label = "Institute",
   placeholder = "Select Option",
   onSelect,
+  selectedValue = "", // Add this prop
 }: {
   options?: string[];
   label?: string;
   placeholder?: string;
   onSelect?: (value: string) => void;
+  selectedValue?: string; // Allow passing an initial selected value
 }) => {
   const [open, setOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState("");

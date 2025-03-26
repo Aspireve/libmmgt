@@ -16,8 +16,9 @@ export const useEditStudentForm = (studentUuid: string) => {
     handleSubmit,
     reset,
     watch,
+    setValue,
     formState: { errors },
-  } = useForm<Partial<StudentData>>({
+  } = useForm<StudentData>({
     defaultValues: {
       student_name: "",
       department: "",
@@ -28,6 +29,10 @@ export const useEditStudentForm = (studentUuid: string) => {
       year_of_admission: "",
       password: "",
       confirm_password: "",
+      date_of_birth: "",
+      gender: "", // Ensure this is an empty string, not undefined
+      institute_name: "",
+      image_field: null,
     },
   });
 
@@ -46,7 +51,8 @@ export const useEditStudentForm = (studentUuid: string) => {
 
   useEffect(() => {
     if (data?.data) {
-      const student = data.data;
+      const student: StudentFromDatabase = data.data;
+      
       reset({
         student_name: student.student_name || "",
         department: student.department || "",
@@ -55,9 +61,18 @@ export const useEditStudentForm = (studentUuid: string) => {
         address: student.address || "",
         roll_no: student.roll_no || 0,
         year_of_admission: student.year_of_admission || "",
+        date_of_birth: student.date_of_birth || "",
+        gender: student.gender?.toLowerCase() || "",  
+        institute_name: student.institute_name || "",
+        image_field: null,
       });
+  
+      setValue("gender", student.gender?.toLowerCase() || ""); 
     }
-  }, [data, reset, studentUuid]);
+  }, [data, reset, studentUuid, setValue]);
+  
+  
+  
 
   const onSubmit = (formData: FieldValues, mutate: Function) => {
     
@@ -67,13 +82,20 @@ export const useEditStudentForm = (studentUuid: string) => {
       )
         ? studentUuid
         : "";
-
+  
     if (!validStudentUuid) {
       toast.error("Invalid student UUID format.");
       return;
     }
-
-    const studentData: Partial<StudentFromDatabase> = {
+  
+    let phoneNo = formData.phone_no?.trim();
+    
+    // Remove country code if it starts with +91
+    if (phoneNo.startsWith("+91")) {
+      phoneNo = phoneNo.slice(3).trim();
+    }
+  
+    const studentData: Partial<StudentData> = {
       ...formData,
       student_uuid: validStudentUuid,
       institute_id: institute_id ?? "",
@@ -81,32 +103,20 @@ export const useEditStudentForm = (studentUuid: string) => {
 
     const passwordValue = formData.password?.trim();
     const confirmPasswordValue = formData.confirm_password?.trim();
-
+  
     if (!passwordValue) {
       delete studentData.password;
     }
-
+  
     if (!confirmPasswordValue) {
       delete studentData.confirm_password;
     }
-
-    if (
-      passwordValue &&
-      confirmPasswordValue &&
-      passwordValue !== confirmPasswordValue
-    ) {
+  
+    if (passwordValue && confirmPasswordValue && passwordValue !== confirmPasswordValue) {
       toast.error("Passwords do not match.");
       return;
     }
-
-    if (passwordValue) {
-      studentData.password = passwordValue;
-    }
-
-    if (confirmPasswordValue) {
-      studentData.confirm_password = confirmPasswordValue;
-    }
-
+  
     mutate(
       {
         resource: "student/edit",
@@ -121,14 +131,13 @@ export const useEditStudentForm = (studentUuid: string) => {
         },
         onError: (error: any) => {
           toast.error(
-            `Error updating student: ${
-              error.message || "Please try again later."
-            }`
+            `Error updating student: ${error.message || "Please try again later."}`
           );
         },
       }
     );
   };
+  
 
   return {
     register,
@@ -139,5 +148,6 @@ export const useEditStudentForm = (studentUuid: string) => {
     reset,
     watch,
     onSubmit,
+    setValue, // ✅ Ensure setValue is returned
   };
 };

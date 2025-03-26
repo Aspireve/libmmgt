@@ -1,13 +1,15 @@
-import React, { ForwardedRef, forwardRef } from 'react';
+import React, { ForwardedRef, forwardRef, useEffect, useState } from 'react';
 import PhoneInput, { getCountries } from 'react-phone-number-input';
 import { E164Number } from 'libphonenumber-js';
 import 'react-phone-number-input/style.css';
+import { StudentData } from '@/types/student';
 
 // Define props type for the component
 interface PhoneNumberProps {
-  name: string;
+  name: keyof StudentData;
+  value?: string; // Accept external value
   readOnly?: boolean;
-  setValue: (name: string, value: E164Number | undefined) => void;
+  setValue: (name: keyof StudentData, value: string | undefined) => void;
 }
 
 // Define props type for the custom input
@@ -27,7 +29,7 @@ const CustomPhoneInput = forwardRef<HTMLInputElement, CustomInputProps>(
     <input
       {...props}
       ref={ref}
-      className="block w-full px-3 border rounded-md border-input focus:outline-none sm:text-sm text-md py-2 "
+      className="block w-full px-3 border rounded-md border-input focus:outline-none sm:text-sm text-md py-2"
     />
   )
 );
@@ -64,10 +66,14 @@ const CustomCountrySelect = forwardRef<
   );
 });
 
+const PhoneNumber: React.FC<PhoneNumberProps> = ({ name, value, readOnly, setValue }) => {
+  const [phoneValue, setPhoneValue] = useState<E164Number | undefined>(value as E164Number);
+  const [selectedCountry, setSelectedCountry] = useState<string>('IN');
 
-const PhoneNumber: React.FC<PhoneNumberProps> = ({ name, readOnly, setValue }) => {
-  const [value, setLocalValue] = React.useState<E164Number | undefined>();
-  const [selectedCountry, setSelectedCountry] = React.useState<string>('IN');
+  // Sync external value changes
+  useEffect(() => {
+    setPhoneValue(value as E164Number);
+  }, [value]);
 
   const handleCountryChange = (country: string | undefined) => {
     if (country && getCountries().includes(country as any)) {
@@ -76,33 +82,27 @@ const PhoneNumber: React.FC<PhoneNumberProps> = ({ name, readOnly, setValue }) =
   };
 
   const handleChange = (phoneValue: E164Number | undefined) => {
-    setLocalValue(phoneValue);
-    setValue(name, phoneValue);
+    setPhoneValue(phoneValue);
+    setValue(name, phoneValue ? String(phoneValue) : ""); // Convert E164Number to string
   };
-
-  const countryName = selectedCountry
-    ? new Intl.DisplayNames(['en'], { type: 'region' }).of(selectedCountry) || selectedCountry
-    : '';
 
   return (
     <div className="w-full flex flex-col gap-2">
-      {/* <div className="flex items-center gap-3"> */}
-        <div className="flex items-center gap-2">
-          <PhoneInput
-            defaultCountry="IN"
-            name={name}
-            international
-            countryCallingCodeEditable={false}
-            readOnly={readOnly}
-            value={value}
-            onChange={handleChange}
-            onCountryChange={handleCountryChange}
-            countrySelectComponent={CustomCountrySelect}
-            inputComponent={CustomPhoneInput}
-            className="w-full flex flex-row gap-2 m-0 p-0 items-center"
-          />
-        </div>
-      {/* </div> */}
+      <div className="flex items-center gap-2">
+        <PhoneInput
+          defaultCountry="IN"
+          name={name}
+          international
+          countryCallingCodeEditable={false}
+          readOnly={readOnly}
+          value={phoneValue}
+          onChange={handleChange}
+          onCountryChange={handleCountryChange}
+          countrySelectComponent={CustomCountrySelect}
+          inputComponent={CustomPhoneInput}
+          className="w-full flex flex-row gap-2 m-0 p-0 items-center"
+        />
+      </div>
     </div>
   );
 };
