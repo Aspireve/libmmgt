@@ -41,23 +41,33 @@ const AddStudent: React.FC = () => {
     setValue,
     errors,
     watch,
+    clearErrors,
     setError,
-    clearErrors
   } = useAddStudentForm();
 
-  const { data: departmentList } = useList<{ data: string[] }>({
+  const {
+    data: departmentList,
+    isLoading: isDepartmentLoading,
+    error,
+  } = useList<string[]>({
     resource: `student/departments`,
   });
 
-  const profileImage = watch("image_field");
+  const getDepartmentOptions = (): string[] => {
+    if (isDepartmentLoading) return ["Loading..."];
+    if (error) return ["Error loading departments"];
+    if (!departmentList?.data) return ["NA"];
+    return Array.isArray(departmentList.data)
+      ? departmentList.data.flat()
+      : ["NA"];
+  };
 
+  const profileImage = watch("image_field");
   const [showPassword, setShowPassword] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Function to generate unique barcode
   const generateBarcode = (phoneNo?: string) => {
     const barcodeValue = phoneNo ? phoneNo : Date.now().toString();
-
     const canvas = document.createElement("canvas");
     JsBarcode(canvas, barcodeValue, {
       format: "CODE128",
@@ -69,7 +79,6 @@ const AddStudent: React.FC = () => {
     });
 
     const barcodeDataUrl = canvas.toDataURL("image/png");
-
     const downloadLink = document.createElement("a");
     downloadLink.href = barcodeDataUrl;
     downloadLink.download = `Student_Barcode_${phoneNo || "Unknown"}.png`;
@@ -78,14 +87,12 @@ const AddStudent: React.FC = () => {
     document.body.removeChild(downloadLink);
   };
 
-  // Modified onSubmit to include barcode generation
   const handleStudentSubmit = async (data: any) => {
     try {
       if (!isPossiblePhoneNumber(data.phone_no as string)) {
-        setError("phone_no", { message: "Wrong Phone Number Format" });
-        return;
+        setError("phone_no", { message: "Incorrect Format" });
+        return; // Let the PhoneNumber component handle its own error
       }
-      // First submit the student data
       const studentData: any = await onSubmit(data);
       generateBarcode(studentData?.studentId || "No ID Provided");
       router.push("/student-page");
@@ -94,7 +101,6 @@ const AddStudent: React.FC = () => {
     }
   };
 
-  // Function to handle image upload
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
       const reader = new FileReader();
@@ -107,11 +113,6 @@ const AddStudent: React.FC = () => {
     }
   };
 
-  // useEffect(() => {
-  //   setError("phone_no", { message: "Wrong Number" });
-  //   console.log("here");
-  // }, []);
-
   return (
     <>
       <CustomBreadcrumb items={breadcrumbItems} />
@@ -121,9 +122,9 @@ const AddStudent: React.FC = () => {
         onSubmit={handleSubmit(handleStudentSubmit)}
         className="my-10 mx-[40px] space-y-6"
       >
+          {/* <Label>Profile Image</Label> */}
         <div className="flex gap-6">
-          {/* First Container - Profile Image */}
-          <div className="flex flex-col border gap-4 border-[#E0E2E7] bg-[#F9F9FC] items-center justify-center rounded-xl p-2">
+          <div className="flex flex-col border gap-4 border-[#E0E2E7] bg-[#F9F9FC] items-center justify-center rounded-xl p-2 px-6">
             {profileImage ? (
               <Image
                 src={profileImage as string}
@@ -156,29 +157,30 @@ const AddStudent: React.FC = () => {
           </div>
 
           <div className="w-full grid grid-cols-3 gap-4">
-            {/* First Row */}
             <InputField
               errors={errors}
               label="Full Name"
               name="student_name"
               register={register}
               type="text"
-              validation={{
-                required: "Full Name is required",
-              }}
               placeholder="Enter Full Name"
             />
 
             <InstituteDropdown
-              // @ts-ignore
-              options={departmentList?.data || ["NA"]}
+              options={getDepartmentOptions()}
               label="Department"
               placeholder="Select Department"
-              onSelect={(value) =>
-                register("department").onChange({
-                  target: { value, name: "department" },
-                })
-              }
+              onSelect={(value) => {
+                setValue("department", value);
+                if (value) clearErrors("department");
+              }}
+              selectedValue={watch("department")}
+              register={register}
+              name="department"
+              disabled={false}
+              readonly={false}
+              errors={errors}
+              required
             />
 
             <InputField
@@ -187,10 +189,6 @@ const AddStudent: React.FC = () => {
               name="roll_no"
               register={register}
               type="number"
-              validation={{
-                valueAsNumber: true,
-                required: "Roll No. is required",
-              }}
               placeholder="Enter Roll No."
             />
 
@@ -200,21 +198,20 @@ const AddStudent: React.FC = () => {
               name="email"
               register={register}
               type="email"
-              validation={{
-                required: "Email is required",
-              }}
               placeholder="Enter Email"
             />
 
             <div>
-              <Label>Phone Number</Label>
+              <Label>
+                Phone Number <span className="text-red-500"> *</span>
+              </Label>
               <PhoneNumber
                 name="phone_no"
                 readOnly={false}
                 error={errors}
                 setValue={(name, value) => {
                   setValue("phone_no", value);
-                  if(isPossiblePhoneNumber(value as string)) {
+                  if (isPossiblePhoneNumber(value as string)) {
                     clearErrors("phone_no");
                   }
                 }}
@@ -222,14 +219,14 @@ const AddStudent: React.FC = () => {
             </div>
 
             <div className="text-[#717680]">
-              <Label>Gender</Label>
+              <Label>
+                Gender <span className="text-red-500"> *</span>
+              </Label>
               <Select
-                onValueChange={(value) =>
-                  register("gender").onChange({
-                    target: { value, name: "gender" },
-                  })
-                }
-                required
+                onValueChange={(value) => {
+                  setValue("gender", value);
+                  if (value) clearErrors("gender");
+                }}
               >
                 <SelectTrigger className="w-full p-2 border border-[#717680] rounded">
                   <SelectValue placeholder="Select Gender" />
@@ -239,6 +236,11 @@ const AddStudent: React.FC = () => {
                   <SelectItem value="female">Female</SelectItem>
                 </SelectContent>
               </Select>
+              {errors.gender && (
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.gender.message || "Gender is required"}
+                </p>
+              )}
             </div>
 
             <div>
@@ -283,7 +285,6 @@ const AddStudent: React.FC = () => {
           </div>
         </div>
 
-        {/* Address - Full width at the bottom */}
         <div>
           <Label>Address</Label>
           <Textarea
@@ -293,7 +294,6 @@ const AddStudent: React.FC = () => {
           />
         </div>
 
-        {/* Buttons */}
         <div className="flex justify-end gap-4 mt-6">
           <Button
             className="shadow-none bg-white text-gray-700"

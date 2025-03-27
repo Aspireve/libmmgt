@@ -85,7 +85,7 @@ const PhoneNumber: React.FC<PhoneNumberProps> = ({
   // Sync external value changes
   useEffect(() => {
     setPhoneValue(value as E164Number);
-  }, [value]);
+  }, [value]); 
 
   const handleCountryChange = (country: string | undefined) => {
     if (country && getCountries().includes(country as any)) {

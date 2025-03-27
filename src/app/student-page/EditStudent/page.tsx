@@ -23,16 +23,13 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import PhoneNumber from "@/components/phone-number.tsx/PhoneNumber";
 import InstituteDropdown from "@/components/InputDropdown/page";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const EditStudent: React.FC = () => {
   const breadcrumbItems = [
     { label: "Student Directory", href: "/student-page" },
     { label: "Edit Student", href: "/student-page/EditStudent" },
   ];
-
-  const { data: departmentList } = useList<{ data: string[] }>({
-    resource: `student/departments`,
-  });
 
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -47,9 +44,17 @@ const EditStudent: React.FC = () => {
     onSubmit,
     watch,
     setValue,
+    isFormInitialized,
   } = useEditStudentForm(studentUuid || "");
 
-  const password = watch("password");
+  const {
+    data: departmentList,
+    isLoading: isDepartmentLoading,
+    error,
+  } = useList<string[]>({
+    resource: `student/departments`,
+  });
+
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [profileImage, setProfileImage] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
@@ -61,14 +66,29 @@ const EditStudent: React.FC = () => {
     }
   };
 
-  if (isFetching) {
+  // Show the skeleton until the form is fully initialized
+  if (isFetching || !isFormInitialized) {
     return <EditSkeleton />;
   }
+
+  const getDepartmentOptions = (): string[] => {
+    if (isDepartmentLoading) return ["Loading..."];
+    if (error) return ["Error loading departments"];
+    if (!departmentList?.data) return ["NA"];
+
+    return Array.isArray(departmentList.data)
+      ? departmentList.data.flat()
+      : ["NA"];
+  };
 
   return (
     <>
       <CustomBreadcrumb items={breadcrumbItems} />
-      <Header heading="Edit Student" subheading="Update Student Information" />
+      <Header
+        heading="Edit Student"
+        subheading="Update Student Information"
+        isLoading={isFetching}
+      />
 
       <section className="p-10">
         <div className="container mx-auto">
@@ -77,11 +97,10 @@ const EditStudent: React.FC = () => {
             className="space-y-6"
           >
             <div className="flex gap-6">
-              {/* First Container - Profile Image */}
               <div className="w-1/6 flex flex-col border border-[#E0E2E7] bg-[#F9F9FC] items-center justify-center rounded-xl">
                 <div className="mb-4">
                   <div className="w-24 h-24 rounded-full flex items-center justify-center overflow-hidden">
-                    {profileImage ? (
+                    {!isFetching && profileImage ? (
                       <Image
                         src={profileImage}
                         alt="Profile"
@@ -116,7 +135,6 @@ const EditStudent: React.FC = () => {
 
               <div className="w-5/6">
                 <div className="grid grid-cols-3 gap-4">
-                  {/* First Row */}
                   <InputField
                     errors={errors}
                     label="Full Name"
@@ -129,23 +147,25 @@ const EditStudent: React.FC = () => {
                     placeholder="Enter Full Name"
                   />
 
-
                   <InstituteDropdown
-                    // @ts-ignore
-                    options={departmentList?.data || ["NA"]}
+                    options={getDepartmentOptions()}
                     label="Department"
                     placeholder="Select Department"
-                    onSelect={(value) =>
-                      register("department").onChange({
-                        target: { value, name: "department" },
-                      })
-                    }
+                    onSelect={(value) => {
+                      setValue("department", value);
+                    }}
                     selectedValue={watch("department")}
+                    register={register}
+                    name="department"
+                    validation={{ required: "Department is required" }}
+                    disabled={false}
+                    readonly={false}
+                    errors={errors}
                   />
 
                   <InputField
                     errors={errors}
-                    label="Roll No"
+                    label="Roll No."
                     name="roll_no"
                     register={register}
                     type="number"
@@ -172,26 +192,24 @@ const EditStudent: React.FC = () => {
                     <Label>Phone Number</Label>
                     <PhoneNumber
                       name="phone_no"
-                      error={errors}
                       value={watch("phone_no") || ""}
                       setValue={setValue}
+                      error={errors}
                     />
                   </div>
 
-                  <div>
+                  <div className="text-[#717680]">
                     <Label>Gender</Label>
                     <Select
-                      {...register("gender")}
-                      value={watch("gender") || ""}
                       onValueChange={(value) =>
                         register("gender").onChange({
                           target: { name: "gender", value },
                         })
                       }
+                      value={watch("gender") || ""}
                       required
                     >
-
-                      <SelectTrigger className="w-full p-2 border text-[#717680] border-[#717680] rounded">
+                      <SelectTrigger className="w-full p-2 border border-[#717680] rounded">
                         <SelectValue placeholder="Select Gender" />
                       </SelectTrigger>
                       <SelectContent className="bg-white">
@@ -199,7 +217,11 @@ const EditStudent: React.FC = () => {
                         <SelectItem value="female">Female</SelectItem>
                       </SelectContent>
                     </Select>
-
+                    {errors.gender && (
+                      <p className="text-red-500 text-sm mt-1">
+                        {errors.gender.message || "Gender is required"}
+                      </p>
+                    )}
                   </div>
 
                   <div>
@@ -245,17 +267,20 @@ const EditStudent: React.FC = () => {
               </div>
             </div>
 
-            {/* Address - Full width at the bottom */}
-            <div>
-              <Label>Address</Label>
-              <Textarea
-                {...register("address")}
-                placeholder="Enter Address"
-                className="w-full p-2 border border-[#717680] rounded h-24"
-              />
-            </div>
+            {isFetching ? (
+              <Skeleton className="h-40 rounded-xl w-full animate-pulse bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 bg-[length:200%_100%]" />
+            ) : (
+              <div>
+                <Label>Address</Label>
 
-            {/* Buttons */}
+                <Textarea
+                  {...register("address")}
+                  placeholder="Enter Address"
+                  className="w-full p-2 border border-[#717680] rounded h-24"
+                />
+              </div>
+            )}
+
             <div className="flex justify-end gap-4 mt-6">
               <Button
                 className="shadow-none bg-gray-200 text-gray-700 hover:bg-gray-300"
