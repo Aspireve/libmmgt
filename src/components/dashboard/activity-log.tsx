@@ -52,7 +52,7 @@ const ActivityLog = (props: ActivityLogProps) => {
 
   return (
     <div className="flex items-center gap-3 mb-4">
-      <div className="bg-white w-fit p-3 rounded-full flex items-center justify-center aspect-square">
+      <div className="bg-[#F0F1F3] w-fit p-3 rounded-full flex items-center justify-center aspect-square">
         <Image
           src={
             // @ts-ignore
@@ -70,7 +70,7 @@ const ActivityLog = (props: ActivityLogProps) => {
           height={15}
         />
       </div>
-      <div className="bg-white w-full p-2 rounded-[5px]">
+      <div className="bg-[#F0F1F3] w-full p-2 rounded-[5px]">
         <p className="text-sm">
           {/* @ts-ignore */}
           <span className="font-semibold">{props.book_id}</span>{" "}

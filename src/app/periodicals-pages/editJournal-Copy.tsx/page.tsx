@@ -36,7 +36,7 @@
 
 
 //     const UpdateFields = () => {
-//         const book = JournalData?.data?.journal;
+//         const book = JournalData?.data;
 //         if (!book) {
 //             console.warn("No book data available");
 //             return;

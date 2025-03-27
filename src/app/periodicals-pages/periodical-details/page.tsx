@@ -17,10 +17,9 @@ const Book_details = () => {
             <Header heading="Journal" subheading="#34566" />
             <section>
                 <div className="container">
-                
                     <MasterTable
                     title='Book Copies'
-                    resource="journal/get_journal_copy"
+                    resource="journals"
                     columns={getJournalColumns}
                     query={[
                         { field: "_journal_uuid", operator: "eq", value: `${journal_uuid}` }

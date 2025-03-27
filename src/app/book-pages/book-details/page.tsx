@@ -9,6 +9,7 @@ import MasterTable from '@/app/test/table-page';
 import { useList } from '@refinedev/core';
 import DeleteBook from '@/components/books/delete-book';
 import Tabbing from '@/components/custom/tabbing';
+import BookDetailsActivites from '../book-details-activities/page';
 
 enum LibraryTabs {
     BOOKDETAILS = "Book Details",
@@ -61,7 +62,7 @@ const Book_details = () => {
                               AddedOptions={[DeleteBook]}
                               /></>,
                               [LibraryTabs.ACTIVITY]: <>
-                                <p>ACTIVITIES</p>
+                                <BookDetailsActivites/>
                               </>,
                             }}
                           />
