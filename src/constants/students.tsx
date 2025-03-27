@@ -26,6 +26,7 @@ export const initialMapping: StudentMappingType = {
   institute_name: "",
 };
 
+// @ts-ignore
 export const fieldLabels: Record<keyof StudentData, string> = {
   student_name: "Student Name",
   department: "Department",

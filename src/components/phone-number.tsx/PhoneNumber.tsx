@@ -38,6 +38,9 @@ const CustomPhoneInput = forwardRef<HTMLInputElement, CustomInputProps>(
   )
 );
 
+CustomPhoneInput.displayName = "CustomPhoneInput";
+
+
 // Custom Country Select Component without flags
 const CustomCountrySelect = forwardRef<
   HTMLSelectElement,
@@ -69,6 +72,8 @@ const CustomCountrySelect = forwardRef<
     </select>
   );
 });
+
+CustomCountrySelect.displayName = "CustomCountrySelect";
 
 const PhoneNumber: React.FC<PhoneNumberProps> = ({
   name,

@@ -18,6 +18,7 @@ interface PageProps {
   columns: (e: any) => ColumnDef<any>[];
   AddedOptions?: any[];
   query?: LogicalFilter[];
+  idField?: string
 }
 
 export default function MasterTable({
@@ -27,6 +28,7 @@ export default function MasterTable({
   columns,
   AddedOptions,
   query = [],
+  idField = "student_id",
 }: PageProps): any {
   // State
   const [search, setSearch] = useState("");
@@ -57,7 +59,7 @@ export default function MasterTable({
 
   const { selectedData, columnsWithCheckbox, setSelectedData } =
     useRowSelection<any>(
-      (row) => row.student_id,
+      (row) => row?.[idField],
       isSelectable,
       columns({ refetch }),
       listData?.data || []
