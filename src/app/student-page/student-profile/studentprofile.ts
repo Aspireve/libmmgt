@@ -17,6 +17,7 @@ export interface StudentProfileData {
   student_uuid?: string;
   date_of_birth?:string | undefined;
   gender?:string;
+  profileImage?: string;
 }
 
 /** 2) Borrowed Book Interface & Sample Data */

@@ -1,8 +1,4 @@
-import type {
-  StudentData,
-  StudentFromDatabase,
-  StudentMappingType,
-} from "@/types/student";
+import type { StudentData, StudentFromDatabase, StudentMappingType } from "@/types/student";
 import { ColumnDef } from "@tanstack/react-table";
 import {
   StudentActions,
@@ -16,7 +12,7 @@ export const initialMapping: StudentMappingType = {
   email: "",
   phone_no: "",
   address: "",
-  roll_no: "", // Changed from 0 to "" (string) since mapping deals with column names
+  roll_no: "",
   year_of_admission: "",
   password: "",
   confirm_password: "",
@@ -24,6 +20,11 @@ export const initialMapping: StudentMappingType = {
   gender: "",
   institute_id: "",
   institute_name: "",
+  institute_uuid: "",
+  student_id: "",
+  student_uuid: "",
+  image_field: "",
+  is_archived: "",
 };
 
 export const fieldLabels: Record<keyof StudentData, string> = {
@@ -32,7 +33,7 @@ export const fieldLabels: Record<keyof StudentData, string> = {
   email: "Email",
   phone_no: "Phone Number",
   address: "Address",
-  roll_no: "Roll Number", // Updated label from 0 to a string
+  roll_no: "Roll Number",
   year_of_admission: "Year of Admission",
   password: "Password",
   confirm_password: "Confirm Password",
@@ -40,6 +41,11 @@ export const fieldLabels: Record<keyof StudentData, string> = {
   gender: "Gender",
   institute_id: "Institute ID",
   institute_name: "Institute Name",
+  institute_uuid: "Institute UUID",
+  student_id: "Student ID",
+  student_uuid: "Student UUID",
+  image_field: "Image",
+  is_archived: "Archived Status",
 };
 
 export const StudentListTable = ({
