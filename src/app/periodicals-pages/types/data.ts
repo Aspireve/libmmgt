@@ -17,6 +17,7 @@ export interface JournalData {
     available_count: number;
     barcode:string;
     item_type:string;
+    category:string;
     issue_no:string; //TO ADD FROM BACKEND
     frequency:string; //TO ADD FROM BACKEND
     vendor_name:string; //TO ADD FROM BACKEND

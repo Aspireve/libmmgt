@@ -43,7 +43,7 @@ const Book_details = () => {
         <>
             <Header heading={bookTitle} subheading={bookID} />
             <section>
-                <div className="container">
+                <div className="mx-[40px]">
                 
                     
                     <Tabbing

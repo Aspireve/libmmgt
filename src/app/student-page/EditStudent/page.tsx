@@ -191,14 +191,7 @@ const EditStudent: React.FC = () => {
                       required
                     >
 
-                    {/* <Select
-                      {...register("gender")}
-                      value={watch("gender") || ""}
-                      onValueChange={(value) => setValue("gender", value)}
-                      required
-                    > */}
-
-                      <SelectTrigger className="w-full p-2 border border-[#717680] rounded">
+                      <SelectTrigger className="w-full p-2 border text-[#717680] border-[#717680] rounded">
                         <SelectValue placeholder="Select Gender" />
                       </SelectTrigger>
                       <SelectContent className="bg-white">
@@ -206,6 +199,7 @@ const EditStudent: React.FC = () => {
                         <SelectItem value="female">Female</SelectItem>
                       </SelectContent>
                     </Select>
+
                   </div>
 
                   <div>

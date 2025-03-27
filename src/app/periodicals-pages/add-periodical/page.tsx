@@ -1,13 +1,10 @@
 "use client";
 
-import React, { Suspense, useState } from 'react'
-import { Input } from "@/components/ui/input";
+import React, { Suspense, useEffect, useState } from 'react'
 import { Button } from "@/components/ui/button";
 import { Label } from '@/components/ui/label';
-import { Skeleton } from '@/components/ui/skeleton';
-
 import { useForm } from "@refinedev/react-hook-form";
-import { useCreate } from '@refinedev/core';
+import { useCreate, useOne } from '@refinedev/core';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import Header from '@/app/Header/header';
@@ -16,40 +13,90 @@ import { Loader2 } from 'lucide-react';
 import { InputField } from '@/components/custom/inputfield';
 import { addbookRoutes } from '@/app/book-pages/types/routes';
 import { JournalData } from '../types/data';
+import { validateISSN } from '@/hooks/issnValidater';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { RootState } from '@/redux/store/store';
+import { useSelector } from 'react-redux';
 
 const AddJournal = () => {
 
   const router = useRouter();
-  const [isLoadingInput, setIsLoadingInput] = useState(false)
+  const [issn, setIssn] = useState("");
+  const { mutate, isLoading: createLoading } = useCreate();
+  const [isReadable, setIsReadable] = useState(false)
+  const [isDisable, setIsDisable] = useState(true)
+  const [category, setCategory] = useState("");
+
+    const institute_uuid = useSelector((state: RootState) => state.auth.institute_uuid);
+      const institute_name = useSelector((state: RootState) => state.auth.institute_name);
+    
+  
 
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors }
   } = useForm();
 
-  const { mutate, isLoading: createLoading } = useCreate();
+  const { data, refetch } = useOne<JournalData>({
+    resource: "periodical/issn",
+    id: `_issn=${issn}`
+  })
+
+  useEffect(() => {
+    if (issn.length === 8 || issn.length === 9) {
+      const sortedIssn = issn.replace(/-/g, "").toUpperCase();
+      const parsedISSN = validateISSN(sortedIssn)
+
+      if (!parsedISSN) {
+        toast.error("Invalid ISSN format. Please enter a valid ISSN");
+        setIsDisable(false);
+        return;
+      }
+
+      const fetchData = async () => {
+
+        try {
+          const resource = await refetch();
+          const issnResp = resource?.data?.data;
+          const journalData = Array.isArray(issnResp) && issnResp.length > 0 ? issnResp[0] : {};
+          if (!journalData || typeof journalData !== "object" || Object.keys(journalData).length === 0) {
+            toast.error("No journal found for this ISSN.");
+            setIsDisable(false);
+            return;
+          }
+          Object.keys(journalData).forEach((key) => {
+            let value = journalData[key as keyof JournalData];
+            if (key === "subscription_start_date" || key === "subscription_end_date") {
+              value = value ? new Date(value).toISOString().split("T")[0] : "";
+            }
+            setValue(key as keyof JournalData, value as never);
+          });
+
+          toast.success("Journal data mapped successfully!");
+          setIsReadable(true);
+          setIsDisable(false);
+        } catch (error) {
+          toast.error("No ISSN is found.");
+          setIsDisable(false);
+        }
+      };
+
+      fetchData();
+    }
+  }, [issn, refetch, setValue]);
 
   const onSubmit = (data: any) => {
     const formattedData: JournalData = {
       ...data,
       subscription_price: parseInt(data.subscription_price.toString(), 10),
-      // volume_number: parseInt(data.volume_number.toString(), 10),
-      // issue_number:parseInt(data.issue_number.toString(),10),
-      // frequency: parseInt(data.frequency.toString(), 10),
-      // year_of_publication: "2023-10-04",
-      // language: "english",
-      // department: "Computer Science",
-      // is_archived: false,
-      // total_count: 20,
-      // available_count: 10,
-      // created_at: "2024-06-11",
-      // updated_at: "2024-06-11",
-      // acquisition_date: "2024-06-11"
+      barcode:"BARCODE",  // TODO ask tanvir if Barcode is required || not
+      institute_uuid:institute_uuid ?? " ",
+      institute_name:institute_name ?? " ",
     }
-    console.log(formattedData)
     mutate(
-      { resource: "journals/create-journal", values: formattedData },
+      { resource: "periodical/create-periodical", values: formattedData },
       {
         onSuccess: () => {
           toast.success("Journal added successfully!", { position: 'top-left' })
@@ -69,36 +116,7 @@ const AddJournal = () => {
         <section className='p-10'>
           <div className="container">
             {/* Dropdown  */}
-            <div>
-              <div className='grid grid-cols-4 gap-4 p-4'>
-                <div>
-                  <Label>ISSN Number</Label>
-                  <Input
-                    className='text-[#343232]'
-                    type="text"
-
-                    placeholder="Enter ISSN Number"
-                  />
-                </div>
-                <div>
-                  <Label>Select Category</Label>
-                  <select
-                    aria-placeholder='Select Value'
-                    required
-                    className="w-full p-2 border border-[#343232] rounded-[5px] text-[#343232]">
-                    <option disabled>Select Value</option>
-                    <option value="journal">Journal</option>
-                    <option value="magazine">Magazine</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-
-
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-              {/* {inputJournalFields.map((section) => (
-                <FormSection key={section.title} title={section.title} fields={section.fields} />
-              ))} */}
               <div>
                 <h2>General Information</h2>
                 <div className="grid grid-cols-4 gap-4 p-4">
@@ -118,7 +136,7 @@ const AddJournal = () => {
                     name="name_of_publisher"
                     register={register}
                     errors={errors}
-                    type="date"
+                    type="text"
                     validation={{
                       required: "Name of Publisher is required",
                     }}
@@ -129,7 +147,7 @@ const AddJournal = () => {
                     name="place_of_publication"
                     register={register}
                     errors={errors}
-                    type="date"
+                    type="text"
                     validation={{
                       required: "Place of Publisher is required",
                     }}
@@ -185,7 +203,7 @@ const AddJournal = () => {
                 </div>
                 <h2>Volume & Issue Details</h2>
                 <div className="grid grid-cols-4 gap-4 p-4">
-                 
+
                   <InputField
                     label="Volume Number"
                     name="volume_no"
@@ -259,27 +277,46 @@ const AddJournal = () => {
                 <h2>Acquisition & Library Information</h2>
                 <div className="grid grid-cols-4 gap-4 p-4">
                   <InputField
-                  label='Vendor Name'
-                  name="vendor_name"
-                  register={register}
-                  errors={errors}
-                  type='text'
-                  validation={{
-                    required: "Vendor Name is required",
-                  }}
-                  placeholder="Enter Vendor Name"
+                    label='Vendor Name'
+                    name="vendor_name"
+                    register={register}
+                    errors={errors}
+                    type='text'
+                    validation={{
+                      required: "Vendor Name is required",
+                    }}
+                    placeholder="Enter Vendor Name"
                   />
                   <InputField
-                  label='Library Name'
-                  name="library_name"
-                  register={register}
-                  errors={errors}
-                  type='text'
-                  validation={{
-                    required: "Library Name is required",
-                  }}
-                  placeholder="Enter Library Name"
+                    label='Library Name'
+                    name="library_name"
+                    register={register}
+                    errors={errors}
+                    type='text'
+                    validation={{
+                      required: "Library Name is required",
+                    }}
+                    placeholder="Enter Library Name"
                   />
+                  <div className='text-[#717680]'>
+                    <Label>Category</Label>
+                    <Select
+                      onValueChange={(value) => {
+                        setCategory(value);
+                        setValue("category", value);
+                      }}
+                      value={category}
+                    >
+                      <SelectTrigger className="w-full p-2 border border-[#717680] rounded">
+                        <SelectValue placeholder="Select Category" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-white">
+                        <SelectItem value="journal">Journal</SelectItem>
+                        <SelectItem value="magazine">Magazine</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
                 </div>
 
 

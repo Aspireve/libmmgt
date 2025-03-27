@@ -18,7 +18,6 @@ import { addbookRoutes } from '../types/routes';
 import { useSelector } from "react-redux";
 import { RootState } from '@/redux/store/store';
 
-
 const AddBook = () => {
   const router = useRouter();
   const [isbn, setIsbn] = useState("");
@@ -30,7 +29,7 @@ const AddBook = () => {
 
  
 
-  const { data, refetch} = useOne<BookData>({
+  const { data:bookData, refetch} = useOne<BookData>({
     resource: "book_v2/isbn",
     id: `_isbn=${isbn}`,
     queryOptions: {
@@ -49,40 +48,47 @@ const AddBook = () => {
     if (isbn.length === 10 || isbn.length === 13 || isbn.length === 17) {
       const sortedIsbn = isbn.replace(/-/g, "").toUpperCase();
       const parsedISBN = isbn3.parse(sortedIsbn);
-
+  
       if (!parsedISBN) {
         toast.error("Invalid ISBN format. Please enter a valid ISBN-10 or ISBN-13.");
+        setIsDisable(false);
         return;
       }
+  
       const fetchData = async () => {
+  
         try {
           const resource = await refetch();
+          console.log(resource?.data?.data)
           const isbnResp = resource?.data?.data;
-          if (!isbnResp || typeof isbnResp !== "object" || Object.keys(isbnResp).length === 0) {
+          const bookData = Array.isArray(isbnResp) && isbnResp.length > 0 ? isbnResp[0] : {};
+          if (!bookData || typeof bookData !== "object" || Object.keys(bookData).length === 0) {
             toast.error("No book found for this ISBN.");
-            setIsDisable(false)
+            setIsDisable(false);
             return;
           }
-          Object.keys(isbnResp).forEach((key) => {
-            let value = isbnResp[key as keyof BookData];
+          Object.keys(bookData).forEach((key) => {
+            let value = bookData[key as keyof BookData];
+          
             if (key === "year_of_publication" || key === "date_of_acquisition") {
               value = value ? new Date(value).toISOString().split("T")[0] : "";
             }
+          
             setValue(key as keyof BookData, value as never);
           });
-
+  
           toast.success("Book data mapped successfully!");
-          setIsReadable(true)
-          setIsDisable(false)
+          setIsReadable(true);
+          setIsDisable(false);
         } catch (error) {
           toast.error("No ISBN is found.");
-          setIsDisable(false)
+          setIsDisable(false);
         }
       };
-
+  
       fetchData();
     }
-  }, [isbn, refetch, setValue]);
+  }, [isbn,refetch, setValue]);
 
   const onSubmit = (data: any) => {
     const formatDate = (dateString: string | undefined) => {
@@ -138,7 +144,6 @@ const AddBook = () => {
                     placeholder="Enter Book ISBN Number"
                   />
                   <br />
-
                 </div>
               </div>
             </div>
