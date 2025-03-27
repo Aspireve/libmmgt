@@ -104,7 +104,7 @@ const BreadcrumbEllipsis = ({
 );
 BreadcrumbEllipsis.displayName = "BreadcrumbEllipsis";
 
-export {
+export default {
   Breadcrumb,
   BreadcrumbList,
   BreadcrumbItem,
