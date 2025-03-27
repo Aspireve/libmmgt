@@ -79,16 +79,26 @@ export const useEditStudentForm = (studentUuid: string) => {
     let isMounted = true;
     if (data?.data && isMounted) {
       const student: StudentFromDatabase = data.data;
+  
+      // Normalize gender value
       const normalizedGender = student.gender
         ? student.gender.toLowerCase() === "male" || student.gender.toLowerCase() === "female"
           ? student.gender.toLowerCase()
           : ""
         : "";
+  
+      // Ensure phone number is formatted correctly
+      let normalizedPhone = student.phone_no?.trim() || "";
+  
+      if (normalizedPhone && !normalizedPhone.startsWith("+")) {
+        normalizedPhone = `+91${normalizedPhone}`;
+      }
+  
       reset({
         student_name: student.student_name || "",
         department: student.department || "",
         email: student.email || "",
-        phone_no: student.phone_no || "",
+        phone_no: normalizedPhone, // Ensure formatted phone number
         address: student.address || "",
         roll_no: student.roll_no || 0,
         year_of_admission: student.year_of_admission || "",
@@ -97,12 +107,13 @@ export const useEditStudentForm = (studentUuid: string) => {
         institute_name: student.institute_name || "",
         image_field: null,
       });
-      setIsFormInitialized(true); // Use the setter
+      setIsFormInitialized(true);
     }
     return () => {
       isMounted = false;
     };
   }, [data, reset, studentUuid]);
+  
 
   const onSubmit = (formData: FieldValues, mutate: Function) => {
     // const validStudentUuid =

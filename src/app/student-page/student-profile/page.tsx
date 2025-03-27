@@ -20,6 +20,8 @@ import {
   studentActivitiesColumns,
 } from "../student-profile/studentprofile";
 import { CustomBreadcrumb } from "@/components/breadcrumb";
+import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 
 enum LibraryTabs {
   BORROWED = "borrowed",
@@ -46,6 +48,15 @@ const Page = () => {
     queryOptions: { retry: 1, enabled: !!student_id },
   });
 
+  // Function to normalize phone number
+  const normalizePhoneNumber = (phone: string | undefined) => {
+    if (!phone) return "Not Provided"; // Handle missing data
+    const trimmedPhone = phone.trim();
+    return trimmedPhone.startsWith("+") ? trimmedPhone : `+91${trimmedPhone}`;
+  };
+
+  const router = useRouter();
+
   return (
     <div>
       <CustomBreadcrumb items={breadcrumbItems} />
@@ -58,7 +69,9 @@ const Page = () => {
         {isLoading ? (
           <ProfileSkeleton />
         ) : !data?.data ? (
-          <div className="text-center text-gray-500">No student data found.</div>
+          <div className="text-center text-gray-500">
+            No student data found.
+          </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mt-4">
             {/* Left Side: Profile Image */}
@@ -82,16 +95,23 @@ const Page = () => {
                 )}
               </div>
             </div>
-  
+
             {/* Right Side: Input Fields in 3x2 Grid */}
             <div className="md:col-span-3">
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 {profiledata
                   .filter((field) => field.name !== "address")
                   .map((field) => {
-                    const value =
+                    let value =
                       data?.data?.[field.name as keyof StudentProfileData] ??
                       "Not Provided";
+                    // Normalize phone number only for phone_no field
+                    if (field.name === "phone_no" && value !== "Not Provided") {
+                      value = value.trim().startsWith("+")
+                        ? value
+                        : `+91${value.trim()}`;
+                    }
+
                     return (
                       <div key={field.name} className="flex flex-col">
                         <Label className="text-[#808080] font-medium mb-1">
@@ -102,7 +122,11 @@ const Page = () => {
                             <Input
                               className="border-gray-300 p-2 rounded-md pr-10 text-[#717680]"
                               type="date"
-                              value={value !== "Not Provided" ? value.split("T")[0] : ""}
+                              value={
+                                value !== "Not Provided"
+                                  ? value.split("T")[0]
+                                  : ""
+                              }
                               readOnly
                             />
                             <Image
@@ -127,7 +151,7 @@ const Page = () => {
                   })}
               </div>
             </div>
-  
+
             {/* Full Width: Address Textarea */}
             <div className="md:col-span-4">
               <Label className="text-[#808080] font-medium mb-1">Address</Label>
@@ -138,10 +162,20 @@ const Page = () => {
                 placeholder="Not Provided"
               />
             </div>
+            <Button
+              onClick={() =>
+                router.push(
+                  `/student-page/EditStudent?student_id=${student_id}`
+                )
+              }
+              className="border border-[#1E40AF] rounded-[8px] text-[#1E40AF]"
+            >
+              Edit Profile
+            </Button>
           </div>
         )}
       </div>
-  
+
       <div className="mx-[40px]">
         <Tabbing
           tabs={TABS}
@@ -181,7 +215,6 @@ const Page = () => {
       </div>
     </div>
   );
-  
 };
 
 export default Page;
