@@ -40,7 +40,7 @@ export const useAddStudentForm = () => {
       confirm_password: "",
       date_of_birth: undefined,
       gender: undefined,
-      institute_uuid: undefined,
+      // institute_uuid: undefined,
       image_field: undefined,
     },
     mode: "onSubmit", // Trigger validation on form submission
