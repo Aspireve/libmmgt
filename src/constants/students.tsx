@@ -1,4 +1,8 @@
-import type { StudentData, StudentFromDatabase, StudentMappingType } from "@/types/student";
+import type {
+  StudentData,
+  StudentFromDatabase,
+  StudentMappingType,
+} from "@/types/student";
 import { ColumnDef } from "@tanstack/react-table";
 import {
   StudentActions,
@@ -15,37 +19,21 @@ export const initialMapping: StudentMappingType = {
   roll_no: "",
   year_of_admission: "",
   password: "",
-  confirm_password: "",
   date_of_birth: "",
   gender: "",
-  institute_id: "",
-  institute_name: "",
-  institute_uuid: "",
-  student_id: "",
-  student_uuid: "",
-  image_field: "",
-  is_archived: "",
 };
-
-export const fieldLabels: Record<keyof StudentData, string> = {
+//@ts-ignore
+export const fieldLabels: Record<keyof Partial<StudentData>, string> = {
   student_name: "Student Name",
   department: "Department",
   email: "Email",
   phone_no: "Phone Number",
   address: "Address",
-  roll_no: "Roll Number",
-  year_of_admission: "Year of Admission",
+  roll_no: "Roll no",
+  year_of_admission: "Year Of Admission",
   password: "Password",
-  confirm_password: "Confirm Password",
-  date_of_birth: "Date of Birth",
+  date_of_birth: "Date Of Birth",
   gender: "Gender",
-  institute_id: "Institute ID",
-  institute_name: "Institute Name",
-  institute_uuid: "Institute UUID",
-  student_id: "Student ID",
-  student_uuid: "Student UUID",
-  image_field: "Image",
-  is_archived: "Archived Status",
 };
 
 export const StudentListTable = ({
@@ -66,7 +54,10 @@ export const StudentListTable = ({
   { accessorKey: "roll_no", header: "Roll no" },
   { accessorKey: "department", header: "Department" },
   { accessorKey: "email", header: "Email" },
-  { accessorFn: (data) => data.year_of_admission ?? "Not Provided", header: "Year of Admission" },
+  {
+    accessorFn: (data) => data.year_of_admission ?? "Not Provided",
+    header: "Year of Admission",
+  },
   {
     id: "actions",
     header: "Actions",

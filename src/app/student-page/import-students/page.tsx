@@ -219,7 +219,7 @@ const ImportStudents = () => {
                           : "text-gray-700"
                       }`}
                     >
-                      {fieldLabels[fieldKey]}{" "}
+                      {fieldLabels[fieldKey] || fieldKey}{" "}
                       {isRequired && <span className="text-red-500">*</span>}
                     </label>
                     <select

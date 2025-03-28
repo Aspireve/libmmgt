@@ -91,10 +91,26 @@ const AddStudent: React.FC = () => {
     try {
       if (!isPossiblePhoneNumber(data.phone_no as string)) {
         setError("phone_no", { message: "Incorrect Format" });
-        return; // Let the PhoneNumber component handle its own error
+        return;
       }
+
       const studentData: any = await onSubmit(data);
-      generateBarcode(studentData?.studentId || "No ID Provided");
+
+      // Log the entire studentData object to inspect its structure
+      console.log("Student Data:", studentData);
+
+      // Try multiple paths to get the student ID
+      const studentId =
+        studentData?.data?.student_id ||
+        studentData?.data?.student_uuid ||
+        studentData?.student_id ||
+        studentData?.student_uuid ||
+        `${data.student_name}_${Date.now()}`;
+
+      // Log the studentId being used
+      console.log("Generated StudentId for Barcode:", studentId);
+
+      generateBarcode(studentId);
       router.push("/student-page");
     } catch (error) {
       console.error("Error adding student:", error);
@@ -122,7 +138,7 @@ const AddStudent: React.FC = () => {
         onSubmit={handleSubmit(handleStudentSubmit)}
         className="my-10 mx-[40px] space-y-6"
       >
-          {/* <Label>Profile Image</Label> */}
+        {/* <Label>Profile Image</Label> */}
         <div className="flex gap-6">
           <div className="flex flex-col border gap-4 border-[#E0E2E7] bg-[#F9F9FC] items-center justify-center rounded-xl p-2 px-6">
             {profileImage ? (

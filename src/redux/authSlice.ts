@@ -27,6 +27,13 @@ const initialState: AuthState = {
       header:
         "https://admissionuploads.s3.amazonaws.com/d938ade4-0584-40e5-928b-a37aebd06e72_Tia header .jpg",
     },
+    {
+      institute_uuid: "828f0d33-258f-4a92-a235-9c1b30d8883b",
+      institute_name: "Thakur Institute of Management",
+      logo: "https://admissionuploads.s3.amazonaws.com/3302d8ef-0a5d-489d-81f9-7b1f689427be_Tia_logo.png",
+      header:
+        "https://admissionuploads.s3.amazonaws.com/d938ade4-0584-40e5-928b-a37aebd06e72_Tia header .jpg",
+    }
   ],
 };
 

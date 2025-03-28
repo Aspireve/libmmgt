@@ -147,8 +147,20 @@ export const profiledata = [
     name: "address",
     label: "Address",
     key: "address",
-    type: "textarea",
+    type: "textarea"
   },
+  {
+    name: "year_of_admission",
+    label:"Year Of Admission",
+    key:"year_of_admission",
+    type:"text"
+  },
+  {
+    name:"gender",
+    label:"Gender",
+    key:"gender",
+    type:"select"
+  }
 ];
 
 /** 6) Student Profile Routes */
