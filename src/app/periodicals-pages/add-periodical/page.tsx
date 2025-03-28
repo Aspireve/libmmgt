@@ -88,19 +88,19 @@ const AddJournal = () => {
   }, [issn, refetch, setValue]);
 
   const onSubmit = (data: any) => {
+    
     const formattedData: JournalData = {
       ...data,
       subscription_price: parseInt(data.subscription_price.toString(), 10),
-      barcode:"BARCODE",  // TODO ask tanvir if Barcode is required || not
       institute_uuid:institute_uuid ?? " ",
       institute_name:institute_name ?? " ",
     }
     mutate(
-      { resource: "periodical/create-periodical", values: formattedData },
+      { resource: "journals/create-new-journal", values: formattedData },
       {
         onSuccess: () => {
-          toast.success("Journal added successfully!", { position: 'top-left' })
-
+          toast.success("Journal added successfully!")
+          router.back()
         },
         onError: (error) => toast.error("Error adding Journal: " + error.message),
       }
@@ -167,6 +167,17 @@ const AddJournal = () => {
                 </div>
                 <h2>Subscription Details</h2>
                 <div className="grid grid-cols-4 gap-4 p-4">
+                <InputField
+                    label="Subscription Id"
+                    name="subscription_id"
+                    register={register}
+                    errors={errors}
+                    type="text"
+                    validation={{
+                      required: "Subscription Id is required",
+                    }}
+                    placeholder="Enter Subscription Id"
+                  />
                   <InputField
                     label="Subscription Price"
                     name="subscription_price"
@@ -191,7 +202,7 @@ const AddJournal = () => {
                   />
                   <InputField
                     label="Subscription End Date"
-                    name="subscription_start_date"
+                    name="subscription_end_date"
                     register={register}
                     errors={errors}
                     type="date"
@@ -217,7 +228,7 @@ const AddJournal = () => {
                   />
                   <InputField
                     label="Issue Number"
-                    name="issue_no"
+                    name="issue_number"
                     register={register}
                     errors={errors}
                     type="text"
@@ -316,6 +327,17 @@ const AddJournal = () => {
                       </SelectContent>
                     </Select>
                   </div>
+                  <InputField
+                    label='Barcode'
+                    name="barcode"
+                    register={register}
+                    errors={errors}
+                    type='text'
+                    validation={{
+                      required: "Barcode is required",
+                    }}
+                    placeholder="Enter Barcode"
+                  />
 
                 </div>
 

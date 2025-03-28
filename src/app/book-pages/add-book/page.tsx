@@ -186,7 +186,7 @@ const AddBook = () => {
                     errors={errors}
                     type="text"
                     validation={{
-                      required: "SName of Publisher is required",
+                      required: "Name of Publisher is required",
                     }}
                     placeholder="Enter Name of Publisher"
                     readonly={isReadable}

@@ -18,7 +18,8 @@ interface PageProps {
   columns: (e: any) => ColumnDef<any>[];
   AddedOptions?: any[];
   query?: LogicalFilter[];
-  idField?: string
+  idField?: string;
+  onDataFetched?: (data: any | null) => void;
 }
 
 export default function MasterTable({
@@ -29,6 +30,7 @@ export default function MasterTable({
   AddedOptions,
   query = [],
   idField = "student_id",
+  onDataFetched,
 }: PageProps): any {
   // State
   const [search, setSearch] = useState("");
@@ -80,11 +82,14 @@ export default function MasterTable({
     if (listData?.data) {
       setSelectedData([]);
     }
+    if(listData?.data?.length && onDataFetched){
+      onDataFetched(listData.data[0])
+    }
     return () => {
       dispatch(resetValues());
       setSelectedData([]);
     };
-  }, [listData, resource]);
+  }, [listData, resource, onDataFetched]);
 
   return (
     <div className="my-6 border-2 border-[#E9EAEB] rounded-xl shadow-sm cursor-default">

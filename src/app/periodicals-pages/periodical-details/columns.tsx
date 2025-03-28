@@ -4,9 +4,9 @@ import Image from 'next/image';
 import images from '@/images';
 import useDisclosure from '@/hooks/disclosure-hook';
 import { useRouter } from 'next/navigation';
-import DeleteBookModal from '@/components/books/delete-book-modal';
 import { JournalData } from '../types/data';
-import { formatDate } from '@/app/book-pages/hooks/formatDate';
+import DeletePeriodicalModal from '@/components/periodicals/delete-periodical-modal';
+import { StatusCell } from '@/app/book-pages/book-details/columns';
 
 
 export const JournalActions = ({
@@ -23,7 +23,7 @@ export const JournalActions = ({
       <Button
         className="p-0 shadow-none"
         onClick={() => {
-          router.push(`/periodicals-pages/editJournalCopy-page?journal_copy_uuid=${periodical.journal_copy_uuid}`);
+          router.push(`/periodicals-pages/edit-periodicalcopy?journal_copy_uuid=${periodical.journal_copy_uuid}`);
         }}
         aria-label="Edit student"
       >
@@ -36,7 +36,7 @@ export const JournalActions = ({
       >
         <Image src={images.DeleteButton} alt="Delete" height={20} width={20} />
       </Button>
-      <DeleteBookModal
+      <DeletePeriodicalModal
         data={[periodical]}
         close={close}
         isOpen={isOpen}
@@ -46,18 +46,25 @@ export const JournalActions = ({
   );
 };
 
-export const getPeriodicalColumns = ({ refetch }:{ refetch: () => void }): ColumnDef<JournalData>[] => [
-    {
-        accessorKey: 'journal_copy_id',
-        header: 'Journal ID',
-    },
-   
-    {
-        id: 'action',
-        header: '',
-        cell: ({ row }) => {
-             return <JournalActions periodical={row.original} refetch={refetch} />
-        }
-        
-    },
-];
+export const getPeriodicalCopyColumns = ({ refetch }:{ refetch: () => void }): ColumnDef<JournalData>[] => {
+     return[
+            
+                { accessorKey: 'journal_copy_id', header: 'ID' },
+                { accessorKey: 'editor_name', header: 'Editor Name' },
+                { accessorKey: 'issn', header: 'ISSN' },
+                
+                
+                { accessorKey: 'item_type', header: 'Item Type' },
+                { accessorKey: 'barcode', header: 'Barcode' },
+                { accessorKey: 'is_available',
+                  header: 'Status',
+                  cell:({row})=><StatusCell isAvailable={Boolean(row.original.is_available)} />
+                },
+                {
+                  id: 'actions', header: '',
+                  cell: ({ row }) => <JournalActions periodical={row.original} refetch={refetch} />
+                },
+            
+              
+        ]
+      };

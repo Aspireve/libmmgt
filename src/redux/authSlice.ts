@@ -27,6 +27,7 @@ const initialState: AuthState = {
       header:
         "https://admissionuploads.s3.amazonaws.com/d938ade4-0584-40e5-928b-a37aebd06e72_Tia header .jpg",
     },
+    
   ],
 };
 

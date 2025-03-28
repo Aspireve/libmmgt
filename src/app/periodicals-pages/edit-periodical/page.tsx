@@ -9,11 +9,13 @@ import Header from "@/app/Header/header";
 import { Loader2 } from "lucide-react";
 import { JournalData } from "../types/data";
 import { InputField } from "@/components/custom/inputfield";
+import { dataProvider } from "@/providers/data";
+import { toast } from "sonner";
 
 const EditJournal = () => {
 
   const searchParams = useSearchParams();
-  const journal_uuid = searchParams.get("journal_uuid")
+  const journal_title_id = searchParams.get("journal_title_id")
   const [isLoadingInput, setIsLoadingInput] = useState(true)
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter();
@@ -22,8 +24,8 @@ const EditJournal = () => {
 
 
   const { data: journalData } = useOne<JournalData>({
-    resource: "journals/search",
-    id: `journal_uuid=${journal_uuid}` || ""
+    resource: "journals/search-periodicals",
+    id: `_journal_title_id=${journal_title_id}` || ""
   });
 
 
@@ -35,66 +37,63 @@ const EditJournal = () => {
   } = useForm<JournalData>();
 
   const UpdateFields = () => {
-    if (journalData?.data) {
-      Object.keys(journalData.data).forEach((key) => {
-        let value = journalData.data[key as keyof JournalData];
-        if (key === "subscription_end_date" || key === "subscription_start_date") {
-          if (typeof value === "string" || typeof value === "number") {
-            const date = new Date(value);
-            value = isNaN(date.getTime()) ? "" : date.toISOString().split("T")[0];
-          } else {
-            value = "";
-          }
+    console.log(journalData?.data);
+    if (Array.isArray(journalData?.data) && journalData.data.length > 0) {
+      const journal = journalData.data[0];
+  
+      Object.keys(journal).forEach((key) => {
+        let value = journal[key as keyof JournalData];
+  
+        if (key === "subscription_start_date" ||key === "subscription_end_date")
+         {
+          value = value ? new Date(value).toISOString().split("T")[0] : "";
         }
-        setValue(key as keyof JournalData, value as never);
-        setIsLoadingInput(false)
+        setValue(key as keyof JournalData, value as never); // Set form values
       });
+  
+      setIsLoadingInput(false);
     }
-  }
+  };
+  
 
-  useEffect(() => {
+  
+useEffect(() => {
+  if (!journalData) return;
+
+  if (journalData?.data?.error) {
+    window.history.back();
+  } else {
     UpdateFields();
-  }, [journalData, setValue]);
+  }
+}, [journalData, setValue]);
 
 
-  const onSubmit = (data: any) => {
+  const onSubmit = async (data: any) => {
+    delete data.title_additional_fields
+    delete data.title_description
+    delete data.title_images
+
     const formattedData: JournalData = {
       ...data,
       subscription_price: parseInt(data.subscription_price.toString(), 10),
-      // volume_number: parseInt(data.volume_number.toString(), 10),
-      // issue_number: parseInt(data.issue_number.toString(), 10),
-      // frequency: parseInt(data.frequency.toString(), 10),
-      // year_of_publication: "2023-10-04",
-      // language: "english",
-      // department: "Computer Science",
-      // is_archived: false,
-      // total_count: 20,
-      // available_count: 10,
-      // created_at: "2024-06-11",
-      // updated_at: "2024-06-11",
-      // acquistion_date: "2024-06-11"
     }
-    // mutate(
-    //   {
-    //     resource: 'journals/update-journal',
-    //     id: journal_uuid || "",
-    //     values: formattedData,
-    //   },
-    //   {
-    //     onSuccess: () => {
-    //       toast.success("Book Updated successfully!", { position: 'top-left' })
-    //       window.history.back();
-    //     },
-    //     onError: () => toast.error("Something went wrong, Please try again")
-
-    //   }
-    // );
+    try {
+            await dataProvider.patchUpdate({
+            resource: 'journals/update-periodical',
+            value: formattedData,
+          })
+    
+          toast.success("Book title updated successfully!");
+          window.history.back();
+        } catch (error: any) {
+          toast.error(error.message);
+        }
   }
 
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <>
-        <Header heading="Student Directory" subheading="Tanvir Chavan" />
+        <Header heading="Edit Periodical" subheading="Tanvir Chavan" />
 
         <section className="p-10">
           <div className="container">
@@ -103,7 +102,7 @@ const EditJournal = () => {
 
               <h2> General Information</h2>
               <div className="grid grid-cols-4 gap-4 p-4">
-                <InputField
+                {/* <InputField
                   label="Periodical Title"
                   name="journal_title"
                   register={register}
@@ -114,7 +113,7 @@ const EditJournal = () => {
                   }}
                   placeholder="Enter Periodical Title"
                   loading={isLoadingInput}
-                />
+                /> */}
 
                 <InputField
                   label="Name of Publisher"
@@ -140,7 +139,7 @@ const EditJournal = () => {
                   placeholder="Enter Place of Publication"
                   loading={isLoadingInput}
                 />
-                <InputField
+                {/* <InputField
                   label="Editor Name"
                   name="editor_name"
                   register={register}
@@ -151,7 +150,7 @@ const EditJournal = () => {
                   }}
                   placeholder="Enter Editor Name"
                   loading={isLoadingInput}
-                />
+                /> */}
               </div>
               <h2>Subscription Details</h2>
               <div className="grid grid-cols-4 gap-4 p-4">
@@ -210,7 +209,7 @@ const EditJournal = () => {
 
                 <InputField
                   label="Issue Number"
-                  name="issue_no"
+                  name="issue_number"
                   register={register}
                   errors={errors}
                   type="text"
@@ -236,7 +235,7 @@ const EditJournal = () => {
                   loading={isLoadingInput}
                 />
 
-                <InputField
+                {/* <InputField
                   label="Item Type"
                   name="item_type"
                   register={register}
@@ -247,8 +246,8 @@ const EditJournal = () => {
                   }}
                   placeholder="Enter Item Type"
                   loading={isLoadingInput}
-                />
-                <InputField
+                /> */}
+                {/* <InputField
                   label="ISSN"
                   name="issn"
                   register={register}
@@ -259,7 +258,7 @@ const EditJournal = () => {
                   }}
                   placeholder="Enter ISSN"
                   loading={isLoadingInput}
-                />
+                /> */}
                 <InputField
                   label="Classification Number"
                   name="classification_number"
@@ -304,4 +303,4 @@ const EditJournal = () => {
   )
 }
 
-export default EditJournal
+export default EditJournal;

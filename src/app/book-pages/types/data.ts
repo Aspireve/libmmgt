@@ -30,6 +30,7 @@ export interface BookData {
   created_at: string;
   updated_at: string;
   is_archived: Boolean;
+  is_available:Boolean;
   book:any,
   copies:any,
   title:any,

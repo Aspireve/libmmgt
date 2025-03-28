@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button";
 import { toast } from 'sonner';
 import Header from "@/app/Header/header";
 import { BookData } from "../types/data";
-import { Skeleton } from "@/components/ui/skeleton";
 import { dataProvider } from "@/providers/data";
 import { InputField } from "@/components/custom/inputfield";
 import { Loader2 } from "lucide-react";

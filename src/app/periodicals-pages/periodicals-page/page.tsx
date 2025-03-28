@@ -15,12 +15,12 @@ import { getJournalColumns } from './columns';
 
 const JournalPage = () => {
 
-  const [url, setUrl] = useState("all")
+  const [url, setUrl] = useState("all-periodicals")
   const router = useRouter();
 
 
   const handleEdit = (periodical: JournalData) => {
-      router.push(`/periodicals-pages/edit-periodical?journal_uuid=${periodical.journal_uuid}`);
+      router.push(`/periodicals-pages/edit-periodical?journal_title_id=${periodical.journal_title_id}`);
     };
   const columns = getJournalColumns(handleEdit)
  

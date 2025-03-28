@@ -17,7 +17,7 @@ const JournalTitleCell: React.FC<PeriodicalTitleCellProps> = ({ periodical }) =>
       className="relative group cursor-pointer font-bold text-[#1E40AF]"
       onClick={() => router.push(`/periodicals-pages/periodical-details?journal_uuid=${periodical.journal_uuid}`)}
     >
-      {periodical.journal_title}
+      {periodical.journal_title_id}
       <div className="absolute left-1/2 transform -translate-x-1/2 bottom-full mb-2 hidden group-hover:flex items-center justify-center bg-gray-800 text-white text-xs rounded-lg px-3 py-1 shadow-md whitespace-nowrap
         after:content-[''] after:absolute after:top-full after:left-1/2 after:-translate-x-1/2 after:border-4 after:border-transparent after:border-t-gray-800">
         Journal Details
@@ -42,17 +42,11 @@ interface ActionsCellProps {
 export const getJournalColumns = (handleEdit: (periodical: JournalData) => void): ColumnDef<JournalData>[] => {
     return[
         
-            { accessorKey: 'journal_title_id', header: 'ID' },
-            { 
-              accessorKey: 'journal_title', 
-              header: 'Title',
-              cell:({row})=> <JournalTitleCell periodical={row.original}/>
-            },
-            { accessorKey: 'editor_name', header: 'Editor', },
+            { accessorKey: 'journal_title_id', 
+              header: 'ID', 
+              cell:({row})=> <JournalTitleCell periodical={row.original}/> },
             { accessorKey: 'name_of_publisher', header: 'Book Publisher' },
-            // { accessorKey: 'place_of_publication', header: 'Publication Place' },
             { accessorKey: 'available_count', header: 'Total Count' },
-            { accessorKey: 'issn', header: 'ISSN' },
             { accessorKey: 'volume_no', header: 'Volume No' },
         
         

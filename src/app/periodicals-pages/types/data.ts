@@ -6,22 +6,29 @@ export interface JournalData {
     editor_name: string;
     name_of_publisher: string;
     place_of_publication: string;
-    subscription_price:string;  //TO ADD FROM BACKEND
+    subscription_id:string;
+    subscription_price:string;
     subscription_start_date: string;
     subscription_end_date: string;
     issn: string;
     volume_number: string;
     classification_number:string;
-    is_archived: boolean;
+    is_archived: Boolean;
+    is_available:Boolean
     total_count: number;
     available_count: number;
     barcode:string;
     item_type:string;
     category:string;
-    issue_no:string; //TO ADD FROM BACKEND
-    frequency:string; //TO ADD FROM BACKEND
-    vendor_name:string; //TO ADD FROM BACKEND
-    library_name:string; //TO ADD FROM BACKEND
+    issue_number:string;
+    frequency:string;
+    vendor_name:string;
+    library_name:string;
     created_at: string;
     updated_at: string;
+    error:string;
+    title_images:[];
+    title_additional_fields:{};
+    title_description:string,
+
 }
