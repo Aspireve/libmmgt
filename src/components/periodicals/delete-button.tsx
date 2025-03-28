@@ -2,9 +2,9 @@ import React from "react";
 import { Button } from "../ui/button";
 import useDisclosure from "@/hooks/disclosure-hook";
 import { BookData } from "@/app/book-pages/types/data";
-import DeleteJournalModal from "./delete-jouranl-modal";
+import DeletePeriodicalModal from "./delete-periodical-modal";
 
-const DeleteJournal = <TData extends BookData>({
+const DeletePeriodical = <TData extends BookData>({
   data,
   refetch,
 }: {
@@ -23,7 +23,7 @@ const DeleteJournal = <TData extends BookData>({
         >
           {data?.length === 1 ? "Delete" : "Delete All"}
         </Button>
-        <DeleteJournalModal
+        <DeletePeriodicalModal
           data={data}
           close={close}
           isOpen={isOpen}
@@ -34,4 +34,4 @@ const DeleteJournal = <TData extends BookData>({
   );
 };
 
-export default DeleteJournal;
+export default DeletePeriodical;

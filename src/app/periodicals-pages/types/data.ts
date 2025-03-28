@@ -13,7 +13,8 @@ export interface JournalData {
     issn: string;
     volume_number: string;
     classification_number:string;
-    is_archived: boolean;
+    is_archived: Boolean;
+    is_available:Boolean
     total_count: number;
     available_count: number;
     barcode:string;

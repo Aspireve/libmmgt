@@ -18,6 +18,7 @@ const DeleteBookModal = ({
   const { mutate, isLoading } = useDeleteMany();
 
   const handleDelete = async () => {
+    
     mutate({
       resource: "book_v2/bulk-delete",
       ids: data.map((item) => item.book_copy_uuid),

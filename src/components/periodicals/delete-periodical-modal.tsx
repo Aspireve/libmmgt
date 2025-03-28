@@ -4,7 +4,7 @@ import { Loader2 } from "lucide-react";
 import { useDeleteMany } from "@refinedev/core";
 import { toast } from "sonner";
 
-const DeleteJournalModal = ({
+const DeletePeriodicalModal = ({
   data,
   refetch,
   close,
@@ -76,5 +76,5 @@ const DeleteJournalModal = ({
   );
 };
 
-export default DeleteJournalModal;
+export default DeletePeriodicalModal;
 

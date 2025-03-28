@@ -45,8 +45,19 @@ export const BookActions = ({
     </div>
   );
 };
+export const StatusCell = ({ isAvailable }: { isAvailable: boolean }) => {
+  return (
+    <span
+      className={`px-2 py-1 rounded text-white ${
+        isAvailable ? 'bg-green-500' : 'bg-yellow-500'
+      }`}
+    >
+      {isAvailable ? 'Available' : 'Issued'}
+    </span>
+  );
+};
 
-export const getBookColumns = ({ refetch }:{ refetch: () => void }): ColumnDef<BookData>[] => [
+export const getBookCopyColumns = ({ refetch }:{ refetch: () => void }): ColumnDef<BookData>[] => [
     {
         accessorKey: 'book_copy_id',
         header: 'Book ID',
@@ -84,6 +95,11 @@ export const getBookColumns = ({ refetch }:{ refetch: () => void }): ColumnDef<B
         accessorKey: 'accession_number',
         header: 'Accession Number'
     },
+    {
+      accessorKey: 'is_available',
+      header: 'Status',
+     cell:({row}) => <StatusCell isAvailable={Boolean(row.original.is_available)} />
+  },
     {
         id: 'action',
         header: '',
