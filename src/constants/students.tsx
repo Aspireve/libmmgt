@@ -61,7 +61,10 @@ export const StudentListTable = ({
   { accessorKey: "roll_no", header: "Roll no" },
   { accessorKey: "department", header: "Department" },
   { accessorKey: "email", header: "Email" },
+  { accessorKey: "phone_no", header: "Phone" },
+  { accessorFn: (data) => data.gender === "male" ? "Male" : "Female", header: "Gender" },
   { accessorFn: (data) => data.year_of_admission ?? "Not Provided", header: "Year of Admission" },
+  { accessorFn: (data) => data.gender === "male" ? "Male" : "Female", header: "Added Date" },
   {
     id: "actions",
     header: "Actions",
