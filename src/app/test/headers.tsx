@@ -1,12 +1,15 @@
-import images from "@/images";
+"use client";
+
 import Image from "next/image";
-import React from "react";
+import { useSelector } from "react-redux";
+
 import Images from "@/images";
 import { Input } from "@/components/ui/input";
-import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store/store";
+import type { HeadersProps } from "@/types/table";
 
-const Headers = ({
+
+const Headers = <TData,>({
   title,
   search,
   setSearch,
@@ -14,15 +17,7 @@ const Headers = ({
   selectedData,
   refetch,
   resource
-}: {
-  title: string;
-  search: string;
-  setSearch: (e: string) => void;
-  AddedOptions: any;
-  selectedData: any;
-  refetch: () => void;
-  resource: string
-}) => {
+}: HeadersProps<TData>) => {
   const { total } = useSelector((state: RootState) => state.pagination);
   return (
     <div className="flex items-center justify-between mx-4">
@@ -33,7 +28,7 @@ const Headers = ({
         </span>
       </div>
       <div className="flex  gap-4 items-center">
-        {AddedOptions.map((Component: any, index: any) => (
+        {AddedOptions && AddedOptions.map((Component: any, index: any) => (
           <Component key={index} data={selectedData} refetch={refetch} resource={resource}/>
         ))}
         <div className="relative w-72">

@@ -3,35 +3,35 @@
 import { ColumnDef } from "@tanstack/react-table";
 import Datatable from "./data-table";
 import { Pagination } from "./pagination";
-import { useEffect, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import Headers from "./headers";
-import { LogicalFilter, useList } from "@refinedev/core";
+import { BaseRecord, LogicalFilter, useList } from "@refinedev/core";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store/store";
 import { resetValues, setPaginationValues } from "@/redux/paginationSlice";
 import { useRowSelection } from "@/hooks/checkbox-hook";
 
-interface PageProps {
+interface PageProps<TData extends BaseRecord> {
   title: string;
   isSelectable?: boolean;
   resource: string;
-  columns: (e: any) => ColumnDef<any>[];
-  AddedOptions?: any[];
+  columns: (params: { refetch: () => Promise<unknown> }) => ColumnDef<TData>[];
+  AddedOptions?: FC<{ data: TData; refetch: () => Promise<unknown>; resource: string }>[];
   query?: LogicalFilter[];
-  idField?: string;
-  onDataFetched?: (data: any | null) => void;
+  idField?: keyof TData;
+  onDataFetched?: (data: TData | null) => void;
 }
 
-export default function MasterTable({
+export default function MasterTable<TData extends BaseRecord>({
   title,
   isSelectable = true,
   resource,
   columns,
   AddedOptions,
   query = [],
-  idField = "student_id",
+  idField = "student_id" as keyof TData,
   onDataFetched,
-}: PageProps): any {
+}: PageProps<TData>) {
   // State
   const [search, setSearch] = useState("");
   const [filters, setFilters] = useState({
@@ -46,7 +46,7 @@ export default function MasterTable({
     data: listData,
     isLoading,
     refetch,
-  } = useList({
+  } = useList<TData>({
     resource,
     pagination: { current: page, pageSize: limit },
     filters: [
@@ -60,8 +60,8 @@ export default function MasterTable({
   });
 
   const { selectedData, columnsWithCheckbox, setSelectedData } =
-    useRowSelection<any>(
-      (row) => row?.[idField],
+    useRowSelection<TData>(
+      (row) => row?.[idField] as string | number ,
       isSelectable,
       columns({ refetch }),
       listData?.data || []
@@ -102,7 +102,7 @@ export default function MasterTable({
         refetch={refetch}
         resource={resource}
       />
-      <Datatable<any>
+      <Datatable<TData>
         columns={columnsWithCheckbox}
         data={listData?.data || []}
         isLoading={isLoading}

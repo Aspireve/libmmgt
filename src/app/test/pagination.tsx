@@ -1,5 +1,8 @@
 "use client";
 
+import Image from "next/image";
+import { useDispatch, useSelector } from "react-redux";
+
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -10,13 +13,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import Image from "next/image";
-import Images from "@/images/index";
+import Images from "@/images";
 import { options } from "@/constants/tables";
-import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store/store";
 import { nextPage, prevPage, setLimit } from "@/redux/paginationSlice";
-import { PaginationProps } from "@/types/table";
+import type { PaginationProps } from "@/types/table";
 
 export function Pagination({ isLoading }: PaginationProps) {
   const dispatch = useDispatch();

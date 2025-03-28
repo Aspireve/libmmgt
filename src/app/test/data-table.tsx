@@ -1,5 +1,7 @@
 "use client";
 
+import Image from "next/image";
+
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
@@ -16,12 +18,10 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import React from "react";
-import Image from "next/image";
-import noBooksIllustration from "@/images/noBookillustration.png";
+import Images from "@/images"
 
 interface DataTableProps<TData> {
-  columns: ColumnDef<TData, any>[];
+  columns: ColumnDef<TData>[];
   data: TData[];
   isLoading: boolean;
 }
@@ -107,7 +107,7 @@ export function Datatable<TData extends BaseRecord>({
               >
                 <div className="flex flex-col items-center justify-center">
                   <Image
-                    src={noBooksIllustration}
+                    src={Images.NoBookIllustration}
                     alt="No data available"
                     width={200}
                     height={200}
