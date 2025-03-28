@@ -43,7 +43,6 @@ export function useRowSelection<T>(
           cell: ({ row }) => (
             <input
               type="checkbox"
-              disabled={row.original.is_available === false}
               checked={isRowSelected(row.original)}
               onChange={() => toggleRowSelection(row.original)}
             />
