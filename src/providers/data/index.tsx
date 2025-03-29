@@ -79,13 +79,14 @@ export const dataProvider: CustomDataProvider = {
     };
   },
 
-  update: async ({ resource, id, variables }) => {
-    const url = `${resource}/${id}`;
+  update: async ({ resource, id, variables, meta }) => {
+    const url = `${resource}/${encodeURIComponent(id)}`;
     const response = await fetchWrapper(url, {
       method: "PUT",
       body: JSON.stringify(variables),
     });
     return {
+      
       data: response,
     };
   },

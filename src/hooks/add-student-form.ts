@@ -1,3 +1,5 @@
+// TODO: Fix TypeScript
+
 import { StudentData } from "@/types/student";
 import UploaderFactory from "@/utilities/file-upload/upload-factory";
 import { useCreate } from "@refinedev/core";
@@ -14,8 +16,8 @@ export const useAddStudentForm = () => {
 
   const {institute_uuid, institute_name} = useSelector(
     (state: RootState) => state.auth.currentInstitute
-  )
-
+  );
+ 
   const {
     register,
     handleSubmit,
@@ -68,7 +70,6 @@ export const useAddStudentForm = () => {
       data.image_field = uploadedFileUrl;
       setImageUpload(false);
     }
-
     const studentData: Partial<StudentData> = {
       student_id: "",
       student_uuid: "",
@@ -86,6 +87,7 @@ export const useAddStudentForm = () => {
       gender: data.gender,
       institute_uuid: institute_uuid ?? "",
       institute_name: institute_name ?? "",
+      image_field: data.image_field ?? "",
     };
 
     return new Promise((resolve, reject) => {

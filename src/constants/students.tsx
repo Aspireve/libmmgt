@@ -23,6 +23,7 @@ export const initialMapping: StudentMappingType = {
   gender: "",
 };
 
+// @ts-ignore
 export const fieldLabels: Record<keyof StudentData, string> = {
   student_name: "Student Name",
   department: "Department",
@@ -34,13 +35,14 @@ export const fieldLabels: Record<keyof StudentData, string> = {
   password: "Password",
   date_of_birth: "Date Of Birth",
   gender: "Gender",
+  institute_name: "Institute Name"
 };
 
 export const StudentListTable = ({
   refetch,
 }: {
   refetch: () => void;
-}): ColumnDef<Partial<StudentFromDatabase>>[] => [
+}): ColumnDef<StudentFromDatabase>[] => [
   {
     accessorKey: "student_id",
     header: "ID",

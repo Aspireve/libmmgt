@@ -8,6 +8,7 @@ import AddStudents from "@/components/students/add-students";
 import ImportStudentButton from "@/components/students/import-students-button";
 import DeleteStudent from "@/components/students/delete-student";
 import ExportStudent from "@/components/students/export-students-button";
+import { StudentFromDatabase } from "@/types/student";
 
 export default function StudentDirectory() {
   return (
@@ -15,7 +16,7 @@ export default function StudentDirectory() {
       <Header heading="Student Directory" subheading="Tanvir Chavan" />
 
       <div className="mx-[40px]">
-        <MasterTable
+        <MasterTable<StudentFromDatabase>
           title="Students"
           resource="student/all"
           columns={StudentListTable}

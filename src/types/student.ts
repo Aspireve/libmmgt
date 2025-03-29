@@ -1,3 +1,4 @@
+import { BaseRecord } from "@refinedev/core";
 import { FieldValues, UseFormRegister } from "react-hook-form";
 
 export interface StudentData {
@@ -21,7 +22,7 @@ export interface StudentData {
   is_archived?: boolean;
 }
 
-export interface StudentFromDatabase {
+export interface StudentFromDatabase extends BaseRecord {
   student_id: string;
   student_uuid: string;
   student_name: string;
@@ -39,6 +40,7 @@ export interface StudentFromDatabase {
   password: string;
   current_password?: string;
   confirm_password?: string;
+  image_field?: string | File | null;
 }
 
 export type StudentMappingType = { [K in keyof StudentData]?: string };

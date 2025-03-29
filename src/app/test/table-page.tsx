@@ -16,7 +16,7 @@ interface PageProps<TData extends BaseRecord> {
   isSelectable?: boolean;
   resource: string;
   columns: (params: { refetch: () => Promise<unknown> }) => ColumnDef<TData>[];
-  AddedOptions?: FC<{ data: TData; refetch: () => Promise<unknown>; resource: string }>[];
+  AddedOptions?: FC<{ data: TData[]; refetch: () => Promise<unknown>; resource: string }>[];
   query?: LogicalFilter[];
   idField?: keyof TData;
   onDataFetched?: (data: TData | null) => void;

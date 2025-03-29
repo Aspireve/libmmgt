@@ -15,8 +15,6 @@ export class StudentDataBuilder {
       const column = this.mapping[fieldKey];
       const colIndex = this.excelHeaders.indexOf(column);
 
-      console.log({ column, colIndex });
-
       if (column && colIndex !== -1 && this.rowOrData[colIndex] !== undefined) {
         let value = this.rowOrData[colIndex];
         if (transform) value = transform(value);

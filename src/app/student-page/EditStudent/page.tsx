@@ -33,7 +33,7 @@ const EditStudent: React.FC = () => {
 
   const router = useRouter();
   const searchParams = useSearchParams();
-  const studentUuid = searchParams.get("student_id");
+  const student_id = searchParams.get("student_id");
 
   const { mutate, isLoading } = useUpdate();
   const {
@@ -45,7 +45,7 @@ const EditStudent: React.FC = () => {
     watch,
     setValue,
     isFormInitialized,
-  } = useEditStudentForm(studentUuid || "");
+  } = useEditStudentForm(student_id || "");
 
   const {
     data: departmentList,
