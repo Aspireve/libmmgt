@@ -25,7 +25,7 @@ const AddBook = () => {
   const [isReadable, setIsReadable] = useState(false)
   const [isDisable, setIsDisable] = useState(true)
 
-  const institute_uuid = useSelector((state: RootState) => state.auth.institute_uuid);
+  const {institute_uuid, institute_name} = useSelector((state: RootState) => state.auth.currentInstitute);
 
  
 
@@ -97,8 +97,8 @@ const AddBook = () => {
       return isNaN(date.getTime()) ? null : date.toISOString().split("T")[0];
     };
     // To Fix
-    delete data.title_images
-    delete data.remarks
+    // delete data.title_images
+    // delete data.remarks
 
     const formattedData: BookData = {
       ...data,
@@ -107,6 +107,7 @@ const AddBook = () => {
       year_of_publication: formatDate(data.year_of_publication),
       date_of_acquisition: formatDate(data.date_of_acquisition),
       institute_uuid,
+      institute_name
     };
     mutate(
       { resource: "book_v2/create", values: formattedData },
@@ -462,11 +463,11 @@ const AddBook = () => {
                 >
                   {createLoading ? (
                     <>
-                      Adding Student...
+                      Adding Book...
                       <Loader2 className="h-5 w-5 animate-spin" />
                     </>
                   ) : (
-                    "Add Student"
+                    "Add Book"
                   )}
                 </Button>
               </div>
