@@ -19,44 +19,45 @@ export const dataProvider: CustomDataProvider = {
     let url = `${resource}?_page=${current}&_limit=${pageSize}`;
 
     if (filters?.length) {
-        const filterParams = filters
-            //@ts-ignore
-            .map(({ field, operator, value }) => {
-                if (!field || value === undefined) return "";
-                let query = `${encodeURIComponent(field)}`;
-                if (operator === "eq") {
-                    query += `=${encodeURIComponent(value)}`;
-                } else if (operator === "gte") {
-                    query += `_gte=${encodeURIComponent(value)}`;
-                } else if (operator === "lte") {
-                    query += `_lte=${encodeURIComponent(value)}`;
-                } else {
-                    return ""; // Ignore unsupported operators
-                }
-                return query;
-            })
-            .filter(Boolean)
-            .join("&");
+      const filterParams = filters
+        //@ts-ignore
+        .map(({ field, operator, value }) => {
+          if (!field || value === undefined) return "";
+          let query = `${encodeURIComponent(field)}`;
+          if (operator === "eq") {
+            query += `=${encodeURIComponent(value)}`;
+          } else if (operator === "gte") {
+            query += `_gte=${encodeURIComponent(value)}`;
+          } else if (operator === "lte") {
+            query += `_lte=${encodeURIComponent(value)}`;
+          } else {
+            return ""; // Ignore unsupported operators
+          }
+          return query;
+        })
+        .filter(Boolean)
+        .join("&");
 
-        url += `&${filterParams}`;
+      url += `&${filterParams}`;
     }
 
-    const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdHVkZW50X2lkIjoiVFUwMDEvQ1MwMDEiLCJlbWFpbCI6InN0dWRlbnQxQGV4YW1wbGUuY29tIiwiaWF0IjoxNzQzMjI3NzI3fQ.Vrr2E9HxKtGydxk6jKKJQmsvkDNycCepMZs6Jh0ju3I";
+    const token =
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdHVkZW50X2lkIjoiVFUwMDEvQ1MwMDEiLCJlbWFpbCI6InN0dWRlbnQxQGV4YW1wbGUuY29tIiwiaWF0IjoxNzQzMjI3NzI3fQ.Vrr2E9HxKtGydxk6jKKJQmsvkDNycCepMZs6Jh0ju3I";
 
     const response = await fetchWrapper(url, {
-        method: "GET",
-        headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-        },
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
     });
 
     return {
-        data: response?.data || response,
-        total: response,
-        pagination: response?.pagination,
+      data: response?.data || response,
+      total: response,
+      pagination: response?.pagination,
     };
-},
+  },
 
   getOne: async ({ resource, id }) => {
     const url = `${resource}?${id}`;
@@ -86,7 +87,6 @@ export const dataProvider: CustomDataProvider = {
       body: JSON.stringify(variables),
     });
     return {
-      
       data: response,
     };
   },
