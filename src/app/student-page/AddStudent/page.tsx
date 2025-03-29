@@ -66,35 +66,36 @@ const AddStudent: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const generateBarcode = (phoneNo?: string) => {
-    const barcodeValue = phoneNo ? phoneNo : Date.now().toString();
-    const canvas = document.createElement("canvas");
-    JsBarcode(canvas, barcodeValue, {
-      format: "CODE128",
-      displayValue: true,
-      fontSize: 12,
-      height: 50,
-      margin: 5,
-      textMargin: 2,
-    });
+  // const generateBarcode = (phoneNo?: string) => {
+  //   const barcodeValue = phoneNo ? phoneNo : Date.now().toString();
+  //   const canvas = document.createElement("canvas");
+  //   JsBarcode(canvas, barcodeValue, {
+  //     format: "CODE128",
+  //     displayValue: true,
+  //     fontSize: 12,
+  //     height: 50,
+  //     margin: 5,
+  //     textMargin: 2,
+  //   });
 
-    const barcodeDataUrl = canvas.toDataURL("image/png");
-    const downloadLink = document.createElement("a");
-    downloadLink.href = barcodeDataUrl;
-    downloadLink.download = `Student_Barcode_${phoneNo || "Unknown"}.png`;
-    document.body.appendChild(downloadLink);
-    downloadLink.click();
-    document.body.removeChild(downloadLink);
-  };
+  //   const barcodeDataUrl = canvas.toDataURL("image/png");
+  //   const downloadLink = document.createElement("a");
+  //   downloadLink.href = barcodeDataUrl;
+  //   downloadLink.download = `Student_Barcode_${phoneNo || "Unknown"}.png`;
+  //   document.body.appendChild(downloadLink);
+  //   downloadLink.click();
+  //   document.body.removeChild(downloadLink);
+  // };
 
   const handleStudentSubmit = async (data: any) => {
     try {
       if (!isPossiblePhoneNumber(data.phone_no as string)) {
         setError("phone_no", { message: "Incorrect Format" });
-        return; // Let the PhoneNumber component handle its own error
+        return;
       }
+
       const studentData: any = await onSubmit(data);
-      generateBarcode(studentData?.studentId || "No ID Provided");
+      // generateBarcode(studentData?.studentId || "No ID Provided");
       router.push("/student-page");
     } catch (error) {
       console.error("Error adding student:", error);
@@ -122,7 +123,7 @@ const AddStudent: React.FC = () => {
         onSubmit={handleSubmit(handleStudentSubmit)}
         className="my-10 mx-[40px] space-y-6"
       >
-          {/* <Label>Profile Image</Label> */}
+        {/* <Label>Profile Image</Label> */}
         <div className="flex gap-6">
           <div className="flex flex-col border gap-4 border-[#E0E2E7] bg-[#F9F9FC] items-center justify-center rounded-xl p-2 px-6">
             {profileImage ? (

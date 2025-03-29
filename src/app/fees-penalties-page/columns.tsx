@@ -28,11 +28,11 @@ export const PenaltiesColumns: ColumnDef<Penalties>[] = [
     header: "Department",
   },
   {
-    accessorKey: "book_id",
+    accessorKey: "book_copy_id",
     header: "Book ID",
   },
   {
-    accessorKey: "book_category",
+    accessorKey: "subject",
     header: "Book Category",
   },
   {
@@ -64,7 +64,7 @@ export const PenaltiesColumns: ColumnDef<Penalties>[] = [
     },
   },
   {
-    accessorKey: "penalties",
+    accessorKey: "penalty_amount",
     header: "Penalties",
   },
   {

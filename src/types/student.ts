@@ -17,9 +17,10 @@ export interface StudentData {
   institute_uuid: string;
   student_id: string;
   student_uuid?: string;
-  image_field?: string | File | null; // Add this (adjust type as needed)
-  is_archived?: boolean; // Add this
+  image_field?: string | File | null;
+  is_archived?: boolean;
 }
+
 export interface StudentFromDatabase {
   student_id: string;
   student_uuid: string;
@@ -50,8 +51,8 @@ export interface InputFieldProps {
   validation?: object;
   errors: any;
   placeholder?: string;
-  readonly?:boolean;
-  disabled?:boolean;
+  readonly?: boolean;
+  disabled?: boolean;
   defaultValue?: string | number;
-  loading?:boolean
+  loading?: boolean;
 }

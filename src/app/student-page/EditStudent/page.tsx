@@ -57,7 +57,7 @@ const EditStudent: React.FC = () => {
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [profileImage, setProfileImage] = useState<string | null>(null);
-  const [showPassword, setShowPassword] = useState(false);
+  // const [showPassword, setShowPassword] = useState(false);
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
@@ -233,7 +233,7 @@ const EditStudent: React.FC = () => {
                     />
                   </div>
 
-                  <div className="relative">
+                  {/* <div className="relative">
                     <Label>Password</Label>
                     <div className="relative">
                       <Input
@@ -253,7 +253,7 @@ const EditStudent: React.FC = () => {
                         )}
                       </button>
                     </div>
-                  </div>
+                  </div> */}
 
                   <div>
                     <Label>Date of Birth</Label>

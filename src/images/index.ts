@@ -31,6 +31,7 @@ const images = {
   Logo: require("./Logo.png"),
   Logout: require("./logout.png"),
   LostBooks: require("./Lost_Books.png"),
+  NoBookIllustration: require("./noBookillustration.png"),
   PenIcon: require("./penicon.png"),
   Search: require("./search.png"),
   StudentDirectory: require("./StudentDirectory.png"),

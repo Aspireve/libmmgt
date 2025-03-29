@@ -16,31 +16,24 @@ export const initialMapping: StudentMappingType = {
   email: "",
   phone_no: "",
   address: "",
-  roll_no: "", // Changed from 0 to "" (string) since mapping deals with column names
+  roll_no: "",
   year_of_admission: "",
   password: "",
-  confirm_password: "",
   date_of_birth: "",
   gender: "",
-  institute_id: "",
-  institute_name: "",
 };
 
-// @ts-ignore
 export const fieldLabels: Record<keyof StudentData, string> = {
   student_name: "Student Name",
   department: "Department",
   email: "Email",
   phone_no: "Phone Number",
   address: "Address",
-  roll_no: "Roll Number", // Updated label from 0 to a string
-  year_of_admission: "Year of Admission",
+  roll_no: "Roll no",
+  year_of_admission: "Year Of Admission",
   password: "Password",
-  confirm_password: "Confirm Password",
-  date_of_birth: "Date of Birth",
+  date_of_birth: "Date Of Birth",
   gender: "Gender",
-  institute_id: "Institute ID",
-  institute_name: "Institute Name",
 };
 
 export const StudentListTable = ({
