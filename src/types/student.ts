@@ -56,3 +56,21 @@ export interface InputFieldProps {
   defaultValue?: string | number;
   loading?: boolean;
 }
+
+export type StudentImportField = {
+  student_name: string;
+  department: string;
+  email: string;
+  phone_no: string;
+  address?: string;
+  roll_no: string;
+  year_of_admission?: string;
+  password?: string;
+  gender: string;
+  date_of_birth?: string;
+}
+
+export interface AddStudentType extends StudentImportField {
+  institute_id: string;
+  institute_name: string;
+}
