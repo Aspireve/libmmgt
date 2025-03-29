@@ -1,17 +1,24 @@
 "use client";
 
 import React, { useRef } from "react";
-import type { ImportData } from "@/types/auth";
 
-const Dropzone = ({
+interface DropdownProps<T> {
+  selectedFile: T | null;
+  clearSelectedFile: () => void;
+  processFile: (file: File | null) => void;
+  getFileTitle?: (file: T) => string;
+}
+
+interface BaseFileData {
+  title: string; // Ensures every file object has a title
+}
+
+const Dropzone = <T extends BaseFileData>({
   selectedFile,
   clearSelectedFile,
   processFile,
-}: {
-  selectedFile: ImportData;
-  clearSelectedFile: () => void;
-  processFile: (e: File | null) => void;
-}) => {
+   getFileTitle = (file) => file.title || "File"
+}: DropdownProps<T>) => {
   const dropRef = useRef<HTMLDivElement>(null);
   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -50,7 +57,7 @@ const Dropzone = ({
       {selectedFile?.title ? (
         <div className="flex flex-col items-center">
           <p className="text-[#1E40AF] font-bold mt-2">
-            {selectedFile.title} uploaded!
+            {getFileTitle(selectedFile)} uploaded!
           </p>
           <button
             onClick={clearSelectedFile}

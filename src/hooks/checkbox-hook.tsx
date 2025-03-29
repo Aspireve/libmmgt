@@ -1,5 +1,5 @@
-import { ColumnDef } from "@tanstack/react-table";
 import { useState } from "react";
+import { ColumnDef } from "@tanstack/react-table";
 
 export function useRowSelection<T>(
   getRowId: (row: T) => string | number,
@@ -26,7 +26,7 @@ export function useRowSelection<T>(
     setSelectedData(isChecked ? [...listData] : []);
   };
 
-  const columnsWithCheckbox: ColumnDef<any, any>[] = isSelectable
+  const columnsWithCheckbox: ColumnDef<T>[] = isSelectable
     ? [
         {
           id: "select",

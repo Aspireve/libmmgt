@@ -13,24 +13,24 @@ const DeleteStudent = <TData extends StudentFromDatabase>({
 }) => {
   const { isOpen, open, close } = useDisclosure();
 
+  if (!data) {
+    return <></>;
+  }
   return (
-    data &&
-    data?.length > 0 && (
-      <>
-        <Button
-          className="bg-red-600 text-white hover:bg-red-900 rounded-[10px]"
-          onClick={open}
-        >
-          {data?.length === 1 ? "Delete" : "Delete All"}
-        </Button>
-        <DeleteStudentModal
-          data={data}
-          close={close}
-          isOpen={isOpen}
-          refetch={refetch}
-        />
-      </>
-    )
+    <>
+      <Button
+        className="bg-red-600 text-white hover:bg-red-900 rounded-[10px]"
+        onClick={open}
+      >
+        {data?.length === 1 ? "Delete" : "Delete All"}
+      </Button>
+      <DeleteStudentModal
+        data={data}
+        close={close}
+        isOpen={isOpen}
+        refetch={refetch}
+      />
+    </>
   );
 };
 

@@ -23,7 +23,7 @@ export const JournalActions = ({
       <Button
         className="p-0 shadow-none"
         onClick={() => {
-          router.push(`/periodicals-pages/edit-periodicalcopy?journal_copy_uuid=${periodical.journal_copy_uuid}`);
+          router.push(`/periodicals-pages/editperiodicalCopy?journal_copy_id=${periodical.journal_copy_id}`);
         }}
         aria-label="Edit student"
       >

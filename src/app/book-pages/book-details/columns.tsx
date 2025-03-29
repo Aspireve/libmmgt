@@ -23,7 +23,7 @@ export const BookActions = ({
       <Button
         className="p-0 shadow-none"
         onClick={() => {
-          router.push(`/book-pages/editbookCopy-page?book_copy_uuid=${book.book_copy_uuid}`);
+          router.push(`/book-pages/editbookCopy?book_copy_uuid=${book.book_copy_uuid}`);
         }}
         aria-label="Edit student"
       >
@@ -60,7 +60,7 @@ export const StatusCell = ({ isAvailable }: { isAvailable: boolean }) => {
 export const getBookCopyColumns = ({ refetch }:{ refetch: () => void }): ColumnDef<BookData>[] => [
     {
         accessorKey: 'book_copy_id',
-        header: 'Book ID',
+        header: 'ID',
     },
     {
         accessorKey: 'source_of_acquisition',
