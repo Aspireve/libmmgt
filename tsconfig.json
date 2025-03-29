@@ -41,7 +41,7 @@
     ".next/types/**/*.ts",
     "next-env.d.ts",
     "dist/types/**/*.ts"
-  ],
+, "src/app/periodicals-pages/editperiodicalCopy"  ],
   "exclude": [
     "node_modules"
   ]

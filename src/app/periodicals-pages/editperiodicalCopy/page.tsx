@@ -14,14 +14,14 @@ import { useForm } from "@refinedev/react-hook-form";
 
 const editPeriodicalcopy = () => {
      const searchParams = useSearchParams();
-      const journal_title_id = searchParams.get("journal_title_id")
+      const journal_copy_id = searchParams.get("journal_copy_id")
       const [isLoadingInput, setIsLoadingInput] = useState(true)
       const [isLoading, setIsLoading] = useState(false)
       const router = useRouter();
 
       const { data: journalData } = useOne<JournalData>({
-        resource: "journals/search-periodicals",
-        id: `_journal_title_id=${journal_title_id}` || ""
+        resource: "journals/get-periodical-copy-info",
+        id: `_journal_copy_id=${journal_copy_id}` || ""
       });
     
     
@@ -58,13 +58,14 @@ const editPeriodicalcopy = () => {
     
     
       const onSubmit = async (data: any) => {
+        delete data.copy_additional_fields
     
         const formattedData: JournalData = {
           ...data,
         }
         try {
                 await dataProvider.patchUpdate({
-                resource: 'journals/update-periodical',
+                resource: 'journals/update-periodical-copies',
                 value: formattedData,
               })
               toast.success("Updated successfully!");
@@ -106,21 +107,6 @@ const editPeriodicalcopy = () => {
                   required: "Editor Name is required",
                 }}
                 placeholder="Enter Editor Name"
-                loading={isLoadingInput}
-              />
-            </div>
-            <h2>Volume & Issue Details</h2>
-            <div className="grid grid-cols-4 gap-4 p-4">
-              <InputField
-                label="Volume Number"
-                name="volume_no"
-                register={register}
-                errors={errors}
-                type="text"
-                validation={{
-                  required: "Volume Number is required",
-                }}
-                placeholder="Enter Volume Number"
                 loading={isLoadingInput}
               />
             </div>

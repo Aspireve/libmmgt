@@ -35,7 +35,9 @@ export interface BookData {
   copies:any,
   title:any,
   title_images:[],
-  remarks:string
+  remarks:string,
+  title_additional_fields:{},
+  title_description:string,
 }
 
 
