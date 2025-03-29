@@ -33,6 +33,7 @@ export default function IssueBook({
 
         values: {
           book_copy_id: form.getFieldValue("bookId"),
+          // book_copy_id: form.getFieldValue("bookId"),
           student_id: form.getFieldValue("studentId"),
           action: action === ActionType.CHECK_IN ? "borrow" : "return",
         },
@@ -43,8 +44,10 @@ export default function IssueBook({
           form.reset();
           setRefreshAction((prev: number) => prev + 1);
         },
-        onError: (error) => {
-          toast.error(`Error ${action} Book: ` + error.message);
+        onError: (error: any) => {
+          const errorMessage =
+            error?.response?.data?.message || error?.message || "Something went wrong!";
+          toast.error(`Error ${action} Book: ${errorMessage}`);
         },
       }
     );

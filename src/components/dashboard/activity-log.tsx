@@ -5,6 +5,7 @@ import React from "react";
 import Images from "@/images";
 import { ActivityType } from "@/types/book";
 import { Skeleton } from "../ui/skeleton";
+import images from "@/images";
 
 type LoadingProps = {
   isLoading?: true;

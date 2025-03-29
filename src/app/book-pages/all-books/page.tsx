@@ -88,7 +88,7 @@ const columns = getBookColumns(handleEdit);
           title='Books'
           columns={(e)=>columns}
           resource={`book_v2/${url}`}
-          AddedOptions={[AddBookButton, ImportBookButton]}
+          AddedOptions={[ AddBookButton, ImportBookButton]}
           isSelectable={false}
           />
           </div>

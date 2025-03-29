@@ -86,18 +86,6 @@ const editPeriodicalcopy = () => {
             <h2> General Information</h2>
             <div className="grid grid-cols-4 gap-4 p-4">
               <InputField
-                label="Periodical Title"
-                name="journal_title"
-                register={register}
-                errors={errors}
-                type="text"
-                validation={{
-                  required: "Title is required",
-                }}
-                placeholder="Enter Periodical Title"
-                loading={isLoadingInput}
-              />
-              <InputField
                 label="Editor Name"
                 name="editor_name"
                 register={register}
@@ -134,6 +122,21 @@ const editPeriodicalcopy = () => {
                   required: "ISSN is required",
                 }}
                 placeholder="Enter ISSN"
+                loading={isLoadingInput}
+              />
+            </div>
+            <h2>Acquisition & Library Information</h2>
+            <div className="grid grid-cols-4 gap-4 p-4">
+            <InputField
+                label="Barcode"
+                name="barcode"
+                register={register}
+                errors={errors}
+                type="text"
+                validation={{
+                  required: "Barcode is required",
+                }}
+                placeholder="Enter Barcode"
                 loading={isLoadingInput}
               />
             </div>
