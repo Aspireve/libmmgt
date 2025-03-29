@@ -12,12 +12,9 @@ export const useAddStudentForm = () => {
   const router = useRouter();
   const [imageUpload, setImageUpload] = useState(false);
 
-  const institute_id = useSelector(
-    (state: RootState) => state.auth.institute_uuid
-  );
-  const institute_name = useSelector(
-    (state: RootState) => state.auth.institute_name
-  );
+  const {institute_uuid, institute_name} = useSelector(
+    (state: RootState) => state.auth.currentInstitute
+  )
 
   const {
     register,
@@ -40,7 +37,7 @@ export const useAddStudentForm = () => {
       confirm_password: "",
       date_of_birth: undefined,
       gender: undefined,
-      // institute_uuid: undefined,
+      institute_uuid: undefined,
       image_field: undefined,
     },
     mode: "onSubmit", // Trigger validation on form submission
@@ -87,7 +84,7 @@ export const useAddStudentForm = () => {
       is_archived: false,
       date_of_birth: data.date_of_birth,
       gender: data.gender,
-      institute_id: institute_id ?? "",
+      institute_uuid: institute_uuid ?? "",
       institute_name: institute_name ?? "",
     };
 

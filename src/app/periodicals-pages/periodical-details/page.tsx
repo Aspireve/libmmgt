@@ -8,6 +8,7 @@ import DeleteJournal from '@/components/periodicals/delete-button';
 import { getPeriodicalCopyColumns } from './columns';
 import Tabbing from '@/components/custom/tabbing';
 import PeriodicalDetailsActivites from '../periodical-details-activities/page';
+import { JournalData } from '../types/data';
 
 enum LibraryTabs {
     PERIODICALDETAILS = "Periodical Details",
@@ -30,7 +31,7 @@ const periodical_details = () => {
             <Header heading={periodicalTitle} subheading={periodicalID} />
             <section>
                 <div className="mx-[40px]">
-                    <Tabbing
+                    {/* <Tabbing
                         tabs={TABS}
                         content={{
                             [LibraryTabs.PERIODICALDETAILS]:
@@ -55,8 +56,21 @@ const periodical_details = () => {
                                 <PeriodicalDetailsActivites/>
                             </>,
                         }}
+                    /> */}
+                    <MasterTable<JournalData>
+                        title='Periodical Copies'
+                        columns={getPeriodicalCopyColumns}
+                        resource="journals/get-periodical-copies"
+                        query={[
+                            { field: "_journal_title_uuid", operator: "eq", value: `${journal_uuid}` }
+                        ]}
+                        AddedOptions={[DeleteJournal]}
+                        idField='journal_copy_id'
+                        // onDataFetched={(data) => (
+                        //     setPeriodicalID(data?.journal_title_id),
+                        //     setPeriodicalTitle(data?.journal_title)
+                        // )}
                     />
-
 
                 </div>
             </section>

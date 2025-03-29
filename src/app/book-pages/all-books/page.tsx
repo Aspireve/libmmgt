@@ -86,7 +86,7 @@ const columns = getBookColumns(handleEdit);
          
           <MasterTable
           title='Books'
-          columns={(e)=>columns}
+          columns={()=>columns}
           resource={`book_v2/${url}`}
           AddedOptions={[ AddBookButton, ImportBookButton]}
           isSelectable={false}
