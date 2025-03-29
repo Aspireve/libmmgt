@@ -6,7 +6,6 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { FaChevronRight } from "react-icons/fa";
 
 // Define the type for breadcrumb items
 interface BreadcrumbItem {

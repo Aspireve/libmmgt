@@ -107,60 +107,60 @@ export const studentActivitiesColumns:ColumnDef<Activites>[] =  [
 
 /** 5) Profile Data Fields (used for displaying student info) */
 export const profiledata = [
-  {
-    name: "student_name",
-    label: "Full Name",
-    key: "student_name",
-    type: "text",
-  },
-  {
-    name: "department",
-    label: "Department",
-    key: "department",
-    type: "text",
-  },
-  {
-    name: "email",
-    label: "Email",
-    key: "email",
-    type: "email",
-  },
-  {
-    name: "phone_no",
-    label: "Phone Number",
-    key: "phone_no",
-    type: "tel",
-  },
-  {
-    name: "roll_no",
-    label: "Roll No.",
-    key: "roll_no",
-    type: "text",
-  },
-  {
-    name: "date_of_birth",
-    label: "Date of Birth",
-    key: "date_of_birth",
-    type: "date",
-  },
+  // {
+  //   name: "student_name",
+  //   label: "Full Name",
+  //   key: "student_name",
+  //   type: "text",
+  // },
+  // {
+  //   name: "department",
+  //   label: "Department",
+  //   key: "department",
+  //   type: "text",
+  // },
+  // {
+  //   name: "email",
+  //   label: "Email",
+  //   key: "email",
+  //   type: "email",
+  // },
+  // {
+  //   name: "phone_no",
+  //   label: "Phone Number",
+  //   key: "phone_no",
+  //   type: "tel",
+  // },
+  // {
+  //   name: "roll_no",
+  //   label: "Roll No.",
+  //   key: "roll_no",
+  //   type: "text",
+  // },
+  // {
+  //   name: "date_of_birth",
+  //   label: "Date of Birth",
+  //   key: "date_of_birth",
+  //   type: "date",
+  // },
   {
     name: "address",
     label: "Address",
     key: "address",
     type: "textarea"
   },
-  {
-    name: "year_of_admission",
-    label:"Year Of Admission",
-    key:"year_of_admission",
-    type:"text"
-  },
-  {
-    name:"gender",
-    label:"Gender",
-    key:"gender",
-    type:"select"
-  }
+  // {
+  //   name: "year_of_admission",
+  //   label:"Year Of Admission",
+  //   key:"year_of_admission",
+  //   type:"text"
+  // },
+  // {
+  //   name:"gender",
+  //   label:"Gender",
+  //   key:"gender",
+  //   type:"select"
+  // }
 ];
 
 /** 6) Student Profile Routes */

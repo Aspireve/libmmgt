@@ -31,13 +31,13 @@ export const InputField = <T extends FieldValues>({
   return (
     <div className="transition-all duration-200">
       <Label>
-        {label} {validation && <span className="text-red-500"> *</span>}
+        {label} {Object.keys(validation).length > 0 && <span className="text-red-500"> *</span>}
       </Label>
       {loading ? (
         <Skeleton className="h-10 w-full animate-pulse bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 bg-[length:200%_100%]" />
       ) : (
         <Input
-          className="text-[#717680]"
+          className="text-[#000]"
           type={type}
           max={
             type === "date" ? new Date().toISOString().split("T")[0] : undefined

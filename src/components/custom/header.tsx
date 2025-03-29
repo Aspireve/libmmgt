@@ -23,7 +23,7 @@ const Header: React.FC<HeadersProps> = ({
           <Skeleton className="h-5 mt-3 w-full max-w-[12rem] animate-pulse bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 bg-[length:200%_100%]" />
         </div>
       ) : (
-        <div className="flex-1">
+        <div className="flex-1 cursor-default">
           <h1 className="text-black text-3xl font-bold">{heading}</h1>
           <p className="text-gray-500 mt-[5px] font-medium text-lg">
             {subheading}

@@ -6,6 +6,7 @@ import PhoneInput, {
 import { E164Number } from "libphonenumber-js";
 import "react-phone-number-input/style.css";
 import { StudentData } from "@/types/student";
+import { UseFormRegister } from "react-hook-form";
 
 // Define props type for the component
 interface PhoneNumberProps {
@@ -14,6 +15,7 @@ interface PhoneNumberProps {
   readOnly?: boolean;
   setValue: (name: keyof StudentData, value: string | undefined) => void;
   error: any;
+  register: UseFormRegister<any>
 }
 
 // Define props type for the custom input
@@ -25,17 +27,21 @@ interface CustomInputProps {
   disabled?: boolean;
   readOnly?: boolean;
   placeholder?: string;
+  register: UseFormRegister<any>
 }
 
 // Custom input with proper typing for ref
 const CustomPhoneInput = forwardRef<HTMLInputElement, CustomInputProps>(
-  (props, ref: ForwardedRef<HTMLInputElement>) => (
+  (props, ref: ForwardedRef<HTMLInputElement>) => {
+    console.log(props)
+    return (
     <input
       {...props}
+      // {...props?.register("phone_no")}
       ref={ref}
-      className="block w-full px-3 border rounded-md border-input focus:outline-none sm:text-sm text-md py-2"
+      className="block w-full px-3 border text-[#000] rounded-md border-input focus:outline-none sm:text-sm text-md py-2"
     />
-  )
+  )}
 );
 
 CustomPhoneInput.displayName = "CustomPhoneInput";
@@ -80,6 +86,7 @@ const PhoneNumber: React.FC<PhoneNumberProps> = ({
   value,
   readOnly,
   setValue,
+  register,
   error,
 }) => {
   const [phoneValue, setPhoneValue] = useState<E164Number | undefined>(
@@ -117,6 +124,7 @@ const PhoneNumber: React.FC<PhoneNumberProps> = ({
           onCountryChange={handleCountryChange}
           countrySelectComponent={CustomCountrySelect}
           inputComponent={CustomPhoneInput}
+          containerComponentProps={{...register(name)}}
           // error
           // error={phoneValue ? (isValidPhoneNumber(phoneValue) ? undefined : 'Invalid phone number') : 'Phone number required'}
           className="w-full flex flex-row gap-2 m-0 p-0 items-center"

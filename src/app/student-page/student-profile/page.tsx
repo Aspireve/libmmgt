@@ -1,16 +1,12 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import Header from "@/components/custom/header";
-import { profiledata } from "../student-profile/studentprofile";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import Image from "next/image";
 import { UserRound } from "lucide-react";
-import Images from "@/images";
-import { StudentProfileData } from "@/app/student-page/student-profile/studentprofile";
 import { useOne } from "@refinedev/core";
 import Tabbing from "@/components/custom/tabbing";
 import { ProfileSkeleton } from "@/components/students/skeletons";
@@ -19,9 +15,12 @@ import {
   borrowedBooksColumns,
   studentActivitiesColumns,
 } from "../student-profile/studentprofile";
-import { CustomBreadcrumb } from "@/components/breadcrumb";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
+import { StudentProfileBC } from "@/components/breadcrumb/constant";
+import { StudentCompleteData } from "@/types/student";
+import { InputField } from "@/components/custom/inputfield";
+import { useForm } from "react-hook-form";
 
 enum LibraryTabs {
   BORROWED = "borrowed",
@@ -34,38 +33,42 @@ const TABS = [
 ];
 
 const Page = () => {
-  const breadcrumbItems = [
-    { label: "Student Directory", href: "/student-page" },
-    { label: "Student Profile", href: "/student-page/student-profile" },
-  ];
   const searchParams = useSearchParams();
-  const studentUuid = searchParams.get("student_uuid");
+  const router = useRouter();
+  const {
+    register,
+    reset,
+    formState: { errors },
+  } = useForm<StudentCompleteData>();
+
   const student_id = searchParams.get("student_id");
 
-  const { data, isLoading } = useOne<StudentProfileData>({
+  const { data, isLoading } = useOne<StudentCompleteData>({
     resource: "student/detail",
     id: `student_id=${student_id}`,
     queryOptions: { retry: 1, enabled: !!student_id },
   });
 
-  // Function to normalize phone number
-  const normalizePhoneNumber = (phone: string | undefined) => {
-    if (!phone) return "Not Provided"; // Handle missing data
-    const trimmedPhone = phone.trim();
-    return trimmedPhone.startsWith("+") ? trimmedPhone : `+91${trimmedPhone}`;
-  };
-
-  const router = useRouter();
+  useEffect(() => {
+    reset({
+      ...data?.data,
+      gender: data?.data.gender === "male" ? "Male" : "Female",
+      year_of_admission: data?.data.year_of_admission ?? "Not Provided",
+      phone_no: data?.data.phone_no.startsWith("+")
+        ? data?.data.phone_no
+        : `+91${data?.data.phone_no}`,
+    });
+  }, [data]);
 
   return (
     <div>
-      <CustomBreadcrumb items={breadcrumbItems} />
+      <StudentProfileBC />
       <Header
         heading={data?.data?.student_name ?? "Not Available"}
         subheading={data?.data?.student_id ?? "Not Available"}
         isLoading={isLoading}
       />
-      <div className="mx-[40px] items-center justify-center p-6">
+      <div className="mx-[40px] items-center justify-center py-6">
         {isLoading ? (
           <ProfileSkeleton />
         ) : !data?.data ? (
@@ -73,37 +76,100 @@ const Page = () => {
             No student data found.
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mt-4">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-x-6 gap-y-4  mt-4">
             {/* Left Side: Profile Image */}
-            <div className="md:col-span-1 flex justify-center md:justify-start">
-              <div className="w-[200px] h-[200px] flex flex-col border border-[#E0E2E7] bg-[#F9F9FC] items-center justify-center rounded-xl">
-                {data?.data?.image_field ? (
-                  <Image
-                    src={data.data.image_field}
-                    alt="Profile"
-                    width={200}
-                    height={0}
-                    className="rounded-[10px] border border-gray-300 h-[250px]"
-                    style={{ objectFit: "cover" }}
-                  />
-                ) : (
-                  <UserRound
-                    className="text-[#1E40AF] bg-[#0066FF3D] p-3 rounded-full border-8 border-[#789DFFAB]"
-                    strokeWidth={2.5}
-                    size={70}
-                  />
-                )}
-              </div>
+            <div className="md:col-span-1 flex md:justify-start h-[200px] flex-col border border-[#E0E2E7] bg-[#F9F9FC] items-center justify-center rounded-xl">
+              {data?.data?.image_field ? (
+                <Image
+                  src={data.data.image_field}
+                  alt="Profile"
+                  width={200}
+                  height={0}
+                  className="rounded-[10px] border border-gray-300 h-full w-full"
+                  style={{ objectFit: "cover" }}
+                />
+              ) : (
+                <UserRound
+                  className="text-[#1E40AF] bg-[#0066FF3D] p-3 rounded-full border-8 border-[#789DFFAB] m-auto"
+                  strokeWidth={2.5}
+                  size={70}
+                />
+              )}
             </div>
 
             {/* Right Side: Input Fields in 3x2 Grid */}
             <div className="md:col-span-3">
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                {profiledata
+                <InputField
+                  label="Full Name"
+                  name="student_name"
+                  type="text"
+                  readonly={true}
+                  register={register}
+                  errors={errors}
+                />
+                <InputField
+                  label="Department"
+                  name="department"
+                  type="text"
+                  readonly={true}
+                  register={register}
+                  errors={errors}
+                />
+                <InputField
+                  label="Email"
+                  name="email"
+                  type="email"
+                  readonly={true}
+                  register={register}
+                  errors={errors}
+                />
+
+                <InputField
+                  label="Phone No."
+                  name="phone_no"
+                  type="text"
+                  readonly={true}
+                  register={register}
+                  errors={errors}
+                />
+                <InputField
+                  label="Roll No."
+                  name="roll_no"
+                  type="text"
+                  readonly={true}
+                  register={register}
+                  errors={errors}
+                />
+                <InputField
+                  label="Date of Birth"
+                  name="date_of_birth"
+                  type="date"
+                  readonly={true}
+                  register={register}
+                  errors={errors}
+                />
+                <InputField
+                  label="Year Of Admission"
+                  name="year_of_admission"
+                  type="text"
+                  readonly={true}
+                  register={register}
+                  errors={errors}
+                />
+                <InputField
+                  label="Gender"
+                  name="gender"
+                  type="text"
+                  readonly={true}
+                  register={register}
+                  errors={errors}
+                />
+                {/* {profiledata
                   .filter((field) => field.name !== "address")
                   .map((field) => {
                     let value =
-                      data?.data?.[field.name as keyof StudentProfileData] ??
+                      data?.data?.[field.name as keyof StudentCompleteData] ??
                       "Not Provided";
                     // Normalize phone number only for phone_no field
                     if (field.name === "phone_no" && value !== "Not Provided") {
@@ -138,7 +204,11 @@ const Page = () => {
                           </div>
                         ) : (
                           <Input
-                            className="border-gray-300 p-2 rounded-md text-[#717680]"
+                            className={`border-gray-300 p-2 rounded-md ${
+                              value !== "Not Provided"
+                                ? "text-[#000]"
+                                : "text-[#717680]"
+                            }`}
                             type={field.type}
                             readOnly
                             value={value}
@@ -147,7 +217,7 @@ const Page = () => {
                         )}
                       </div>
                     );
-                  })}
+                  })} */}
               </div>
             </div>
 
@@ -155,8 +225,8 @@ const Page = () => {
             <div className="md:col-span-4">
               <Label className="text-[#808080] font-medium mb-1">Address</Label>
               <Textarea
-                className="border-gray-300 p-2 rounded-md text-[#717680]"
-                value={data?.data?.address ?? "Not Provided"}
+                {...register("address")}
+                className="border-[#000] p-2 text-[#000] rounded-xl"
                 readOnly
                 placeholder="Not Provided"
               />

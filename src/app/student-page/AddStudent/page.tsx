@@ -210,6 +210,7 @@ const AddStudent: React.FC = () => {
                 name="phone_no"
                 readOnly={false}
                 error={errors}
+                register={register}
                 setValue={(name, value) => {
                   setValue("phone_no", value);
                   if (isPossiblePhoneNumber(value as string)) {

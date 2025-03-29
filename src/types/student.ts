@@ -70,9 +70,16 @@ export type StudentImportField = {
   password?: string;
   gender: string;
   date_of_birth?: string;
-}
+  image_field?: string;
+};
 
 export interface AddStudentType extends StudentImportField {
-  institute_id: string;
+  institute_uuid: string;
   institute_name: string;
+}
+
+export interface StudentCompleteData extends StudentImportField {
+  student_id: string;
+  is_archived: boolean;
+  created_at: string;
 }

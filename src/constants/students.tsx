@@ -10,7 +10,7 @@ import {
   StudentNameCell,
 } from "./students-col-components";
 
-export const initialMapping: StudentMappingType = {
+export const initialMapping = {
   student_name: "",
   department: "",
   email: "",
