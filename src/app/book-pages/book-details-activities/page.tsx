@@ -1,4 +1,4 @@
-"use Client"
+"use client"
 
 import React from 'react'
 import ActivityLog from '@/components/dashboard/activity-log'
