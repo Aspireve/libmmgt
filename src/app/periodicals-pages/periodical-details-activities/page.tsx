@@ -1,3 +1,5 @@
+"use client"
+
 import ActivityLog from '@/components/dashboard/activity-log'
 import { ActivityType } from '@/types/book'
 import { useList } from '@refinedev/core'
