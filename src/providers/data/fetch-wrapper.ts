@@ -9,8 +9,8 @@ type ErrorResponse = {
 
 //Leon Url
 
-export const API_URL = "http://localhost:3001";
-// export const API_URL = "https://lms-807p.onrender.com";
+//export const API_URL = "http://localhost:3001";
+ export const API_URL = "https://lms-807p.onrender.com";
 
 //Jigisha Url
 
