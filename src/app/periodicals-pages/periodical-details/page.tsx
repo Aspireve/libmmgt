@@ -20,7 +20,7 @@ const TABS = [
     { key: LibraryTabs.ACTIVITY, label: "Activities" },
 ];
 
-const periodical_details = () => {
+const Periodical_details = () => {
     const journal_uuid = useSearchParams().get("journal_uuid");
     const router = useRouter();
     const [periodicalTitle, setPeriodicalTitle] = useState<string>("")
@@ -79,5 +79,5 @@ const periodical_details = () => {
     )
 }
 
-export default periodical_details
+export default Periodical_details
 

@@ -12,7 +12,7 @@ import { dataProvider } from "@/providers/data";
 import { toast } from "sonner";
 import { useForm } from "@refinedev/react-hook-form";
 
-const editPeriodicalcopy = () => {
+const EditPeriodicalcopy = () => {
      const searchParams = useSearchParams();
       const journal_copy_id = searchParams.get("journal_copy_id")
       const [isLoadingInput, setIsLoadingInput] = useState(true)
@@ -171,4 +171,4 @@ const editPeriodicalcopy = () => {
   )
 }
 
-export default editPeriodicalcopy
+export default EditPeriodicalcopy
