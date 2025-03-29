@@ -34,6 +34,7 @@ export const fieldLabels: Record<keyof StudentData, string> = {
   password: "Password",
   date_of_birth: "Date Of Birth",
   gender: "Gender",
+  institute_name: "Institute Name"
 };
 
 export const StudentListTable = ({

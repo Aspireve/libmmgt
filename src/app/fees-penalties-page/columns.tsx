@@ -1,6 +1,9 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
+import { Button } from "@/components/ui/button";
+import { useState } from "react";
+import FeesPenaltiesModal from "@/components/feespenaltyModal/feespenaltiesModal";
 
 export interface Penalties {
   student_id: string;
@@ -68,10 +71,25 @@ export const PenaltiesColumns: ColumnDef<Penalties>[] = [
     header: "Penalties",
   },
   {
-    id: "actions",
-    header: "",
-    cell: () => null, 
-  }
+    accessorKey: "action",
+    header: "Action",
+    cell: () => {
+      const [isModalOpen, setModalOpen] = useState(false);
+
+      return (
+        <>
+          <Button
+            className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded"
+            onClick={() => setModalOpen(true)}
+          >
+            Action
+          </Button>
+          <FeesPenaltiesModal isOpen={isModalOpen} onClose={() => setModalOpen(false)} />
+        </>
+      );
+    },
+  },
+  
 ];
 
 export const fallbackData: Penalties[] = [

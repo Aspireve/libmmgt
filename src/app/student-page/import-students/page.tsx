@@ -66,17 +66,17 @@ const ImportStudents = () => {
     mapping: StudentMappingType,
     importData: any
   ): boolean => {
+    console.log("Current Mapping:", mapping); // Debugging line
     for (const field of requiredFields) {
-      const isMapped = Object.entries(mapping).some(
-        ([key, value]) => value === field
-      );
-      if (!isMapped) {
-        toast.error(`Please map the required field: ${fieldLabels[field]}`);
+      const mappedValue = mapping[field]; // Fetch the mapped column
+      if (!mappedValue || !importData.headers.includes(mappedValue)) {
+        toast.error(`Please map the required field: ${fieldLabels[field] || field}`);
         return false;
       }
     }
     return true;
   };
+  
 
   const handleMapData = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -144,7 +144,7 @@ const ImportStudents = () => {
           .setField("password", (value) => value || null)
           .setField("confirm_password", (value) => value || null)
           .setField("institute_id", (value) => value || null)
-          .setField("institute_name", (value) => value || null)
+          .setField("institute_name", () => institute_name)
           .build()
       )
       .filter((entry: any) => Object.keys(entry).length > 0);
@@ -173,7 +173,7 @@ const ImportStudents = () => {
           }, 1000); // Delay toast until after the final step is shown
         },
         onError: (error) => {
-          console.error("Import error:", error);
+          console.error("Import error:", error); 
           setErrorMessage("Failed to import students. Please check your data.");
           setTimeout(() => {
             toast.error("Import Failed");

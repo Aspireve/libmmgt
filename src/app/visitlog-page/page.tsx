@@ -17,7 +17,6 @@ import {
 import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
 import { DateRange } from "react-day-picker";
-import { MainTable } from "@/components/data-tables/main-table";
 import MasterTable from "../test/table-page";
 
 const Page = () => {
@@ -74,7 +73,7 @@ const Page = () => {
   return (
     <>
       <Header heading="Visit Activites" subheading="Tanvir Chavan" />
-      <div className="mt-8 w-[90%] ml-10 border border-[#E0E2E7] rounded-[10px] p-4">
+      <div className="mt-8 w-[93%] ml-10 border border-[#E0E2E7] rounded-[10px] p-4">
         <h2 className="text-lg font-semibold">Filter</h2>
         <div className="grid grid-cols-4 gap-4 mt-2">
           <div className="relative">
@@ -136,7 +135,7 @@ const Page = () => {
           </Button>
         </div>
       </div>
-      <section>
+      <section className="mx-[40px]">
         <MasterTable
         title="Visit Logs"
           columns={() =>visitLogColumns}

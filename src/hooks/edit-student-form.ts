@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store/store";
 
-export const useEditStudentForm = (studentUuid: string) => {
+export const useEditStudentForm = (student_id: string) => {
   const router = useRouter();
 
   const institute_id = useSelector((state: RootState) => state.auth.institute_uuid);
@@ -68,10 +68,10 @@ export const useEditStudentForm = (studentUuid: string) => {
     error,
   } = useOne<StudentFromDatabase>({
     resource: "student/detail",
-    id: studentUuid ? `student_id=${studentUuid}` : "",
+    id: student_id ? `student_id=${student_id}` : "",
     queryOptions: {
       retry: 1,
-      enabled: !!studentUuid,
+      enabled: !!student_id,
     },
   });
 
@@ -79,21 +79,21 @@ export const useEditStudentForm = (studentUuid: string) => {
     let isMounted = true;
     if (data?.data && isMounted) {
       const student: StudentFromDatabase = data.data;
-  
+
       // Normalize gender value
       const normalizedGender = student.gender
         ? student.gender.toLowerCase() === "male" || student.gender.toLowerCase() === "female"
           ? student.gender.toLowerCase()
           : ""
         : "";
-  
+
       // Ensure phone number is formatted correctly
       let normalizedPhone = student.phone_no?.trim() || "";
-  
+
       if (normalizedPhone && !normalizedPhone.startsWith("+")) {
         normalizedPhone = `+91${normalizedPhone}`;
       }
-  
+
       reset({
         student_name: student.student_name || "",
         department: student.department || "",
@@ -105,29 +105,16 @@ export const useEditStudentForm = (studentUuid: string) => {
         date_of_birth: student.date_of_birth || "",
         gender: normalizedGender,
         institute_name: student.institute_name || "",
-        image_field: null,
+        image_field: student.image_field || null,
       });
       setIsFormInitialized(true);
     }
     return () => {
       isMounted = false;
     };
-  }, [data, reset, studentUuid]);
-  
+  }, [data, reset, student_id]);
 
   const onSubmit = (formData: FieldValues, mutate: Function) => {
-    // const validStudentUuid =
-    //   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
-    //     studentUuid
-    //   )
-    //     ? studentUuid
-    //     : "";
-
-    // if (!validStudentUuid) {
-    //   toast.error("Invalid student UUID format.");
-    //   return;
-    // }
-
     let phoneNo = formData.phone_no?.trim();
 
     if (phoneNo && phoneNo.startsWith("+91")) {
@@ -136,7 +123,6 @@ export const useEditStudentForm = (studentUuid: string) => {
 
     const studentData: Partial<StudentData> = {
       ...formData,
-      // student_uuid: validStudentUuid,
       institute_id: institute_id ?? "",
       phone_no: phoneNo,
     };
@@ -157,12 +143,17 @@ export const useEditStudentForm = (studentUuid: string) => {
       return;
     }
 
+    // Filter out null or empty values
+    const filteredStudentData = Object.fromEntries(
+      Object.entries(studentData).filter(([_, value]) => value !== null && value !== "")
+    );
+
     mutate(
       {
         resource: "student/edit",
-        id: data?.data.student_uuid,
-        meta: { query: { student_uuid: data?.data.student_uuid } },
-        values: studentData,
+        id: data?.data.student_id,
+        meta: { query: { student_id: data?.data.student_id } },
+        values: filteredStudentData,
       },
       {
         onSuccess: () => {
