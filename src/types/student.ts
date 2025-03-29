@@ -40,6 +40,7 @@ export interface StudentFromDatabase extends BaseRecord {
   password: string;
   current_password?: string;
   confirm_password?: string;
+  image_field?: string | File | null;
 }
 
 export type StudentMappingType = { [K in keyof StudentData]?: string };

@@ -58,7 +58,7 @@ const FeesPenaltiesPage = () => {
     <Suspense fallback={<div>Loading...</div>}>
       <>
         <Header heading="Fees & Penalties" subheading="Tanvir Chavan" />
-        <div className="mt-8 w-[90%] ml-10 border border-[#E0E2E7] rounded-[10px] p-4">
+        <div className="mt-8 w-[93%] ml-10 border border-[#E0E2E7] rounded-[10px] p-4">
           <h2 className="text-lg font-semibold">Filter</h2>
           <div className="grid grid-cols-4 gap-4 mt-2">
             <div className="col-span-2"> {/* Span two columns for date range picker */}
@@ -121,7 +121,7 @@ const FeesPenaltiesPage = () => {
             </Button>
           </div>
         </div>
-        <section>
+        <section className="mx-[40px]">
           <div>
             <MasterTable
             title="Fees&Penalties"

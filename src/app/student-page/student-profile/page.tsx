@@ -77,13 +77,13 @@ const Page = () => {
             {/* Left Side: Profile Image */}
             <div className="md:col-span-1 flex justify-center md:justify-start">
               <div className="w-[200px] h-[200px] flex flex-col border border-[#E0E2E7] bg-[#F9F9FC] items-center justify-center rounded-xl">
-                {data?.data?.profileImage ? (
+                {data?.data?.image_field ? (
                   <Image
-                    src={data.data.profileImage}
+                    src={data.data.image_field}
                     alt="Profile"
-                    width={96}
-                    height={96}
-                    className="rounded-full border border-gray-300"
+                    width={200}
+                    height={0}
+                    className="rounded-[10px] border border-gray-300 h-[250px]"
                     style={{ objectFit: "cover" }}
                   />
                 ) : (

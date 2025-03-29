@@ -72,17 +72,17 @@ const ImportStudents = () => {
     mapping: StudentMappingType,
     importData: any
   ): boolean => {
+    console.log("Current Mapping:", mapping); // Debugging line
     for (const field of requiredFields) {
-      const isMapped = Object.entries(mapping).some(
-        ([key, value]) => value === field
-      );
-      if (!isMapped) {
-        toast.error(`Please map the required field: ${fieldLabels[field]}`);
+      const mappedValue = mapping[field]; // Fetch the mapped column
+      if (!mappedValue || !importData.headers.includes(mappedValue)) {
+        toast.error(`Please map the required field: ${fieldLabels[field] || field}`);
         return false;
       }
     }
     return true;
   };
+  
 
   console.log({ importData });
 
