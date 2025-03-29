@@ -8,26 +8,36 @@ import Dropzone from "@/components/custom/dropzone";
 import { toast } from "sonner";
 import { fieldLabels, initialMapping } from "@/constants/students";
 import { useFileProcessor } from "@/hooks/file-processsor";
-import type { StudentData, StudentMappingType } from "@/types/student";
+import type {
+  AddStudentType,
+  StudentData,
+  StudentImportField,
+  StudentMappingType,
+} from "@/types/student";
 import { RootState } from "@/redux/store/store";
 import { useSelector } from "react-redux";
 import { CustomBreadcrumb } from "@/components/breadcrumb";
 import MultiStepLoader from "@/components/multi-step-loader/Multisteploader";
+import MappingDropdown from "@/components/custom/mapping-dropdown";
+import {
+  StepFunction,
+  useMultiStepLoader,
+} from "@/utilities/use-multi-state-loader";
 
 const ImportStudents = () => {
   const [mapping, setMapping] = useState<StudentMappingType>(initialMapping);
-  const [isLoading, setIsLoading] = useState(false);
-  const [currentStep, setCurrentStep] = useState(0);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  // const [isLoading, setIsLoading] = useState(false);
+  // const [currentStep, setCurrentStep] = useState(0);
+  // const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const { mutate } = useCreate();
   const { processFile, importData, clearData } = useFileProcessor();
 
-  const institute_uuid = useSelector(
-    (state: RootState) => state.auth.institute_uuid
+  const { institute_name, institute_uuid } = useSelector(
+    (state: RootState) => state.auth.currentInstitute
   );
-  const institute_name = useSelector(
-    (state: RootState) => state.auth.institute_name
-  );
+  // const institute_name = useSelector(
+  //   (state: RootState) => state.auth.institute_name
+  // );
 
   const requiredFields: (keyof StudentData)[] = [
     "student_name",
@@ -58,10 +68,6 @@ const ImportStudents = () => {
     }
   }, [importData]);
 
-  const handleMappingChange = (field: keyof StudentData, value: string) => {
-    setMapping((prev) => ({ ...prev, [field]: value }));
-  };
-
   const validateRequiredFields = (
     mapping: StudentMappingType,
     importData: any
@@ -78,110 +84,206 @@ const ImportStudents = () => {
     return true;
   };
 
+  console.log({ importData });
+
+  const steps: StepFunction<AddStudentType[]>[] = [
+    async () => new Promise((resolve) => setTimeout(resolve, 1000)),
+    async () => {
+      const mapped: AddStudentType[] = importData.data
+        .map((row: any) =>
+          new StudentDataBuilder(row, mapping, importData.headers)
+            .setField("date_of_birth", (value) => {
+              if (!value) return null;
+              const parsedDate = new Date(value);
+              return !isNaN(parsedDate.getTime())
+                ? parsedDate.toISOString().split("T")[0]
+                : null;
+            })
+            .setField("roll_no", (value) => {
+              if (!value) return null;
+              const num = Number(value);
+              return isNaN(num) ? null : num;
+            })
+            .setField("student_name", (value) => {
+              if (!value) {
+                throw new Error(`Student name is required`);
+              }
+              return value;
+            })
+            .setField("department", (value) => {
+              if (!value) {
+                throw new Error(`Department is required`);
+              }
+              return value;
+            })
+            .setField("email", (value) => {
+              if (!value || !/\S+@\S+\.\S+/.test(value)) {
+                throw new Error(`Valid email is required`);
+              }
+              return value;
+            })
+            .setField("phone_no", (value) => {
+              if (!value) {
+                throw new Error(`Phone number is required`);
+              }
+              return value;
+            })
+            .setField("gender", (value) => {
+              if (!value) {
+                throw new Error(`Gender is required`);
+              }
+              return value;
+            })
+            .setField("address", (value) => value || null)
+            .setField("year_of_admission", (value) => value || null)
+            .setField("password", (value) => value || null)
+            .setCustomField("institute_uuid", institute_uuid || null)
+            .setCustomField("institute_name", institute_name || null)
+            .build()
+        )
+        .filter((entry: any) => Object.keys(entry).length > 0);
+        
+      if (mapped.length === 0) {
+        console.log({mapped})
+        console.log("error")
+        throw new Error("No valid student data found");
+      }
+
+      console.log("herter")
+      return mapped; // Return mapped data for the next step
+    },
+    async (mappedData) => {
+      console.log("here")
+      // return [];
+      return new Promise((resolve, reject) => {
+        mutate(
+          { resource: "student/bulk-create", values: mappedData }, // Directly use mapped data
+          {
+            onSuccess: () => {
+              toast.success("Students Added Successfully");
+              resolve([]);
+            },
+            onError: () => {
+              toast.error("Import Failed");
+              reject(new Error("Failed to import students"));
+            },
+          }
+        );
+      });
+    },
+    async () => {
+      clearData();
+      return [];
+    },
+  ];
+
+  const { isLoading, currentStep, errorMessage, startProcessing } =
+    useMultiStepLoader<AddStudentType[]>(steps);
+
   const handleMapData = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    startProcessing();
 
-    if (!validateRequiredFields(mapping, importData)) {
-      return;
-    }
+    // if (!validateRequiredFields(mapping, importData)) {
+    //   return;
+    // }
 
-    setIsLoading(true);
-    setCurrentStep(0);
-    setErrorMessage(null);
+    // setIsLoading(true);
+    // setCurrentStep(0);
+    // setErrorMessage(null);
 
     // Step 1: Validating Data
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    setCurrentStep(1);
+    // await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    // setCurrentStep(1);
 
     // Step 2: Mapping Columns
-    const mapped = importData.data
-      .map((row: any) =>
-        new StudentDataBuilder(row, mapping, importData.headers)
-          .setField("date_of_birth", (value) => {
-            if (!value) return null;
-            const parsedDate = new Date(value);
-            return !isNaN(parsedDate.getTime())
-              ? parsedDate.toISOString().split("T")[0]
-              : null;
-          })
-          .setField("roll_no", (value) => {
-            if (!value) return null;
-            const num = Number(value);
-            return isNaN(num) ? null : num;
-          })
-          .setField("student_name", (value) => {
-            if (!value) {
-              throw new Error(`Student name is required`);
-            }
-            return value;
-          })
-          .setField("department", (value) => {
-            if (!value) {
-              throw new Error(`Department is required`);
-            }
-            return value;
-          })
-          .setField("email", (value) => {
-            if (!value || !/\S+@\S+\.\S+/.test(value)) {
-              throw new Error(`Valid email is required`);
-            }
-            return value;
-          })
-          .setField("phone_no", (value) => {
-            if (!value) {
-              throw new Error(`Phone number is required`);
-            }
-            return value;
-          })
-          .setField("gender", (value) => {
-            if (!value) {
-              throw new Error(`Gender is required`);
-            }
-            return value;
-          })
-          .setField("address", (value) => value || null)
-          .setField("year_of_admission", (value) => value || null)
-          .setField("password", (value) => value || null)
-          .setField("confirm_password", (value) => value || null)
-          .setField("institute_id", (value) => value || null)
-          .setField("institute_name", (value) => value || null)
-          .build()
-      )
-      .filter((entry: any) => Object.keys(entry).length > 0);
+    // const mapped = importData.data
+    //   .map((row: any) =>
+    //     new StudentDataBuilder(row, mapping, importData.headers)
+    //       .setField("date_of_birth", (value) => {
+    //         if (!value) return null;
+    //         const parsedDate = new Date(value);
+    //         return !isNaN(parsedDate.getTime())
+    //           ? parsedDate.toISOString().split("T")[0]
+    //           : null;
+    //       })
+    //       .setField("roll_no", (value) => {
+    //         if (!value) return null;
+    //         const num = Number(value);
+    //         return isNaN(num) ? null : num;
+    //       })
+    //       .setField("student_name", (value) => {
+    //         if (!value) {
+    //           throw new Error(`Student name is required`);
+    //         }
+    //         return value;
+    //       })
+    //       .setField("department", (value) => {
+    //         if (!value) {
+    //           throw new Error(`Department is required`);
+    //         }
+    //         return value;
+    //       })
+    //       .setField("email", (value) => {
+    //         if (!value || !/\S+@\S+\.\S+/.test(value)) {
+    //           throw new Error(`Valid email is required`);
+    //         }
+    //         return value;
+    //       })
+    //       .setField("phone_no", (value) => {
+    //         if (!value) {
+    //           throw new Error(`Phone number is required`);
+    //         }
+    //         return value;
+    //       })
+    //       .setField("gender", (value) => {
+    //         if (!value) {
+    //           throw new Error(`Gender is required`);
+    //         }
+    //         return value;
+    //       })
+    //       .setField("address", (value) => value || null)
+    //       .setField("year_of_admission", (value) => value || null)
+    //       .setField("password", (value) => value || null)
+    //       .setCustomField("institute_uuid", institute_uuid || null)
+    //       .setCustomField("institute_name", institute_name || null)
+    //       .build()
+    //   )
+    //   .filter((entry: any) => Object.keys(entry).length > 0);
 
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    setCurrentStep(2);
+    // setCurrentStep(2);
 
-    if (mapped.length === 0) {
-      toast.error("No valid student data found");
-      setIsLoading(false);
-      return;
-    }
+    // if (mapped.length === 0) {
+    //   toast.error("No valid student data found");
+    //   // setIsLoading(false);
+    //   return;
+    // }
 
     // Step 3: Importing Students
-    mutate(
-      { resource: "student/bulk-create", values: mapped },
-      {
-        onSuccess: ({ data }) => {
-          console.log("API response:", data);
-          setCurrentStep(3); // Move to "Import Complete!"
-          setTimeout(() => {
-             // Toast after "Import Complete!"
-            toast.success("Students Added Successfully");
-            setIsLoading(false);
-            clearData();
-          }, 1000); // Delay toast until after the final step is shown
-        },
-        onError: (error) => {
-          console.error("Import error:", error);
-          setErrorMessage("Failed to import students. Please check your data.");
-          setTimeout(() => {
-            toast.error("Import Failed");
-            setIsLoading(false);
-          }, 2000); // Show error briefly before toast
-        },
-      }
-    );
+    // mutate(
+    //   { resource: "student/bulk-create", values: mapped },
+    //   {
+    //     onSuccess: ({ data }) => {
+    //       console.log("API response:", data);
+    //       setCurrentStep(3); // Move to "Import Complete!"
+    //       setTimeout(() => {
+    //         // Toast after "Import Complete!"
+    //         toast.success("Students Added Successfully");
+    //         setIsLoading(false);
+    //         clearData();
+    //       }, 1000); // Delay toast until after the final step is shown
+    //     },
+    //     onError: (error) => {
+    //       console.error("Import error:", error);
+    //       setErrorMessage("Failed to import students. Please check your data.");
+    //       setTimeout(() => {
+    //         toast.error("Import Failed");
+    //         setIsLoading(false);
+    //       }, 2000); // Show error briefly before toast
+    //     },
+    //   }
+    // );
   };
 
   const breadcrumbItems = [
@@ -207,39 +309,86 @@ const ImportStudents = () => {
           <form onSubmit={handleMapData}>
             <h3 className="text-lg font-medium mb-4">Map Columns</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {Object.keys(fieldLabels).map((field) => {
-                const fieldKey = field as keyof StudentData;
-                const isRequired = requiredFields.includes(fieldKey);
-                return (
-                  <div key={field} className="flex flex-col">
-                    <label
-                      className={`text-sm mb-1 ${
-                        isRequired
-                          ? "text-black-600 font-bold"
-                          : "text-gray-700"
-                      }`}
-                    >
-                      {fieldLabels[fieldKey] || fieldKey}{" "}
-                      {isRequired && <span className="text-red-500">*</span>}
-                    </label>
-                    <select
-                      className="border border-gray-300 rounded p-2"
-                      value={mapping[fieldKey] || ""}
-                      required={isRequired}
-                      onChange={(e) =>
-                        handleMappingChange(fieldKey, e.target.value)
-                      }
-                    >
-                      <option value="">Select Column</option>
-                      {importData.headers.map((header, index) => (
-                        <option key={index} value={header}>
-                          {header}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                );
-              })}
+              <MappingDropdown<StudentImportField>
+                label="Student Name"
+                importData={importData}
+                isRequired={true}
+                mapping={mapping}
+                setMapping={setMapping}
+                fieldKey={"student_name"}
+              />
+              <MappingDropdown<StudentImportField>
+                label="Department"
+                importData={importData}
+                isRequired={true}
+                mapping={mapping}
+                setMapping={setMapping}
+                fieldKey={"department"}
+              />
+              <MappingDropdown<StudentImportField>
+                label="Roll No."
+                importData={importData}
+                isRequired={true}
+                mapping={mapping}
+                setMapping={setMapping}
+                fieldKey={"roll_no"}
+              />
+              <MappingDropdown<StudentImportField>
+                label="Email"
+                importData={importData}
+                isRequired={true}
+                mapping={mapping}
+                setMapping={setMapping}
+                fieldKey={"email"}
+              />
+              <MappingDropdown<StudentImportField>
+                label="Phone Number"
+                importData={importData}
+                isRequired={true}
+                mapping={mapping}
+                setMapping={setMapping}
+                fieldKey={"phone_no"}
+              />
+              <MappingDropdown<StudentImportField>
+                label="Gender"
+                importData={importData}
+                isRequired={true}
+                mapping={mapping}
+                setMapping={setMapping}
+                fieldKey={"gender"}
+              />
+              <MappingDropdown<StudentImportField>
+                label="Year of Admission"
+                importData={importData}
+                isRequired={false}
+                mapping={mapping}
+                setMapping={setMapping}
+                fieldKey={"year_of_admission"}
+              />
+              <MappingDropdown<StudentImportField>
+                label="Password"
+                importData={importData}
+                isRequired={false}
+                mapping={mapping}
+                setMapping={setMapping}
+                fieldKey={"password"}
+              />
+              <MappingDropdown<StudentImportField>
+                label="Date of Birth"
+                importData={importData}
+                isRequired={false}
+                mapping={mapping}
+                setMapping={setMapping}
+                fieldKey={"date_of_birth"}
+              />
+              <MappingDropdown<StudentImportField>
+                label="Address"
+                importData={importData}
+                isRequired={false}
+                mapping={mapping}
+                setMapping={setMapping}
+                fieldKey={"address"}
+              />
             </div>
             <Button
               type="submit"
@@ -252,6 +401,7 @@ const ImportStudents = () => {
             </Button>
           </form>
         )}
+
         {isLoading && (
           <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50">
             <MultiStepLoader
