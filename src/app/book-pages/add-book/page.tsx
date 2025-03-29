@@ -96,10 +96,11 @@ const AddBook = () => {
       const date = new Date(dateString);
       return isNaN(date.getTime()) ? null : date.toISOString().split("T")[0];
     };
-    if (data?.title_images !== null) delete data.title_images;
-    if (data?.remarks !== null) delete data.remarks;
-    if (data?.title_additional_fields !== null) delete data.title_additional_fields;
-    if (data?.title_description !== null) delete data.title_description;
+    // if (data?.title_images !== null) delete data.title_images;
+    delete data.title_images;
+    delete data.remarks;
+    delete data.title_additional_fields;
+    delete data.title_description;
 
     const formattedData: BookData = {
       ...data,

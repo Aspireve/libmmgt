@@ -8,6 +8,7 @@ import MasterTable from '@/app/test/table-page';
 import DeleteBook from '@/components/books/delete-book';
 import Tabbing from '@/components/custom/tabbing';
 import BookDetailsActivites from '../book-details-activities/page';
+import { BookData } from '../types/data';
 
 enum LibraryTabs {
     BOOKDETAILS = "Book Details",
@@ -37,7 +38,7 @@ const Book_details = () => {
                             content={{
                               [LibraryTabs.BOOKDETAILS]:
                             <>
-                              <MasterTable
+                              <MasterTable<BookData>
                               title='Book Copies'
                               resource="book_v2/get_copies_with_title"
                               columns={getBookCopyColumns}
@@ -46,10 +47,10 @@ const Book_details = () => {
                               ]}
                               AddedOptions={[DeleteBook]}
                               idField='book_copy_uuid'
-                              onDataFetched={(data) => (
-                                setBookID(data?.book_title_id),
-                                setBookTitle(data?.book_title)
-                                )}
+                              // onDataFetched={(data) => (
+                              //   setBookID(data?.book_title_id),
+                              //   setBookTitle(data?.book_title)
+                              //   )}
                               /></>,
                               [LibraryTabs.ACTIVITY]: <>
                                 <BookDetailsActivites/>
