@@ -7,10 +7,10 @@ import Header from '@/app/Header/header';
 import Tabbing from '@/app/Tab/Tab';
 import { bookRoutes } from '@/app/book-pages/types/routes';
 import MasterTable from '@/app/test/table-page';
-import ImportBookButton from '@/components/books/import-books-button';
 import { JournalData } from '../types/data';
 import AddPeriodicalButton from '@/components/periodicals/add-periodical-button';
 import { getJournalColumns } from './columns';
+import ImportPeriodicalButton from '@/components/periodicals/import-periodical-button';
 
 
 const JournalPage = () => {
@@ -41,7 +41,7 @@ const JournalPage = () => {
             columns={()=>columns}
             resource={`journals/${url}`}
             isSelectable={false}
-            AddedOptions={[AddPeriodicalButton,ImportBookButton]}
+            AddedOptions={[AddPeriodicalButton,ImportPeriodicalButton]}
             />
           </div>
         </section>

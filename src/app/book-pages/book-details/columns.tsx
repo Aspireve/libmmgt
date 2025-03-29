@@ -60,7 +60,7 @@ export const StatusCell = ({ isAvailable }: { isAvailable: boolean }) => {
 export const getBookCopyColumns = ({ refetch }:{ refetch: () => void }): ColumnDef<BookData>[] => [
     {
         accessorKey: 'book_copy_id',
-        header: 'Book ID',
+        header: 'ID',
     },
     {
         accessorKey: 'source_of_acquisition',

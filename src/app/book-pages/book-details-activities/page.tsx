@@ -1,8 +1,10 @@
+"use Client"
+
+import React from 'react'
 import ActivityLog from '@/components/dashboard/activity-log'
 import { ActivityType } from '@/types/book'
 import { useList } from '@refinedev/core';
 import { useSearchParams } from 'next/navigation';
-import React from 'react'
 
 const BookDetailsActivites = () => {
         const book_uuid = useSearchParams().get("book_uuid");
@@ -22,10 +24,10 @@ const BookDetailsActivites = () => {
         <ActivityLog
           key={`activity-${idx}`}
           type={item?.action as ActivityType}
-          book_id={item?.book_copy_id || "Unknown Title"}
+          book_id={item?.new_book_copy?.book_copy_id || "Unknown Title"}
           title={item?.new_book_title?.book_title || "Unknown Title"}
           studentName={item?.student_name || "Unknown Student"}
-          time={item?.created_at || "Unknown Time"}
+          time={item?.date || "Unknown Time"}
           isLoading={isLoading}
         />
       ))}

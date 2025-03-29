@@ -3,10 +3,8 @@ import React, { useEffect, useState } from 'react'
 
 import Header from '@/app/Header/header'
 import { useRouter, useSearchParams } from "next/navigation";
-import { BookData } from '../types/data';
 import { getBookCopyColumns } from './columns';
 import MasterTable from '@/app/test/table-page';
-import { useList } from '@refinedev/core';
 import DeleteBook from '@/components/books/delete-book';
 import Tabbing from '@/components/custom/tabbing';
 import BookDetailsActivites from '../book-details-activities/page';

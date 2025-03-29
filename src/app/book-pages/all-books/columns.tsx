@@ -44,7 +44,7 @@ export const getBookColumns = (
   handleEdit: (book: BookData) => void,
 ): ColumnDef<BookData>[] => {
   return [
-    { accessorKey: 'book_title_id', header: 'Book ID' },
+    { accessorKey: 'book_title_id', header: 'ID' },
     {
       accessorKey: 'book_title',
       header: 'Book Name',
