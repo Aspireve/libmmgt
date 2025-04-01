@@ -155,7 +155,7 @@ const ImportStudents = () => {
       <div className="container mx-auto p-6">
         <h2 className="text-xl font-semibold mb-4">Select Your Data File</h2>
         <p className="text-gray-600 text-sm mb-4">
-          Upload a CSV or Excel file containing your data. We'll help you map the columns to our system fields.
+          Upload a CSV or Excel file containing your data. We&apos;ll help you map the columns to our system fields.
         </p>
         
         <div className="border-2 border-dashed border-gray-300 p-6 rounded-[10px] bg-white shadow-sm flex flex-col items-center justify-center text-center">
