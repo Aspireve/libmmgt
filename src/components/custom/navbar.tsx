@@ -5,9 +5,6 @@ import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store/store";
 import { addTab, closeTab, setActiveTab } from "@/redux/tabSlice";
-import images from "@/images";
-import Image from "next/image";
-
 
 const Navbar: React.FC = () => {
   const dispatch = useDispatch();
@@ -28,9 +25,9 @@ const Navbar: React.FC = () => {
 
       if (tabs.length > 1) {
         if (tabIndex === tabs.length - 1) {
-          nextActiveTab = tabs[tabIndex - 1]; // Move to previous tab if closing the last one
+          nextActiveTab = tabs[tabIndex - 1];
         } else {
-          nextActiveTab = tabs[tabIndex + 1]; // Move to next tab if closing in-between
+          nextActiveTab = tabs[tabIndex + 1];
         }
       }
 
@@ -38,7 +35,8 @@ const Navbar: React.FC = () => {
         dispatch(setActiveTab(nextActiveTab.id));
         router.push(nextActiveTab.route);
       } else {
-        router.push("/"); // Default route if no tabs left
+        dispatch(setActiveTab("dashboard"));
+        router.push("/");
       }
     }
   };

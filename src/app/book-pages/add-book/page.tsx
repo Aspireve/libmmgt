@@ -10,13 +10,14 @@ import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import Header from '@/app/Header/header';
 import Tabbing from '@/app/Tab/Tab';
-import { BookData } from '../types/data';
 import isbn3 from 'isbn3';
 import { InputField } from '@/components/custom/inputfield';
 import { Loader2 } from 'lucide-react';
 import { addbookRoutes } from '../types/routes';
 import { useSelector } from "react-redux";
 import { RootState } from '@/redux/store/store';
+import { AddBookType } from '@/types/book';
+import { AddBookBC } from '@/components/breadcrumb/constant';
 
 const AddBook = () => {
   const router = useRouter();
@@ -29,7 +30,7 @@ const AddBook = () => {
 
  
 
-  const { data:bookData, refetch} = useOne<BookData>({
+  const { data:bookData, refetch} = useOne<AddBookType>({
     resource: "book_v2/isbn",
     id: `_isbn=${isbn}`,
     queryOptions: {
@@ -68,13 +69,13 @@ const AddBook = () => {
             return;
           }
           Object.keys(bookData).forEach((key) => {
-            let value = bookData[key as keyof BookData];
+            let value = bookData[key as keyof AddBookType];
           
             if (key === "year_of_publication" || key === "date_of_acquisition") {
               value = value ? new Date(value).toISOString().split("T")[0] : "";
             }
           
-            setValue(key as keyof BookData, value as never);
+            setValue(key as keyof AddBookType, value as never);
           });
   
           toast.success("Book data mapped successfully!");
@@ -102,7 +103,7 @@ const AddBook = () => {
     delete data.title_additional_fields;
     delete data.title_description;
 
-    const formattedData: BookData = {
+    const formattedData: AddBookType = {
       ...data,
       no_of_pages: data.no_of_pages.toString(),
       no_of_preliminary: data.no_of_preliminary.toString(),
@@ -128,6 +129,7 @@ const AddBook = () => {
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <>
+      <AddBookBC/>
         <Header heading="Add Book" subheading="Tanvir Chavan" />
 
         <Tabbing routes={addbookRoutes} className='w-[20%]' />

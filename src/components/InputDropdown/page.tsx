@@ -98,7 +98,7 @@ const InstituteDropdown = ({
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Input
-            className="text-[#717680]"
+            className="text-[#000] placeholder:text-[#aaa]"
             type="text"
             value={selectedOption} // Controlled input
             {...register(name, validation)}

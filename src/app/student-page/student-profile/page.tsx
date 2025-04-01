@@ -86,7 +86,7 @@ const Page = () => {
                   width={200}
                   height={0}
                   className="rounded-[10px] border border-gray-300 h-full w-full"
-                  style={{ objectFit: "cover" }}
+                  style={{ objectFit: "contain" }}
                 />
               ) : (
                 <UserRound

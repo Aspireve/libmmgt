@@ -9,6 +9,7 @@ import DeleteBook from '@/components/books/delete-book';
 import Tabbing from '@/components/custom/tabbing';
 import BookDetailsActivites from '../book-details-activities/page';
 import { BookData } from '../types/data';
+import { BookProfileBC } from '@/components/breadcrumb/constant';
 
 enum LibraryTabs {
     BOOKDETAILS = "Book Details",
@@ -28,6 +29,7 @@ const Book_details = () => {
 
     return (
         <>
+        <BookProfileBC/>
             <Header heading={bookTitle} subheading={bookID} />
             <section>
                 <div className="mx-[40px]">
