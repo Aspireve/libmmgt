@@ -3,8 +3,9 @@ import { Button } from "../ui/button";
 import useDisclosure from "@/hooks/disclosure-hook";
 import DeleteBookModal from "./delete-book-modal";
 import { BookData } from "@/app/book-pages/types/data";
+import { BookCopiesData } from "@/types/book";
 
-const DeleteBook = <TData extends BookData>({
+const DeleteBook = <TData extends BookCopiesData>({
   data,
   refetch,
 }: {

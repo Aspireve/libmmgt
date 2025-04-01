@@ -3,6 +3,7 @@ import totalBooksIcon from "../../images/Total_Books.png";
 import borrowedBooksIcon from "../../images/Borrowed_Books.png";
 import lostBooksIcon from "../../images/Lost_Books.png";
 import availableBooksIcon from "../../images/Available_Books.png";
+import Image from "next/image";
 
 const data = [
   {
@@ -11,7 +12,7 @@ const data = [
     description: "new books in the library.",
     color: "#2288FF",
     icon: (
-      <img
+      <Image
         src={totalBooksIcon.src}
         alt="Total Books"
         className="w-[60px] h-[60px]"
@@ -24,7 +25,7 @@ const data = [
     description: "books borrowed.",
     color: "#FFC107",
     icon: (
-      <img
+      <Image
         src={borrowedBooksIcon.src}
         alt="Borrowed Books"
         className="w-[60px] h-[60px]"
@@ -37,7 +38,7 @@ const data = [
     description: "books lost.",
     color: "#F44336",
     icon: (
-      <img
+      <Image
         src={lostBooksIcon.src}
         alt="Lost Books"
         className="w-[60px] h-[60px]"
@@ -50,7 +51,7 @@ const data = [
     description: "books are available in the library.",
     color: "#4CAF50",
     icon: (
-      <img
+      <Image
         src={availableBooksIcon.src}
         alt="Available Books"
         className="w-[60px] h-[60px]"

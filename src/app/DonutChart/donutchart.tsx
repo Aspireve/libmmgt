@@ -5,6 +5,7 @@ import { Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import exportIcon from "../../images/export.png";
 import importIcon from "../../images/cloud.png";
+import Image from "next/image";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -91,11 +92,11 @@ const DonutChart: React.FC = () => {
 
       <div className="flex items-center gap-2 absolute bottom-4 right-4">
         <button className="bg-green-600 text-white px-3 py-2 rounded flex items-center gap-2">
-          <img src={exportIcon.src} alt="Export Icon" className="w-4 h-4" />
+          <Image height={20} width={20} src={exportIcon.src} alt="Export Icon" className="w-4 h-4" />
           Export data
         </button>
         <button className="bg-[#8a4af3] text-white px-3 py-2 rounded flex items-center gap-2">
-          <img src={importIcon.src} alt="Import Icon" className="w-4 h-4" />
+          <Image src={importIcon.src} alt="Import Icon" className="w-4 h-4" />
           Import
         </button>
       </div>

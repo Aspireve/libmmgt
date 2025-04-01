@@ -9,11 +9,11 @@ export enum ActionType {
   CHECK_OUT = "Check Out",
 }
 
-export interface BookData{
-  book_uuid:string;
-  book_title_id:string
-  book_title:string;
-  book_author:string;
+export interface BookData {
+  book_uuid: string;
+  book_title_id: string
+  book_title: string;
+  book_author: string;
   name_of_publisher: string;
   place_of_publication: string;
   year_of_publication: string;
@@ -26,14 +26,63 @@ export interface BookData{
   department: string;
   author_mark: string;
   call_number: string;
-  is_archived:boolean;
-  total_count:number;
-  available_count:number;
-  updated_at:string;
-  created_at:string;
+  is_archived: boolean;
+  total_count: number;
+  available_count: number;
+  updated_at: string;
+  created_at: string;
   title_additional_fields?: {} | null;
   title_description?: string | null;
   title_images?: [] | null;
+}
+
+export interface BookCopiesData {
+  book_uuid: string;
+  book_copy_id:string;
+  book_copy_uuid: string;
+  book_title_uuid: string;
+  book_title_id: string,
+  book_title: string;
+  source_of_acquisition: string;
+  date_of_acquisition: string;
+  language: string;
+  barcode: string;
+  item_type: string;
+  created_at: string;
+  updated_at: string;
+  created_by: string;
+  remarks: string;
+  is_available: boolean;
+  copy_additional_fields: {} | null;
+  copy_description?: string | null;
+  copy_images?: [] | null;
+  bill_no:string;
+  inventory_number:string;
+  accession_number:string;
+}
+
+export interface BookEditCopiesData{
+  book_title_uuid:string;
+  book_copy_id:string
+  book_copy_uuid:string;
+  source_of_acquisition:string;
+  date_of_acquisition:string;
+  language:string;
+  barcode:string;
+  item_type:string;
+  is_archived:boolean;
+  created_at:string;
+  updated_at: string;
+  created_by: string;
+  remarks: string;
+  is_available: boolean;
+  bill_no:string;
+  inventory_number:string;
+  accession_number:string;
+  copy_additional_fields: {} | null;
+  copy_description?: string | null;
+  copy_images?: [] | null;
+  book?:any
 }
 
 export interface BookImportField {
@@ -51,16 +100,16 @@ export interface BookImportField {
   department: string;
   call_number: string;
   author_mark: string;
-  source_of_acquisition?: string;
-  date_of_acquisition?: string;
+  source_of_acquisition: string;
+  date_of_acquisition: string;
   inventory_number: string;
   accession_number: string;
-  barcode?: string;
-  item_type?: string;
+  barcode: string;
+  item_type: string;
   bill_no: string;
 }
 
-export interface EditBook{
+export interface EditBookData {
   book_title: string;
   book_title_id: string;
   book_uuid: string;

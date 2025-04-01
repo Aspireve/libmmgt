@@ -35,9 +35,13 @@ const EditJournal = () => {
     setValue,
     formState: { errors }
   } = useForm<JournalData>();
+  
+useEffect(() => {
+  if (!journalData) return;
 
-  const UpdateFields = () => {
-    console.log(journalData?.data);
+  if (journalData?.data?.error) {
+    window.history.back();
+  } else {
     if (Array.isArray(journalData?.data) && journalData.data.length > 0) {
       const journal = journalData.data[0];
   
@@ -53,17 +57,6 @@ const EditJournal = () => {
   
       setIsLoadingInput(false);
     }
-  };
-  
-
-  
-useEffect(() => {
-  if (!journalData) return;
-
-  if (journalData?.data?.error) {
-    window.history.back();
-  } else {
-    UpdateFields();
   }
 }, [journalData, setValue]);
 

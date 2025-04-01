@@ -1,5 +1,4 @@
 import { ColumnDef } from '@tanstack/react-table';
-import { BookData } from '../types/data';
 import { Button } from '@/components/ui/button';
 import { formatDate } from '../hooks/formatDate';
 import Image from 'next/image';
@@ -7,13 +6,14 @@ import images from '@/images';
 import useDisclosure from '@/hooks/disclosure-hook';
 import { useRouter } from 'next/navigation';
 import DeleteBookModal from '@/components/books/delete-book-modal';
+import { BookCopiesData } from '@/types/book';
 
 
 export const BookActions = ({
   book,
   refetch,
 }: {
-  book: Partial<BookData>;
+  book: Partial<BookCopiesData>;
   refetch: () => void;
 }) => {
   const router = useRouter();
@@ -57,7 +57,7 @@ export const StatusCell = ({ isAvailable }: { isAvailable: boolean }) => {
   );
 };
 
-export const getBookCopyColumns = ({ refetch }:{ refetch: () => void }): ColumnDef<BookData>[] => [
+export const getBookCopyColumns = ({ refetch }:{ refetch: () => void }): ColumnDef<BookCopiesData>[] => [
     {
         accessorKey: 'book_copy_id',
         header: 'ID',

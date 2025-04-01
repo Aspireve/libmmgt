@@ -98,7 +98,7 @@ export default function MasterTable<TData extends BaseRecord>({
       dispatch(resetValues());
       setSelectedData([]);
     };
-  }, [listData, resource, onDataFetched]);
+  }, [listData, resource, onDataFetched,dispatch, setSelectedData]);
 
   return (
     <div className="my-6 border-2 border-[#E9EAEB] rounded-xl shadow-sm cursor-default">

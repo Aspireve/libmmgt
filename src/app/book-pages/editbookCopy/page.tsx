@@ -7,10 +7,10 @@ import { useOne } from "@refinedev/core";
 import { Button } from "@/components/ui/button";
 import { toast } from 'sonner';
 import Header from "@/app/Header/header";
-import { BookData } from "../types/data";
 import { dataProvider } from "@/providers/data";
 import { InputField } from "@/components/custom/inputfield";
 import { Loader2 } from "lucide-react";
+import { BookEditCopiesData } from "@/types/book";
 
 const EditBook = () => {
     const router = useRouter();
@@ -19,7 +19,7 @@ const EditBook = () => {
     const [isLoading, setIsLoading] = useState(false)
     
 
-    const { data: bookData, isLoading:LoadingDetails } = useOne<BookData>({
+    const { data: bookData, isLoading:LoadingDetails } = useOne<BookEditCopiesData>({
         resource: "book_v2/get_book_copy",
         id: `_identifier=${book_uuid}` || ""
     });
@@ -32,26 +32,22 @@ const EditBook = () => {
         handleSubmit,
         setValue,
         formState: { errors }
-    } = useForm<BookData>();
+    } = useForm<BookEditCopiesData>();
 
 
-    const UpdateFields = () => {
+    useEffect(() => {
         const book = bookData?.data?.book;
         if (!book) {
             console.warn("No book data available");
             return;
         }
         Object.keys(book).forEach((key) => {
-            let value = book[key as keyof BookData];
+            let value = book[key as keyof BookEditCopiesData];
             if (key === "date_of_acquisition") {
                 value = value ? new Date(value).toISOString().split("T")[0] : "";
             }
-            setValue(key as keyof BookData, value as never);
+            setValue(key as keyof BookEditCopiesData, value as never);
         });
-    };
-
-    useEffect(() => {
-        UpdateFields();
     }, [bookData, setValue]);
 
     const onSubmit = async (data: any) => {
@@ -61,12 +57,8 @@ const EditBook = () => {
             const date = new Date(dateString);
             return isNaN(date.getTime()) ? null : date.toISOString().split("T")[0];
         };
-        const formattedData: BookData = {
+        const formattedData: BookEditCopiesData = {
             ...data,
-            // accession_number: (() => {
-            //     const num = data.accession_number.match(/\d+/g);
-            //     return num ? parseInt(num[0], 10) : null;
-            // })(),
             date_of_acquisition: formatDate(data.date_of_acquisition),
         };
         try {

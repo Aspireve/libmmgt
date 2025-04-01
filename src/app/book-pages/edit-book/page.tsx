@@ -7,11 +7,11 @@ import { useOne } from "@refinedev/core";
 import { Button } from "@/components/ui/button";
 import { toast } from 'sonner';
 import Header from "@/app/Header/header";
-import { BookData } from "../types/data";
 import { dataProvider } from "@/providers/data";
 import { InputField } from "@/components/custom/inputfield";
 import { Loader2 } from "lucide-react";
 import { EditBookBC } from "@/components/breadcrumb/constant";
+import { EditBookData } from "@/types/book";
 
 const EditBook = () => {
   const router = useRouter();
@@ -21,7 +21,7 @@ const EditBook = () => {
   const [isLoading, setIsLoading] = useState(false)
 
   
-  const { data: bookData } = useOne<BookData>({
+  const { data: bookData } = useOne<EditBookData>({
     resource: "book_v2/get_book_title_details",
     id: `_book_uuid=${book_uuid}` || ""
   });
@@ -32,25 +32,22 @@ const EditBook = () => {
     handleSubmit,
     setValue,
     formState: { errors }
-  } = useForm<BookData>();
+  } = useForm<EditBookData>();
 
-  const UpdateFields = () => {
-    if (Array.isArray(bookData?.data) && bookData.data.length > 0) {
-      const book = bookData.data[0];
-      Object.keys(book).forEach((key) => {
-        let value = book[key as keyof BookData];
-        if (key === "year_of_publication" || key === "updated_at" || key === "created_at") {
-          value = value ? new Date(value).toISOString().split("T")[0] : "";
-        }
-        setValue(key as keyof BookData, value as never);
-      });
-      setIsLoadingInput(false);
-    }
-  };
 
 
   useEffect(() => {
-    UpdateFields();
+    if (Array.isArray(bookData?.data) && bookData.data.length > 0) {
+      const book = bookData.data[0];
+      Object.keys(book).forEach((key) => {
+        let value = book[key as keyof EditBookData];
+        if (key === "year_of_publication" || key === "updated_at" || key === "created_at") {
+          value = value ? new Date(value).toISOString().split("T")[0] : "";
+        }
+        setValue(key as keyof EditBookData, value as never);
+      });
+      setIsLoadingInput(false);
+    }
   }, [bookData, setValue]);
 
   const onSubmit = async (data: any) => {
@@ -60,7 +57,7 @@ const EditBook = () => {
       const date = new Date(dateString);
       return isNaN(date.getTime()) ? null : date.toISOString().split("T")[0];
     };
-    const formattedData: BookData = {
+    const formattedData: EditBookData = {
       ...data,
       no_of_pages: parseInt(data.no_of_pages.toString(), 10),
       no_of_preliminary: parseInt(data.no_of_preliminary.toString(), 10),

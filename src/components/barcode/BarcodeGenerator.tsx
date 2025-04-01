@@ -3,6 +3,7 @@
 
 import React from "react";
 import JsBarcode from "jsbarcode";
+import Image from "next/image";
 
 interface BarcodeGeneratorProps {
   value?: string;
@@ -80,7 +81,7 @@ const BarcodeGenerator: React.FC<BarcodeGeneratorProps> = ({
   return (
     <div className="flex flex-col items-center">
       <div className="mb-2">
-        <img src={renderBarcode()} alt="Barcode preview" className="max-w-full" />
+        <Image src={renderBarcode()} alt="Barcode preview" className="max-w-full" />
       </div>
       <button
         type="button"

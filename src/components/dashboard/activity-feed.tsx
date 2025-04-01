@@ -15,9 +15,9 @@ export default function Activities({ refresh }: { refresh: number }) {
     resource: "book_v2/get_all_logs"
   });
 
-  useEffect(() => {
-    refetch();  
-  }, [refresh]);
+  // useEffect(() => {
+  //   refetch();  
+  // }, [refresh]);
 
   // Ensure data?.data is an array before mapping
   const activityLogs = Array.isArray(data?.data) ? data.data : [];

@@ -7,6 +7,7 @@ import { RootState } from "../../redux/store/store";
 import TiaIcon from "../../images/Tia.png";
 import Dropper from "../../images/Dropper.png";
 import { Skeleton } from "@/components/ui/skeleton";
+import Image from "next/image";
 
 interface HeadersProps {
   heading?: string;
@@ -87,7 +88,8 @@ const Header: React.FC<HeadersProps> = ({
         <div className="border-2 border-blue-500 rounded-xl bg-white overflow-hidden w-[145px] h-[57px] flex items-center justify-between px-2 mt-2 mr-[50px]">
           <div className="flex items-center -ml-[15px]">
             {/* ✅ Tia Icon or Logo */}
-            <img
+            <Image
+              height={20} width={20}
               src={logo || TiaIcon.src}
               alt="logo"
               className="w-[45px] h-[45px] ml-4"
@@ -98,7 +100,8 @@ const Header: React.FC<HeadersProps> = ({
 
             {/* ✅ Header Box (Image or Fallback Text) */}
             {header_image ? (
-              <img
+              <Image
+                height={20} width={20}
                 src={header_image || ""}
                 alt="Institute Header"
                 className="w-[145px] h-[57px] object-cover rounded-lg border border-blue-500"
@@ -108,7 +111,8 @@ const Header: React.FC<HeadersProps> = ({
             )}
 
             {/* ✅ Dropper Icon */}
-            <img
+            <Image
+              height={20} width={20}
               src={Dropper.src}
               alt="dropdownIcon"
               className="ml-[5px] h-[10px] cursor-pointer"

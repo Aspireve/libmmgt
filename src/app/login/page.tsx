@@ -1,6 +1,7 @@
 "use client";
 
 import { useLogin } from "@refinedev/core";
+import Image from "next/image";
 
 export default function Login() {
   const { mutate: login } = useLogin();
@@ -18,7 +19,7 @@ export default function Login() {
       <button onClick={() => login({})}>Sign in</button>
       <p>
         Powered by
-        <img
+        <Image
           style={{ padding: "0 5px" }}
           alt="Auth0"
           src="https://refine.ams3.cdn.digitaloceanspaces.com/superplate-auth-icons%2Fauth0-2.svg"

@@ -8,8 +8,8 @@ import MasterTable from '@/app/test/table-page';
 import DeleteBook from '@/components/books/delete-book';
 import Tabbing from '@/components/custom/tabbing';
 import BookDetailsActivites from '../book-details-activities/page';
-import { BookData } from '../types/data';
 import { BookProfileBC } from '@/components/breadcrumb/constant';
+import { BookCopiesData } from '@/types/book';
 
 enum LibraryTabs {
     BOOKDETAILS = "Book Details",
@@ -40,7 +40,7 @@ const Book_details = () => {
                             content={{
                               [LibraryTabs.BOOKDETAILS]:
                             <>
-                              <MasterTable<BookData>
+                              <MasterTable<BookCopiesData>
                               title='Book Copies'
                               resource="book_v2/get_copies_with_title"
                               columns={getBookCopyColumns}

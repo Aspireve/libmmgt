@@ -58,7 +58,7 @@ const Page = () => {
         ? data?.data.phone_no
         : `+91${data?.data.phone_no}`,
     });
-  }, [data]);
+  }, [data, reset]);
 
   return (
     <div>
