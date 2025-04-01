@@ -46,7 +46,8 @@ const images = {
   BookShelf: require("./bookshelf.png"),
   TotalIssuedBooks: require("./TotalIssuedBooks.png"),
   Overdues: require("./Overdues.png"),
-  TotalMembers:require("./TotalMembers.png")
+  TotalMembers:require("./TotalMembers.png"),
+  Cancel:require("./cancel-01-stroke-rounded.svg")
 };
 
 export default images;

@@ -1,72 +1,79 @@
-import React from "react";
-import Link from "next/link";
-import Image from "next/image";
-import Images from "@/images";
-import { useTabs } from "@/app/context/TabContext";
+"use client"
+
+import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import type { Tab } from "@/types/menu";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/redux/store/store";
+import { addTab, closeTab, setActiveTab } from "@/redux/tabSlice";
+import images from "@/images";
+import Image from "next/image";
 
 
 const Navbar: React.FC = () => {
-  const { tabs, activeTab, setActiveTab, closeTab } = useTabs();
+  const dispatch = useDispatch();
   const router = useRouter();
+  const { tabs, activeTab } = useSelector((state: RootState) => state.tabs);
+  const [hoveredTab, setHoveredTab] = useState<string | null>(null);
 
-  const handleCloseTab = (
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-    tab: Tab
-  ) => {
+  const handleCloseTab = (e: React.MouseEvent, tabId: string) => {
     e.stopPropagation();
-    const currentIndex = tabs.findIndex((t) => t.id === tab.id);
-    closeTab(tab.id);
-    if (activeTab === tab.id) {
-      let nextActiveTab;
+    
+    const tabIndex = tabs.findIndex((tab) => tab.id === tabId);
+    const isActiveClosing = activeTab === tabId;
+
+    dispatch(closeTab(tabId));
+
+    if (isActiveClosing) {
+      let nextActiveTab = null;
 
       if (tabs.length > 1) {
-        if (currentIndex === tabs.length - 1) {
-          nextActiveTab = tabs[currentIndex - 1];
+        if (tabIndex === tabs.length - 1) {
+          nextActiveTab = tabs[tabIndex - 1]; // Move to previous tab if closing the last one
         } else {
-          nextActiveTab = tabs[currentIndex + 1];
+          nextActiveTab = tabs[tabIndex + 1]; // Move to next tab if closing in-between
         }
       }
+
       if (nextActiveTab) {
-        setActiveTab(nextActiveTab.id);
+        dispatch(setActiveTab(nextActiveTab.id));
         router.push(nextActiveTab.route);
       } else {
-        router.push("/");
+        router.push("/"); // Default route if no tabs left
       }
     }
   };
 
   return (
-    <div className="w-full shadow-[0_0_2px_0_#00000040] h-16 flex border-b border-b-[#d9d9d9] px-6 bg-white font-josefin">
-      <Link href={"/"}>
-        <Image
-          src={Images.HomeIcon}
-          alt="Home Icon"
-          className="w-5 h-5 mt-[20px] cursor-pointer"
-        />
-      </Link>
-      <div className="flex items-center px-3 h-10 mt-[10px] gap-4">
-        {tabs.map((tab) => (
-          <div
-            key={tab.id}
-            className={`px-4 py-2 flex items-center rounded-[6px] cursor-pointer
-               ${activeTab === tab.id ? "bg-blue-300" : "hover:bg-blue-200"}`}
-            onClick={() => setActiveTab(tab.id)}
-          >
-            <Link href={tab.route}>{tab.title}</Link>
-
+    <div className="w-full shadow-sm h-16 flex border-b border-gray-300 px-6 bg-white font-josefin">
+      {tabs.map((tab) => (
+        <div
+          key={tab.id}
+          className={`px-4 py-2 flex items-center rounded-[10px] cursor-pointer my-4 text-[#1E40AF] ${activeTab === tab.id ? "bg-blue-300" : "hover:bg-[#EDF1FF]"
+            }`}
+          onClick={() => {
+            dispatch(setActiveTab(tab.id));
+            router.push(tab.route);
+          }}
+          onMouseEnter={() => setHoveredTab(tab.id)}
+          onMouseLeave={() => setHoveredTab(null)}
+        >
+          <span>{tab.title}</span>
+          {hoveredTab === tab.id && (
             <button
-              className=" ml-2 border-none"
-              onClick={(e) => handleCloseTab(e, tab)}
+              className=" border-none text-[#4b4a4a] pl-2 py-1 text-sm"
+              onClick={(e) => handleCloseTab(e, tab.id)}
             >
-              ✕
+            ✕
+
             </button>
-          </div>
-        ))}
-      </div>
+          )}
+        </div>
+      ))}
     </div>
   );
 };
 
 export default Navbar;
+
+
+
