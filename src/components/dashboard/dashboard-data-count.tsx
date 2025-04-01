@@ -38,7 +38,7 @@ export default function DashboardData() {
       {stats.map((stat, idx) => (
         <div
           key={`stat-${idx}`}
-          className="flex justify-between items-center bg-white rounded-lg p-4 w-full flex-1 h-[100px]"
+          className="flex justify-between items-center bg-white rounded-[15px] p-4 w-full flex-1 h-[100px]"
           style={{ boxShadow: "0 0 8px rgba(0, 0, 0, 0.1)" }} // Inline shadow on all sides
         >
           {/* Text Content (Title and Count) */}
