@@ -83,3 +83,7 @@ export interface StudentCompleteData extends StudentImportField {
   is_archived: boolean;
   created_at: string;
 }
+
+export interface StudentUpdateWithId extends StudentImportField {
+  student_id: string
+}

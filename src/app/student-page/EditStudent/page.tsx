@@ -2,7 +2,7 @@
 
 import React, { useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Loader2, Eye, EyeOff, UserRound } from "lucide-react";
+import { Loader2, UserRound } from "lucide-react";
 import { useEditStudentForm } from "@/hooks/edit-student-form";
 import { useList, useUpdate } from "@refinedev/core";
 import Header from "@/components/custom/header";
@@ -24,6 +24,7 @@ import { Textarea } from "@/components/ui/textarea";
 import PhoneNumber from "@/components/phone-number.tsx/PhoneNumber";
 import InstituteDropdown from "@/components/InputDropdown/page";
 import { Skeleton } from "@/components/ui/skeleton";
+import { isPossiblePhoneNumber } from "react-phone-number-input";
 
 const EditStudent: React.FC = () => {
   const breadcrumbItems = [
@@ -36,6 +37,7 @@ const EditStudent: React.FC = () => {
   const student_id = searchParams.get("student_id");
 
   const { mutate, isLoading } = useUpdate();
+  const [profileImage, setProfileImage] = useState<string | null>(null);
   const {
     register,
     handleSubmit,
@@ -45,7 +47,8 @@ const EditStudent: React.FC = () => {
     watch,
     setValue,
     isFormInitialized,
-  } = useEditStudentForm(student_id || "");
+    clearErrors
+  } = useEditStudentForm(student_id || "", setProfileImage);
 
   const {
     data: departmentList,
@@ -56,7 +59,6 @@ const EditStudent: React.FC = () => {
   });
 
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [profileImage, setProfileImage] = useState<string | null>(null);
   // const [showPassword, setShowPassword] = useState(false);
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -97,15 +99,16 @@ const EditStudent: React.FC = () => {
             className="space-y-6"
           >
             <div className="flex gap-6">
-              <div className="w-1/6 flex flex-col border border-[#E0E2E7] bg-[#F9F9FC] items-center justify-center rounded-xl">
+              <div className="w-1/6 flex flex-col border border-[#E0E2E7] bg-[#F9F9FC] items-center justify-center rounded-xl p-2">
                 <div className="mb-4">
-                  <div className="w-24 h-24 rounded-full flex items-center justify-center overflow-hidden">
+                  <div className="rounded-full flex items-center justify-center overflow-hidden">
                     {!isFetching && profileImage ? (
                       <Image
                         src={profileImage}
                         alt="Profile"
                         width={150}
                         height={150}
+                        className="rounded-[10px] border border-gray-300 h-full w-full"
                         style={{ objectFit: "cover" }}
                       />
                     ) : (
@@ -191,10 +194,26 @@ const EditStudent: React.FC = () => {
                   <div>
                     <Label>Phone Number</Label>
                     <PhoneNumber
-                      name="phone_no"
+                      i_name="phone_no"
                       value={watch("phone_no") || ""}
-                      setValue={setValue}
+                      setValue={(name, value) => {
+                        setValue(name, value);
+                        if (isPossiblePhoneNumber(value as string)) {
+                          clearErrors("phone_no");
+                        }
+                      }}
                       error={errors}
+                      register={register}
+                      // i_name="phone_no"
+                      // readOnly={false}
+                      // error={errors}
+                      // register={register}
+                      // setValue={(name, value) => {
+                      //   setValue(name, value);
+                      //   if (isPossiblePhoneNumber(value as string)) {
+                      //     clearErrors("phone_no");
+                      //   }
+                      // }}
                     />
                   </div>
 
@@ -209,7 +228,7 @@ const EditStudent: React.FC = () => {
                       value={watch("gender") || ""}
                       required
                     >
-                      <SelectTrigger className="w-full p-2 border border-[#717680] rounded">
+                      <SelectTrigger className="w-full p-2 border border-[#000] text-[#000] placeholder:text-[#aaa] rounded">
                         <SelectValue placeholder="Select Gender" />
                       </SelectTrigger>
                       <SelectContent className="bg-white">
@@ -230,6 +249,7 @@ const EditStudent: React.FC = () => {
                       {...register("year_of_admission")}
                       type="text"
                       placeholder="Enter Year of Admission"
+                       className="text-[#000] placeholder:text-[#aaa]"
                     />
                   </div>
 
@@ -261,6 +281,7 @@ const EditStudent: React.FC = () => {
                       {...register("date_of_birth")}
                       type="date"
                       placeholder="dd-mm-yyyy"
+                       className="text-[#000] placeholder:text-[#aaa]"
                     />
                   </div>
                 </div>
@@ -276,7 +297,7 @@ const EditStudent: React.FC = () => {
                 <Textarea
                   {...register("address")}
                   placeholder="Enter Address"
-                  className="w-full p-2 border border-[#717680] rounded h-24"
+                  className="w-full p-2 border border-[#000] text-[#000] placeholder:text-[#aaa] rounded h-24"
                 />
               </div>
             )}

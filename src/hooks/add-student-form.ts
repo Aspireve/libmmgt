@@ -3,15 +3,14 @@
 import { StudentData } from "@/types/student";
 import UploaderFactory from "@/utilities/file-upload/upload-factory";
 import { useCreate } from "@refinedev/core";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { FieldValues, useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store/store";
 import { toast } from "sonner";
+import { isValidPhoneNumber } from "react-phone-number-input";
 
 export const useAddStudentForm = () => {
-  const router = useRouter();
   const [imageUpload, setImageUpload] = useState(false);
 
   const {institute_uuid, institute_name} = useSelector(
@@ -25,7 +24,8 @@ export const useAddStudentForm = () => {
     watch,
     formState: { errors },
     clearErrors,
-    setError
+    setError,
+    trigger
   } = useForm<Partial<StudentData>>({
     defaultValues: {
       student_name: "",
@@ -51,6 +51,7 @@ export const useAddStudentForm = () => {
       if (!data.roll_no) errors.roll_no = { message: "Roll No. is required" };
       if (!data.email) errors.email = { message: "Email is required" };
       if (!data.gender) errors.gender = { message: "Gender is required" };
+      if (!data.phone_no || !isValidPhoneNumber(data.phone_no))  errors.phone_no = { message: "Phone Number is required" };
 
       return {
         values: Object.keys(errors).length === 0 ? data : {},
@@ -116,6 +117,7 @@ export const useAddStudentForm = () => {
     setValue,
     watch,
     clearErrors,
-    setError
+    setError,
+    trigger
   };
 };
