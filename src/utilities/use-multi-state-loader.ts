@@ -16,15 +16,14 @@ export const useMultiStepLoader = <T>(steps: StepFunction<T>[]) => {
     for (let i = 0; i < steps.length; i++) {
       setCurrentStep(i);
       try {
-        console.log({steps, stepData, i: steps[i]})
         stepData = await steps[i](stepData);
       } catch (error: any) {
         setErrorMessage(error.message || "An error occurred");
+        setCurrentStep(0);
         setIsLoading(false);
         return;
       }
     }
-
     setIsLoading(false);
   };
 

@@ -49,7 +49,7 @@ const Dropzone = <T extends BaseFileData>({
   return (
     <div
       ref={dropRef}
-      className="border-2 border-dashed border-[#0066FF99] rounded-xl p-6 text-center mb-6 bg-[#0066FF11] transition-all duration-300 hover:shadow-md"
+      className=""
       onDrop={handleDrop}
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
