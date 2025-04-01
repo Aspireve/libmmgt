@@ -62,7 +62,7 @@ export function Datatable<TData extends BaseRecord>({
               {headerGroup.headers.map((header) => (
                 <TableHead
                   key={header.id}
-                  className="text-sm py-2 text-[#535862] text-center"
+                  className="text-sm py-2 text-[#535862] text-left"
                 >
                   {isLoading ? (
                     <Skeleton className="h-4 w-20 mx-auto animate-pulse bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 bg-[length:200%_100%]" />
@@ -87,7 +87,7 @@ export function Datatable<TData extends BaseRecord>({
             table.getRowModel().rows.map((row) => (
               <TableRow
                 key={row.id}
-                className="border-b border-gray-300 text-center transition-opacity duration-300 hover:bg-gray-50"
+                className="border-b border-gray-300 text-left transition-opacity duration-300 hover:bg-gray-50"
               >
                 {row.getVisibleCells().map((cell) => (
                   <TableCell
