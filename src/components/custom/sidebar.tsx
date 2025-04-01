@@ -3,26 +3,39 @@
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
-import { useTabs } from "@/app/context/TabContext";
+import { usePathname, useRouter } from "next/navigation";
 import Images from "@/images";
 import { menuItems } from "@/constants/menu";
 import { MenuItem } from "@/types/menu";
+import { RootState } from "@/redux/store/store";
+import { useDispatch } from "react-redux";
+import { addTab, setActiveTab } from "@/redux/tabSlice";
 
 const SidebarLink = ({ item }: { item: MenuItem }) => {
   const pathname = usePathname();
-  const { addTab } = useTabs();
+  const dispatch = useDispatch();
+  const router = useRouter();
 
   const isActive =
     item.id === "dashboard"
       ? pathname === item.route
       : pathname.startsWith(item.route);
 
+
+      const handleClick = () => {
+        dispatch(addTab({ title: item.title, route: item.route })); // ✅ Add tab
+        dispatch(setActiveTab(item.route)); // ✅ Set active tab
+        router.push(item.route); // ✅ Navigate to the route
+      };
   return (
     <Link
       key={item.id}
       href={item.route}
-      onClick={() => addTab(item.title, item.route)}
+      onClick={(e) => {
+        e.preventDefault(); 
+        handleClick();
+      }
+      }
       className={`flex items-center gap-3 cursor-pointer rounded-[8px] p-2 text-[#1E40AF] group relative transition-all duration-300
       ${isActive ? "bg-[#F0F6FF]" : "hover:bg-[#EDF1FF]"}`}
     >
@@ -70,3 +83,5 @@ const Sidebar = () => {
 };
 
 export default Sidebar;
+
+
