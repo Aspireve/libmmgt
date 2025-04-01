@@ -89,13 +89,7 @@ const AddStudent: React.FC = () => {
 
   const handleStudentSubmit = async (data: any) => {
     try {
-      if (!isPossiblePhoneNumber(data.phone_no as string)) {
-        setError("phone_no", { message: "Incorrect Format" });
-        return;
-      }
-
-      const studentData: any = await onSubmit(data);
-      // generateBarcode(studentData?.studentId || "No ID Provided");
+      await onSubmit(data);
       router.push("/student-page");
     } catch (error) {
       console.error("Error adding student:", error);
@@ -209,12 +203,12 @@ const AddStudent: React.FC = () => {
                 Phone Number <span className="text-red-500"> *</span>
               </Label>
               <PhoneNumber
-                name="phone_no"
+                i_name="phone_no"
                 readOnly={false}
                 error={errors}
                 register={register}
                 setValue={(name, value) => {
-                  setValue("phone_no", value);
+                  setValue(name, value);
                   if (isPossiblePhoneNumber(value as string)) {
                     clearErrors("phone_no");
                   }
@@ -232,7 +226,7 @@ const AddStudent: React.FC = () => {
                   if (value) clearErrors("gender");
                 }}
               >
-                <SelectTrigger className="w-full p-2 border border-[#717680] rounded">
+                <SelectTrigger className="w-full p-2 border border-[#000] rounded text-[#000]">
                   <SelectValue placeholder="Select Gender" />
                 </SelectTrigger>
                 <SelectContent className="bg-white">
@@ -253,6 +247,7 @@ const AddStudent: React.FC = () => {
                 {...register("year_of_admission")}
                 type="text"
                 placeholder="Enter Year of Admission"
+                className="text-[#000] placeholder:text-[#aaa]"
               />
             </div>
 
@@ -263,6 +258,7 @@ const AddStudent: React.FC = () => {
                   {...register("password")}
                   type={showPassword ? "text" : "password"}
                   placeholder="Enter Password"
+                  className="text-[#000] placeholder:text-[#aaa]"
                 />
                 <button
                   type="button"
@@ -289,6 +285,7 @@ const AddStudent: React.FC = () => {
                 })}
                 type="date"
                 placeholder="dd-mm-yyyy"
+                className="text-[#000] placeholder:text-[#aaa]"
                 max={today} // Restrict future dates
               />
             </div>
@@ -300,7 +297,7 @@ const AddStudent: React.FC = () => {
           <Textarea
             {...register("address")}
             placeholder="Enter Address"
-            className="w-full p-2 border border-[#717680] rounded h-24 text-[#717680]"
+            className="w-full p-2 border border-[#000] rounded h-24 text-[#000] placeholder:text-[#aaa]"
           />
         </div>
 

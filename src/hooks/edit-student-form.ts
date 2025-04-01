@@ -2,15 +2,26 @@ import { useEffect, useState } from "react"; // Add useState
 import { useForm, FieldValues } from "react-hook-form";
 import { useOne } from "@refinedev/core";
 import { toast } from "sonner";
-import { StudentData, StudentFromDatabase } from "@/types/student";
+import {
+  StudentCompleteData,
+  StudentData,
+  StudentFromDatabase,
+  StudentUpdateWithId,
+} from "@/types/student";
 import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store/store";
+import { isValidPhoneNumber } from "react-phone-number-input";
 
-export const useEditStudentForm = (student_id: string) => {
+export const useEditStudentForm = (
+  student_id: string,
+  setProfileImage: (e: string | null) => void
+) => {
   const router = useRouter();
 
-  const institute_id = useSelector((state: RootState) => state.auth.institute_uuid);
+  const institute_id = useSelector(
+    (state: RootState) => state.auth.institute_uuid
+  );
   const [isFormInitialized, setIsFormInitialized] = useState(false); // Define the state
 
   const {
@@ -20,21 +31,20 @@ export const useEditStudentForm = (student_id: string) => {
     watch,
     setValue,
     formState: { errors },
-  } = useForm<StudentData>({
+    clearErrors,
+  } = useForm<StudentUpdateWithId>({
     defaultValues: {
       student_name: "",
       department: "",
       email: "",
       phone_no: "",
       address: "",
-      roll_no: 0,
+      roll_no: "0",
       year_of_admission: "",
       password: "",
-      confirm_password: "",
       date_of_birth: "",
       gender: "",
-      institute_name: "",
-      image_field: null,
+      image_field: undefined,
     },
     resolver: async (data) => {
       const errors: Record<string, { message: string }> = {};
@@ -54,6 +64,8 @@ export const useEditStudentForm = (student_id: string) => {
       if (!data.gender) {
         errors.gender = { message: "Gender is required" };
       }
+      if (!data.phone_no || !isValidPhoneNumber(data.phone_no))
+        errors.phone_no = { message: "Phone Number is required" };
 
       return {
         values: Object.keys(errors).length === 0 ? data : {},
@@ -66,7 +78,7 @@ export const useEditStudentForm = (student_id: string) => {
     data,
     isLoading: isFetching,
     error,
-  } = useOne<StudentFromDatabase>({
+  } = useOne<StudentUpdateWithId>({
     resource: "student/detail",
     id: student_id ? `student_id=${student_id}` : "",
     queryOptions: {
@@ -78,11 +90,12 @@ export const useEditStudentForm = (student_id: string) => {
   useEffect(() => {
     let isMounted = true;
     if (data?.data && isMounted) {
-      const student: StudentFromDatabase = data.data;
+      const student: StudentUpdateWithId = data.data;
 
       // Normalize gender value
       const normalizedGender = student.gender
-        ? student.gender.toLowerCase() === "male" || student.gender.toLowerCase() === "female"
+        ? student.gender.toLowerCase() === "male" ||
+          student.gender.toLowerCase() === "female"
           ? student.gender.toLowerCase()
           : ""
         : "";
@@ -100,13 +113,13 @@ export const useEditStudentForm = (student_id: string) => {
         email: student.email || "",
         phone_no: normalizedPhone, // Ensure formatted phone number
         address: student.address || "",
-        roll_no: student.roll_no || 0,
+        roll_no: student.roll_no || "0",
         year_of_admission: student.year_of_admission || "",
         date_of_birth: student.date_of_birth || "",
         gender: normalizedGender,
-        institute_name: student.institute_name || "",
-        image_field: student.image_field || null,
+        image_field: student.image_field || undefined,
       });
+      setProfileImage(student.image_field || null);
       setIsFormInitialized(true);
     }
     return () => {
@@ -114,38 +127,23 @@ export const useEditStudentForm = (student_id: string) => {
     };
   }, [data, reset, student_id]);
 
-  const onSubmit = (formData: FieldValues, mutate: Function) => {
+  const onSubmit = (formData: StudentUpdateWithId, mutate: Function) => {
     let phoneNo = formData.phone_no?.trim();
 
     if (phoneNo && phoneNo.startsWith("+91")) {
       phoneNo = phoneNo.slice(3).trim();
     }
 
-    const studentData: Partial<StudentData> = {
+    const studentData: StudentUpdateWithId = {
       ...formData,
-      institute_id: institute_id ?? "",
       phone_no: phoneNo,
     };
 
-    const passwordValue = formData.password?.trim();
-    const confirmPasswordValue = formData.confirm_password?.trim();
-
-    if (!passwordValue) {
-      delete studentData.password;
-    }
-
-    if (!confirmPasswordValue) {
-      delete studentData.confirm_password;
-    }
-
-    if (passwordValue && confirmPasswordValue && passwordValue !== confirmPasswordValue) {
-      toast.error("Passwords do not match.");
-      return;
-    }
-
     // Filter out null or empty values
     const filteredStudentData = Object.fromEntries(
-      Object.entries(studentData).filter(([_, value]) => value !== null && value !== "")
+      Object.entries(studentData).filter(
+        ([_, value]) => value !== null && value !== ""
+      )
     );
 
     mutate(
@@ -162,7 +160,9 @@ export const useEditStudentForm = (student_id: string) => {
         },
         onError: (error: any) => {
           toast.error(
-            `Error updating student: ${error.message || "Please try again later."}`
+            `Error updating student: ${
+              error.message || "Please try again later."
+            }`
           );
         },
       }
@@ -180,5 +180,6 @@ export const useEditStudentForm = (student_id: string) => {
     onSubmit,
     setValue,
     isFormInitialized, // Include in the return object
+    clearErrors,
   };
 };

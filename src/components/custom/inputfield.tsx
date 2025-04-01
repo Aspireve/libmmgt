@@ -14,6 +14,7 @@ export interface InputFieldProps<T extends FieldValues> {
   readonly?: boolean;
   disabled?: boolean;
   loading?: boolean;
+  required?: boolean
 }
 
 export const InputField = <T extends FieldValues>({
@@ -27,17 +28,18 @@ export const InputField = <T extends FieldValues>({
   readonly = false,
   disabled = false,
   loading = false,
+  required = true
 }: InputFieldProps<T>) => {
   return (
     <div className="transition-all duration-200">
       <Label>
-        {label} {Object.keys(validation).length > 0 && <span className="text-red-500"> *</span>}
+        {label} {required && <span className="text-red-500"> *</span>}
       </Label>
       {loading ? (
         <Skeleton className="h-10 w-full animate-pulse bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 bg-[length:200%_100%]" />
       ) : (
         <Input
-          className="text-[#000]"
+          className="text-[#000] placeholder:text-[#aaa]"
           type={type}
           max={
             type === "date" ? new Date().toISOString().split("T")[0] : undefined
