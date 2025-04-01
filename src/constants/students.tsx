@@ -35,10 +35,10 @@ export const fieldLabels: Record<keyof StudentData, string> = {
   password: "Password",
   date_of_birth: "Date Of Birth",
   gender: "Gender",
-  institute_name: "Institute Name"
+  institute_name: "Institute Name",
 };
 
-export const StudentListTable = ({
+export const StudentListTable = ({  
   refetch,
 }: {
   refetch: () => void;
@@ -56,7 +56,16 @@ export const StudentListTable = ({
   { accessorKey: "roll_no", header: "Roll no" },
   { accessorKey: "department", header: "Department" },
   { accessorKey: "email", header: "Email" },
-  { accessorFn: (data) => data.year_of_admission ?? "Not Provided", header: "Year of Admission" },
+  {
+    accessorFn: (data) => data.year_of_admission ?? "Not Provided",
+    header: "Year of Admission",
+  },
+];
+export const StudentListTableAction = ({
+  refetch,
+}: {
+  refetch: () => void;
+}): ColumnDef<StudentFromDatabase>[] => [
   {
     id: "actions",
     header: "Actions",
