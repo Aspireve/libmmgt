@@ -11,6 +11,7 @@ import { BookData } from "../types/data";
 import { dataProvider } from "@/providers/data";
 import { InputField } from "@/components/custom/inputfield";
 import { Loader2 } from "lucide-react";
+import { EditBookBC } from "@/components/breadcrumb/constant";
 
 const EditBook = () => {
   const router = useRouter();
@@ -82,6 +83,7 @@ const EditBook = () => {
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <>
+      <EditBookBC/>
         <Header heading={BookTitle} subheading="Tanvir Chavan" />
 
         <section className="p-10">

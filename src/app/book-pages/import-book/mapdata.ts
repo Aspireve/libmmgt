@@ -3,7 +3,7 @@ import { BookData } from '../types/data'
 export type MappingType = {
     [key in keyof BookData]?: string;
   };
-export const initialMapping: MappingType = {
+export const initialMapping = {
   book_title: "",
   book_author: "",
   name_of_publisher: "",

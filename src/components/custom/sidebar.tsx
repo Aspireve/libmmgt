@@ -37,7 +37,7 @@ const SidebarLink = ({ item }: { item: MenuItem }) => {
       }
       }
       className={`flex items-center gap-3 cursor-pointer rounded-[8px] p-2 text-[#1E40AF] group relative transition-all duration-300
-      ${isActive ? "bg-[#F0F6FF]" : "hover:bg-[#EDF1FF]"}`}
+      ${isActive ? "bg-blue-300" : "hover:bg-[#EDF1FF]"}`}
     >
       <Image src={item.icon} alt="" width={20} height={20} />
       <span>{item.title}</span>
