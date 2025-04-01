@@ -2,20 +2,19 @@
 
 import React, { useState } from "react";
 import Header from "../Header/header";
-import { visitLogColumns,VisitLog } from "./columns";
+import { visitLogColumns, VisitLog } from "./columns";
 import { useList } from "@refinedev/core";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { Input } from "@/components/ui/input";
 import filter from "../../images/filter.png";
-import searchIcon from "../../images/search.png";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
-import { format } from "date-fns";
+import { format, isAfter } from "date-fns"; // Import isAfter for date comparison
 import { DateRange } from "react-day-picker";
 import MasterTable from "../test/table-page";
 
@@ -24,14 +23,13 @@ const Page = () => {
   const [dateRange, setDateRange] = useState<DateRange | undefined>(undefined);
   const [timeFrom, setTimeFrom] = useState("");
   const [timeTo, setTimeTo] = useState("");
+  const today = new Date(); // Current date for validation
 
   const handleRefetch = () => {
     refetch();
   };
 
-  const { data,refetch } = useList<VisitLog>({
-    // resource: "alllogs",
-    // pagination: { current: 1, pageSize: 5 },
+  const { data, refetch } = useList<VisitLog>({
     filters: [
       ...(dateRange?.from && dateRange?.to
         ? [
@@ -66,9 +64,21 @@ const Page = () => {
       cacheTime: 10 * 60 * 1000,
     },
   });
-  const visitLogs: VisitLog[] = Array.isArray(data?.data)
-    ? data.data
-    : [];
+
+  const visitLogs: VisitLog[] = Array.isArray(data?.data) ? data.data : [];
+
+  // Handler to cap the date range at today
+  const handleDateSelect = (range: DateRange | undefined) => {
+    if (range) {
+      const cappedRange = {
+        from: range.from,
+        to: range.to && isAfter(range.to, today) ? today : range.to, // Cap "to" at today
+      };
+      setDateRange(cappedRange);
+    } else {
+      setDateRange(undefined);
+    }
+  };
 
   return (
     <>
@@ -96,10 +106,9 @@ const Page = () => {
                 <Calendar
                   mode="range"
                   selected={dateRange}
-                  onSelect={
-                    setDateRange as (range: DateRange | undefined) => void
-                  }
+                  onSelect={handleDateSelect} // Use custom handler
                   numberOfMonths={2}
+                  disabled={(date) => isAfter(date, today)} // Disable dates after today
                 />
               </PopoverContent>
             </Popover>
@@ -137,8 +146,8 @@ const Page = () => {
       </div>
       <section className="mx-[40px]">
         <MasterTable
-        title="Visit Logs"
-          columns={() =>visitLogColumns}
+          title="Visit Logs"
+          columns={() => visitLogColumns}
           resource="student/alllog"
           AddedOptions={[]}
         />

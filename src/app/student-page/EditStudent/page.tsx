@@ -83,6 +83,8 @@ const EditStudent: React.FC = () => {
       : ["NA"];
   };
 
+  const today = new Date().toISOString().split("T")[0];
+
   return (
     <>
       <CustomBreadcrumb items={breadcrumbItems} />
@@ -278,10 +280,16 @@ const EditStudent: React.FC = () => {
                   <div>
                     <Label>Date of Birth</Label>
                     <Input
-                      {...register("date_of_birth")}
+                      {...register("date_of_birth", {
+                        validate: (value) =>
+                          value && value <= today
+                            ? true
+                            : "Date of Birth cannot be in the future",
+                      })}
                       type="date"
                       placeholder="dd-mm-yyyy"
                        className="text-[#000] placeholder:text-[#aaa]"
+                      max={today} // Restrict future dates
                     />
                   </div>
                 </div>

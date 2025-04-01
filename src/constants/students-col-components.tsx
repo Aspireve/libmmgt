@@ -61,7 +61,7 @@ export const StudentActions = ({
   const router = useRouter();
   const { isOpen, close, open } = useDisclosure();
   return (
-    <div className="flex gap-2 ml-10">
+    <div className="flex gap-2">
       <Button
         className="p-0 shadow-none"
         onClick={() => {

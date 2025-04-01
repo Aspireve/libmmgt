@@ -2,13 +2,13 @@
 
 import React, { Suspense, useEffect, useState } from "react";
 import { Provider } from "react-redux";
-import { store } from "../redux/store/store";
+import { store, persistor } from "../redux/store/store";
 import { RefineContext } from "./_refine_context";
 import Sidebar from "@/components/custom/sidebar";
 import Navbar from "@/components/custom/navbar";
 import "../styles/global.css";
 import { Toaster } from "@/components/ui/sonner";
-import { TabProvider } from "./context/TabContext";
+import { PersistGate } from "redux-persist/integration/react";
 //import LoginPage from "./LoginPage/page";
 
 export default function RootLayout({
@@ -29,7 +29,7 @@ export default function RootLayout({
         <Suspense fallback={<> loding...</>}>
           <Provider store={store}>
             <RefineContext>
-              <TabProvider>
+              <PersistGate loading={null} persistor={persistor}>
                 <div className="flex h-[100vh]">
                   <Sidebar />
                   <div className="flex flex-1 flex-col">
@@ -39,7 +39,7 @@ export default function RootLayout({
                     <Toaster richColors position="top-center" />
                   </div>
                 </div>
-              </TabProvider>
+              </PersistGate>
             </RefineContext>
           </Provider>
         </Suspense>

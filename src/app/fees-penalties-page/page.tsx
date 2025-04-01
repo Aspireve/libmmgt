@@ -2,15 +2,13 @@
 
 import React, { Suspense, useState } from "react";
 import Header from "../Header/header";
-import { PenaltiesColumns, fallbackData, Penalties } from "./columns";
+import { PenaltiesColumns, priorColumns } from "./columns";
 import { useList } from "@refinedev/core";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import filter from "../../images/filter.png";
 import Image from "next/image";
-import searchIcon from "../../images/search.png";
 import { DateRange } from "react-day-picker";
-import { format } from "date-fns";
+import { format, isAfter } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -18,16 +16,16 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { MainTable } from "@/components/data-tables/main-table";
 import MasterTable from "../test/table-page";
+import ExportStudent from "@/components/students/export-students-button";
 
-// Define Department interface
+
+
 interface Department {
   id: string;
   name: string;
 }
 
-// // Fallback department data
 const fallbackDepartments: Department[] = [
   { id: "1", name: "Electronics" },
   { id: "2", name: "Computer Science" },
@@ -36,24 +34,25 @@ const fallbackDepartments: Department[] = [
 ];
 
 const FeesPenaltiesPage = () => {
-  const [searchTerm, setSearchTerm] = useState("");
+  const today = new Date();
   const [dateRange, setDateRange] = useState<DateRange | undefined>();
-  const [timeFrom, setTimeFrom] = useState("");
-  const [timeTo, setTimeTo] = useState("");
   const [selectedDepartment, setSelectedDepartment] = useState<string>("");
 
-  // // Fetch departments
   const { data: departmentData } = useList<Department>({
     resource: "departments",
   });
 
-  // Get department data from API or fallback
   const departments: Department[] = Array.isArray(departmentData?.data)
     ? departmentData.data
     : fallbackDepartments;
 
-  const [page, setPage] = useState<number>(1);
-  const [limit, setLimit] = useState<number>(5);
+  const handleDateSelect = (range: DateRange | undefined) => {
+    if (range?.to && isAfter(range.to, today)) {
+      range.to = today;
+    }
+    setDateRange(range);
+  };
+
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <>
@@ -61,7 +60,7 @@ const FeesPenaltiesPage = () => {
         <div className="mt-8 w-[93%] ml-10 border border-[#E0E2E7] rounded-[10px] p-4">
           <h2 className="text-lg font-semibold">Filter</h2>
           <div className="grid grid-cols-4 gap-4 mt-2">
-            <div className="col-span-2"> {/* Span two columns for date range picker */}
+            <div className="col-span-2">
               <label className="text-sm font-medium">Date Range</label>
               <Popover>
                 <PopoverTrigger asChild>
@@ -69,7 +68,7 @@ const FeesPenaltiesPage = () => {
                     variant="outline"
                     className="w-[300px] justify-start text-left font-normal ml-4"
                   >
-                    <CalendarIcon />
+                    <CalendarIcon className="mr-2" />
                     {dateRange?.from ? (
                       dateRange.to ? (
                         `${format(dateRange.from, "LLL dd, y")} - ${format(
@@ -92,13 +91,13 @@ const FeesPenaltiesPage = () => {
                     initialFocus
                     mode="range"
                     selected={dateRange}
-                    onSelect={setDateRange}
+                    onSelect={handleDateSelect}
                     numberOfMonths={2}
+                    disabled={(day) => isAfter(day, today)}
                   />
                 </PopoverContent>
               </Popover>
             </div>
-           
           </div>
           <div className="flex items-center gap-12 mt-4">
             <select
@@ -113,9 +112,7 @@ const FeesPenaltiesPage = () => {
                 </option>
               ))}
             </select>
-            <Button
-              className="border border-[#1E40AF] text-[#1E40AF] rounded-[10px] w-[100px] flex items-center justify-center"
-            >
+            <Button className="border border-[#1E40AF] text-[#1E40AF] rounded-[10px] w-[100px] flex items-center justify-center">
               <Image src={filter} height={19} width={19} alt="filter" />
               Filter
             </Button>
@@ -124,10 +121,11 @@ const FeesPenaltiesPage = () => {
         <section className="mx-[40px]">
           <div>
             <MasterTable
-            title="Fees&Penalties"
-            columns={()=> PenaltiesColumns}
-            resource="book_v2/get_full_feelist_student"
-            AddedOptions={[]}
+              title="Fees&Penalties"
+              columns={() => PenaltiesColumns}
+              resource="book_v2/get_full_feelist_student"
+              AddedOptions={[ExportStudent]}
+              priorColumns={()=> priorColumns}
             />
           </div>
         </section>
