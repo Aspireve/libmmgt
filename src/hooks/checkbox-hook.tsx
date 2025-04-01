@@ -5,7 +5,8 @@ export function useRowSelection<T>(
   getRowId: (row: T) => string | number,
   isSelectable: boolean,
   columns: ColumnDef<T>[],
-  tableData: T[]
+  tableData: T[],
+  priorColumns?: ColumnDef<T>[]
 ) {
   const [selectedData, setSelectedData] = useState<T[]>([]);
 
@@ -51,6 +52,10 @@ export function useRowSelection<T>(
         ...columns,
       ]
     : columns;
+  const columnsWithPrior =
+    priorColumns && priorColumns.length > 0
+      ? [...priorColumns, ...columnsWithCheckbox]
+      : columnsWithCheckbox;
 
   return {
     selectedData,
@@ -59,5 +64,6 @@ export function useRowSelection<T>(
     toggleRowSelection,
     toggleAllRows,
     setSelectedData,
+    columnsWithPrior,
   };
 }

@@ -16,10 +16,17 @@ interface PageProps<TData extends BaseRecord> {
   isSelectable?: boolean;
   resource: string;
   columns: (params: { refetch: () => Promise<unknown> }) => ColumnDef<TData>[];
-  AddedOptions?: FC<{ data: TData[]; refetch: () => Promise<unknown>; resource: string }>[];
+  AddedOptions?: FC<{
+    data: TData[];
+    refetch: () => Promise<unknown>;
+    resource: string;
+  }>[];
   query?: LogicalFilter[];
   idField?: keyof TData;
   onDataFetched?: (data: TData | null) => void;
+  priorColumns?: (params: {
+    refetch: () => Promise<unknown>;
+  }) => ColumnDef<TData>[];
 }
 
 export default function MasterTable<TData extends BaseRecord>({
@@ -29,6 +36,7 @@ export default function MasterTable<TData extends BaseRecord>({
   columns,
   AddedOptions,
   query = [],
+  priorColumns,
   idField = "student_id" as keyof TData,
   onDataFetched,
 }: PageProps<TData>) {
@@ -59,12 +67,13 @@ export default function MasterTable<TData extends BaseRecord>({
     ],
   });
 
-  const { selectedData, columnsWithCheckbox, setSelectedData } =
+  const { selectedData, columnsWithCheckbox, setSelectedData, columnsWithPrior } =
     useRowSelection<TData>(
-      (row) => row?.[idField] as string | number ,
+      (row) => row?.[idField] as string | number,
       isSelectable,
       columns({ refetch }),
-      listData?.data || []
+      listData?.data || [],
+      priorColumns?.({ refetch })
     );
 
   useEffect(() => {
@@ -82,8 +91,8 @@ export default function MasterTable<TData extends BaseRecord>({
     if (listData?.data) {
       setSelectedData([]);
     }
-    if(listData?.data?.length && onDataFetched){
-      onDataFetched(listData.data[0])
+    if (listData?.data?.length && onDataFetched) {
+      onDataFetched(listData.data[0]);
     }
     return () => {
       dispatch(resetValues());
@@ -103,7 +112,7 @@ export default function MasterTable<TData extends BaseRecord>({
         resource={resource}
       />
       <Datatable<TData>
-        columns={columnsWithCheckbox}
+        columns={columnsWithPrior}
         data={listData?.data || []}
         isLoading={isLoading}
       />
