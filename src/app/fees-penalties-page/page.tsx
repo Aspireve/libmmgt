@@ -94,6 +94,7 @@ const FeesPenaltiesPage = () => {
                     onSelect={handleDateSelect}
                     numberOfMonths={2}
                     disabled={(day) => isAfter(day, today)}
+                    
                   />
                 </PopoverContent>
               </Popover>
