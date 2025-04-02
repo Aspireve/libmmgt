@@ -44,6 +44,11 @@ export const getBookColumns = (
   handleEdit: (book: BookData) => void,
 ): ColumnDef<BookData>[] => {
   return [
+    {
+      id: 'actions',
+      header: 'Action',
+      cell: ({ row }) => <ActionsCell book={row.original} handleEdit={handleEdit} />,
+    },
     { accessorKey: 'book_title_id', header: 'ID' },
     {
       accessorKey: 'book_title',
@@ -58,11 +63,6 @@ export const getBookColumns = (
       accessorKey: 'year_of_publication',
       header: 'Year of Publication',
       cell: ({ row }) => <span>{formatDate(row.original.year_of_publication)}</span>,
-    },
-    {
-      id: 'actions',
-      header: '',
-      cell: ({ row }) => <ActionsCell book={row.original} handleEdit={handleEdit} />,
-    },
+    }
   ];
 };

@@ -5,10 +5,12 @@ import Header from '@/app/Header/header'
 import { useRouter, useSearchParams } from "next/navigation";
 import MasterTable from '@/app/test/table-page';
 import DeleteJournal from '@/components/periodicals/delete-button';
-import { getPeriodicalCopyColumns } from './columns';
+import { getActonsColumns, getPeriodicalCopyColumns } from './columns';
 import Tabbing from '@/components/custom/tabbing';
 import PeriodicalDetailsActivites from '../periodical-details-activities/page';
 import { JournalData } from '../types/data';
+import { PeriodicalProfileBC } from '@/components/breadcrumb/constant';
+import PeriodicalTitleDetails from '../periodical-title-details/page';
 
 enum LibraryTabs {
     PERIODICALDETAILS = "Periodical Details",
@@ -21,56 +23,52 @@ const TABS = [
 ];
 
 const Periodical_details = () => {
-    const journal_uuid = useSearchParams().get("journal_uuid");
+    const journal_title_id = useSearchParams().get("journal_title_id");
     const router = useRouter();
-    const [periodicalTitle, setPeriodicalTitle] = useState<string>("")
-    const [periodicalID, setPeriodicalID] = useState<string>("")
+    const [periodicalTitle, setPeriodicalTitle] = useState<string>("Periodical")
+    const [periodicalID, setPeriodicalID] = useState<string>("TIA")
 
     return (
         <>
+            <PeriodicalProfileBC />
             <Header heading={periodicalTitle} subheading={periodicalID} />
             <section>
                 <div className="mx-[40px]">
+                    <PeriodicalTitleDetails />
                     {/* <Tabbing
                         tabs={TABS}
                         content={{
                             [LibraryTabs.PERIODICALDETAILS]:
                                 <>
-                                    <MasterTable
+                                    <MasterTable<JournalData>
                                         title='Periodical Copies'
                                         columns={getPeriodicalCopyColumns}
+                                        priorColumns={getActonsColumns}
                                         resource="journals/get-periodical-copies"
                                         query={[
-                                            { field: "_journal_title_uuid", operator: "eq", value: `${journal_uuid}` }
+                                            { field: "_journal_title_id", operator: "eq", value: `${journal_title_id}` }
                                         ]}
                                         AddedOptions={[DeleteJournal]}
                                         idField='journal_copy_id'
-                                        onDataFetched={(data) => (
-                                            setPeriodicalID(data?.journal_title_id),
-                                            setPeriodicalTitle(data?.journal_title)
-                                            )}
                                     />
                                 </>,
-                            [LibraryTabs.ACTIVITY]: 
-                            <>
-                                <PeriodicalDetailsActivites/>
-                            </>,
+                            [LibraryTabs.ACTIVITY]:
+                                <>
+                                    <PeriodicalDetailsActivites />
+                                </>,
                         }}
                     /> */}
                     <MasterTable<JournalData>
-                        title='Periodical Copies'
-                        columns={getPeriodicalCopyColumns}
-                        resource="journals/get-periodical-copies"
-                        query={[
-                            { field: "_journal_title_uuid", operator: "eq", value: `${journal_uuid}` }
-                        ]}
-                        AddedOptions={[DeleteJournal]}
-                        idField='journal_copy_id'
-                        // onDataFetched={(data) => (
-                        //     setPeriodicalID(data?.journal_title_id),
-                        //     setPeriodicalTitle(data?.journal_title)
-                        // )}
-                    />
+                                        title='Periodical Copies'
+                                        columns={getPeriodicalCopyColumns}
+                                        priorColumns={getActonsColumns}
+                                        resource="journals/get-periodical-copies"
+                                        query={[
+                                            { field: "_journal_title_id", operator: "eq", value: `${journal_title_id}` }
+                                        ]}
+                                        AddedOptions={[DeleteJournal]}
+                                        idField='journal_copy_id'
+                                    />
 
                 </div>
             </section>
@@ -80,4 +78,7 @@ const Periodical_details = () => {
 }
 
 export default Periodical_details
+
+
+
 

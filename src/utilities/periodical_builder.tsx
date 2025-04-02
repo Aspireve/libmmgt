@@ -1,7 +1,7 @@
-import { AddBookType } from "@/types/book";
+import { AddPeriodicalType } from "@/types/periodical";
 
-export class BookDataBuilder {
-    private bookEntry: Partial<AddBookType> = {};
+export class PeriodicalDataBuilder {
+    private bookEntry: Partial<AddPeriodicalType> = {};
 
     constructor(
         private rowOrData: any,
@@ -9,7 +9,7 @@ export class BookDataBuilder {
         private excelHeaders: string[] = []
     ) { }
 
-    setField(fieldKey: keyof AddBookType, transform?: (value: any) => any) {
+    setField(fieldKey: keyof AddPeriodicalType, transform?: (value: any) => any) {
         if (Array.isArray(this.rowOrData)) {
             const column = this.mapping[fieldKey];
             const colIndex = this.excelHeaders.indexOf(column);
@@ -31,12 +31,12 @@ export class BookDataBuilder {
         return this; 
     }
     setCustomField(fieldKey: string, value: any) {
-        this.bookEntry[fieldKey as keyof AddBookType] = value;
+        this.bookEntry[fieldKey as keyof AddPeriodicalType] = value;
         return this;
       }
 
-    build(): AddBookType {
-        return this.bookEntry as AddBookType;
+    build(): AddPeriodicalType {
+        return this.bookEntry as AddPeriodicalType;
     }
 }
 

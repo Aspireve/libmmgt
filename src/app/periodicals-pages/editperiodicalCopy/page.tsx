@@ -11,6 +11,7 @@ import { useOne } from "@refinedev/core";
 import { dataProvider } from "@/providers/data";
 import { toast } from "sonner";
 import { useForm } from "@refinedev/react-hook-form";
+import { EditPeriodicalCopyBC } from "@/components/breadcrumb/constant";
 
 const EditPeriodicalcopy = () => {
      const searchParams = useSearchParams();
@@ -73,6 +74,7 @@ const EditPeriodicalcopy = () => {
   return (
     <Suspense fallback={<div>Loading...</div>}>
     <>
+      <EditPeriodicalCopyBC/>
       <Header heading="Edit Periodical Copy" subheading="Tanvir Chavan" />
 
       <section className="p-10">
@@ -141,7 +143,9 @@ const EditPeriodicalcopy = () => {
             {/* Action Buttons */}
             <div className="flex justify-center gap-4">
 
-              <Button variant="outline" onClick={() => router.back()}>
+              <Button 
+              className='shadow-none text-[#1E40AF] rounded-[10px]'
+              type="button" onClick={() => router.back()}>
                 Cancel
               </Button>
               <Button

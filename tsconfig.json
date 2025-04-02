@@ -13,7 +13,7 @@
     "noEmit": true,
     "esModuleInterop": true,
     "module": "esnext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler", //Changed from "node" to "bundler" for HUGEICONS to work
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",

@@ -112,7 +112,7 @@ const Header: React.FC<HeadersProps> = ({
 
             {/* ✅ Dropper Icon */}
             <Image
-              height={20} width={20}
+              height={20} width={10}
               src={Dropper.src}
               alt="dropdownIcon"
               className="ml-[5px] h-[10px] cursor-pointer"

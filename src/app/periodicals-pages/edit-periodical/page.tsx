@@ -11,6 +11,8 @@ import { JournalData } from "../types/data";
 import { InputField } from "@/components/custom/inputfield";
 import { dataProvider } from "@/providers/data";
 import { toast } from "sonner";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 const EditJournal = () => {
 
@@ -18,9 +20,13 @@ const EditJournal = () => {
   const journal_title_id = searchParams.get("journal_title_id")
   const [isLoadingInput, setIsLoadingInput] = useState(true)
   const [isLoading, setIsLoading] = useState(false)
+  const [frequency, setFrequency] = useState("");
+
   const router = useRouter();
 
-
+  const frequencyArr = [
+    "DAILY", "WEEKLY", "BIWEEKLY", "MONTHLY", "BIMONTHLY", "QUARTERLY", "SEMIANNUAL", "ANNUAL", "BIENNIAL"
+  ]
 
 
   const { data: journalData } = useOne<JournalData>({
@@ -33,32 +39,32 @@ const EditJournal = () => {
     register,
     handleSubmit,
     setValue,
+    watch,
     formState: { errors }
   } = useForm<JournalData>();
-  
-useEffect(() => {
-  if (!journalData) return;
 
-  if (journalData?.data?.error) {
-    window.history.back();
-  } else {
-    if (Array.isArray(journalData?.data) && journalData.data.length > 0) {
-      const journal = journalData.data[0];
-  
-      Object.keys(journal).forEach((key) => {
-        let value = journal[key as keyof JournalData];
-  
-        if (key === "subscription_start_date" ||key === "subscription_end_date")
-         {
-          value = value ? new Date(value).toISOString().split("T")[0] : "";
-        }
-        setValue(key as keyof JournalData, value as never); // Set form values
-      });
-  
-      setIsLoadingInput(false);
+  useEffect(() => {
+    if (!journalData) return;
+
+    if (journalData?.data?.error) {
+      window.history.back();
+    } else {
+      if (Array.isArray(journalData?.data) && journalData.data.length > 0) {
+        const journal = journalData.data[0];
+
+        Object.keys(journal).forEach((key) => {
+          let value = journal[key as keyof JournalData];
+
+          if (key === "subscription_start_date" || key === "subscription_end_date") {
+            value = value ? new Date(value).toISOString().split("T")[0] : "";
+          }
+          setValue(key as keyof JournalData, value as never); // Set form values
+        });
+
+        setIsLoadingInput(false);
+      }
     }
-  }
-}, [journalData, setValue]);
+  }, [journalData, setValue]);
 
 
   const onSubmit = async (data: any) => {
@@ -71,16 +77,16 @@ useEffect(() => {
       subscription_price: parseInt(data.subscription_price.toString(), 10),
     }
     try {
-            await dataProvider.patchUpdate({
-            resource: 'journals/update-periodical',
-            value: formattedData,
-          })
-    
-          toast.success("Book title updated successfully!");
-          window.history.back();
-        } catch (error: any) {
-          toast.error(error.message);
-        }
+      await dataProvider.patchUpdate({
+        resource: 'journals/update-periodical',
+        value: formattedData,
+      })
+
+      toast.success("Book title updated successfully!");
+      window.history.back();
+    } catch (error: any) {
+      toast.error(error.message);
+    }
   }
 
   return (
@@ -95,18 +101,7 @@ useEffect(() => {
 
               <h2> General Information</h2>
               <div className="grid grid-cols-4 gap-4 p-4">
-                {/* <InputField
-                  label="Periodical Title"
-                  name="journal_title"
-                  register={register}
-                  errors={errors}
-                  type="text"
-                  validation={{
-                    required: "Title is required",
-                  }}
-                  placeholder="Enter Periodical Title"
-                  loading={isLoadingInput}
-                /> */}
+
 
                 <InputField
                   label="Name of Publisher"
@@ -132,18 +127,7 @@ useEffect(() => {
                   placeholder="Enter Place of Publication"
                   loading={isLoadingInput}
                 />
-                {/* <InputField
-                  label="Editor Name"
-                  name="editor_name"
-                  register={register}
-                  errors={errors}
-                  type="text"
-                  validation={{
-                    required: "Editor Name is required",
-                  }}
-                  placeholder="Enter Editor Name"
-                  loading={isLoadingInput}
-                /> */}
+
               </div>
               <h2>Subscription Details</h2>
               <div className="grid grid-cols-4 gap-4 p-4">
@@ -171,6 +155,7 @@ useEffect(() => {
                   }}
                   placeholder="Enter Subscription Start Date"
                   loading={isLoadingInput}
+                  disablePast={true}
                 />
                 <InputField
                   label="Subscription End Date"
@@ -183,6 +168,7 @@ useEffect(() => {
                   }}
                   placeholder="Enter Subscription End Date"
                   loading={isLoadingInput}
+                  disablePast={true}
                 />
               </div>
               <h2>Volume & Issue Details</h2>
@@ -215,43 +201,27 @@ useEffect(() => {
               </div>
               <h2>Publication & Classification</h2>
               <div className="grid grid-cols-4 gap-4 p-4">
-                <InputField
-                  label="Frequency"
-                  name="frequency"
-                  register={register}
-                  errors={errors}
-                  type="text"
-                  validation={{
-                    required: "Frequency is required",
-                  }}
-                  placeholder="Enter Frequency"
-                  loading={isLoadingInput}
-                />
-
-                {/* <InputField
-                  label="Item Type"
-                  name="item_type"
-                  register={register}
-                  errors={errors}
-                  type="text"
-                  validation={{
-                    required: "Item Type is required",
-                  }}
-                  placeholder="Enter Item Type"
-                  loading={isLoadingInput}
-                /> */}
-                {/* <InputField
-                  label="ISSN"
-                  name="issn"
-                  register={register}
-                  errors={errors}
-                  type="text"
-                  validation={{
-                    required: "ISSN is required",
-                  }}
-                  placeholder="Enter ISSN"
-                  loading={isLoadingInput}
-                /> */}
+                <div className='text-[#000000]'>
+                  <Label>Frequency</Label>
+                  <Select
+                    onValueChange={(value) =>
+                      register("frequency").onChange({
+                        target: { name: "frequency", value },
+                      })
+                    }
+                    value={watch("frequency") || ""}
+                    required
+                  >
+                    <SelectTrigger className="w-full p-2 border border-[#717680] rounded">
+                      <SelectValue placeholder="Select Frequency" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-white">
+                      {frequencyArr.map((freq) => (
+                        <SelectItem key={freq} value={freq}>{freq}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
                 <InputField
                   label="Classification Number"
                   name="classification_number"
@@ -265,12 +235,15 @@ useEffect(() => {
                   loading={isLoadingInput}
                 />
               </div>
-                  
+
 
               {/* Action Buttons */}
               <div className="flex justify-center gap-4">
 
-                <Button variant="outline" onClick={() => router.back()}>
+                <Button
+                  className='shadow-none text-[#1E40AF] rounded-[10px]'
+                  type="button"
+                  onClick={() => router.back()}>
                   Cancel
                 </Button>
                 <Button
