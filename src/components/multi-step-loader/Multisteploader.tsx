@@ -43,12 +43,12 @@ const MultiStepLoader = ({
 
   return (
     <div
-      className={cn(
-        "fixed inset-0 flex items-center justify-center bg-gray-600 bg-opacity-50 z-50",
-        loading
-          ? "opacity-100 scale-100 pointer-events-auto"
-          : "scale-95 pointer-events-none"
-      )}
+      // className={cn(
+      //   "fixed inset-0 flex items-center justify-center bg-gray-600 bg-opacity-50 z-50",
+      //   loading
+      //     ? "opacity-100 scale-100 pointer-events-auto"
+      //     : "scale-95 pointer-events-none"
+      // )}
     >
       <div className="bg-white rounded-xl shadow-lg p-6 w-[350px] mx-auto relative">
         <Button
