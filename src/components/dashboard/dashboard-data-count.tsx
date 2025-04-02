@@ -1,58 +1,90 @@
 "use client";
 
-import Image from "next/image";
-import React from "react";
+import React, { useState } from "react";
+import { useOne } from "@refinedev/core";
+import { useSelector } from "react-redux";
 import images from "@/images/index";
+import { RootState } from "@/redux/store/store";
+import Image from "next/image";
+import arrowdownload from "@/images/arrow-download.png";
 
 export default function DashboardData() {
-  // Data for the cards
-  const stats = [
-    {
-      title: "Total Books",
-      value: "40,689",
-      icon: images.BookShelf,
-      iconBgColor: "bg-[#E8E7FF]", // Light purple background
-    },
-    {
-      title: "Total Issued Books",
-      value: "10293",
-      icon: images.TotalIssuedBooks,
-      iconBgColor: "bg-[#FFF4DE]", // Light yellow background
-    },
-    {
-      title: "Overdues",
-      value: "₹89,000",
-      icon: images.Overdues,
-      iconBgColor: "bg-[#DCFCE7]", // Light green background
-    },
-    {
-      title: "Total Members",
-      value: "2040",
-      icon: images.TotalMembers,
-      iconBgColor: "bg-[#E0F2FE]", // Light blue background
-    },
-  ];
+  const { institute_uuid } = useSelector(
+    (state: RootState) => state.auth.currentInstitute
+  );
+  console.log("Institute UUID:", institute_uuid); // Debugging log
+
+  const { data, isLoading } = useOne({ resource: "/student/admin-dashboard" });
+
+  // Extract correct data object
+  const dashboardStats = data?.data ?? {}; 
+  console.log("Dashboard Data:", dashboardStats);
+
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="flex flex-wrap gap-4 my-6">
-      {stats.map((stat, idx) => (
-        <div
+      {[
+        {
+          title: "Total Books",
+          value: dashboardStats?.totalBooks ?? "0",
+          icon: images.BookShelf,
+          downloadUrl: `https://lms-807p.onrender.com/csv/total-books?institute_id=${institute_uuid}`,
+          iconBgColor: "bg-[#E8E7FF]",
+        },
+        {
+          title: "Borrowed Books",
+          value: dashboardStats?.totalBorrowedBooks ?? "0",
+          icon: images.TotalIssuedBooks,
+          downloadUrl: `https://lms-807p.onrender.com/csv/borrowed-books?institute_id=${institute_uuid}`,
+          iconBgColor: "bg-[#FFF4DE]",
+        },
+        {
+          title: "New Books",
+          value: dashboardStats?.newBooks ?? "0",
+          icon: images.BookShelf,
+          downloadUrl: `https://lms-807p.onrender.com/csv/new-books?institute_id=${institute_uuid}`,
+          iconBgColor: "bg-[#DCFCE7]",
+        },
+        {
+          title: "Total Members",
+          value: dashboardStats?.totalMembers ?? "0",
+          icon: images.TotalMembers,
+          downloadUrl: `https://lms-807p.onrender.com/csv/total-members?institute_id=${institute_uuid}`,
+          iconBgColor: "bg-[#E0F2FE]",
+        },
+      ].map((stat, idx) => (
+        <a
           key={`stat-${idx}`}
-          className="flex justify-between items-center bg-white rounded-[15px] p-4 w-full flex-1 h-[100px]"
-          style={{ boxShadow: "0 0 8px rgba(0, 0, 0, 0.1)" }} // Inline shadow on all sides
+          href={stat.downloadUrl} // Clicking card directly triggers download
+          className="flex justify-between items-center bg-white rounded-[15px] p-4 w-full flex-1 h-[100px] cursor-pointer"
+          style={{ boxShadow: "0 0 8px rgba(0, 0, 0, 0.1)" }}
+          onMouseEnter={() => setHoveredIndex(idx)}
+          onMouseLeave={() => setHoveredIndex(null)}
         >
           {/* Text Content (Title and Count) */}
           <div className="flex flex-col">
             <p className="text-sm text-gray-500">{stat.title}</p>
-            <p className="text-2xl font-semibold text-gray-800">{stat.value}</p>
+            <p className="text-2xl font-semibold text-gray-800">
+              {stat.value}
+            </p>
           </div>
           {/* Icon Container */}
           <div
             className={`w-12 h-12 rounded-[15px] flex items-center justify-center ${stat.iconBgColor}`}
           >
-            <Image src={stat.icon} alt={stat.title} width={24} height={24} />
+            <Image
+              src={hoveredIndex === idx ? arrowdownload : stat.icon}
+              alt="icon"
+              height={20}
+              width={20}
+            />
           </div>
-        </div>
+        </a>
       ))}
     </div>
   );
