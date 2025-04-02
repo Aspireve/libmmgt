@@ -42,6 +42,7 @@ const JournalPage = () => {
             resource={`journals/${url}`}
             isSelectable={false}
             AddedOptions={[AddPeriodicalButton,ImportPeriodicalButton]}
+            
             />
           </div>
         </section>

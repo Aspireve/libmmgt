@@ -15,7 +15,7 @@ const JournalTitleCell: React.FC<PeriodicalTitleCellProps> = ({ periodical }) =>
   return (
     <div
       className="relative group cursor-pointer font-bold text-[#1E40AF]"
-      onClick={() => router.push(`/periodicals-pages/periodical-details?journal_uuid=${periodical.journal_uuid}`)}
+      onClick={() => router.push(`/periodicals-pages/periodical-details?journal_title_id=${periodical.journal_title_id}`)}
     >
       {periodical.journal_title_id}
       <div className="absolute left-1/2 transform -translate-x-1/2 bottom-full mb-2 hidden group-hover:flex items-center justify-center bg-gray-800 text-white text-xs rounded-lg px-3 py-1 shadow-md whitespace-nowrap
@@ -28,41 +28,40 @@ const JournalTitleCell: React.FC<PeriodicalTitleCellProps> = ({ periodical }) =>
 
 
 interface ActionsCellProps {
-    periodical: JournalData;
-    handleEdit: (periodical: JournalData) => void;
-  }
-  
-  const ActionsCell: React.FC<ActionsCellProps> = ({ periodical, handleEdit }) => (
-    <div className="flex gap-2">
-      <Button variant="ghost" size="icon" className='w-[20px]' onClick={() => handleEdit(periodical)}>
-        <Image src={images.EditButton} alt='Edit button' />
-      </Button>
-    </div>
-  );
+  periodical: JournalData;
+  handleEdit: (periodical: JournalData) => void;
+}
+
+const ActionsCell: React.FC<ActionsCellProps> = ({ periodical, handleEdit }) => (
+  <div className="flex gap-2">
+    <Button variant="ghost" size="icon" className='w-[20px]' onClick={() => handleEdit(periodical)}>
+      <Image src={images.EditButton} alt='Edit button' />
+    </Button>
+  </div>
+);
 export const getJournalColumns = (handleEdit: (periodical: JournalData) => void): ColumnDef<JournalData>[] => {
-    return[
-        
-            { accessorKey: 'journal_title_id', 
-              header: 'ID', 
-              cell:({row})=> <JournalTitleCell periodical={row.original}/> },
-            { accessorKey: 'name_of_publisher', header: 'Book Publisher' },
-            { accessorKey: 'available_count', header: 'Total Count' },
-            { accessorKey: 'volume_no', header: 'Volume No' },
-        
-        
-            {
-              accessorKey: 'subscription_start_date', header: 'Start Date',
-              cell: ({ row }) => <span>{formatDate(row.original.subscription_start_date)}</span>
-            },
-            {
-              accessorKey: 'subscription_end_date', header: 'End Date',
-              cell: ({ row }) => <span>{formatDate(row.original.subscription_end_date)}</span>
-            },
-            {
-              id: 'actions', header: '',
-              cell: ({ row }) => <ActionsCell periodical={row.original} handleEdit={handleEdit}/>
-            },
-        
-          
-    ]
+  return [
+    {
+      id: 'actions', header: 'Action',
+      cell: ({ row }) => <ActionsCell periodical={row.original} handleEdit={handleEdit} />
+    },
+    {
+      accessorKey: 'journal_title_id',
+      header: 'ID',
+      cell: ({ row }) => <JournalTitleCell periodical={row.original} />
+    },
+    { accessorKey: 'name_of_publisher', header: 'Book Publisher' },
+    { accessorKey: 'available_count', header: 'Total Count' },
+    { accessorKey: 'volume_no', header: 'Volume No' },
+
+
+    {
+      accessorKey: 'subscription_start_date', header: 'Start Date',
+      cell: ({ row }) => <span>{formatDate(row.original.subscription_start_date)}</span>
+    },
+    {
+      accessorKey: 'subscription_end_date', header: 'End Date',
+      cell: ({ row }) => <span>{formatDate(row.original.subscription_end_date)}</span>
+    },
+  ]
 }

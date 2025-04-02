@@ -28,4 +28,11 @@ export const menuItems: MenuItem[] = [
     route: "/visitlog-page",
   },
   { id: "Reports", title: "Reports", icon: Images.Reports, route: "/Reports" },
+
+  { id: "add-user",
+    title: "ADD User", 
+    icon: Images.Reports, 
+    route: "/add-user" 
+  },
+
 ];

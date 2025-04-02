@@ -14,7 +14,9 @@ export interface InputFieldProps<T extends FieldValues> {
   readonly?: boolean;
   disabled?: boolean;
   loading?: boolean;
-  required?: boolean
+  required?: boolean;
+  disablePast?:boolean;
+  disableFuture?:boolean;
 }
 
 export const InputField = <T extends FieldValues>({
@@ -28,22 +30,24 @@ export const InputField = <T extends FieldValues>({
   readonly = false,
   disabled = false,
   loading = false,
-  required = true
+  required = true,
+  disableFuture= false,
+  disablePast= false,
 }: InputFieldProps<T>) => {
+  const today = new Date().toISOString().split("T")[0];
   return (
     <div className="transition-all duration-200">
-      <Label>
+      <Label className="text-[#808080]">
         {label} {required && <span className="text-red-500"> *</span>}
       </Label>
       {loading ? (
         <Skeleton className="h-10 w-full animate-pulse bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 bg-[length:200%_100%]" />
       ) : (
         <Input
-          className="text-[#000] placeholder:text-[#aaa]"
+          className="text-[#000000] placeholder:text-[#717680] border-[#D5D7DA] rounded-[8px]"
           type={type}
-          max={
-            type === "date" ? new Date().toISOString().split("T")[0] : undefined
-          }
+          min={disablePast ? today : undefined} 
+          max={disableFuture ? today : undefined}
           {...register(name, validation)} // ✅ Type-safe register
           placeholder={placeholder}
           disabled={disabled}

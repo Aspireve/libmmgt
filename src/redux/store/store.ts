@@ -20,6 +20,10 @@ export const store = configureStore({
     pagination: paginationReducer,
     tabs: persistedReducer,
   },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: false, // Disable strict checks
+    }),
 });
 
 export const persistor = persistStore(store)

@@ -53,3 +53,47 @@ export const ImportBookBC = () => {
 
   return <CustomBreadcrumb items={breadcrumbItems} />;
 };
+
+
+//Periodicals
+export const AddPeriodicalBC = () => {
+  const breadcrumbItems = [
+    { label: "Periodicals", href: "/periodicals-pages/periodicals-page" },
+    { label: "Add Periodical", href: "/periodicals-pages/add-periodical" },
+  ];
+  return <CustomBreadcrumb items={breadcrumbItems} />;
+}
+export const PeriodicalProfileBC = () => {
+  const breadcrumbItems = [
+    { label: "Periodicals", href: "/periodicals-pages/periodicals-page" },
+    { label: "Periodicals Details", href: "/periodicals-pages/periodical-details" },
+  ];
+
+  return <CustomBreadcrumb items={breadcrumbItems} />;
+};
+export const EditPeriodicalBC = () => {
+  const breadcrumbItems = [
+    { label: "Periodicals", href: "/periodicals-pages/periodicals-page" },
+    { label: "Edit Periodical", href: "/book-pages/edit-periodical" },
+  ];
+
+  return <CustomBreadcrumb items={breadcrumbItems} />;
+};
+export const EditPeriodicalCopyBC = () => {
+  const breadcrumbItems = [
+    { label: "Periodicals", href: "/periodicals-pages/periodicals-page" },
+    { label: "Edit Periodical", href: "/book-pages/editperiodicalCopy" },
+  ];
+
+  return <CustomBreadcrumb items={breadcrumbItems} />;
+};
+
+export const ImportPeriodicalBC = () => {
+  const breadcrumbItems = [
+    { label: "Periodicals", href: "/periodicals-pages/periodicals-page" },
+    { label: "Import Periodical", href: "/book-pages/import-periodicals" },
+  ];
+
+  return <CustomBreadcrumb items={breadcrumbItems} />;
+};
+

@@ -1,7 +1,7 @@
-import { BookData } from '../types/data'
+import { AddBookType } from '@/types/book';
 
 export type MappingType = {
-    [key in keyof BookData]?: string;
+    [key in keyof AddBookType]?: string;
   };
 export const initialMapping = {
   book_title: "",
@@ -27,7 +27,7 @@ export const initialMapping = {
   bill_no: "",
 };
 
-export const fieldLabels: Partial<Record<keyof BookData, string>> = {
+export const fieldLabels: Partial<Record<keyof AddBookType, string>> = {
   book_title: "Book Title",
   book_author: "Book Author",
   name_of_publisher: "Name of Publisher",

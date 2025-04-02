@@ -4,7 +4,7 @@ import React, { Suspense, useEffect, useState } from 'react'
 import { Button } from "@/components/ui/button";
 import { Label } from '@/components/ui/label';
 import { useForm } from "@refinedev/react-hook-form";
-import { useCreate, useOne } from '@refinedev/core';
+import { useCreate } from '@refinedev/core';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import Header from '@/app/Header/header';
@@ -12,25 +12,26 @@ import Tabbing from '@/app/Tab/Tab';
 import { Loader2 } from 'lucide-react';
 import { InputField } from '@/components/custom/inputfield';
 import { addbookRoutes } from '@/app/book-pages/types/routes';
-import { JournalData } from '../types/data';
-import { validateISSN } from '@/hooks/issnValidater';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { RootState } from '@/redux/store/store';
 import { useSelector } from 'react-redux';
+import { AddPeriodicalBC } from '@/components/breadcrumb/constant';
+import { AddPeriodicalType } from '@/types/periodical';
 
 const AddJournal = () => {
 
   const router = useRouter();
-  const [issn, setIssn] = useState("");
   const { mutate, isLoading: createLoading } = useCreate();
-  const [isReadable, setIsReadable] = useState(false)
-  const [isDisable, setIsDisable] = useState(true)
   const [category, setCategory] = useState("");
+  const [frequency, setFrequency] = useState("");
 
-    const institute_uuid = useSelector((state: RootState) => state.auth.institute_uuid);
-      const institute_name = useSelector((state: RootState) => state.auth.institute_name);
-    
-  
+  const frequencyArr = [
+    "DAILY", "WEEKLY", "BIWEEKLY", "MONTHLY", "BIMONTHLY", "QUARTERLY", "SEMIANNUAL", "ANNUAL", "BIENNIAL"
+  ]
+
+  const { institute_uuid, institute_name } = useSelector((state: RootState) => state.auth.currentInstitute)
+
+
 
   const {
     register,
@@ -39,68 +40,20 @@ const AddJournal = () => {
     formState: { errors }
   } = useForm();
 
-  const { data, refetch } = useOne<JournalData>({
-    resource: "periodical/issn",
-    id: `_issn=${issn}`
-  })
-
-  useEffect(() => {
-    if (issn.length === 8 || issn.length === 9) {
-      const sortedIssn = issn.replace(/-/g, "").toUpperCase();
-      const parsedISSN = validateISSN(sortedIssn)
-
-      if (!parsedISSN) {
-        toast.error("Invalid ISSN format. Please enter a valid ISSN");
-        setIsDisable(false);
-        return;
-      }
-
-      const fetchData = async () => {
-
-        try {
-          const resource = await refetch();
-          const issnResp = resource?.data?.data;
-          const journalData = Array.isArray(issnResp) && issnResp.length > 0 ? issnResp[0] : {};
-          if (!journalData || typeof journalData !== "object" || Object.keys(journalData).length === 0) {
-            toast.error("No journal found for this ISSN.");
-            setIsDisable(false);
-            return;
-          }
-          Object.keys(journalData).forEach((key) => {
-            let value = journalData[key as keyof JournalData];
-            if (key === "subscription_start_date" || key === "subscription_end_date") {
-              value = value ? new Date(value).toISOString().split("T")[0] : "";
-            }
-            setValue(key as keyof JournalData, value as never);
-          });
-
-          toast.success("Journal data mapped successfully!");
-          setIsReadable(true);
-          setIsDisable(false);
-        } catch (error) {
-          toast.error("No ISSN is found.");
-          setIsDisable(false);
-        }
-      };
-
-      fetchData();
-    }
-  }, [issn, refetch, setValue]);
-
   const onSubmit = (data: any) => {
-    
-    const formattedData: JournalData = {
+
+    const formattedData: AddPeriodicalType = {
       ...data,
       subscription_price: parseInt(data.subscription_price.toString(), 10),
-      institute_uuid:institute_uuid ?? " ",
-      institute_name:institute_name ?? " ",
+      institute_uuid: institute_uuid ?? " ",
+      institute_name: institute_name ?? " ",
     }
     mutate(
       { resource: "journals/create-new-journal", values: formattedData },
       {
         onSuccess: () => {
           toast.success("Journal added successfully!")
-          router.back()
+          router.push("/periodicals-pages/periodicals-page")
         },
         onError: (error) => toast.error("Error adding Journal: " + error.message),
       }
@@ -110,10 +63,11 @@ const AddJournal = () => {
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <>
+        <AddPeriodicalBC />
         <Header heading="Add Journal" subheading="Tanvir Chavan" />
 
         <Tabbing routes={addbookRoutes} className='w-[20%]' />
-        <section className='p-10'>
+        <section className='p-10 pt-0'>
           <div className="container">
             {/* Dropdown  */}
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -167,7 +121,7 @@ const AddJournal = () => {
                 </div>
                 <h2>Subscription Details</h2>
                 <div className="grid grid-cols-4 gap-4 p-4">
-                <InputField
+                  <InputField
                     label="Subscription Id"
                     name="subscription_id"
                     register={register}
@@ -199,6 +153,7 @@ const AddJournal = () => {
                       required: "Subscription Start Date is required",
                     }}
                     placeholder="Enter Subscription Start Date"
+                    disablePast={true}
                   />
                   <InputField
                     label="Subscription End Date"
@@ -210,6 +165,7 @@ const AddJournal = () => {
                       required: "Subscription End Date is required",
                     }}
                     placeholder="Enter Subscription End Date"
+                    disablePast={true}
                   />
                 </div>
                 <h2>Volume & Issue Details</h2>
@@ -240,17 +196,25 @@ const AddJournal = () => {
                 </div>
                 <h2>Publication & Classification</h2>
                 <div className="grid grid-cols-4 gap-4 p-4">
-                  <InputField
-                    label="Frequency"
-                    name="frequency"
-                    register={register}
-                    errors={errors}
-                    type="text"
-                    validation={{
-                      required: "Frequency is required",
-                    }}
-                    placeholder="Enter Frequency"
-                  />
+                  <div className='text-[#717680]'>
+                    <Label>Frequency</Label>
+                    <Select
+                      onValueChange={(value) => {
+                        setFrequency(value);
+                        setValue("frequency", value);
+                      }}
+                      value={frequency}
+                    >
+                      <SelectTrigger className="w-full p-2 border border-[#717680] rounded">
+                        <SelectValue placeholder="Select Frequency" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-white">
+                        {frequencyArr.map((freq) => (
+                          <SelectItem key={freq} value={freq}>{freq}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
                   <InputField
                     label="Item Type"
                     name="item_type"
@@ -344,7 +308,10 @@ const AddJournal = () => {
 
               </div>
               <div className='flex justify-center gap-6'>
-                <Button type='button' onClick={() => router.back()}>Cancel</Button>
+                <Button
+                  className='shadow-none text-[#1E40AF] rounded-[10px]'
+                  type='button'
+                  onClick={() => router.push("/periodicals-pages/periodicals-page")}>Cancel</Button>
                 <Button
                   type="submit"
                   className="bg-[#1E40AF] text-white rounded-[10px] hover:bg-[#1E40AF]"

@@ -19,7 +19,7 @@ export const JournalActions = ({
   const router = useRouter();
   const { isOpen, close, open } = useDisclosure();
   return (
-    <div className="flex gap-2 ml-10">
+    <div className="flex gap-2">
       <Button
         className="p-0 shadow-none"
         onClick={() => {
@@ -59,12 +59,14 @@ export const getPeriodicalCopyColumns = ({ refetch }:{ refetch: () => void }): C
                 { accessorKey: 'is_available',
                   header: 'Status',
                   cell:({row})=><StatusCell isAvailable={Boolean(row.original.is_available)} />
-                },
-                {
-                  id: 'actions', header: '',
-                  cell: ({ row }) => <JournalActions periodical={row.original} refetch={refetch} />
-                },
-            
-              
+                }
         ]
       };
+      export const getActonsColumns = ({ refetch }:{ refetch: () => void }): ColumnDef<JournalData>[] => {
+        return[
+                   {
+                     id: 'actions', header: 'Actions',
+                     cell: ({ row }) => <JournalActions periodical={row.original} refetch={refetch} />
+                   },
+           ]
+         };

@@ -7,6 +7,11 @@ import useDisclosure from '@/hooks/disclosure-hook';
 import { useRouter } from 'next/navigation';
 import DeleteBookModal from '@/components/books/delete-book-modal';
 import { BookCopiesData } from '@/types/book';
+import { HugeiconsIcon } from "@hugeicons/react";
+import {
+  ViewIcon,
+  Archive01Icon
+} from "@hugeicons/core-free-icons";
 
 
 export const BookActions = ({
@@ -19,7 +24,7 @@ export const BookActions = ({
   const router = useRouter();
   const { isOpen, close, open } = useDisclosure();
   return (
-    <div className="flex gap-2 ml-10">
+    <div className="flex gap-2">
       <Button
         className="p-0 shadow-none"
         onClick={() => {
@@ -27,14 +32,18 @@ export const BookActions = ({
         }}
         aria-label="Edit student"
       >
-        <Image src={images.EditButton} alt="Edit" height={20} width={20} />
+        <HugeiconsIcon
+      icon={ViewIcon}
+    />
       </Button>
       <Button
         onClick={open}
         className="p-0 shadow-none"
         aria-label="Delete Book"
       >
-        <Image src={images.DeleteButton} alt="Delete" height={20} width={20} />
+         <HugeiconsIcon
+      icon={Archive01Icon}
+    />
       </Button>
       <DeleteBookModal
         data={[book]}
@@ -49,10 +58,10 @@ export const StatusCell = ({ isAvailable }: { isAvailable: boolean }) => {
   return (
     <span
       className={`px-2 py-1 rounded text-white ${
-        isAvailable ? 'bg-green-500' : 'bg-yellow-500'
+        isAvailable ? 'rounded-full bg-green-200 text-green-700 ' : ' rounded-full bg-purple-200 text-purple-700 '
       }`}
     >
-      {isAvailable ? 'Available' : 'Issued'}
+      {isAvailable ? 'Available' : 'Borrowed'}
     </span>
   );
 };
@@ -99,13 +108,15 @@ export const getBookCopyColumns = ({ refetch }:{ refetch: () => void }): ColumnD
       accessorKey: 'is_available',
       header: 'Status',
      cell:({row}) => <StatusCell isAvailable={Boolean(row.original.is_available)} />
+  }
+];
+
+export const getActionColumns = ({ refetch }:{ refetch: () => void }): ColumnDef<BookCopiesData>[] => [
+  {
+      id: 'action', header: 'Actions',
+      cell: ({ row }) => {
+           return <BookActions book={row.original} refetch={refetch} />
+      }
+      
   },
-    {
-        id: 'action',
-        header: '',
-        cell: ({ row }) => {
-             return <BookActions book={row.original} refetch={refetch} />
-        }
-        
-    },
 ];
