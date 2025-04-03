@@ -3,7 +3,7 @@
         email:string;
         password:string;
         phone_number:string;
-        role:string;
+        designation:string;
         address:string;
     }
 

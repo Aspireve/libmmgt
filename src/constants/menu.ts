@@ -33,11 +33,5 @@ export const menuItems: MenuItem[] = [
     title: "Configuration",
     icon: Images.config,
     route: "/Config-page",
-  },
-  {
-    id: "add-user",
-    title: "ADD User",
-    icon: Images.Reports,
-    route: "/add-user",
-  },
+  }
 ];
