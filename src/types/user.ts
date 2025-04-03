@@ -17,10 +17,10 @@ export interface UserData {
   }
   
   export interface User {
-    user_name: string;
+    name: string;
     email: string;
     password: string;
-    phone_number: string;
+    phone_no: string;
     designation: string;
     address: string;
   }

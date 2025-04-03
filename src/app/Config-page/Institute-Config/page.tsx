@@ -9,6 +9,7 @@ import { Switch } from "@/components/ui/switch";
 import { Pencil } from "lucide-react";
 import ThakurTrustLogo from "@/images/ThakurTrustLogo.png";
 import Header from "@/components/custom/header";
+import AllUsers from "../Users/page";
 
 type FormFields = {
   instituteName: string;
@@ -74,8 +75,7 @@ const Page = () => {
                   author: "Author",
                 }) as Array<keyof FormFields>
               ).map((key) => (
-                <div key={key} className="space-y-2 w-full">
-                  <Label htmlFor={key}>{key}</Label>
+                <div className="space-y-2 w-full">
                   <InputField
                     label={key}
                     type="text"
@@ -113,7 +113,7 @@ const Page = () => {
               <Label htmlFor="reportCards" className="w-full">
                 Report Cards
               </Label>
-              <Switch id="reportCards" defaultChecked />
+              <Switch id="reportCards"/>
             </div>
           </div>
         </div>
@@ -131,6 +131,8 @@ const Page = () => {
           </div>
         </div>
       </div>
+
+      <AllUsers/>
     </div>
     </>
   );

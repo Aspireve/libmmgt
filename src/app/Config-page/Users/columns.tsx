@@ -38,11 +38,13 @@ export const UserActions = ({
 export const getUserColumns = (): ColumnDef<UserData>[] => {
   return [
 
-    { accessorKey: 'user_id', header: 'ID' },
-    { accessorKey: 'user_name', header: 'User Name' },
+    { accessorKey: 'user_uuid', header: 'ID' },
+    { accessorKey: 'name', header: 'User Name' },
     { accessorKey: 'email', header: 'Email' },
-    { accessorKey: 'phone_number', header: 'Phone Number' },
+    { accessorKey: 'phone_no', header: 'Phone Number' },
     { accessorKey: 'designation', header: 'Designation' },
+    { accessorKey: 'address', header: 'Address' },
+
   ]
 };
 

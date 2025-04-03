@@ -43,7 +43,7 @@ const CustomPhoneInput = forwardRef<HTMLInputElement, CustomInputProps>(
       {...props}
       // {...props?.register("phone_no")}
       ref={ref}
-      className="block w-full px-3 border text-[#000] rounded-md border-input focus:outline-none sm:text-sm text-md py-2"
+      className="block w-full px-3 border text-[#717680] rounded-md border-[#D5D7DA] focus:outline-none sm:text-sm text-md py-2"
     />
   )
 );
@@ -116,7 +116,7 @@ const PhoneNumber = <T extends FieldValues>({
 
   return (
     <div className="w-full flex flex-col gap-2">
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 ">
         <PhoneInput
           defaultCountry="IN"
           i_name={i_name as string}
@@ -136,7 +136,6 @@ const PhoneNumber = <T extends FieldValues>({
           className="w-full flex flex-row gap-2 m-0 p-0 items-center"
         />
       </div>
-
       {error?.[i_name] && (
         <p className="text-red-500 text-sm">{error[i_name]?.message}</p>
       )}

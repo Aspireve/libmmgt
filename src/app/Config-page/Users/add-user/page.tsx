@@ -35,10 +35,11 @@ const AddUser = () => {
     const formattedData: AddUserType = {
       ...data,
       institute_uuid,
-      institute_name
+      institute_name,
+      address:"Hello world"
     };
     mutate(
-      { resource: "/create-user", values: formattedData },
+      { resource: "user/create", values: formattedData },
       {
         onSuccess: () => {
           toast.success("User added successfully!")
@@ -53,10 +54,11 @@ const AddUser = () => {
         <div>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div>
+              <div>
               <div className="grid grid-cols-3 gap-4 p-4">
                 <InputField
                   label="Name of User"
-                  name="user_name"
+                  name="name"
                   register={register}
                   errors={errors}
                   type="text"
@@ -88,6 +90,8 @@ const AddUser = () => {
                   }}
                   placeholder="Enter Password"
                 />
+                </div>
+                <div className='grid grid-cols-2 gap-4 p-4'>
                 <div className='text-[#717680]'>
                   <Label>Designation</Label>
                   <Select
@@ -96,28 +100,18 @@ const AddUser = () => {
                       setValue("designation", value);
                     }}
                     value={designation}
+                    required
                   >
                     <SelectTrigger className="w-full p-2 border border-[#717680] rounded">
                       <SelectValue placeholder="Select Designation" />
                     </SelectTrigger>
                     <SelectContent className="bg-white">
-                      <SelectItem value="Librarian">Librarian</SelectItem>
-                      <SelectItem value="Assistant">Assistant</SelectItem>
+                      <SelectItem value="librarian">Librarian</SelectItem>
+                      <SelectItem value="assistant">Assistant</SelectItem>
                       <SelectItem value="receptionist">Receptionist</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
-                {/* <InputField
-                    label="Phone Number"
-                    name="phone_number"
-                    register={register}
-                    errors={errors}
-                    type="text"
-                    validation={{
-                      required: "Phone number is required",
-                    }}
-                    placeholder="Enter phone number"
-                  /> */}
                 <div>
                   <Label>
                     Phone Number <span className="text-red-500"> *</span>
@@ -132,9 +126,10 @@ const AddUser = () => {
                         clearErrors("phone_no");
                       }
                     }}
+                    
                   />
                 </div>
-
+              </div>
               </div>
 
 

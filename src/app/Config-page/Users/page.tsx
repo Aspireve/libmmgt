@@ -3,24 +3,25 @@
 import React, { Suspense } from 'react';
 
 import MasterTable from '@/app/test/table-page';
-import { getUserColumns } from './columns';
+import { getActonsColumns, getUserColumns } from './columns';
 import AddUserButton from '@/components/user/add-user-button';
 
 const AllUsers = () => {
 
-  const url = "all-users"
+  const url = "all"
 
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <>
         <section>
-          <div className="mx-[40px]">
+          <div>
             <MasterTable
             title='Users'
             columns={getUserColumns}
-            resource={`users/${url}`}
+            resource={`user/${url}`}
             isSelectable={false}
             AddedOptions={[AddUserButton]}
+            priorColumns={getActonsColumns}
             />
           </div>
         </section>
