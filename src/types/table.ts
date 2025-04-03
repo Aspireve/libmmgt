@@ -9,9 +9,27 @@ export interface HeadersProps<TData> {
   search: string;
   setSearch: (e: string) => void;
   AddedOptions?:
-    | FC<{ data: TData[]; refetch: () => Promise<unknown>; resource: string }>[]
+    | FC<{
+        data: TData[];
+        refetch: () => Promise<unknown>;
+        resource: string;
+        filters: {
+          ascending: any[];
+          descending: any[];
+          filter: any[];
+          search: any[];
+        };
+        setFilters: (filters: any) => void;
+      }>[]
     | undefined;
   selectedData: TData[];
   refetch: () => Promise<unknown>;
   resource: string;
+  filters: {
+    ascending: any[];
+    descending: any[];
+    filter: any[];
+    search: any[];
+  };
+  setFilters: (filters: any) => void;
 }

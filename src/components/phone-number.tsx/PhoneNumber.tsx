@@ -43,7 +43,7 @@ const CustomPhoneInput = forwardRef<HTMLInputElement, CustomInputProps>(
       {...props}
       // {...props?.register("phone_no")}
       ref={ref}
-      className="block w-full px-3 border text-[#717680] rounded-md border-[#D5D7DA] focus:outline-none sm:text-sm text-md py-2"
+      className="block w-full px-3 border text-[#000] rounded-md border-[#D5D7DA] focus:outline-none sm:text-sm text-md py-2"
     />
   )
 );

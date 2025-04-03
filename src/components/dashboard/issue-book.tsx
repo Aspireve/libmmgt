@@ -46,7 +46,9 @@ export default function IssueBook({
         },
         onError: (error: any) => {
           const errorMessage =
-            error?.response?.data?.message || error?.message || "Something went wrong!";
+            error?.response?.data?.message ||
+            error?.message ||
+            "Something went wrong!";
           toast.error(`Error ${action} Book: ${errorMessage}`);
         },
       }
@@ -62,7 +64,10 @@ export default function IssueBook({
   });
 
   return (
-    <div className="transition-all duration-300 hover:shadow-lg border border-[#AEB1B9] shadow-[#AEB1B9] rounded-[12px] bg-[#F3F4F6] my-6 p-6">
+    <div
+      className="transition-all duration-300 shadow-lg  rounded-[12px] my-6 p-6"
+      style={{ boxShadow: "0 0 8px rgba(0, 0, 0, 0.1)" }}
+      >
       <div className="flex items-center mb-4 gap-6">
         <h2 className="text-2xl font-semibold">
           {action === ActionType.CHECK_IN ? "Issue Book" : "Return a Book"}
@@ -96,7 +101,7 @@ export default function IssueBook({
                 placeholder="Enter Student ID"
                 value={field.state.value}
                 onChange={(e) => field.handleChange(e.target.value)}
-                className="bg-white border border-[#D5D7DA] rounded-[8px] text-[#1F2937]"
+                className="bg-white border border-[#D5D7DA] rounded-[8px] text-[#1F2937] placeholder:text-[#aaa]"
                 required
               />
             </div>
@@ -113,7 +118,7 @@ export default function IssueBook({
                 placeholder="Enter Book ID"
                 value={field.state.value}
                 onChange={(e) => field.handleChange(e.target.value)}
-                className="bg-white border border-[#D5D7DA] rounded-[8px] text-[#1F2937]"
+                className="bg-white border border-[#D5D7DA] rounded-[8px] text-[#1F2937] placeholder:text-[#aaa]"
                 required
               />
             </div>

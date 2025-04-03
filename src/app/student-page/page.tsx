@@ -9,7 +9,7 @@ import ImportStudentButton from "@/components/students/import-students-button";
 import DeleteStudent from "@/components/students/delete-student";
 import ExportStudent from "@/components/students/export-students-button";
 import { StudentFromDatabase } from "@/types/student";
-
+import { SearchFilter } from "@/components/students/search-student";
 
 export default function StudentDirectory() {
   return (
@@ -27,6 +27,15 @@ export default function StudentDirectory() {
             AddStudents,
             ImportStudentButton,
             ExportStudent,
+            ({ setFilters }) =>
+              SearchFilter({
+                setFilters,
+                options: [
+                  { label: "Student Id", value: "student_id" },
+                  { label: "Name", value: "student_name" },
+                ],
+                placeholder: "Search",
+              }), // Pass the setFilters function to SearchFilter,
           ]}
         />
       </div>

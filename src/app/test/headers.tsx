@@ -16,7 +16,9 @@ const Headers = <TData,>({
   AddedOptions,
   selectedData,
   refetch,
-  resource
+  resource,
+  filters,
+  setFilters,
 }: HeadersProps<TData>) => {
   const { total } = useSelector((state: RootState) => state.pagination);
   return (
@@ -29,9 +31,9 @@ const Headers = <TData,>({
       </div>
       <div className="flex  gap-4 items-center">
         {AddedOptions && AddedOptions.map((Component: any, index: any) => (
-          <Component key={index} data={selectedData} refetch={refetch} resource={resource}/>
+          <Component filters={filters} setFilters={setFilters} key={index} data={selectedData} refetch={refetch} resource={resource}/>
         ))}
-        <div className="relative w-72">
+        {/* <div className="relative w-72">
           <Image
             src={Images.Search}
             alt="search-icon"
@@ -43,7 +45,7 @@ const Headers = <TData,>({
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
-        </div>
+        </div> */}
       </div>
     </div>
   );

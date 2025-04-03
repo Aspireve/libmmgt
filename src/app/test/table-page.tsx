@@ -20,6 +20,13 @@ interface PageProps<TData extends BaseRecord> {
     data: TData[];
     refetch: () => Promise<unknown>;
     resource: string;
+    filters: {
+      ascending: any[];
+      descending: any[];
+      filter: any[];
+      search: any[];
+    };
+    setFilters: (filters: any) => void;
   }>[];
   query?: LogicalFilter[];
   idField?: keyof TData;
@@ -46,6 +53,7 @@ export default function MasterTable<TData extends BaseRecord>({
     ascending: [],
     descending: [],
     filter: [],
+    search: [],
   });
   const dispatch = useDispatch();
   const { page, limit } = useSelector((state: RootState) => state.pagination);
@@ -59,9 +67,9 @@ export default function MasterTable<TData extends BaseRecord>({
     pagination: { current: page, pageSize: limit },
     filters: [
       {
-        field: "_search",
+        field: "search",
         operator: "eq",
-        value: search,
+        value: JSON.stringify(filters.search),
       },
       ...query,
     ],
@@ -110,6 +118,8 @@ export default function MasterTable<TData extends BaseRecord>({
         selectedData={selectedData}
         refetch={refetch}
         resource={resource}
+        filters={filters}
+        setFilters={setFilters}
       />
       <Datatable<TData>
         columns={columnsWithPrior}
