@@ -30,7 +30,7 @@ export default function RootLayout({
           <Provider store={store}>
             <RefineContext>
               <PersistGate loading={null} persistor={persistor}>
-                <div className="flex h-[100vh]">
+                <div className="flex h-full">
                   <Sidebar />
                   <div className="flex flex-1 flex-col">
                     <Navbar />

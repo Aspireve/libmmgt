@@ -2,12 +2,12 @@
 import React, { useState } from "react";
 import Header from "@/components/custom/header";
 import IssueBook from "@/components/dashboard/issue-book";
-import Activities from "@/components/dashboard/activity-feed";
 import Tabbing from "@/components/custom/tabbing";
 import { MainTable } from "@/components/data-tables/main-table";
 import MasterTable from "../test/table-page";
 import { Button } from "@/components/ui/button";
 import DashboardData from "@/components/dashboard/dashboard-data-count";
+import { Activities } from "@/components/dashboard/modified-activity-feed";
 
 enum LibraryTabs {
   ISSUE = "issue",
@@ -47,7 +47,7 @@ export default function Dashboard() {
   return (
     <>
       <Header heading="Library Management" subheading="Tanvir Chavan" />
-      <div className="mx-[40px]">
+      <div className="mx-[40px] my-[20px]">
         <Tabbing
           tabs={TABS}
           content={{
@@ -55,7 +55,7 @@ export default function Dashboard() {
               <>
                 <DashboardData />
                 <IssueBook setRefreshAction={setRefresh} />
-                <Activities refresh={refresh} />
+                <Activities/>
               </>
             ),
             [LibraryTabs.REQUEST]: (
