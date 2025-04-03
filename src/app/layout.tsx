@@ -1,46 +1,37 @@
 "use client";
 
-import React, { Suspense, useEffect, useState } from "react";
+import React, { Suspense } from "react";
 import { Provider } from "react-redux";
 import { store, persistor } from "../redux/store/store";
+import { PersistGate } from "redux-persist/integration/react";
 import { RefineContext } from "./_refine_context";
 import Sidebar from "@/components/custom/sidebar";
 import Navbar from "@/components/custom/navbar";
 import "../styles/global.css";
 import { Toaster } from "@/components/ui/sonner";
-import { PersistGate } from "redux-persist/integration/react";
-//import LoginPage from "./LoginPage/page";
+import DarkModeWrapper from "@/components/custom/DarkModeWrapper"; 
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  // const [isHydrated, setIsHydrated] = useState(false);
-
-  // Set hydrated state after mounting on the client
-  // useEffect(() => {
-  //   setIsHydrated(true);
-  // }, []);
-
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`h-full `}>
-      <body className="h-full m-0 p-0">
-        <Suspense fallback={<> loding...</>}>
+    <html lang="en">
+      <body>
+        <Suspense fallback={<> loading...</>}>
           <Provider store={store}>
-            <RefineContext>
-              <PersistGate loading={null} persistor={persistor}>
-                <div className="flex h-full">
-                  <Sidebar />
-                  <div className="flex flex-1 flex-col">
-                    <Navbar />
-                    <div className="flex-1 overflow-y-auto">{children}</div>
-
-                    <Toaster richColors position="top-center" />
+            <PersistGate loading={null} persistor={persistor}>
+              <RefineContext>
+                {/* Move dark mode handling to a wrapper component */}
+                <DarkModeWrapper>
+                  <div className="flex h-full">
+                    <Sidebar />
+                    <div className="flex flex-1 flex-col">
+                      <Navbar />
+                      <div className="flex-1 overflow-y-auto">{children}</div>
+                      <Toaster richColors position="top-center" />
+                    </div>
                   </div>
-                </div>
-              </PersistGate>
-            </RefineContext>
+                </DarkModeWrapper>
+              </RefineContext>
+            </PersistGate>
           </Provider>
         </Suspense>
       </body>

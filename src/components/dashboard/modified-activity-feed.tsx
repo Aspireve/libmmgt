@@ -228,8 +228,8 @@ export function Activities() {
   const sortedDates = Object.keys(groupedActivities).sort((a, b) => new Date(b).getTime() - new Date(a).getTime())
 
   return (
-    <div className="container mx-auto py-6 px-4 md:px-6 border border-[#AEB1B9] rounded-[10px] bg-[#fff] overflow-auto">
-      <h2 className="text-2xl font-semibold mb-4">Activities</h2>
+    <div className="container my-6 py-6 rounded-[10px] bg-[#fff] overflow-auto">
+
 
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
         <Tabs defaultValue="all" className="w-full max-w-md" onValueChange={setFilter}>
@@ -293,8 +293,8 @@ export function Activities() {
               <div className="h-px bg-border mt-2"></div>
             </div>
 
-            <div className="rounded-md border">
-              <div className="divide-y">
+            <div className="rounded-md border border-[#AEB1B9]">
+              <div className="divide-y divide-gray-300">
                 {groupedActivities[date].map((activity) => (
                   <ActivityItem key={activity.id} activity={activity} />
                 ))}

@@ -1,32 +1,27 @@
 'use client';
 
-import React, { Suspense, useState } from 'react';
+import React, { Suspense } from 'react';
 
-import Header from '@/app/Header/header';
 import MasterTable from '@/app/test/table-page';
-import { getUserColumns } from './columns';
-
-
+import { getActonsColumns, getUserColumns } from './columns';
+import AddUserButton from '@/components/user/add-user-button';
 
 const AllUsers = () => {
 
-  const [url, setUrl] = useState("all-users")
+  const url = "all"
 
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <>
-        <Header heading="Users Details" subheading="Tanvir Chavan" />
-
-
         <section>
-          <div className="mx-[40px]">
-            
+          <div>
             <MasterTable
             title='Users'
             columns={getUserColumns}
-            resource={`users/${url}`}
+            resource={`user/${url}`}
             isSelectable={false}
-            AddedOptions={[]}
+            AddedOptions={[AddUserButton]}
+            priorColumns={getActonsColumns}
             />
           </div>
         </section>

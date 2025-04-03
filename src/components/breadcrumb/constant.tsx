@@ -97,3 +97,13 @@ export const ImportPeriodicalBC = () => {
   return <CustomBreadcrumb items={breadcrumbItems} />;
 };
 
+
+//Users
+export const AddUserBC = () => {
+  const breadcrumbItems = [
+    { label: "Users", href: "/Users" },
+    { label: "Add User", href: "/Users/add-user" },
+  ];
+  return <CustomBreadcrumb items={breadcrumbItems} />;
+}
+

@@ -62,7 +62,7 @@ export function Datatable<TData extends BaseRecord>({
               {headerGroup.headers.map((header) => (
                 <TableHead
                   key={header.id}
-                  className="text-sm py-2 text-[#535862] text-left"
+                  className="text-sm py-2 text-[#535862] text-left bg-[#F0F1F3]"
                 >
                   {isLoading ? (
                     <Skeleton className="h-4 w-20 mx-auto animate-pulse bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 bg-[length:200%_100%]" />
