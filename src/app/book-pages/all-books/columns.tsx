@@ -1,9 +1,6 @@
 import { ColumnDef } from '@tanstack/react-table';
 import { BookData } from '../types/data';
-import { Button } from '@/components/ui/button';
-import Image from 'next/image';
 import { useRouter } from "next/navigation";
-import images from "@/images/index";
 import { formatDate } from '../hooks/formatDate';
 import { HugeiconsIcon } from '@hugeicons/react';
 import { ViewIcon } from '@hugeicons/core-free-icons';
@@ -20,11 +17,7 @@ const BookTitleCell: React.FC<BookTitleCellProps> = ({ book }) => {
       className="relative group cursor-pointer font-bold text-[#1E40AF]"
       onClick={() => router.push(`/book-pages/book-details?book_uuid=${book.book_uuid}`)}
     >
-      {book.book_title}
-      <div className="absolute left-1/2 transform -translate-x-1/2 bottom-full mb-2 hidden group-hover:flex items-center justify-center bg-gray-800 text-white text-xs rounded-lg px-3 py-1 shadow-md whitespace-nowrap
-        after:content-[''] after:absolute after:top-full after:left-1/2 after:-translate-x-1/2 after:border-4 after:border-transparent after:border-t-gray-800">
-        Book Details
-      </div>
+      {book.book_title_id}
     </div>
   );
 };
@@ -55,11 +48,14 @@ export const getBookColumns = (
       header: 'Action',
       cell: ({ row }) => <ActionsCell book={row.original} handleEdit={handleEdit} />,
     },
-    { accessorKey: 'book_title_id', header: 'ID' },
+    { accessorKey: 'book_title_id', header: 'ID',
+      cell: ({ row }) => <BookTitleCell book={row.original} />,
+    },
+    
     {
       accessorKey: 'book_title',
       header: 'Book Name',
-      cell: ({ row }) => <BookTitleCell book={row.original} />,
+      
     },
     { accessorKey: 'book_author', header: 'Book Author' },
     { accessorKey: 'name_of_publisher', header: 'Book Publisher' },
