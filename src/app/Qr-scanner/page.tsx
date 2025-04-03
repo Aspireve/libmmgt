@@ -1,13 +1,31 @@
 "use client";
+import React, { useState, useRef, useEffect } from "react";
 import Image from "next/image";
-import React, { useState } from "react";
-import QrScanner from "@/images/Qr-Scanner.png";
-import { QrReader } from "react-qr-reader";
+import QrScannerImage from "@/images/Qr-Scanner.png";
+import { Scanner, IDetectedBarcode } from "@yudiel/react-qr-scanner";
 
 const Page = () => {
   const [scanActive, setScanActive] = useState(false);
-  const [qrData, setQrData] = useState("");
+  const [qrData, setQrData] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState("");
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+
+  // Function to Stop Camera
+  const stopCamera = () => {
+    if (videoRef.current) {
+      const stream = videoRef.current.srcObject as MediaStream;
+      if (stream) {
+        stream.getTracks().forEach((track) => track.stop());
+      }
+      videoRef.current.srcObject = null;
+    }
+  };
+
+  useEffect(() => {
+    return () => {
+      stopCamera(); // Cleanup on unmount
+    };
+  }, []);
 
   return (
     <div className="flex flex-col items-center min-h-screen bg-gray-100 p-6">
@@ -16,7 +34,7 @@ const Page = () => {
         <h1 className="text-2xl font-bold text-gray-800">QR Code Scanner</h1>
 
         <Image
-          src={QrScanner}
+          src={QrScannerImage}
           alt="QR Scanner"
           height={180}
           width={180}
@@ -25,32 +43,47 @@ const Page = () => {
 
         {/* Scan QR Button */}
         <button
-          className="w-full bg-blue-600 text-white font-semibold py-3 rounded-xl shadow-md hover:bg-blue-700 transition"
+          className={`w-full ${
+            scanActive ? "bg-red-600" : "bg-blue-600"
+          } text-white font-semibold py-3 rounded-xl shadow-md transition`}
           onClick={() => {
-            setScanActive(!scanActive);
-            setQrData(""); // Reset scanned data when reopening scanner
-            setErrorMessage("");
+            if (scanActive) {
+              stopCamera();
+              setScanActive(false);
+            } else {
+              setScanActive(true);
+              setQrData(null); // Reset previous scan
+              setErrorMessage("");
+            }
           }}
         >
           {scanActive ? "Close Scanner" : "Scan QR Code"}
         </button>
 
         {/* QR Scanner */}
-        {scanActive && !qrData && (
+        {scanActive && (
           <div className="mt-4 bg-gray-900 rounded-lg overflow-hidden">
-            <QrReader
-              constraints={{ facingMode: "environment" }}
-              onResult={(result, error) => {
-                if (result) {
-                  setQrData(result.getText?.() || "Unknown QR Data"); // Ensure getText() exists
+            <Scanner
+              onScan={(detectedCodes: IDetectedBarcode[]) => {
+                if (detectedCodes.length > 0) {
+                  setQrData(detectedCodes[0].rawValue); // Extract first QR code
                   setScanActive(false);
-                }
-                if (error) {
-                  setErrorMessage("⚠️ No QR code detected or camera not accessible.");
+                  stopCamera();
                 }
               }}
-              containerStyle={{ width: "100%" }}
-              videoStyle={{ width: "100%" }} // Ensure video fills container
+              onError={(error: unknown) => {
+                const errMsg =
+                  error instanceof Error
+                    ? error.message
+                    : "⚠️ No QR code detected or camera not accessible.";
+                setErrorMessage(errMsg);
+              }}
+              constraints={{
+                facingMode: "environment",
+              }}
+              classNames={{
+                container: "w-full rounded-lg",
+              }} // ✅ Removed `videoRef`
             />
           </div>
         )}
