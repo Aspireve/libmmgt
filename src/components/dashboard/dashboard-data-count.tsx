@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
-import { useOne } from "@refinedev/core";
+import React, { useState, useEffect } from "react";
+import { useList } from "@refinedev/core";
 import { useSelector } from "react-redux";
 import images from "@/images/index";
 import { RootState } from "@/redux/store/store";
@@ -14,10 +14,15 @@ export default function DashboardData() {
   );
   console.log("Institute UUID:", institute_uuid); // Debugging log
 
-  const { data, isLoading } = useOne({ resource: "/student/admin-dashboard" });
+  // Fetching dashboard data with useList
+  const { data, isLoading } = useList<{
+    totalBooks: string;
+  }>({
+    resource: "/student/admin-dashboard",
+  });
 
-  // Extract correct data object
-  const dashboardStats = data?.data ?? {}; 
+  // Extract correct data object (handling array or empty response)
+  const dashboardStats = data?.data?.[0] || data?.data || [];
   console.log("Dashboard Data:", dashboardStats);
 
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
@@ -27,7 +32,7 @@ export default function DashboardData() {
   }
 
   return (
-    <div className="flex flex-wrap gap-4 my-6">
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 my-6">
       {[
         {
           title: "Total Books",
@@ -44,10 +49,10 @@ export default function DashboardData() {
           iconBgColor: "bg-[#FFF4DE]",
         },
         {
-          title: "New Books",
-          value: dashboardStats?.newBooks ?? "0",
+          title: "Total Issued Books",
+          value: "0",
           icon: images.BookShelf,
-          downloadUrl: `https://lms-807p.onrender.com/csv/new-books?institute_id=${institute_uuid}`,
+          downloadUrl: ``,
           iconBgColor: "bg-[#DCFCE7]",
         },
         {
@@ -57,11 +62,39 @@ export default function DashboardData() {
           downloadUrl: `https://lms-807p.onrender.com/csv/total-members?institute_id=${institute_uuid}`,
           iconBgColor: "bg-[#E0F2FE]",
         },
+        {
+          title: "Today Issue",
+          value: "40,689",
+          icon: images.TodayIssue,
+          downloadUrl: ``,
+          iconBgColor: "bg-[#E8E7FF]",
+        },
+        {
+          title: "Today Return",
+          value: "10293",
+          icon: images.TodayReturn,
+          downloadUrl: ``,
+          iconBgColor: "bg-[#FFF4DE]",
+        },
+        {
+          title: "Overdues",
+          value: "89,000",
+          icon: images.Overdues,
+          downloadUrl: ``,
+          iconBgColor: "bg-[#DCFCE7]",
+        },
+        {
+          title: "Trending Books",
+          value: "10",
+          icon: images.Overdues,
+          downloadUrl: ``,
+          iconBgColor: "bg-[#DCFCE7]",
+        },
       ].map((stat, idx) => (
         <a
           key={`stat-${idx}`}
           href={stat.downloadUrl} // Clicking card directly triggers download
-          className="flex justify-between items-center bg-white rounded-[15px] p-4 w-full flex-1 h-[100px] cursor-pointer"
+          className="flex justify-between items-center bg-white rounded-[15px] p-4 h-[100px] cursor-pointer"
           style={{ boxShadow: "0 0 8px rgba(0, 0, 0, 0.1)" }}
           onMouseEnter={() => setHoveredIndex(idx)}
           onMouseLeave={() => setHoveredIndex(null)}
@@ -69,9 +102,7 @@ export default function DashboardData() {
           {/* Text Content (Title and Count) */}
           <div className="flex flex-col">
             <p className="text-sm text-gray-500">{stat.title}</p>
-            <p className="text-2xl font-semibold text-gray-800">
-              {stat.value}
-            </p>
+            <p className="text-2xl font-semibold text-gray-800">{stat.value}</p>
           </div>
           {/* Icon Container */}
           <div

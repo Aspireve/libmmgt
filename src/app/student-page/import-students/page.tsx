@@ -28,7 +28,7 @@ const ImportStudents = () => {
   const router = useRouter();
   const { processFile, importData, clearData } = useFileProcessor();
   const {isOpen, open, close} = useDisclosure()
-  
+
   const { institute_name, institute_uuid } = useSelector(
     (state: RootState) => state.auth.currentInstitute
   );
@@ -174,6 +174,7 @@ const ImportStudents = () => {
             <li>Remove any blank rows or columns</li>
             <li>For dates, use YYYY-MM-DD format</li>
             <li>For best results, limit file size to under 10MB</li>
+            <li>Phone numbers must include country code (e.g., +91) and digits only.</li>
           </ul>
         </div>
   

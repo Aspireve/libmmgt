@@ -47,7 +47,10 @@ const images = {
   TotalIssuedBooks: require("./TotalIssuedBooks.png"),
   Overdues: require("./Overdues.png"),
   TotalMembers:require("./TotalMembers.png"),
-  Cancel:require("./cancel-01-stroke-rounded.svg")
+  Cancel:require("./cancel-01-stroke-rounded.svg"),
+  config:require("./config.png"),
+  TodayIssue:require("./TodayIssue.png"),
+  TodayReturn:require("./TodayReturn.png")
 };
 
 export default images;
