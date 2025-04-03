@@ -5,6 +5,9 @@ import { useList } from "@refinedev/core";
 import { Button } from "../ui/button";
 import { useRouter } from "next/navigation";
 import { ActivityItem } from "./modified-activity-log";
+import ActivityLog from "./activity-log";
+import { ActivityType } from "@/types/book";
+
 
 
 export default function Activities({ refresh }: { refresh: number }) {
@@ -19,15 +22,15 @@ export default function Activities({ refresh }: { refresh: number }) {
   const activityLogs = Array.isArray(data?.data) ? data.data : [];
 
   
-  useEffect(() => {
-    refetch();  
-  }, [refresh]);
+  // useEffect(() => {
+  //   refetch();  
+  // }, [refresh]);
 
   return (
     <div className="transition-all duration-300 hover:shadow-lg border border-[#AEB1B9] rounded-[10px] bg-[#fff] my-5 p-6">
       <h2 className="text-2xl font-semibold mb-4">Activities</h2>
       {/* {isLoading && <ActivityLog isLoading={true} />} */}
-      {/* {activityLogs.slice(0, 6).map((item, idx) => (
+      {activityLogs.map((item,idx) => (
          <ActivityLog
           key={`activity-${idx}`}
           type={item?.action as ActivityType}
@@ -37,17 +40,8 @@ export default function Activities({ refresh }: { refresh: number }) {
           time={item?.created_at || "Unknown Time"}
           isLoading={isLoading}
         />
-       <ActivityItem activity={item} />
-      ))} */}
-      {activityLogs.length > 5 && (
-    <div className="flex justify-end">
-      <Button
-        className="shadow-none text-[#1E40AF] rounded-[10px]"
-        onClick={() => router.push("/book-pages/book-activities")}
-      >More
-      </Button>
-    </div>
-  )}
+      //  <ActivityItem activity={activity} />
+      ))}
     </div>
   );
 }
