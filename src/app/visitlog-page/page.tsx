@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import Header from "../Header/header";
+import Header from "@/components/custom/header";
 import { visitLogColumns, VisitLog } from "./columns";
 import { useList } from "@refinedev/core";
 import { Button } from "@/components/ui/button";
