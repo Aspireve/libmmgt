@@ -92,12 +92,7 @@ export default function DashboardData() {
         },
         {
           title: "Trending Books",
-<<<<<<< HEAD
           value: dashboardStats?.trending ?? "0",
-=======
-          // @ts-ignore
-          value: dashboardStats?.trending ?? "0"          ,
->>>>>>> 449f2cbbe8b57fa0b826e7919a9ded0f12c461f4
           icon: images.Overdues,
           downloadUrl: ``,
           iconBgColor: "bg-[#DCFCE7]",
