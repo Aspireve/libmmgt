@@ -33,17 +33,19 @@ export const BookActions = ({
         aria-label="Edit student"
       >
         <HugeiconsIcon
-      icon={ViewIcon}
-    />
+          icon={ViewIcon}
+          color="#1E40AF"
+        />
       </Button>
       <Button
         onClick={open}
         className="p-0 shadow-none"
         aria-label="Delete Book"
       >
-         <HugeiconsIcon
-      icon={Archive01Icon}
-    />
+        <HugeiconsIcon
+          icon={Archive01Icon}
+          color="#1E40AF"
+        />
       </Button>
       <DeleteBookModal
         data={[book]}
@@ -57,66 +59,65 @@ export const BookActions = ({
 export const StatusCell = ({ isAvailable }: { isAvailable: boolean }) => {
   return (
     <span
-      className={`px-2 py-1 rounded text-white ${
-        isAvailable ? 'rounded-full bg-green-200 text-green-700 ' : ' rounded-full bg-purple-200 text-purple-700 '
-      }`}
+      className={`px-2 py-1 rounded text-white ${isAvailable ? 'rounded-full bg-green-200 text-green-700 ' : ' rounded-full bg-purple-200 text-purple-700 '
+        }`}
     >
       {isAvailable ? 'Available' : 'Borrowed'}
     </span>
   );
 };
 
-export const getBookCopyColumns = ({ refetch }:{ refetch: () => void }): ColumnDef<BookCopiesData>[] => [
-    {
-        accessorKey: 'book_copy_id',
-        header: 'ID',
-    },
-    {
-        accessorKey: 'source_of_acquisition',
-        header: 'Source of acquisition'
-    },
-    {
-        accessorKey: 'language',
-        header: 'Language',
-    },
-    {
-        accessorKey: 'date_of_acquisition',
-        header: 'Date of acquisition',
-        cell: ({ row }) => <span>{formatDate(row.original.date_of_acquisition ?? " ")}</span>,
-    },
-    {
-        accessorKey: 'barcode',
-        header: 'Barcode'
-    },
-    {
-        accessorKey: 'item_type',
-        header: 'Item Type'
-    },
-    {
-        accessorKey: 'bill_no',
-        header: 'Bill No'
-    },
-    {
-        accessorKey: 'inventory_number',
-        header: 'Inventory Number'
-    },
-    {
-        accessorKey: 'accession_number',
-        header: 'Accession Number'
-    },
-    {
-      accessorKey: 'is_available',
-      header: 'Status',
-     cell:({row}) => <StatusCell isAvailable={Boolean(row.original.is_available)} />
+export const getBookCopyColumns = ({ refetch }: { refetch: () => void }): ColumnDef<BookCopiesData>[] => [
+  {
+    accessorKey: 'book_copy_id',
+    header: 'ID',
+  },
+  {
+    accessorKey: 'source_of_acquisition',
+    header: 'Source of acquisition'
+  },
+  {
+    accessorKey: 'language',
+    header: 'Language',
+  },
+  {
+    accessorKey: 'date_of_acquisition',
+    header: 'Date of acquisition',
+    cell: ({ row }) => <span>{formatDate(row.original.date_of_acquisition ?? " ")}</span>,
+  },
+  {
+    accessorKey: 'barcode',
+    header: 'Barcode'
+  },
+  {
+    accessorKey: 'item_type',
+    header: 'Item Type'
+  },
+  {
+    accessorKey: 'bill_no',
+    header: 'Bill No'
+  },
+  {
+    accessorKey: 'inventory_number',
+    header: 'Inventory Number'
+  },
+  {
+    accessorKey: 'accession_number',
+    header: 'Accession Number'
+  },
+  {
+    accessorKey: 'is_available',
+    header: 'Status',
+    cell: ({ row }) => <StatusCell isAvailable={Boolean(row.original.is_available)} />
   }
 ];
 
-export const getActionColumns = ({ refetch }:{ refetch: () => void }): ColumnDef<BookCopiesData>[] => [
+export const getActionColumns = ({ refetch }: { refetch: () => void }): ColumnDef<BookCopiesData>[] => [
   {
-      id: 'action', header: 'Actions',
-      cell: ({ row }) => {
-           return <BookActions book={row.original} refetch={refetch} />
-      }
-      
+    id: 'action', header: 'Actions',
+    cell: ({ row }) => {
+      return <BookActions book={row.original} refetch={refetch} />
+    }
+
   },
 ];

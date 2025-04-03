@@ -37,6 +37,7 @@ export default function DashboardData() {
       {[
         {
           title: "Total Books",
+          // @ts-ignore
           value: dashboardStats?.totalBooks ?? "0",
           icon: images.BookShelf,
           downloadUrl: `https://lms-807p.onrender.com/csv/total-books?institute_id=${institute_uuid}`,
@@ -44,6 +45,7 @@ export default function DashboardData() {
         },
         {
           title: "Total Borrowed Books",
+          // @ts-ignore
           value: dashboardStats?.totalBorrowedBooks ?? "0",
           icon: images.TotalIssuedBooks,
           downloadUrl: `https://lms-807p.onrender.com/csv/borrowed-books?institute_id=${institute_uuid}`,
@@ -58,6 +60,7 @@ export default function DashboardData() {
         },
         {
           title: "Total Members",
+          // @ts-ignore
           value: dashboardStats?.totalMembers ?? "0",
           icon: images.TotalMembers,
           downloadUrl: `https://lms-807p.onrender.com/csv/total-members?institute_id=${institute_uuid}`,
@@ -65,6 +68,7 @@ export default function DashboardData() {
         },
         {
           title: "Today Issue",
+          // @ts-ignore
           value: dashboardStats?.todayIssues ?? "0",
           icon: images.TodayIssue,
           downloadUrl: ``,
@@ -72,6 +76,7 @@ export default function DashboardData() {
         },
         {
           title: "Today Return",
+          // @ts-ignore
           value: dashboardStats?.todayReturned ?? "0",
           icon: images.TodayReturn,
           downloadUrl: ``,
@@ -79,6 +84,7 @@ export default function DashboardData() {
         },
         {
           title: "Overdues",
+          // @ts-ignore
           value: dashboardStats?.overdue ?? "0",
           icon: images.Overdues,
           downloadUrl: ``,
@@ -86,7 +92,12 @@ export default function DashboardData() {
         },
         {
           title: "Trending Books",
+<<<<<<< HEAD
           value: dashboardStats?.trending ?? "0",
+=======
+          // @ts-ignore
+          value: dashboardStats?.trending ?? "0"          ,
+>>>>>>> 449f2cbbe8b57fa0b826e7919a9ded0f12c461f4
           icon: images.Overdues,
           downloadUrl: ``,
           iconBgColor: "bg-[#DCFCE7]",

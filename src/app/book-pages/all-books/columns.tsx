@@ -5,6 +5,8 @@ import Image from 'next/image';
 import { useRouter } from "next/navigation";
 import images from "@/images/index";
 import { formatDate } from '../hooks/formatDate';
+import { HugeiconsIcon } from '@hugeicons/react';
+import { ViewIcon } from '@hugeicons/core-free-icons';
 
 interface BookTitleCellProps {
   book: BookData;
@@ -34,10 +36,14 @@ interface ActionsCellProps {
 
 const ActionsCell: React.FC<ActionsCellProps> = ({ book, handleEdit }) => (
   <div className="flex gap-2">
-    <Button variant="ghost" size="icon" className='w-[20px]' onClick={() => handleEdit(book)}>
-      <Image src={images.EditButton} alt='Edit button' />
-    </Button>
+    <HugeiconsIcon
+          icon={ViewIcon}
+          color="#1E40AF"
+          onClick={() => handleEdit(book)}
+        />
   </div>
+
+ 
 );
 
 export const getBookColumns = (

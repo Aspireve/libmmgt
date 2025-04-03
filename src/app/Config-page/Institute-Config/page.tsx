@@ -13,6 +13,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@/redux/store/store";
 import { toggleDarkMode } from "@/redux/darkModeSlice";
 import { toggleDashboardCards } from "@/redux/dashboardSlice";
+import AllUsers from "../Users/page";
 
 type FormFields = {
   instituteName: string;
@@ -158,6 +159,7 @@ const Page = () => {
           </div>
         </div>
       </div>
+      <AllUsers/>
     </>
   );
 };

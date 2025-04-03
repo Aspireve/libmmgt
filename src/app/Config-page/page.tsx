@@ -14,18 +14,8 @@ const configurations = [
     path: "/Config-page/Institute-Config",
   },
   {
-    title: "Interface",
-    description: "Personalize Your User Experience",
-    path: "/Config-page/Interface",
-  },
-  {
     title: "Library Configuration",
     description: "Streamline Your Institution’s Knowledge Hub",
-    path: "/Config-page/Library-Config",
-  },
-  {
-    title: "Add User",
-    description: "Create User for Admin",
     path: "/Config-page/Library-Config",
   },
   {
