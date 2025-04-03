@@ -46,7 +46,7 @@ export const JournalActions = ({
   );
 };
 
-export const getPeriodicalCopyColumns = ({ refetch }:{ refetch: () => void }): ColumnDef<JournalData>[] => {
+export const getPeriodicalCopyColumns = (): ColumnDef<JournalData>[] => {
      return[
             
                 { accessorKey: 'journal_copy_id', header: 'ID' },
