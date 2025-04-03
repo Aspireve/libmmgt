@@ -1,10 +1,8 @@
-"use client";
-
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useList } from "@refinedev/core";
 import { useSelector } from "react-redux";
-import images from "@/images/index";
 import { RootState } from "@/redux/store/store";
+import images from "@/images/index";
 import Image from "next/image";
 import arrowdownload from "@/images/arrow-download.png";
 
@@ -12,23 +10,26 @@ export default function DashboardData() {
   const { institute_uuid } = useSelector(
     (state: RootState) => state.auth.currentInstitute
   );
-  console.log("Institute UUID:", institute_uuid); // Debugging log
 
-  // Fetching dashboard data with useList
-  const { data, isLoading } = useList<{
-    totalBooks: string;
-  }>({
+  const { data, isLoading } = useList<{ totalBooks: string }>({
     resource: "/student/admin-dashboard",
   });
 
-  // Extract correct data object (handling array or empty response)
   const dashboardStats = data?.data?.[0] || data?.data || [];
-  console.log("Dashboard Data:", dashboardStats);
-
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+
+  // Get Redux state for dashboard card visibility
+  const showDashboardCards = useSelector(
+    (state: RootState) => state.dashboard.showDashboardCards
+  );
 
   if (isLoading) {
     return <div>Loading...</div>;
+  }
+
+  // If the toggle is OFF, do not render the dashboard cards
+  if (!showDashboardCards) {
+    return null; 
   }
 
   return (
@@ -85,7 +86,7 @@ export default function DashboardData() {
         },
         {
           title: "Trending Books",
-          value: dashboardStats?.trending ?? "0"          ,
+          value: dashboardStats?.trending ?? "0",
           icon: images.Overdues,
           downloadUrl: ``,
           iconBgColor: "bg-[#DCFCE7]",
@@ -93,18 +94,16 @@ export default function DashboardData() {
       ].map((stat, idx) => (
         <a
           key={`stat-${idx}`}
-          href={stat.downloadUrl} // Clicking card directly triggers download
+          href={stat.downloadUrl}
           className="flex justify-between items-center bg-white rounded-[15px] p-4 h-[100px] cursor-pointer"
           style={{ boxShadow: "0 0 8px rgba(0, 0, 0, 0.1)" }}
           onMouseEnter={() => setHoveredIndex(idx)}
           onMouseLeave={() => setHoveredIndex(null)}
         >
-          {/* Text Content (Title and Count) */}
           <div className="flex flex-col">
             <p className="text-sm text-gray-500">{stat.title}</p>
             <p className="text-2xl font-semibold text-gray-800">{stat.value}</p>
           </div>
-          {/* Icon Container */}
           <div
             className={`w-12 h-12 rounded-[15px] flex items-center justify-center ${stat.iconBgColor}`}
           >

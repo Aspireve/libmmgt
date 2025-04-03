@@ -27,6 +27,11 @@ const configurations = [
     title: "Add User",
     description: "Create User for Admin",
     path: "/Config-page/Library-Config",
+  },
+  {
+    title: "Add Institute",
+    description: "Create an Institute",
+    path:"/Config-page/Add-Institute"
   }
 ];
 
