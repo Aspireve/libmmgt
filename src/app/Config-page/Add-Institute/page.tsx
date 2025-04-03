@@ -64,7 +64,7 @@ const InstitutePage: React.FC = () => {
 
   return (
     <div className="p-6 max-w-lg mx-auto bg-white shadow-md rounded-lg">
-      <Header heading="Institute Creation" subheading="Register your institute" />
+      {/* <Header heading="Institute Creation" subheading="Register your institute" /> */}
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 mt-4">
         {/* Profile Image Upload */}
@@ -99,7 +99,7 @@ const InstitutePage: React.FC = () => {
           type="date"
           register={register}
           errors={errors}
-          max={today} // Restrict future dates
+        //   max={today} // Restrict future dates
           required
         />
 
