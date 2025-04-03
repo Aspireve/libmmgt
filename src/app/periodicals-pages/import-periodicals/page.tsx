@@ -18,7 +18,6 @@ import { Button } from '@/components/ui/button';
 import MappingDropdown from '@/components/custom/mapping-dropdown';
 import Dropzone from '@/components/custom/dropzone';
 import { ImportPeriodicalBC } from '@/components/breadcrumb/constant';
-import { console } from 'inspector';
 
 const ImportPeriodical = () => {
     const [mapping, setMapping] = useState<Partial<PeriodicalImportField>>(initialMapping);
@@ -122,16 +121,23 @@ const ImportPeriodical = () => {
         <>
             <ImportPeriodicalBC />
             <div className="container mx-auto p-6">
-                <h2 className="text-xl font-semibold mb-4">Import Book Data</h2>
+                <h2 className="text-xl font-semibold mb-4">Import Periodicals Data</h2>
                 <p className="text-gray-600 text-sm mb-4">
                     Upload an Excel or CSV file and map columns.
                 </p>
-                <Dropzone processFile={processFile} selectedFile={importData} clearSelectedFile={clearData} />
+                
+        <div className="border-2 border-dashed border-gray-300 p-6 rounded-[10px] bg-white shadow-sm flex flex-col items-center justify-center text-center">
+          <Dropzone
+            processFile={processFile}
+            selectedFile={importData}
+            clearSelectedFile={clearData}
+          />
+        </div>
                 {importData.title && importData.headers.length > 0 && (
                     <form onSubmit={handleMapData}>
                         <h3 className="text-lg font-medium mb-4">Map Columns</h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <MappingDropdown<AddPeriodicalType>
+                            <MappingDropdown<AddPeriodicalType>
                                 label="Journal Title"
                                 importData={importData}
                                 isRequired={true}

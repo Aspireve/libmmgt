@@ -137,7 +137,14 @@ const ImportBooks = () => {
       <p className="text-gray-600 text-sm mb-4">
         Upload an Excel or CSV file and map columns.
       </p>
-      <Dropzone processFile={processFile} selectedFile={importData} clearSelectedFile={clearData} />
+     
+      <div className="border-2 border-dashed border-gray-300 p-6 rounded-[10px] bg-white shadow-sm flex flex-col items-center justify-center text-center">
+          <Dropzone
+            processFile={processFile}
+            selectedFile={importData}
+            clearSelectedFile={clearData}
+          />
+        </div>
       {importData.title && importData.headers.length > 0 && (
         <form onSubmit={handleMapData}>
           <h3 className="text-lg font-medium mb-4">Map Columns</h3>
