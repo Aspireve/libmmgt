@@ -1,3 +1,5 @@
+'use client'
+
 import { InputField } from '@/components/custom/inputfield'
 import React, { useEffect, useState } from 'react'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';

@@ -1,3 +1,5 @@
+'use client'
+
 import { InputField } from '@/components/custom/inputfield'
 import { EditBookData } from '@/types/book';
 import { useOne } from '@refinedev/core';
