@@ -5,7 +5,6 @@ import React from "react";
 import Images from "@/images";
 import { ActivityType } from "@/types/book";
 import { Skeleton } from "../ui/skeleton";
-import images from "@/images";
 
 type LoadingProps = {
   isLoading?: true;
@@ -53,7 +52,7 @@ const ActivityLog = (props: ActivityLogProps) => {
 
   return (
     <div className="flex items-center gap-3 mb-4">
-      <div className="bg-[#F0F1F3] w-fit p-3 rounded-full flex items-center justify-center aspect-square">
+      <div className="flex items-center gap-3">
         <Image
           src={
             // @ts-ignore
@@ -74,9 +73,7 @@ const ActivityLog = (props: ActivityLogProps) => {
       <div className="bg-[#F0F1F3] w-full p-2 rounded-[5px]">
         <p className="text-sm">
           {/* @ts-ignore */}
-          <span className="font-semibold">{props.book_id}</span>{" "}
-          {/* @ts-ignore */}
-          <span className="font-semibold">|</span> {props.title}{" "}
+          <h4 className="font-medium text-sm">{props.title}</h4>
           {/* @ts-ignore */}
           <span className="font-semibold">|</span> {props.studentName}{" "}
           {/* @ts-ignore */}
@@ -88,3 +85,6 @@ const ActivityLog = (props: ActivityLogProps) => {
 };
 
 export default ActivityLog;
+
+
+

@@ -9,7 +9,7 @@ const ImportPeriodicalButton = () => {
   return (
     <Button
       className="border border-[#1E40AF] rounded-[8px] text-[#1E40AF]"
-      onClick={() => router.push("/periodical-pages/import-periodicals")}
+      onClick={() => router.push("/periodicals-pages/import-periodicals")}
     >
       <Image src={Images.ImportDrop} alt="Import" width={20} height={25} />{" "}
       Import
