@@ -18,6 +18,11 @@ const configurations = [
     description: "Streamline Your Institution’s Knowledge Hub",
     path: "/Config-page/Library-Config",
   },
+  {
+    title: "Add Institute",
+    description: "Create an Institute",
+    path:"/Config-page/Add-Institute"
+  }
 ];
 
 const Page = () => {
