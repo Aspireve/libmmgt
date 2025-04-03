@@ -19,7 +19,7 @@ interface PhoneNumberProps<T extends FieldValues> {
   value?: string; // Accept external value
   readOnly?: boolean;
   setValue: (name: keyof T, value: string | undefined) => void;
-  error: Partial<Record<keyof T, FieldError>>;
+  error?: Partial<Record<keyof T, FieldError>>;
   register: UseFormRegister<T>;
   required?: boolean;
 }
