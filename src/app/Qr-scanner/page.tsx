@@ -92,12 +92,13 @@ const Page = () => {
         {errorMessage && (
           <p className="mt-4 text-red-600 font-semibold">{errorMessage}</p>
         )}
-
         {/* Display Scanned QR Data */}
         {qrData && (
-          <div className="mt-4 p-4 bg-green-600 text-white font-semibold rounded-lg shadow-lg">
-            <p className="text-lg">✅ QR Code Scanned!</p>
-            <p className="mt-2 bg-white text-green-800 p-2 rounded">{qrData}</p>
+          <div className="mt-6 p-6 bg-green-700 text-white font-semibold rounded-xl shadow-xl w-full max-w-md">
+            <p className="text-xl font-bold">✅ QR Code Scanned!</p>
+            <p className="mt-3 bg-white text-green-900 p-4 rounded-lg text-lg break-words shadow-md">
+              {qrData}
+            </p>
           </div>
         )}
       </div>

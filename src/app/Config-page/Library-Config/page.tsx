@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Header from "@/components/custom/header";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
@@ -21,6 +22,14 @@ const FormSchema = z.object({
 });
 
 const Page = () => {
+  const [isEditable, setIsEditable] = useState(false);
+  const [formData, setFormData] = useState({
+    maxBooks: "05",
+    borrowDays: "100",
+    lateFees: "100",
+    libraryHours: "09:00 am - 04:00 pm",
+  });
+
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -28,8 +37,12 @@ const Page = () => {
     },
   });
 
-  function onSubmit(data: z.infer<typeof FormSchema>) {
-    console.log("Form submitted:", data);
+  function handleUpdateClick() {
+    setIsEditable(!isEditable);
+  }
+
+  function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
+    setFormData({ ...formData, [event.target.name]: event.target.value });
   }
 
   return (
@@ -47,19 +60,40 @@ const Page = () => {
               <label className="block text-sm font-medium mb-1 text-black">
                 Maximum number of books a student can borrow
               </label>
-              <Input type="text" value="05" readOnly className="w-full" />
+              <Input
+                type="text"
+                name="maxBooks"
+                value={formData.maxBooks}
+                onChange={handleChange}
+                readOnly={!isEditable}
+                className="w-full"
+              />
             </div>
             <div>
               <label className="block text-sm font-medium mb-1 text-black">
                 No. of days a student can borrow books
               </label>
-              <Input type="text" value="100" readOnly className="w-full" />
+              <Input
+                type="text"
+                name="borrowDays"
+                value={formData.borrowDays}
+                onChange={handleChange}
+                readOnly={!isEditable}
+                className="w-full"
+              />
             </div>
             <div>
               <label className="block text-sm font-medium mb-1 text-black">
                 Late Fees per day
               </label>
-              <Input type="text" value="100" readOnly className="w-full" />
+              <Input
+                type="text"
+                name="lateFees"
+                value={formData.lateFees}
+                onChange={handleChange}
+                readOnly={!isEditable}
+                className="w-full"
+              />
             </div>
           </div>
           <div>
@@ -68,8 +102,10 @@ const Page = () => {
             </label>
             <Input
               type="text"
-              value="09:00 am - 04:00 pm"
-              readOnly
+              name="libraryHours"
+              value={formData.libraryHours}
+              onChange={handleChange}
+              readOnly={!isEditable}
               className="w-1/3"
             />
           </div>
@@ -83,7 +119,7 @@ const Page = () => {
         </h2>
         <Card className="p-4 ml-6 w-full min-w-[400px]">
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <form onSubmit={form.handleSubmit(() => {})} className="space-y-6">
               <FormField
                 control={form.control}
                 name="emailNotifications"
@@ -112,9 +148,13 @@ const Page = () => {
           </Form>
         </Card>
       </div>
+
       <div className="flex justify-center">
-        <Button className="flex items-center gap-2 bg-[#1E40AF] text-white rounded-[8px] hover:bg-blue-900 mt-5 ml-5">
-          Update
+        <Button
+          className="flex items-center gap-2 bg-[#1E40AF] text-white rounded-[8px] hover:bg-blue-900 mt-5 ml-5"
+          onClick={handleUpdateClick}
+        >
+          {isEditable ? "Save" : "Update"}
         </Button>
       </div>
     </div>
