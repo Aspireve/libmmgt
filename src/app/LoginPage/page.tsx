@@ -32,11 +32,11 @@ const LoginPage = () => {
     const data = { email, password }
     mutate(
       {
-        resource: "book_v2/create",
+        resource: "book_v2/create" as any,
         values: data
       },
       {
-        onSuccess: (response) => {
+        onSuccess: (response: any) => {
           const accessToken = response?.token?.accessToken ?? null;
 
           // Check if user exists in response
