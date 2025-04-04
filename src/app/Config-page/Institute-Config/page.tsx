@@ -1,11 +1,10 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm, Path } from "react-hook-form";
 import Image from "next/image";
 import { InputField } from "@/components/custom/inputfield";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-// import { Switch } from "@/components/ui/switch";
 import { Pencil } from "lucide-react";
 import ThakurTrustLogo from "@/images/ThakurTrustLogo.png";
 import Header from "@/components/custom/header";
@@ -15,33 +14,35 @@ import { toggleDarkMode } from "@/redux/darkModeSlice";
 import { toggleDashboardCards } from "@/redux/dashboardSlice";
 import AllUsers from "../Users/page";
 import { useOne, useUpdate } from "@refinedev/core";
-import { dataProvider } from "@/providers/data";
 import { toast } from "sonner";
+import { dataProvider } from "@/providers/data";
 
 type FormFields = {
-  instituteName: string;
-  email: string;
-  phoneNumber: string;
+  institute_name: string;
+  institute_email: string;
+  mobile: string;
   author: string;
 };
+
+const HARD_CODED_ID = "TCA2025"; // Hardcoded ID for fetching/updating institute
 
 const Page = () => {
   const {
     register,
     handleSubmit,
+    setValue, // Used to update form values with API response
     formState: { errors },
   } = useForm<FormFields>({
     defaultValues: {
-      instituteName: "Tanvir R Chavan",
-      email: "tanvirchavan@gmail.com",
-      phoneNumber: "89xxxxxxx",
+      institute_name: "Tanvir R Chavan",
+      institute_email: "tanvirchavan@gmail.com",
+      mobile: "89xxxxxxx",
       author: "01",
     },
   });
 
   const [isEditable, setIsEditable] = useState(false);
   const dispatch = useDispatch();
-
   const [showReportCards, setShowReportCards] = useState(true);
 
   const isDarkMode = useSelector(
@@ -52,27 +53,48 @@ const Page = () => {
     (state: RootState) => state.dashboard.showDashboardCards
   );
 
-  const { mutate, isLoading } = useUpdate({
-    resource: "/config/update-institute",
-
+  // Fetch institute details using the hardcoded ID
+  const { data, isLoading, isError } = useOne({
+    id: `institute_id=${HARD_CODED_ID}`,
+    resource: `config/get-institutebyid`, // Correct query parameter format
+    queryOptions: {
+      enabled: true,
+      onSuccess: (response) => {
+        if (response?.data?.length > 0) {
+          const institute = response.data[0]; // Assuming response is an array
+          setValue("institute_name", institute.institute_name || "");
+          setValue("institute_email", institute.institute_email || "");
+          setValue("mobile", institute.mobile || "");
+          setValue("author", institute.author || "");
+        }
+      },
+      onError: () => {
+        toast.error("Failed to fetch institute details.");
+      },
+    },
   });
 
-  const handleSaveChanges = async(data: FormFields) => {
-    console.log(data);  
-    try {
-      const response = await dataProvider.patchUpdate({
-        resource: 'config/update-institute',
-        value: data,
-      
-      })
+  // Update institute details using the hardcoded ID
+  const { mutate, isLoading: isUpdating } = useUpdate();
 
-      toast.success("Institute Data updated successfully!");
-      window.history.back();
-    } catch (error: any) {
-      toast.error(error.message);
-    }
-  };
+const handleSaveChanges = async (data: Partial<FormFields>) => {
+  console.log("Attempting update with data:", data); // Debugging log
 
+  try {
+    const response = await dataProvider.patchUpdate({
+      resource: "config/update-institute", // API endpoint
+      value: {
+        institute_id: HARD_CODED_ID, // Include the hardcoded ID in the body
+        ...data, // Spread the optional fields
+      },
+    });
+
+    toast.success("Institute Data updated successfully!");
+  } catch (error: any) {
+    console.error("Update API Error:", error); // Debugging log
+    toast.error(error.message || "Failed to update data.");
+  }
+};
 
 
   return (
@@ -102,39 +124,42 @@ const Page = () => {
 
           {/* Main Input Fields */}
           <div className="flex-grow">
-            <form onSubmit={handleSubmit(handleSaveChanges)}>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                {(
-                  Object.entries({
-                    instituteName: "Institute Name",
-                    email: "Email",
-                    phoneNumber: "Phone Number",
-                    author: "Author",
-                  }) as Array<[keyof FormFields, string]>
-                ).map(([key, label]) => (
-                  <div key={key} className="space-y-2 w-full">
-                    <InputField
-                      label={label}
-                      type="text"
-                      register={register}
-                      name={key as Path<FormFields>} // Ensures type safety
-                      readonly={!isEditable}
-                      errors={errors}
-                    />
-                  </div>
-                ))}
-              </div>
+            {isLoading ? (
+              <p>Loading...</p>
+            ) : (
+              <form onSubmit={handleSubmit(handleSaveChanges)}>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                  {(
+                    Object.entries({
+                      instituteName: "Institute Name",
+                      email: "Email",
+                      phoneNumber: "Phone Number",
+                      author: "Author",
+                    }) as Array<[keyof FormFields, string]>
+                  ).map(([key, label]) => (
+                    <div key={key} className="space-y-2 w-full">
+                      <InputField
+                        label={label}
+                        type="text"
+                        register={register}
+                        name={key as Path<FormFields>}
+                        readonly={!isEditable}
+                        errors={errors}
+                      />
+                    </div>
+                  ))}
+                </div>
 
-              {isEditable && (
-                <Button type="submit" className="mt-4" disabled={isLoading}>
-                  {isLoading ? "Saving..." : "Save Changes"}
-                </Button>
-              )}
-            </form>
+                {isEditable && (
+                  <Button type="submit" className="mt-4" disabled={isUpdating}>
+                    {isUpdating ? "Saving..." : "Save Changes"}
+                  </Button>
+                )}
+              </form>
+            )}
           </div>
         </div>
 
-        {/* Toggle Sections */}
         {/* Toggle Sections */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
           {/* Visualization Section */}
@@ -147,10 +172,7 @@ const Page = () => {
                 </Label>
                 <button
                   id="dashboardCard"
-                  onClick={() => {
-                    console.log("Toggle clicked:", !showDashboardCards);
-                    dispatch(toggleDashboardCards());
-                  }}
+                  onClick={() => dispatch(toggleDashboardCards())}
                   className={`w-12 h-6 flex items-center rounded-full p-1 transition-colors ${
                     showDashboardCards ? "bg-blue-600" : "bg-gray-300"
                   }`}
@@ -188,10 +210,7 @@ const Page = () => {
           <div className="border border-[#cdcdd5] rounded-[12px] p-4 bg-white">
             <h2 className="font-medium mb-4">Interface</h2>
             <div className="space-y-4">
-              <div
-                className={`flex items-center justify-between border border-[#cdcdd5] rounded-[12px] p-3 w-full 
-        ${isDarkMode ? "bg-black text-white" : "bg-white text-black"}`}
-              >
+              <div className="flex items-center justify-between border border-[#cdcdd5] rounded-[12px] p-3 w-full">
                 <Label htmlFor="darkMode" className="w-full">
                   Dark Mode
                 </Label>
