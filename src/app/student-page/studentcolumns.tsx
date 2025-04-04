@@ -5,6 +5,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Images from "@/images"; // Ensure this path points to your image exports
+import { EdgeStyleFreeIcons } from "@hugeicons/core-free-icons";
 
 export interface Student {
   student_id: string;
@@ -22,8 +23,8 @@ export interface Student {
   password: string;
   current_password?: string;
   confirm_password?: string;
-  institute_id:string;
-  institute_name:string;
+  institute_id: string;
+  institute_name: string;
 }
 
 // Component for ID Column
@@ -145,6 +146,7 @@ export const useStudentColumns = ({
         const student = row.original;
         return (
           <div className="flex gap-2 ml-10">
+
             <button
               onClick={() => {
                 console.log("Navigating with student_uuid:", student.student_uuid);

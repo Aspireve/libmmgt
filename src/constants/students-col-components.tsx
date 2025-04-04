@@ -5,6 +5,8 @@ import Images from "@/images";
 import useDisclosure from "@/hooks/disclosure-hook";
 import DeleteStudentModal from "@/components/students/delete-student-modal";
 import { Button } from "@/components/ui/button";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { Delete02Icon, Edit02Icon } from "@hugeicons/core-free-icons";
 
 export const StudentIDCell = ({
   student,
@@ -61,23 +63,27 @@ export const StudentActions = ({
   const router = useRouter();
   const { isOpen, close, open } = useDisclosure();
   return (
-    <div className="flex gap-2">
-      <Button
-        className="p-0 shadow-none"
+    <div className="flex gap-2 items-center">
+      <HugeiconsIcon
+        icon={Edit02Icon}
+        size={24}
+        color="#3957B8"
+        strokeWidth={1.5}
+        className="p-0 shadow-none cursor-pointer  "
         onClick={() => {
           router.push(`/student-page/EditStudent?student_id=${student.student_id}`);
         }}
         aria-label="Edit student"
-      >
-        <Image src={Images.EditButton} alt="Edit" height={20} width={20} />
-      </Button>
-      <Button
+      />
+      <HugeiconsIcon
+        icon={Delete02Icon}
+        size={24}
+        color="#3957B8"
+        strokeWidth={1.5}
+        className="p-0 shadow-none cursor-pointer "
         onClick={open}
-        className="p-0 shadow-none"
-        aria-label="Delete student"
-      >
-        <Image src={Images.DeleteButton} alt="Delete" height={20} width={20} />
-      </Button>
+      />
+
       <DeleteStudentModal
         data={[student]}
         close={close}

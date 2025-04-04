@@ -1,7 +1,6 @@
 import type {
   StudentData,
   StudentFromDatabase,
-  StudentMappingType,
 } from "@/types/student";
 import { ColumnDef } from "@tanstack/react-table";
 import {
@@ -38,40 +37,48 @@ export const fieldLabels: Record<keyof StudentData, string> = {
   institute_name: "Institute Name",
 };
 
-export const StudentListTable = ({  
+export const StudentListTable = ({
   refetch,
 }: {
   refetch: () => void;
 }): ColumnDef<StudentFromDatabase>[] => [
-  {
-    accessorKey: "student_id",
-    header: "ID",
-    cell: ({ row }) => <StudentIDCell student={row.original} />,
-  },
-  {
-    accessorKey: "student_name",
-    header: "Name",
-    cell: ({ row }) => <StudentNameCell student={row.original} />,
-  },
-  { accessorKey: "roll_no", header: "Roll no" },
-  { accessorKey: "department", header: "Department" },
-  { accessorKey: "email", header: "Email" },
-  {
-    accessorFn: (data) => data.year_of_admission ?? "Not Provided",
-    header: "Year of Admission",
-  },
-];
-export const StudentListTableAction = ({
-  refetch,
-}: {
-  refetch: () => void;
-}): ColumnDef<StudentFromDatabase>[] => [
-  {
-    id: "actions",
-    header: "Actions",
-    cell: ({ row }) => {
-      const student = row.original;
-      return <StudentActions student={student} refetch={refetch} />;
+    {
+      id: "actions",
+      header: "Actions",
+      cell: ({ row }) => {
+        const student = row.original;
+        return <StudentActions student={student} refetch={refetch} />;
+      },
     },
-  },
-];
+    {
+      accessorKey: "student_id",
+      header: "ID",
+      cell: ({ row }) => <StudentIDCell student={row.original} />,
+    },
+    {
+      accessorKey: "student_name",
+      header: "Name",
+      cell: ({ row }) => <StudentNameCell student={row.original} />,
+    },
+    { accessorKey: "roll_no", header: "Roll no" },
+    { accessorKey: "department", header: "Department" },
+    { accessorKey: "email", header: "Email" },
+    {
+      accessorFn: (data) => data.year_of_admission ?? "Not Provided",
+      header: "Year of Admission",
+    },
+  ];
+// export const StudentListTableAction = ({
+//   refetch,
+// }: {
+//   refetch: () => void;
+// }): ColumnDef<StudentFromDatabase>[] => [
+//     {
+//       id: "actions",
+//       header: "Actions",
+//       cell: ({ row }) => {
+//         const student = row.original;
+//         return <StudentActions student={student} refetch={refetch} />;
+//       },
+//     },
+//   ];

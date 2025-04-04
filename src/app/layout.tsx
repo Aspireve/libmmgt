@@ -18,7 +18,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   const isAuthPage = authPages.includes(pathname);
   return (
     <html lang="en">
-      <body>
+      <body suppressHydrationWarning>
         <Suspense fallback={<> loading...</>}>
           <Provider store={store}>
             <PersistGate loading={null} persistor={persistor}>
