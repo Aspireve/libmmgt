@@ -1,9 +1,10 @@
 "use client";
 import React, { useState } from "react";
+import { useCreate } from "@refinedev/core"; // Import useCreate
+import { toast } from "sonner"; // Import toast for notifications
 import Header from "@/components/custom/header";
 import IssueBook from "@/components/dashboard/issue-book";
 import Tabbing from "@/components/custom/tabbing";
-import { MainTable } from "@/components/data-tables/main-table";
 import MasterTable from "../test/table-page";
 import { Button } from "@/components/ui/button";
 import DashboardData from "@/components/dashboard/dashboard-data-count";
@@ -19,30 +20,76 @@ const TABS = [
   { key: LibraryTabs.REQUEST, label: "Request" },
 ];
 
-const columns = [
-  { accessorKey: "book_title_id", header: "Book ID" },
-  { accessorKey: "book_title_id", header: "Name of Book" },
-  { accessorKey: "book_title_id", header: "Name of Author" },
-  { accessorKey: "book_title_id", header: "Edition" },
-  { accessorKey: "book_title_id", header: "Date" },
-  {
-    accessorKey: "book_title_id",
-    header: "Action",
-    cell: ({ row }: any) => (
-      <div className="flex gap-2 justify-center items-center ">
-        <Button variant="ghost" className="text-[#0D894F]">
-          Accept
-        </Button>
-        <Button variant="ghost" className="text-[#F04438]">
-          Decline
-        </Button>
-      </div>
-    ),
-  },
-];
-
-export default function Dashboard() {
+const Dashboard = () => {
   const [refresh, setRefresh] = useState(0);
+
+  const { mutate, isLoading } = useCreate(); // Using Refine's useCreate
+
+  // Handle Accept & Decline Actions
+  const handleRequestAction = async (requestId: string, status: "approved" | "rejected") => {
+    mutate(
+      {
+        resource: "book_v2/request_booklog_issue_ar",
+        values: {
+          request_id: requestId,
+          status: status,
+        },
+      },
+      {
+        onSuccess: () => {
+          toast.success(`Request ${status === "approved" ? "approved" : "declined"} successfully!`);
+          setRefresh((prev) => prev + 1); // Refresh table after action
+        },
+        onError: (error) => {
+          toast.error(error?.message || "An error occurred while processing the request.");
+        },
+      }
+    );
+  };
+
+  const columns = [
+    { accessorKey: "book_copy_id", header: "Book ID" },
+    { accessorKey: "book_title", header: "Name of Book" },
+    { accessorKey: "book_author", header: "Name of Author" },
+    { accessorKey: "edition", header: "Edition" },
+    {
+      accessorKey: "request_created_at",
+      header: "Date",
+      cell: ({ row }: any) => {
+        const rawDate = row.getValue("request_created_at");
+        const formattedDate = new Date(rawDate).toLocaleDateString("en-GB"); // Converts to dd/mm/yyyy
+        return <span>{formattedDate}</span>;
+      },
+    },
+    {
+      accessorKey: "request_id", // Ensure this exists in API response
+      header: "Action",
+      cell: ({ row }: any) => {
+        const requestId = row.getValue("request_id");
+
+        return (
+          <div className="flex gap-2 justify-center items-center">
+            <Button
+              variant="ghost"
+              className="text-[#0D894F]"
+              onClick={() => handleRequestAction(requestId, "approved")}
+              disabled={isLoading}
+            >
+              Accept
+            </Button>
+            <Button
+              variant="ghost"
+              className="text-[#F04438]"
+              onClick={() => handleRequestAction(requestId, "rejected")}
+              disabled={isLoading}
+            >
+              Decline
+            </Button>
+          </div>
+        );
+      },
+    },
+  ];
 
   return (
     <>
@@ -64,7 +111,8 @@ export default function Dashboard() {
                 AddedOptions={[]}
                 columns={() => columns}
                 isSelectable={false}
-                resource="student/all"
+                resource="book_v2/request_booklog"
+                // refresh={refresh} // Refresh the table on action
               />
             ),
           }}
@@ -72,4 +120,6 @@ export default function Dashboard() {
       </div>
     </>
   );
-}
+};
+
+export default Dashboard;

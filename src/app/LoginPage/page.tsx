@@ -1,6 +1,6 @@
 "use client";
 
-import React, { Suspense, useState } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import { useDispatch } from "react-redux";
@@ -22,6 +22,8 @@ const LoginPage = () => {
   const router = useRouter();
   const dispatch = useDispatch();
   const { mutate } = useCreate();
+
+
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
     if (!email || !password) {
@@ -32,20 +34,23 @@ const LoginPage = () => {
     const data = { email, password }
     mutate(
       {
-        resource: "book_v2/create",
+        resource: "user/login",
         values: data
       },
       {
         onSuccess: (response) => {
-          const accessToken = response?.token?.accessToken ?? null;
+          const accessToken = response.data.token.accessToken ?? null;
 
           // Check if user exists in response
-          const userData = response?.user ?? null;
-    
+          const userData = response.data.user ?? null;
+          const instituteList = response.data.user.institute_list ?? [];
+
+
           if (!accessToken || !userData) {
             toast.error("Server Error.");
             return;
           }
+
 
           router.push("/")
           toast.success("Login successfully!")
@@ -57,15 +62,17 @@ const LoginPage = () => {
             email: userData.email,
             phone: userData.phone_no,
             logo: userData.institute_image,
+            instituteList, // ✅ Store the instituteList in Redux
+            currentInstitute: instituteList.length > 0 ? instituteList[0] : null,
           };
           // Save token to localStorage
-          // localStorage.setItem("token", accessToken);
-          // localStorage.setItem("user", JSON.stringify(user));
+          localStorage.setItem("token", accessToken);
 
           dispatch(setUser(userPayload));
         },
         onError: () => {
           toast.error("Wrong Credentional")
+          // {"statusCode":403,"message":"Invalid Credential"}
         }
       }
     );

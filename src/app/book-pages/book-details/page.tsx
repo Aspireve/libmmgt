@@ -28,19 +28,23 @@ const Book_details = () => {
   const router = useRouter();
 
 
-  const { data: bookData } = useOne<EditBookData>({
+  const { data:bookData } = useOne<EditBookData[]>({
     resource: "book_v2/get_book_title_details",
     id: `_book_uuid=${book_uuid}` || ""
   });
 
-  const bookID = bookData?.data.book_title
-  const bookTitle = bookData?.data.book_title_id
+  const bookID = bookData?.data?.[0]?.book_title_id ?? " ";
+  const bookTitle = bookData?.data?.[0]?.book_title ?? " ";
+
+  useEffect(()=>{
+    console.log(bookData)
+  })
   return (
     <>
       <BookProfileBC />
       <Header heading={bookTitle} subheading={bookID} />
       <section>
-        <div className="mx-[40px]">
+        <div className="mx-[40px] mt-10">
           <BookTitleDetails />
           <Tabbing
             tabs={TABS}
