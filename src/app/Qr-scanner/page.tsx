@@ -3,16 +3,14 @@ import React, { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import QrScannerImage from "@/images/Qr-Scanner.png";
 import { Scanner, IDetectedBarcode } from "@yudiel/react-qr-scanner";
-import { useOne, HttpError } from "@refinedev/core";
+import { useOne } from "@refinedev/core";
 
 const Page = () => {
   const [scanActive, setScanActive] = useState(false);
   const [qrData, setQrData] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState("");
   const [verifying, setVerifying] = useState(false);
-  const [checkStatus, setCheckStatus] = useState<
-    "Check-In" | "Check-Out" | null
-  >(null);
+  const [checkStatus, setCheckStatus] = useState<string | null>(null);
 
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
@@ -36,19 +34,20 @@ const Page = () => {
   // Fetch student verification when QR code is scanned
   const { data, isLoading, isError } = useOne({
     resource: `student/verify-student-visit-key/${qrData}`,
-   
     queryOptions: {
       enabled: !!qrData, // Only fetch when qrData is available
-      onSuccess: () => {
+      onSuccess: (response) => {
         setVerifying(false);
-        const today = new Date().toISOString().split("T")[0]; // Get today's date
-        const lastVisitDate = localStorage.getItem("lastVisitDate");
 
-        if (lastVisitDate === today) {
-          setCheckStatus("Check-Out"); // If already checked in today, show "Check-Out"
+        const apiMessage = response?.data?.message;
+
+        if (apiMessage === "Exit log updated successfully") {
+          setCheckStatus("✅ Check-Out Successful");
+        } else if (apiMessage === "Visit log entry created successfully") {
+          setCheckStatus("✅ Check-In Successful");
         } else {
-          setCheckStatus("Check-In");
-          localStorage.setItem("lastVisitDate", today);
+          setCheckStatus(null);
+          setErrorMessage("Unexpected API response. Please try again.");
         }
       },
       onError: () => {
@@ -96,7 +95,7 @@ const Page = () => {
         {scanActive && (
           <div className="mt-4 bg-gray-900 rounded-lg overflow-hidden">
             <Scanner
-              onScan={(detectedCodes: IDetectedBarcode[]) => {
+              onScan={(detectedCodes) => {
                 if (detectedCodes.length > 0) {
                   setQrData(detectedCodes[0].rawValue);
                   setVerifying(true);
@@ -104,7 +103,7 @@ const Page = () => {
                   stopCamera();
                 }
               }}
-              onError={(error: unknown) => {
+              onError={(error) => {
                 const errMsg =
                   error instanceof Error
                     ? error.message
@@ -134,7 +133,7 @@ const Page = () => {
         {/* Check-In/Check-Out Status */}
         {checkStatus && (
           <div className="mt-6 p-6 bg-green-700 text-white font-semibold rounded-xl shadow-xl w-full max-w-md">
-            <p className="text-xl font-bold">✅ {checkStatus}</p>
+            <p className="text-xl font-bold">{checkStatus}</p>
           </div>
         )}
       </div>
