@@ -4,7 +4,7 @@ import { useState } from "react";
 import Header from "@/components/custom/header";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
-import { Switch } from "@/components/ui/switch";
+// import { Switch } from "@/components/ui/switch";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -54,7 +54,7 @@ const Page = () => {
         <h2 className="text-lg font-semibold mb-2 ml-9 text-[#8E8E93]">
           Library Rules
         </h2>
-        <Card className="p-4 space-y-4 ml-7">
+        <Card className="p-4 space-y-4 ml-7 border border-gray-300">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
               <label className="block text-sm font-medium mb-1 text-black">
@@ -66,7 +66,7 @@ const Page = () => {
                 value={formData.maxBooks}
                 onChange={handleChange}
                 readOnly={!isEditable}
-                className="w-full"
+                className="w-full border border-gray-300"
               />
             </div>
             <div>
@@ -79,7 +79,7 @@ const Page = () => {
                 value={formData.borrowDays}
                 onChange={handleChange}
                 readOnly={!isEditable}
-                className="w-full"
+                className="w-full border border-gray-300"
               />
             </div>
             <div>
@@ -92,7 +92,7 @@ const Page = () => {
                 value={formData.lateFees}
                 onChange={handleChange}
                 readOnly={!isEditable}
-                className="w-full"
+                className="w-full border border-gray-300"
               />
             </div>
           </div>
@@ -106,7 +106,7 @@ const Page = () => {
               value={formData.libraryHours}
               onChange={handleChange}
               readOnly={!isEditable}
-              className="w-1/3"
+              className="w-1/3 border border-gray-300"
             />
           </div>
         </Card>
@@ -117,29 +117,37 @@ const Page = () => {
         <h2 className="text-lg font-semibold mb-2 ml-6 text-[#8E8E93]">
           Setup Email
         </h2>
-        <Card className="p-4 ml-6 w-full min-w-[400px]">
+        <Card className="p-4 ml-6 w-full min-w-[400px] border border-gray-300">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(() => {})} className="space-y-6">
               <FormField
                 control={form.control}
                 name="emailNotifications"
                 render={({ field }) => (
-                  <FormItem className="flex flex-row items-center justify-between p-3">
-                    <div className="flex-1 mr-4">
-                      <FormLabel className="text-sm font-medium text-black">
-                        Email Rules
-                      </FormLabel>
-                      <div className="flex items-center mt-1">
-                        <Input
-                          type="text"
-                          value="Book Borrowing Rules Notification"
-                          readOnly
-                          className="w-full mr-3"
+                  <FormItem className="flex flex-col space-y-2">
+                    <FormLabel className="text-sm font-medium text-black">
+                      Email Rules
+                    </FormLabel>
+                    <div className="relative w-full">
+                      <Input
+                        type="text"
+                        value="Book Borrowing Rules Notification"
+                        readOnly
+                        className="pr-16 border border-gray-300"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => field.onChange(!field.value)}
+                        className={`absolute top-1/2 right-2 transform -translate-y-1/2 w-12 h-6 flex items-center rounded-full p-1 transition-colors ${
+                          field.value ? "bg-blue-600" : "bg-gray-300"
+                        }`}
+                      >
+                        <div
+                          className={`w-4 h-4 bg-white rounded-full shadow-md transform transition-transform ${
+                            field.value ? "translate-x-6" : "translate-x-0"
+                          }`}
                         />
-                        <FormControl>
-                          <Switch checked={field.value}></Switch>
-                        </FormControl>
-                      </div>
+                      </button>
                     </div>
                   </FormItem>
                 )}

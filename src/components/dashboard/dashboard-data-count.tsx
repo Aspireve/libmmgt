@@ -73,7 +73,7 @@ export default function DashboardData({refresh}:{refresh:number}) {
           accent: "#FEA40D",
         },
         {
-          title: "Total Issued Books",
+          title: "New Books",
           // @ts-ignore
           value: dashboardStats?.newBooks ?? "0",
           icon: Cash02Icon,

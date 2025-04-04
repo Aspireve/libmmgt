@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store/store";
 import { addTab, closeTab, setActiveTab } from "@/redux/tabSlice";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { Home03Icon, QrCodeIcon } from "@hugeicons/core-free-icons";
+import { Home03Icon} from "@hugeicons/core-free-icons";
 
 const Navbar: React.FC = () => {
   const dispatch = useDispatch();
@@ -47,7 +47,6 @@ const Navbar: React.FC = () => {
     <div className="w-full shadow-sm h-16 flex border-b border-gray-300 px-6 bg-white font-josefin">
       <div className="flex items-center gap-6 cursor-pointer">
         <HugeiconsIcon icon={Home03Icon} onClick={() => router.push("/")}/>
-        <HugeiconsIcon icon={QrCodeIcon} onClick={()=> router.push("/Qr-scanner")}/>
       </div>
       {tabs.map((tab) => (
         <div

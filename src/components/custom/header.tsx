@@ -3,6 +3,9 @@
 import React from "react";
 import { Skeleton } from "../ui/skeleton";
 import InstituteSelector from "./institute-selector";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { QrCodeIcon } from "@hugeicons/core-free-icons";
+import { useRouter } from "next/navigation";
 
 interface HeadersProps {
   heading: string;
@@ -15,6 +18,8 @@ const Header: React.FC<HeadersProps> = ({
   subheading,
   isLoading = false,
 }) => {
+  const router = useRouter();
+
   return (
     <div className="flex items-center justify-between mx-[40px] font-josefin mt-7">
       {isLoading ? (
@@ -30,6 +35,12 @@ const Header: React.FC<HeadersProps> = ({
           </p>
         </div>
       )}
+      <div className="mr-5 cursor-pointer">
+      <HugeiconsIcon
+        icon={QrCodeIcon}
+        onClick={() => router.push("/Qr-scanner")}
+      />
+      </div>
       <InstituteSelector />
     </div>
   );

@@ -14,7 +14,7 @@ export interface VisitLog {
 
 // Helper function to format time in 24-hour format
 const formatTime = (timeValue: string): string => {
-  if (!timeValue) return "";
+  if (!timeValue) return "-"; // Changed from empty string to dash
   const date = new Date(timeValue);
   if (isNaN(date.getTime())) return timeValue;
   return date.toLocaleTimeString("en-US", {
@@ -29,19 +29,31 @@ export const visitLogColumns: ColumnDef<VisitLog>[] = [
   {
     accessorKey: "student_id",
     header: "Visitor ID",
+    cell: ({ row }) => {
+      const value = row.getValue<string>("student_id");
+      return value ?? "-"; // Display dash for null/undefined values
+    },
   },
   {
-    accessorKey: "visitor_name",
+    accessorKey: "visitor",
     header: "Visitor Name",
+    cell: ({ row }) => {
+      const value = row.getValue<string>("visitor");
+      return value ?? "-"; // Display dash for null/undefined values
+    },
   },
   {
     accessorKey: "department",
     header: "Department",
+    cell: ({ row }) => {
+      const value = row.getValue<string>("department");
+      return value ?? "-"; // Display dash for null/undefined values
+    },
   },
-  {
-    accessorKey: "visitor_type",
-    header: "Visitor Type",
-  },
+  // {
+  //   accessorKey: "visitor_type",
+  //   header: "Visitor Type",
+  // },
   {
     accessorKey: "in_time",
     header: "In Time",
