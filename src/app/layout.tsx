@@ -26,7 +26,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                     <div className="flex flex-1 flex-col h-full">
                       <Navbar />
                       <div className="flex-1 overflow-y-auto h-0 scrollbar-none">{children}</div>
-                      <Toaster position="top-center" />
+                      <Toaster richColors position="top-center" />
                     </div>
                   </div>
                 </DarkModeWrapper>

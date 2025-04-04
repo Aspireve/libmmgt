@@ -70,9 +70,10 @@ export default function DashboardData() {
         },
         {
           title: "Total Issued Books",
-          value: "0",
+          // @ts-ignore
+          value: dashboardStats?.newBooks ?? "0",
           icon: Cash02Icon,
-          downloadUrl: ``,
+          downloadUrl: `https://lms-807p.onrender.com/csv/new-bookss?institute_id=${institute_uuid}`,
           iconBgColor: "bg-[#DCFCE7]",
           accent: "#4AD991",
         },
@@ -90,7 +91,7 @@ export default function DashboardData() {
           // @ts-ignore
           value: dashboardStats?.todayIssues ?? "0",
           icon: ArrowUp03Icon,
-          downloadUrl: ``,
+          downloadUrl: `https://lms-807p.onrender.com/csv/today-issues?institute_id=${institute_uuid}`,
           iconBgColor: "bg-[#E8E7FF]",
           accent: "#8155FF",
         },
@@ -99,7 +100,7 @@ export default function DashboardData() {
           // @ts-ignore
           value: dashboardStats?.todayReturned ?? "0",
           icon: ArrowDown03Icon,
-          downloadUrl: ``,
+          downloadUrl: `https://lms-807p.onrender.com/csv/ntoday-returned?institute_id=${institute_uuid}`,
           iconBgColor: "bg-[#FFF4DE]",
           accent: "#FEA40D",
         },
@@ -108,7 +109,7 @@ export default function DashboardData() {
           // @ts-ignore
           value: dashboardStats?.overdue ?? "0",
           icon: Cash02Icon,
-          downloadUrl: ``,
+          downloadUrl: `https://lms-807p.onrender.com/csv/overdue?institute_id=${institute_uuid}`,
           iconBgColor: "bg-[#DCFCE7]",
           accent: "#4AD991",
         },

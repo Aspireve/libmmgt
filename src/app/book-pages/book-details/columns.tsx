@@ -59,7 +59,9 @@ export const BookActions = ({
 export const StatusCell = ({ isAvailable }: { isAvailable: boolean }) => {
   return (
     <span
-      className={`px-2 py-1 rounded text-white ${isAvailable ? 'rounded-full bg-green-200 text-green-700 ' : ' rounded-full bg-purple-200 text-purple-700 '
+      className={`px-2 py-1 rounded-[20px]
+         ${isAvailable ? ' bg-purple-100 text-purple-700 border-purple-200' :
+           ' bg-green-100 text-green-700 border-green-200'
         }`}
     >
       {isAvailable ? 'Available' : 'Borrowed'}

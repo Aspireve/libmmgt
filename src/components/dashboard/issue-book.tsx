@@ -65,7 +65,7 @@ export default function IssueBook({
 
   return (
     <div
-      className="transition-all duration-300 shadow-lg  rounded-[12px] my-6 p-6"
+      className="transition-all duration-300 shadow-lg  rounded-[12px] my-6 p-6 border border-[#E9EAEB]"
       style={{ boxShadow: "0 0 8px rgba(0, 0, 0, 0.1)" }}
       >
       <div className="flex items-center mb-4 gap-6">

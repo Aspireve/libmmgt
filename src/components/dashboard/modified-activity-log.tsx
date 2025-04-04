@@ -15,6 +15,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { useRouter } from "next/navigation"
 
 interface Student {
   name: string
@@ -22,19 +23,25 @@ interface Student {
   avatar: string
 }
 
-interface Book {
-  title: string
-  author: string
-  id: string
+interface BookCopy {
+  book_copy_id: string
+  book_title_uuid:string
+}
+interface BookTitle {
+  book_title:string
+  book_author:string
 }
 
 interface Activity {
   id: string
-  type: "inTime" | "outTime" | "borrowed" | "return"
-  student: Student
-  book?: Book
+  visitor:string
+  action: "entry" | "exit" | "borrowed" | "returned"
+  student_id: string
+  book_copy?: BookCopy
+  book_title?:BookTitle
   timestamp: string
-  date: string
+  log_date?:string
+  date?: string
   dueDate?: string
   borrowDate?: string
   duration?: string
@@ -46,17 +53,18 @@ interface ActivityItemProps {
 
 export function ActivityItem({ activity }: ActivityItemProps) {
   const [expanded, setExpanded] = useState(false)
+  const router = useRouter()
 
   const getStatusBadge = () => {
-    switch (activity.type) {
-      case "inTime":
+    switch (activity.action) {
+      case "entry":
         return (
           <Badge variant="outline" className="flex items-center gap-1 bg-green-50 text-green-700 border-green-200">
             <Clock className="h-3 w-3" />
             Check In
           </Badge>
         )
-      case "outTime":
+      case "exit":
         return (
           <Badge variant="outline" className="flex items-center gap-1 bg-blue-50 text-blue-700 border-blue-200">
             <LogOut className="h-3 w-3" />
@@ -70,7 +78,7 @@ export function ActivityItem({ activity }: ActivityItemProps) {
             Borrowed
           </Badge>
         )
-      case "return":
+      case "returned":
         return (
           <Badge variant="outline" className="flex items-center gap-1 bg-amber-50 text-amber-700 border-amber-200">
             <BookOpen className="h-3 w-3" />
@@ -81,14 +89,14 @@ export function ActivityItem({ activity }: ActivityItemProps) {
   }
 
   const getIcon = () => {
-    switch (activity.type) {
-      case "inTime":
+    switch (activity.action) {
+      case "entry":
         return <Clock className="h-5 w-5 text-green-500" />
-      case "outTime":
+      case "exit":
         return <LogOut className="h-5 w-5 text-blue-500" />
       case "borrowed":
         return <BookUp className="h-5 w-5 text-purple-500" />
-      case "return":
+      case "returned":
         return <BookOpen className="h-5 w-5 text-amber-500" />
     }
   }
@@ -102,31 +110,40 @@ export function ActivityItem({ activity }: ActivityItemProps) {
   }
 
   const getActivityTitle = () => {
-    switch (activity.type) {
-      case "inTime":
-        return `${activity.student.name} checked in to the library`
-      case "outTime":
-        return `${activity.student.name} checked out of the library`
+    switch (activity.action) {
+      case "entry":
+        return `${activity.visitor} checked in to the library`
+      case "exit":
+        return `${activity.visitor} checked out of the library`
       case "borrowed":
-        return `${activity.student.name} borrowed "${activity.book?.title}"`
-      case "return":
-        return `${activity.student.name} returned "${activity.book?.title}"`
+        return `${activity.visitor} borrowed "${activity.book_title?.book_title}"`
+      case "returned":
+        return `${activity.visitor} returned "${activity.book_title?.book_title}"`
     }
   }
 
   const getActivityDetails = () => {
-    switch (activity.type) {
-      case "inTime":
-        return `Student ID: ${activity.student.id}`
-      case "outTime":
-        return `Duration: ${activity.duration} • Student ID: ${activity.student.id}`
+    switch (activity.action) {
+      case "entry":
+        return `Student ID: ${activity.student_id}`
+      case "exit":
+        return `Duration: ${activity.duration} • Student ID: ${activity.student_id}`
       case "borrowed":
-        return `Due: ${activity.dueDate ? formatDate(activity.dueDate) : "N/A"} • Author: ${activity.book?.author}`
-      case "return":
-        return `Borrowed on: ${activity.borrowDate ? formatDate(activity.borrowDate) : "N/A"} • Author: ${activity.book?.author}`
+        return `Due: ${activity.dueDate ? formatDate(activity.dueDate) : "N/A"} • Author: ${activity.book_title?.book_author}`
+      case "returned":
+        return `Borrowed on: ${activity.borrowDate ? formatDate(activity.borrowDate) : "N/A"} • Author: ${activity.book_title?.book_author}`
     }
   }
 
+
+  const handleStudent = () =>{
+    const url = `/book-pages/book-details?book_uuid=${activity.student_id}`;
+    window.open(url, "_blank"); 
+  }
+  const handleBook = () =>{
+    const url = `/book-pages/book-details?book_uuid=${activity.book_copy?.book_title_uuid}`;
+    window.open(url, "_blank"); 
+  }
   return (
     <div className={`p-4 ${expanded ? "bg-muted/30" : ""}`}>
       <div className="flex items-center justify-between">
@@ -157,12 +174,12 @@ export function ActivityItem({ activity }: ActivityItemProps) {
           <div className="space-y-1">
             <p className="text-xs font-medium text-muted-foreground">Student</p>
             <div className="flex items-center gap-2">
-              <Avatar className="h-6 w-6">
+              {/* <Avatar className="h-6 w-6">
                 <AvatarFallback>{activity.student.avatar}</AvatarFallback>
-              </Avatar>
+              </Avatar> */}
               <div>
-                <span className="text-sm block">{activity.student.name}</span>
-                <span className="text-xs text-muted-foreground">ID: {activity.student.id}</span>
+                <span className="text-sm block">{activity.visitor}</span>
+                <span className="text-xs text-muted-foreground">ID: {activity.student_id}</span>
               </div>
             </div>
           </div>
@@ -172,32 +189,32 @@ export function ActivityItem({ activity }: ActivityItemProps) {
             <p className="text-sm">{format(parseISO(activity.timestamp), "MMM dd, yyyy h:mm a")}</p>
           </div>
 
-          {activity.type === "outTime" && (
+          {activity.action === "exit" && (
             <div className="space-y-1">
               <p className="text-xs font-medium text-muted-foreground">Duration</p>
               <p className="text-sm">{activity.duration}</p>
             </div>
           )}
 
-          {(activity.type === "borrowed" || activity.type === "return") && (
+          {(activity.action === "borrowed" || activity.action === "returned") && (
             <div className="space-y-1">
               <p className="text-xs font-medium text-muted-foreground">Book</p>
               <div>
-                <p className="text-sm font-medium">{activity.book?.title}</p>
-                <p className="text-xs text-muted-foreground">By {activity.book?.author}</p>
-                <p className="text-xs text-muted-foreground">ID: {activity.book?.id}</p>
+                <p className="text-sm font-medium">{activity.book_title?.book_title}</p>
+                <p className="text-xs text-muted-foreground">By {activity.book_title?.book_author}</p>
+                <p className="text-xs text-muted-foreground">ID: {activity.book_copy?.book_copy_id}</p>
               </div>
             </div>
           )}
 
-          {activity.type === "borrowed" && activity.dueDate && (
+          {activity.action === "borrowed" && activity.dueDate && (
             <div className="space-y-1">
               <p className="text-xs font-medium text-muted-foreground">Due Date</p>
               <p className="text-sm">{formatDate(activity.dueDate)}</p>
             </div>
           )}
 
-          {activity.type === "return" && activity.borrowDate && (
+          {activity.action === "returned" && activity.borrowDate && (
             <div className="space-y-1">
               <p className="text-xs font-medium text-muted-foreground">Borrow Date</p>
               <p className="text-sm">{formatDate(activity.borrowDate)}</p>
@@ -205,17 +222,20 @@ export function ActivityItem({ activity }: ActivityItemProps) {
           )}
 
           <div className="md:col-span-3 flex justify-end gap-2 mt-2">
-            <Button size="sm" variant="outline" className="h-8">
+            <Button size="sm" variant="outline" className="h-8" onClick={()=>handleStudent()}>
               <User className="h-4 w-4 mr-2" />
               View Student
             </Button>
-            {(activity.type === "borrowed" || activity.type === "return") && (
-              <Button size="sm" variant="outline" className="h-8">
+            {(activity.action === "borrowed" || activity.action === "returned") && (
+              <Button size="sm" variant="outline" className="h-8" onClick={()=>handleBook()}>
                 <BookOpen className="h-4 w-4 mr-2" />
                 View Book
               </Button>
             )}
-            <DropdownMenu>
+            <Button size="sm" variant="outline" className="h-8">
+              Report
+            </Button>
+            {/* <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button size="sm" variant="outline" className="h-8">
                   Actions
@@ -226,12 +246,12 @@ export function ActivityItem({ activity }: ActivityItemProps) {
                 <DropdownMenuSeparator />
                 <DropdownMenuItem>View Details</DropdownMenuItem>
                 <DropdownMenuItem>Edit Record</DropdownMenuItem>
-                {activity.type === "inTime" && <DropdownMenuItem>Record Check Out</DropdownMenuItem>}
-                {activity.type === "borrowed" && <DropdownMenuItem>Record Return</DropdownMenuItem>}
+                {activity.action === "entry" && <DropdownMenuItem>Record Check Out</DropdownMenuItem>}
+                {activity.action === "borrowed" && <DropdownMenuItem>Record Return</DropdownMenuItem>}
                 <DropdownMenuSeparator />
                 <DropdownMenuItem className="text-red-600">Delete Record</DropdownMenuItem>
               </DropdownMenuContent>
-            </DropdownMenu>
+            </DropdownMenu> */}
           </div>
         </div>
       )}
