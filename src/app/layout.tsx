@@ -21,12 +21,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <RefineContext>
                 {/* Move dark mode handling to a wrapper component */}
                 <DarkModeWrapper>
-                  <div className="flex h-full">
+                  <div className="flex h-screen overflow-hidden">
                     <Sidebar />
-                    <div className="flex flex-1 flex-col">
+                    <div className="flex flex-1 flex-col h-full">
                       <Navbar />
-                      <div className="flex-1 overflow-y-auto">{children}</div>
-                      <Toaster richColors position="top-center" />
+                      <div className="flex-1 overflow-y-auto h-0 scrollbar-none">{children}</div>
+                      <Toaster position="top-center" />
                     </div>
                   </div>
                 </DarkModeWrapper>

@@ -54,7 +54,7 @@ const Page = () => {
   return (
     <>
       <Header heading="Institute Configuration" subheading="Tanvir Chavan" />
-      <div className="p-6">
+      <div className="p-8">
         <h1 className="text-xl font-semibold mb-6">Institute Info</h1>
 
         <div className="flex flex-col md:flex-row gap-6">
@@ -158,8 +158,8 @@ const Page = () => {
             </div>
           </div>
         </div>
-      </div>
       <AllUsers/>
+      </div>
     </>
   );
 };
