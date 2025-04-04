@@ -226,7 +226,7 @@ const Page = () => {
               <Label className="text-[#808080] font-medium mb-1">Address</Label>
               <Textarea
                 {...register("address")}
-                className="border-[#000] p-2 text-[#000] rounded-xl"
+                className="border-[#D5D7DA] p-2 text-[#000] rounded-[8px]"
                 readOnly
                 placeholder="Not Provided"
               />

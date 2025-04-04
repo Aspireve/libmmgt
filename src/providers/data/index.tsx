@@ -42,7 +42,7 @@ export const dataProvider: CustomDataProvider = {
     }
 
     const token =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdHVkZW50X2lkIjoiVFUwMDEvQ1MwMDEiLCJlbWFpbCI6InN0dWRlbnQxQGV4YW1wbGUuY29tIiwiaWF0IjoxNzQzMjI3NzI3fQ.Vrr2E9HxKtGydxk6jKKJQmsvkDNycCepMZs6Jh0ju3I";
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdHVkZW50X2lkIjoiVElBMDE5L0NTMDA5IiwiZW1haWwiOiJ0LmtlbGFza2FyMTdAZ21haWwuY29tIiwiaWF0IjoxNzQzNzA3MjE0LCJleHAiOjE3NDYyOTkyMTR9._k7nU0pb-m4fKh52dtzsMFx8TXdAU84YcrCmC1Ekh_I";
 
     const response = await fetchWrapper(url, {
       method: "GET",

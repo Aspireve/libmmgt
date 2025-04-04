@@ -226,10 +226,10 @@ const AddStudent: React.FC = () => {
                   if (value) clearErrors("gender");
                 }}
               >
-                <SelectTrigger className="w-full p-2 border border-[#000] rounded text-[#000]">
+                <SelectTrigger className="w-full p-2 border border-[#D5D7DA] rounded text-[#000]">
                   <SelectValue placeholder="Select Gender" />
                 </SelectTrigger>
-                <SelectContent className="bg-white">
+                <SelectContent className="bg-white border-[#D5D7DA] rounded shadow-md">
                   <SelectItem value="male">Male</SelectItem>
                   <SelectItem value="female">Female</SelectItem>
                 </SelectContent>
@@ -247,7 +247,7 @@ const AddStudent: React.FC = () => {
                 {...register("year_of_admission")}
                 type="text"
                 placeholder="Enter Year of Admission"
-                className="text-[#000] placeholder:text-[#aaa]"
+                className="text-[#000] border-[#D5D7DA] placeholder:text-[#aaa]"
               />
             </div>
 
@@ -258,7 +258,7 @@ const AddStudent: React.FC = () => {
                   {...register("password")}
                   type={showPassword ? "text" : "password"}
                   placeholder="Enter Password"
-                  className="text-[#000] placeholder:text-[#aaa]"
+                  className="text-[#000] border-[#D5D7DA] placeholder:text-[#aaa]"
                 />
                 <button
                   type="button"
@@ -285,7 +285,7 @@ const AddStudent: React.FC = () => {
                 })}
                 type="date"
                 placeholder="dd-mm-yyyy"
-                className="text-[#000] placeholder:text-[#aaa]"
+                className="text-[#000] border-[#D5D7DA] placeholder:text-[#aaa]"
                 max={today} // Restrict future dates
               />
             </div>
@@ -297,7 +297,7 @@ const AddStudent: React.FC = () => {
           <Textarea
             {...register("address")}
             placeholder="Enter Address"
-            className="w-full p-2 border border-[#000] rounded h-24 text-[#000] placeholder:text-[#aaa]"
+            className="w-full p-2 border border-[#D5D7DA] rounded h-24 text-[#000] placeholder:text-[#aaa]"
           />
         </div>
 

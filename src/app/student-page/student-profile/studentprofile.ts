@@ -1,6 +1,5 @@
 // studentprofile.ts
 
-
 import { formatDate } from "@/app/book-pages/hooks/formatDate";
 import { ColumnDef } from "@tanstack/react-table";
 
@@ -15,8 +14,8 @@ export interface StudentProfileData {
   year_of_admission?: string;
   address?: string;
   student_uuid?: string;
-  date_of_birth?:string | undefined;
-  gender?:string;
+  date_of_birth?: string | undefined;
+  gender?: string;
   image_field?: string;
 }
 
@@ -25,54 +24,56 @@ export interface BorrowedBook {
   book_copy_id: string;
   book_title: string;
   department: string;
+  date: string;
   created_at: string;
   returned_at?: string;
+  action: string;
 }
 
 export interface Activites {
   visitlog_id: string;
   action: string;
   department: string;
-  student_uuid:string;
-  visitor_name:string;
+  student_uuid: string;
+  visitor_name: string;
   in_time: string;
   out_time: string;
-  student_id:string;
+  student_id: string;
 }
-export const borrowedBooksColumns:ColumnDef<BorrowedBook>[] = [
+export const borrowedBooksColumns: ColumnDef<BorrowedBook>[] = [
+  {
+    accessorKey: "new_book_copy.book_copy_id",
+    header: "Book ID",
+  },
+  {
+    accessorKey: "new_book_title.book_title",
+    header: "Book Name",
+  },
+  {
+    accessorKey: "new_book_title.department",
+    header: "Department",
+  },
+  {
+    accessorKey: "date",
+    header: "Issue Date",
+    cell: ({ row }) => {
+      return row.original.action === "borrowed"
+        ? formatDate(row.original.date)
+        : "-";
+    },
+  },
+  {
+    accessorKey: "returned_at",
+    header: "Return Date",
+    cell: ({ row }) => {
+      return row.original.action === "returned"
+        ? formatDate(row.original.date)
+        : "-";
+    },
+  },
+];
 
-    {
-      accessorKey: "book_copy_id",
-      header: "Book ID",
-
-    },
-    {
-      accessorKey: "book_title",
-      header: "Book Name",
-    },
-    {
-      accessorKey: "department",
-      header: "Department",
-    },
-    {
-      accessorKey: "created_at",
-      header: "Issue Date",
-      cell: ({ row }) => {
-        return formatDate(row.original.created_at)
-      },
-      
-    },
-    {
-      accessorKey: "returned_at",
-      header: "Return Date",
-      cell: ({ row }) => {
-       return row.original.returned_at ? formatDate(row.original.returned_at) : "-"
-      }
-    },
-  ];
-
-
-export const studentActivitiesColumns:ColumnDef<Activites>[] =  [
+export const studentActivitiesColumns: ColumnDef<Activites>[] = [
   {
     accessorKey: "student_id",
     header: "Student",
@@ -92,17 +93,17 @@ export const studentActivitiesColumns:ColumnDef<Activites>[] =  [
   {
     accessorKey: "in_time",
     header: "In Time",
-    cell :({row}) => {
+    cell: ({ row }) => {
       return formatDate(row.original.in_time);
-    }
+    },
   },
   {
     accessorKey: "out_time",
     header: "Out Time",
-    cell :({row}) => {
+    cell: ({ row }) => {
       return formatDate(row.original.out_time);
-    }
-  }
+    },
+  },
 ];
 
 /** 5) Profile Data Fields (used for displaying student info) */
@@ -147,7 +148,7 @@ export const profiledata = [
     name: "address",
     label: "Address",
     key: "address",
-    type: "textarea"
+    type: "textarea",
   },
   // {
   //   name: "year_of_admission",
