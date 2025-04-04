@@ -53,7 +53,7 @@ export default function Dashboard() {
           content={{
             [LibraryTabs.ISSUE]: (
               <>
-                <DashboardData />
+                <DashboardData  />
                 <IssueBook setRefreshAction={setRefresh} />
                 <Activities/>
               </>
