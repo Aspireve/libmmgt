@@ -5,7 +5,7 @@ import Image from "next/image";
 import { InputField } from "@/components/custom/inputfield";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { Switch } from "@/components/ui/switch";
+// import { Switch } from "@/components/ui/switch";
 import { Pencil } from "lucide-react";
 import ThakurTrustLogo from "@/images/ThakurTrustLogo.png";
 import Header from "@/components/custom/header";
@@ -14,6 +14,9 @@ import { RootState } from "@/redux/store/store";
 import { toggleDarkMode } from "@/redux/darkModeSlice";
 import { toggleDashboardCards } from "@/redux/dashboardSlice";
 import AllUsers from "../Users/page";
+import { useOne, useUpdate } from "@refinedev/core";
+import { dataProvider } from "@/providers/data";
+import { toast } from "sonner";
 
 type FormFields = {
   instituteName: string;
@@ -39,6 +42,8 @@ const Page = () => {
   const [isEditable, setIsEditable] = useState(false);
   const dispatch = useDispatch();
 
+  const [showReportCards, setShowReportCards] = useState(true);
+
   const isDarkMode = useSelector(
     (state: RootState) => state.darkMode.isDarkMode
   );
@@ -47,9 +52,28 @@ const Page = () => {
     (state: RootState) => state.dashboard.showDashboardCards
   );
 
-  const onSubmit = (data: FormFields) => {
-    console.log("Form Data Submitted:", data);
+  const { mutate, isLoading } = useUpdate({
+    resource: "/config/update-institute",
+
+  });
+
+  const handleSaveChanges = async(data: FormFields) => {
+    console.log(data);  
+    try {
+      const response = await dataProvider.patchUpdate({
+        resource: 'config/update-institute',
+        value: data,
+      
+      })
+
+      toast.success("Institute Data updated successfully!");
+      window.history.back();
+    } catch (error: any) {
+      toast.error(error.message);
+    }
   };
+
+
 
   return (
     <>
@@ -64,11 +88,11 @@ const Page = () => {
               <Image
                 src={ThakurTrustLogo}
                 alt="Thakur Trust Logo"
-                className="w-32 h-32 object-contain"
+                className="w-44 h-32 object-contain"
               />
               <Button
                 size="icon"
-                className="absolute bottom-0 right-0 h-8 w-8 rounded-full bg-white border border-gray-200 shadow-sm hover:bg-white"
+                className="absolute bottom-0 right-0 h-8 w-8 rounded-full bg-white border border-gray-200 shadow-sm hover:bg-white mr-4 mt-1"
                 onClick={() => setIsEditable(!isEditable)}
               >
                 <Pencil className="h-4 w-4" />
@@ -78,7 +102,7 @@ const Page = () => {
 
           {/* Main Input Fields */}
           <div className="flex-grow">
-            <form onSubmit={handleSubmit(onSubmit)}>
+            <form onSubmit={handleSubmit(handleSaveChanges)}>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                 {(
                   Object.entries({
@@ -102,14 +126,15 @@ const Page = () => {
               </div>
 
               {isEditable && (
-                <Button type="submit" className="mt-4">
-                  Save Changes
+                <Button type="submit" className="mt-4" disabled={isLoading}>
+                  {isLoading ? "Saving..." : "Save Changes"}
                 </Button>
               )}
             </form>
           </div>
         </div>
 
+        {/* Toggle Sections */}
         {/* Toggle Sections */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
           {/* Visualization Section */}
@@ -120,20 +145,41 @@ const Page = () => {
                 <Label htmlFor="dashboardCard" className="w-full">
                   Dashboard Card
                 </Label>
-                <Switch
+                <button
                   id="dashboardCard"
-                  checked={showDashboardCards}
-                  onCheckedChange={() => {
-                    console.log("Toggle clicked:", !showDashboardCards); // Debugging
+                  onClick={() => {
+                    console.log("Toggle clicked:", !showDashboardCards);
                     dispatch(toggleDashboardCards());
                   }}
-                />
+                  className={`w-12 h-6 flex items-center rounded-full p-1 transition-colors ${
+                    showDashboardCards ? "bg-blue-600" : "bg-gray-300"
+                  }`}
+                >
+                  <div
+                    className={`w-4 h-4 bg-white rounded-full shadow-md transform transition-transform ${
+                      showDashboardCards ? "translate-x-6" : "translate-x-0"
+                    }`}
+                  />
+                </button>
               </div>
+
               <div className="border border-[#cdcdd5] rounded-[12px] p-3 bg-white flex items-center justify-between w-full">
                 <Label htmlFor="reportCards" className="w-full">
                   Report Cards
                 </Label>
-                <Switch id="reportCards" defaultChecked />
+                <button
+                  id="reportCards"
+                  onClick={() => setShowReportCards((prev) => !prev)}
+                  className={`w-12 h-6 flex items-center rounded-full p-1 transition-colors ${
+                    showReportCards ? "bg-blue-600" : "bg-gray-300"
+                  }`}
+                >
+                  <div
+                    className={`w-4 h-4 bg-white rounded-full shadow-md transform transition-transform ${
+                      showReportCards ? "translate-x-6" : "translate-x-0"
+                    }`}
+                  />
+                </button>
               </div>
             </div>
           </div>
@@ -144,21 +190,30 @@ const Page = () => {
             <div className="space-y-4">
               <div
                 className={`flex items-center justify-between border border-[#cdcdd5] rounded-[12px] p-3 w-full 
-      ${isDarkMode ? "bg-black text-white" : "bg-white text-black"}`}
+        ${isDarkMode ? "bg-black text-white" : "bg-white text-black"}`}
               >
                 <Label htmlFor="darkMode" className="w-full">
                   Dark Mode
                 </Label>
-                <Switch
+                <button
                   id="darkMode"
-                  checked={isDarkMode}
-                  onCheckedChange={() => dispatch(toggleDarkMode())}
-                />
+                  onClick={() => dispatch(toggleDarkMode())}
+                  className={`w-12 h-6 flex items-center rounded-full p-1 transition-colors ${
+                    isDarkMode ? "bg-blue-600" : "bg-gray-300"
+                  }`}
+                >
+                  <div
+                    className={`w-4 h-4 bg-white rounded-full shadow-md transform transition-transform ${
+                      isDarkMode ? "translate-x-6" : "translate-x-0"
+                    }`}
+                  />
+                </button>
               </div>
             </div>
           </div>
         </div>
-      <AllUsers/>
+
+        <AllUsers />
       </div>
     </>
   );

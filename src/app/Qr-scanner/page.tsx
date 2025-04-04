@@ -3,11 +3,17 @@ import React, { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import QrScannerImage from "@/images/Qr-Scanner.png";
 import { Scanner, IDetectedBarcode } from "@yudiel/react-qr-scanner";
+import { useOne, HttpError } from "@refinedev/core";
 
 const Page = () => {
   const [scanActive, setScanActive] = useState(false);
   const [qrData, setQrData] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState("");
+  const [verifying, setVerifying] = useState(false);
+  const [checkStatus, setCheckStatus] = useState<
+    "Check-In" | "Check-Out" | null
+  >(null);
+
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
   // Function to Stop Camera
@@ -26,6 +32,31 @@ const Page = () => {
       stopCamera(); // Cleanup on unmount
     };
   }, []);
+
+  // Fetch student verification when QR code is scanned
+  const { data, isLoading, isError } = useOne({
+    resource: `student/verify-student-visit-key/${qrData}`,
+   
+    queryOptions: {
+      enabled: !!qrData, // Only fetch when qrData is available
+      onSuccess: () => {
+        setVerifying(false);
+        const today = new Date().toISOString().split("T")[0]; // Get today's date
+        const lastVisitDate = localStorage.getItem("lastVisitDate");
+
+        if (lastVisitDate === today) {
+          setCheckStatus("Check-Out"); // If already checked in today, show "Check-Out"
+        } else {
+          setCheckStatus("Check-In");
+          localStorage.setItem("lastVisitDate", today);
+        }
+      },
+      onError: () => {
+        setVerifying(false);
+        setErrorMessage("Verification failed. Please try again.");
+      },
+    },
+  });
 
   return (
     <div className="flex flex-col items-center min-h-screen bg-gray-100 p-6">
@@ -54,6 +85,7 @@ const Page = () => {
               setScanActive(true);
               setQrData(null); // Reset previous scan
               setErrorMessage("");
+              setCheckStatus(null);
             }
           }}
         >
@@ -66,7 +98,8 @@ const Page = () => {
             <Scanner
               onScan={(detectedCodes: IDetectedBarcode[]) => {
                 if (detectedCodes.length > 0) {
-                  setQrData(detectedCodes[0].rawValue); // Extract first QR code
+                  setQrData(detectedCodes[0].rawValue);
+                  setVerifying(true);
                   setScanActive(false);
                   stopCamera();
                 }
@@ -83,22 +116,25 @@ const Page = () => {
               }}
               classNames={{
                 container: "w-full rounded-lg",
-              }} // ✅ Removed `videoRef`
+              }}
             />
           </div>
+        )}
+
+        {/* Verifying Message */}
+        {verifying && (
+          <p className="mt-4 text-blue-600 font-semibold">Verifying...</p>
         )}
 
         {/* Error Message */}
         {errorMessage && (
           <p className="mt-4 text-red-600 font-semibold">{errorMessage}</p>
         )}
-        {/* Display Scanned QR Data */}
-        {qrData && (
+
+        {/* Check-In/Check-Out Status */}
+        {checkStatus && (
           <div className="mt-6 p-6 bg-green-700 text-white font-semibold rounded-xl shadow-xl w-full max-w-md">
-            <p className="text-xl font-bold">✅ QR Code Scanned!</p>
-            <p className="mt-3 bg-white text-green-900 p-4 rounded-lg text-lg break-words shadow-md">
-              {qrData}
-            </p>
+            <p className="text-xl font-bold">✅ {checkStatus}</p>
           </div>
         )}
       </div>

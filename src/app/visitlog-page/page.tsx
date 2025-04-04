@@ -148,7 +148,7 @@ const Page = () => {
         <MasterTable
           title="Visit Logs"
           columns={() => visitLogColumns}
-          resource="student/alllog"
+          resource="student/all_visit_log"
           AddedOptions={[]}
         />
       </section>
