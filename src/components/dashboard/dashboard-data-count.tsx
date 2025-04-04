@@ -36,7 +36,7 @@ export default function DashboardData() {
     return (
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 my-6">
         {Array.from({ length: 8 }).map((_, idx) => (
-          <Skeleton className="h-[100px] rounded-xl w-full animate-pulse bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 bg-[length:200%_100%]" />
+          <Skeleton key={`load-${idx}`} className="h-[100px] rounded-xl w-full animate-pulse bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 bg-[length:200%_100%]" />
         ))}
       </div>
     );
