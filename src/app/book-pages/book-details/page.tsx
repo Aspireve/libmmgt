@@ -9,8 +9,9 @@ import DeleteBook from '@/components/books/delete-book';
 import Tabbing from '@/components/custom/tabbing';
 import BookDetailsActivites from '../book-details-activities/page';
 import { BookProfileBC } from '@/components/breadcrumb/constant';
-import { BookCopiesData } from '@/types/book';
+import { BookCopiesData, EditBookData } from '@/types/book';
 import BookTitleDetails from '../book-title-details/page';
+import { useOne } from '@refinedev/core';
 
 enum LibraryTabs {
   BOOKDETAILS = "Book Details",
@@ -25,16 +26,26 @@ const TABS = [
 const Book_details = () => {
   const book_uuid = useSearchParams().get("book_uuid");
   const router = useRouter();
-  const [bookID, setBookID] = useState<string>("")
-  const [bookTitle, setBookTitle] = useState<string>("")
 
+
+  const { data:bookData } = useOne<EditBookData[]>({
+    resource: "book_v2/get_book_title_details",
+    id: `_book_uuid=${book_uuid}` || ""
+  });
+
+  const bookID = bookData?.data?.[0]?.book_title_id ?? " ";
+  const bookTitle = bookData?.data?.[0]?.book_title ?? " ";
+
+  useEffect(()=>{
+    console.log(bookData)
+  })
   return (
     <>
       <BookProfileBC />
       <Header heading={bookTitle} subheading={bookID} />
       <section>
-        <div className="mx-[40px]">
-          <BookTitleDetails/>
+        <div className="mx-[40px] mt-10">
+          <BookTitleDetails />
           <Tabbing
             tabs={TABS}
             content={{
@@ -51,7 +62,7 @@ const Book_details = () => {
                     AddedOptions={[DeleteBook]}
                     idField='book_copy_uuid'
                   />
-                  </>,
+                </>,
               [LibraryTabs.ACTIVITY]: <>
                 <BookDetailsActivites />
               </>,

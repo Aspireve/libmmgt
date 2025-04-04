@@ -20,8 +20,15 @@ const AddUser = () => {
   const { mutate, isLoading: createLoading } = useCreate()
   const [designation, setDesignation] = useState<string>("")
 
-  const { institute_uuid, institute_name } = useSelector((state: RootState) => state.auth.currentInstitute);
-
+  const { institute_uuid, institute_name, logo , header } = useSelector((state: RootState) => state.auth.currentInstitute);
+  const institute_details = [
+    {
+      institute_uuid,
+      institute_name,
+      institute_logo:logo,
+      institute_header:header,
+    } 
+  ]
   const {
     register,
     handleSubmit,
@@ -34,8 +41,7 @@ const AddUser = () => {
   const onSubmit = (data: any) => {
     const formattedData: AddUserType = {
       ...data,
-      institute_uuid,
-      institute_name,
+      institute_details,  
       address:"Hello world"
     };
     mutate(
@@ -126,7 +132,6 @@ const AddUser = () => {
                         clearErrors("phone_no");
                       }
                     }}
-                    
                   />
                 </div>
               </div>

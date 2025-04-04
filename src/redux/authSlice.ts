@@ -3,10 +3,11 @@ import type { AuthState } from "@/types/auth";
 
 const initialState: AuthState = {
   token: null,
-  institute_uuid: "828f0d33-258f-4a92-a235-9c1b30d8882b",
+  institute_uuid: null,
   employee_uuid: null,
+  designation:null,
   first_name: null,
-  institute_name: "Thakur Institute of Aviation",
+  institute_name: null,
   organization_uuid: null,
   email: null,
   phone: null,
@@ -20,20 +21,20 @@ const initialState: AuthState = {
       "https://admissionuploads.s3.amazonaws.com/d938ade4-0584-40e5-928b-a37aebd06e72_Tia header .jpg",
   },
   instituteList: [
-    {
-      institute_uuid: "*",
-      institute_name: "ADMIN",
-      logo: "https://admissionuploads.s3.amazonaws.com/3302d8ef-0a5d-489d-81f9-7b1f689427be_Tia_logo.png",
-      header:
-        "https://admissionuploads.s3.amazonaws.com/d938ade4-0584-40e5-928b-a37aebd06e72_Tia header .jpg",
-    },
-    {
-      institute_uuid: "828f0d33-258f-4a92-a235-9c1b30d8882b",
-      institute_name: "Thakur Institute of Aviation",
-      logo: "https://admissionuploads.s3.amazonaws.com/3302d8ef-0a5d-489d-81f9-7b1f689427be_Tia_logo.png",
-      header:
-        "https://admissionuploads.s3.amazonaws.com/d938ade4-0584-40e5-928b-a37aebd06e72_Tia header .jpg",
-    },
+    // {
+    //   institute_uuid: "*",
+    //   institute_name: "ADMIN",
+    //   logo: "https://admissionuploads.s3.amazonaws.com/3302d8ef-0a5d-489d-81f9-7b1f689427be_Tia_logo.png",
+    //   header:
+    //     "https://admissionuploads.s3.amazonaws.com/d938ade4-0584-40e5-928b-a37aebd06e72_Tia header .jpg",
+    // },
+    // {
+    //   institute_uuid: "828f0d33-258f-4a92-a235-9c1b30d8882b",
+    //   institute_name: "Thakur Institute of Aviation",
+    //   logo: "https://admissionuploads.s3.amazonaws.com/3302d8ef-0a5d-489d-81f9-7b1f689427be_Tia_logo.png",
+    //   header:
+    //     "https://admissionuploads.s3.amazonaws.com/d938ade4-0584-40e5-928b-a37aebd06e72_Tia header .jpg",
+    // },
     
   ],
 };
@@ -43,7 +44,14 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     setUser: (state, action: PayloadAction<Partial<AuthState>>) => {
-      return { ...state, ...action.payload };
+      return { 
+        ...state, 
+        ...action.payload,
+        currentInstitute:
+          action.payload.instituteList?.find(
+            (inst) => inst.institute_uuid === state.currentInstitute?.institute_uuid
+          ) || action.payload.instituteList?.[0] || state.currentInstitute,
+      };
     },
     clearUser: () => initialState,
     setCurrentInstitute: (

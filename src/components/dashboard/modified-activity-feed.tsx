@@ -5,7 +5,6 @@ import { Clock, LogOut, BookOpen, BookUp, Search, Plus, Download, Calendar, User
 
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { ActivityItem } from "./modified-activity-log"
 import { useList } from "@refinedev/core"
@@ -203,17 +202,24 @@ const groupActivitiesByDate = (activities: any[]) => {
 };
 
 
-export function Activities() {
+export function Activities({
+  refresh,
+}: {
+  refresh: number;
+}) {
   const [searchQuery, setSearchQuery] = useState("")
   const [filter, setFilter] = useState("all")
   const [dateFilter, setDateFilter] = useState("all")
 
-  const {data, isLoading} = useList({
+  const {data, isLoading, refetch} = useList({
     resource:"/student/alllog"
   })
 
   const activities = data?.data || []
 
+  useEffect(()=>{
+    refetch()
+  },[refresh])
 
   // Filter activities based on search query and type filter
 

@@ -47,11 +47,11 @@ const Page = () => {
 
   return (
     <div className="p-6">
-      <Header heading="Library Configuration" subheading="Tanvir Chavan" />
+      <Header heading="Library Configuration" subheading="" />
 
       {/* Library Rules Section */}
       <div className="mt-6">
-        <h2 className="text-lg font-semibold mb-2 ml-9 text-[#8E8E93]">
+        <h2 className="text-lg font-semibold mb-2 ml-9 text-[#0f0f0f]">
           Library Rules
         </h2>
         <Card className="p-4 space-y-4 ml-7 border border-gray-300">

@@ -6,11 +6,27 @@ import { Button } from "../ui/button";
 interface TabsProps<T extends string> {
   tabs: { key: T; label: string }[];
   content: Record<T, ReactNode>;
+  activeTab?: T;
+  onTabChange?: (tab: T) => void;
 }
 
-export const Tabbing = <T extends string>({ tabs, content }: TabsProps<T>) => {
+export const Tabbing = <T extends string>({ 
+  tabs, 
+  content,
+  activeTab: externalActiveTab,
+  onTabChange,
+}: TabsProps<T>) => {
+  const [internalActiveTab, setInternalActiveTab] = useState<T>(tabs[0].key);
   const [activeTab, setActiveTab] = useState<T>(tabs[0].key);
 
+  const handleTabChange = (tab: T) => {
+    if (onTabChange) {
+      onTabChange(tab); // Use external state if provided
+    } else {
+      setInternalActiveTab(tab); // Otherwise, use internal state
+    }
+  };
+  
   const paddingClasses =
     "transition-all duration-300 py-[5px] px-[10px] text-[11px] sm:py-[6px] sm:px-[12px] sm:text-[14px] md:py-[10px] md:px-[10px] md:text-[16px]";
   const activeClasses =
@@ -26,7 +42,7 @@ export const Tabbing = <T extends string>({ tabs, content }: TabsProps<T>) => {
             className={`rounded-[6px] transition-colors shadow-none ${paddingClasses} ${
               activeTab === tab.key ? activeClasses : inactiveClasses
             }`}
-            onClick={() => setActiveTab(tab.key)}
+            onClick={() => {setActiveTab(tab.key);handleTabChange(tab.key)}}
           >
             {tab.label}
           </Button>
