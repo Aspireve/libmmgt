@@ -1,8 +1,6 @@
 import { ColumnDef } from '@tanstack/react-table';
 import { Button } from '@/components/ui/button';
 import { formatDate } from '../hooks/formatDate';
-import Image from 'next/image';
-import images from '@/images';
 import useDisclosure from '@/hooks/disclosure-hook';
 import { useRouter } from 'next/navigation';
 import DeleteBookModal from '@/components/books/delete-book-modal';

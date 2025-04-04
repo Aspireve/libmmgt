@@ -5,6 +5,8 @@ import { ColumnDef } from "@tanstack/react-table";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Images from "@/images"; // Ensure this path points to your image exports
+import { HugeiconsIcon } from "@hugeicons/react";
+import { ViewIcon } from "@hugeicons/core-free-icons";
 
 export interface Student {
   student_id: string;
@@ -154,6 +156,7 @@ export const useStudentColumns = ({
             >
               <Image src={Images.EditButton} alt="Edit" height={20} width={20} />
             </button>
+          
             <button
               onClick={() => {
                 if (onDeleteAction) {

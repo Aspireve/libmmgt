@@ -24,7 +24,9 @@ export const UserActions = ({
         <HugeiconsIcon
           icon={ViewIcon}
           color="#1E40AF"
-          onClick={()=> setIsModalOpen(true)}
+          onClick={()=> {
+            setIsModalOpen(true); 
+            console.log("working")}}
         />
       </Button>
     </div>
