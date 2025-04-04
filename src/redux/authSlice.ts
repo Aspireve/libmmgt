@@ -3,10 +3,11 @@ import type { AuthState } from "@/types/auth";
 
 const initialState: AuthState = {
   token: null,
-  institute_uuid: "828f0d33-258f-4a92-a235-9c1b30d8882b",
+  institute_uuid: null,
   employee_uuid: null,
+  designation:null,
   first_name: null,
-  institute_name: "Thakur Institute of Aviation",
+  institute_name: null,
   organization_uuid: null,
   email: null,
   phone: null,

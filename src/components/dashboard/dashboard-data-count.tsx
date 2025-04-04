@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useList } from "@refinedev/core";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store/store";
@@ -16,16 +16,20 @@ import {
   UserMultiple02Icon,
 } from "@hugeicons/core-free-icons";
 
-export default function DashboardData() {
+export default function DashboardData({refresh}:{refresh:number}) {
   const { institute_uuid } = useSelector(
     (state: RootState) => state.auth.currentInstitute
   );
 
-  const { data, isLoading } = useList<{ totalBooks: string }>({
+  const { data, isLoading, refetch} = useList<{ totalBooks: string }>({
     resource: "/student/admin-dashboard",
   });
 
   const dashboardStats = data?.data?.[0] || data?.data || [];
+
+  useEffect(()=>{
+    refetch();
+  },[refresh])
 
   // Get Redux state for dashboard card visibility
   const showDashboardCards = useSelector(

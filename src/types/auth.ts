@@ -15,6 +15,7 @@ export interface AuthState {
   email: string | null;
   phone: string | null;
   logo: string | null;
+  designation: string | null;
   header_image: string | null;
   currentInstitute: InstituteList ;
   instituteList: InstituteList[] ;

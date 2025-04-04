@@ -12,8 +12,7 @@ import Tabbing from "@/components/custom/tabbing";
 import { ProfileSkeleton } from "@/components/students/skeletons";
 import MasterTable from "@/app/test/table-page";
 import {
-  borrowedBooksColumns,
-  studentActivitiesColumns,
+  borrowedBooksColumns
 } from "../student-profile/studentprofile";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
@@ -21,6 +20,7 @@ import { StudentProfileBC } from "@/components/breadcrumb/constant";
 import { StudentCompleteData } from "@/types/student";
 import { InputField } from "@/components/custom/inputfield";
 import { useForm } from "react-hook-form";
+import StudentDetailActivities from "../student-details-activities/page";
 
 enum LibraryTabs {
   BORROWED = "borrowed",
@@ -265,19 +265,7 @@ const Page = () => {
               />
             ),
             [LibraryTabs.ACTIVITY]: (
-              <MasterTable
-                resource="student/visitlog_by_id"
-                title="Activities"
-                columns={() => studentActivitiesColumns}
-                query={[
-                  {
-                    field: "_student_id",
-                    operator: "eq",
-                    value: student_id ?? "",
-                  },
-                ]}
-                AddedOptions={[]}
-              />
+              <StudentDetailActivities/>
             ),
           }}
         />
