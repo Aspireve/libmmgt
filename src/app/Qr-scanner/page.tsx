@@ -1,14 +1,17 @@
 "use client";
 import React, { useState, useRef, useEffect } from "react";
-import Image from "next/image";
-import QrScannerImage from "@/images/Qr-Scanner.png";
-import { Scanner, IDetectedBarcode } from "@yudiel/react-qr-scanner";
+// import Image from "next/image";
+// import QrScannerImage from "@/images/Qr-Scanner.png";
+import { Scanner } from "@yudiel/react-qr-scanner";
 import { useOne } from "@refinedev/core";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 const Page = () => {
+  const router = useRouter();
   const [scanActive, setScanActive] = useState(false);
   const [qrData, setQrData] = useState<string | null>(null);
-  const [errorMessage, setErrorMessage] = useState("");
+  // const [errorMessage, setErrorMessage] = useState("");
   const [verifying, setVerifying] = useState(false);
   const [checkStatus, setCheckStatus] = useState<string | null>(null);
 
@@ -26,6 +29,15 @@ const Page = () => {
   };
 
   useEffect(() => {
+    if (scanActive) {
+      stopCamera();
+      setScanActive(false);
+    } else {
+      setScanActive(true);
+      setQrData(null); // Reset previous scan
+
+      setCheckStatus(null);
+    }
     return () => {
       stopCamera(); // Cleanup on unmount
     };
@@ -47,12 +59,14 @@ const Page = () => {
           setCheckStatus("✅ Check-In Successful");
         } else {
           setCheckStatus(null);
-          setErrorMessage("Unexpected API response. Please try again.");
+          toast("Unexpected API response. Please try again.")
+          // setErrorMessage("Unexpected API response. Please try again.");
         }
       },
       onError: () => {
         setVerifying(false);
-        setErrorMessage("Verification failed. Please try again.");
+        // setErrorMessage("Verification failed. Please try again.");
+        toast("Verification failed. Please try again.")
       },
     },
   });
@@ -61,7 +75,7 @@ const Page = () => {
     <div className="flex flex-col items-center min-h-screen bg-gray-100 p-6">
       {/* Card Container */}
       <div className="bg-white shadow-lg rounded-2xl p-6 w-full max-w-md text-center">
-        <h1 className="text-2xl font-bold text-gray-800">QR Code Scanner</h1>
+        {/* <h1 className="text-2xl font-bold text-gray-800">QR Code Scanner</h1>
 
         <Image
           src={QrScannerImage}
@@ -72,10 +86,9 @@ const Page = () => {
         />
 
         {/* Scan QR Button */}
-        <button
-          className={`w-full ${
-            scanActive ? "bg-red-600" : "bg-blue-600"
-          } text-white font-semibold py-3 rounded-xl shadow-md transition`}
+        {/* <button
+          className={`w-full ${scanActive ? "bg-red-600" : "bg-blue-600"
+            } text-white font-semibold py-3 rounded-xl shadow-md transition`}
           onClick={() => {
             if (scanActive) {
               stopCamera();
@@ -89,11 +102,11 @@ const Page = () => {
           }}
         >
           {scanActive ? "Close Scanner" : "Scan QR Code"}
-        </button>
+        </button> */}
 
         {/* QR Scanner */}
         {scanActive && (
-          <div className="mt-4 bg-gray-900 rounded-lg overflow-hidden">
+          <div className="mt-4 bg-gray-900 rounded-lg overflow-hidden absolute inset-0">
             <Scanner
               onScan={(detectedCodes) => {
                 if (detectedCodes.length > 0) {
@@ -108,13 +121,14 @@ const Page = () => {
                   error instanceof Error
                     ? error.message
                     : "⚠️ No QR code detected or camera not accessible.";
-                setErrorMessage(errMsg);
+                router.push("/")
+                toast(errMsg)
               }}
               constraints={{
                 facingMode: "environment",
               }}
               classNames={{
-                container: "w-full rounded-lg",
+                container: "w-full ",
               }}
             />
           </div>
@@ -126,9 +140,9 @@ const Page = () => {
         )}
 
         {/* Error Message */}
-        {errorMessage && (
+        {/* {errorMessage && (
           <p className="mt-4 text-red-600 font-semibold">{errorMessage}</p>
-        )}
+        )} */}
 
         {/* Check-In/Check-Out Status */}
         {checkStatus && (
