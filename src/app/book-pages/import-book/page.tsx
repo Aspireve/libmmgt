@@ -270,14 +270,6 @@ const ImportBooks = () => {
               fieldKey={"source_of_acquisition"}
             />
             <MappingDropdown<AddBookType>
-              label="Source of Acquisition"
-              importData={importData}
-              isRequired={true}
-              mapping={mapping}
-              setMapping={setMapping}
-              fieldKey={"source_of_acquisition"}
-            />
-            <MappingDropdown<AddBookType>
               label="Date of Acquisition"
               importData={importData}
               isRequired={true}
