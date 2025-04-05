@@ -142,8 +142,8 @@ const Page = () => {
           const response = await dataProvider.patchUpdate({
             resource: "config/update-rule",
             value: {
-              library_rule_id: "TCA2025-001",
-              institute_uuid:"ad2032fd-12b4-4a82-9845-07d93f39961e",
+              library_rule_id: "TCA2025-006",
+              institute_uuid:"4a9af0a7-76f2-4cfb-bdfb-2949844ca077",
                // <-- Replace or dynamically fetch if needed
               ...payload,
             },

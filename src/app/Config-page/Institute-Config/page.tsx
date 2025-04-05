@@ -18,7 +18,7 @@ import { toast } from "sonner";
 import { dataProvider } from "@/providers/data";
 import { toggleTabsVisibility } from "@/redux/tabSlice";
 import { CustomBreadcrumb } from "@/components/breadcrumb";
-
+import { toggleReportCards } from "@/redux/reportCardSlice";
 
 const HARD_CODED_ID = "TCA2025"; // Hardcoded ID
 
@@ -40,10 +40,10 @@ const Page = () => {
 
   const [isEditable, setIsEditable] = useState(false);
   const dispatch = useDispatch();
-  const [showReportCards, setShowReportCards] = useState(true);
+  const showReportCards = useSelector((state: RootState) => state.reportCard.showReportCards);
   const showTabs = useSelector((state: RootState) => state.tabs.tabsVisible);
-
-
+  
+ 
 
   const isDarkMode = useSelector(
     (state: RootState) => state.darkMode.isDarkMode
@@ -197,7 +197,7 @@ const Page = () => {
                 </Label>
                 <button
                   id="reportCards"
-                  onClick={() => setShowReportCards((prev) => !prev)}
+                  onClick={() => dispatch(toggleReportCards())}
                   className={`w-12 h-6 flex items-center rounded-full p-1 transition-colors ${
                     showReportCards ? "bg-blue-600" : "bg-gray-300"
                   }`}

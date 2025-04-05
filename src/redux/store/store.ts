@@ -9,6 +9,7 @@ import dashboardReducer from "@/redux/dashboardSlice";
 import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import selectAllReducer from "../selectAllSlice";
+import reportCardReducer from "../reportCardSlice"; 
 const persistConfig = {
   key: "tabs",
   storage,
@@ -32,6 +33,7 @@ export const store = configureStore({
     tabs: persistedReducer,
     darkMode: darkModeReducer,
     dashboard: persistedDashboardReducer,
+    reportCard: reportCardReducer,
     selectAll: selectAllReducer,
   },
   middleware: (getDefaultMiddleware) =>
