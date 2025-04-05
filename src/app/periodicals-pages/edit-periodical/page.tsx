@@ -5,7 +5,6 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "@refinedev/react-hook-form";
 import { useOne } from "@refinedev/core";
 import { Button } from "@/components/ui/button";
-import Header from "@/app/Header/header";
 import { Loader2 } from "lucide-react";
 import { JournalData } from "../types/data";
 import { InputField } from "@/components/custom/inputfield";
@@ -92,7 +91,6 @@ const EditJournal = () => {
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <>
-        <Header heading="Edit Periodical" subheading="Tanvir Chavan" />
 
         <section className="p-10">
           <div className="container">
