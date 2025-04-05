@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/select";
 import { toast } from "sonner";
 import { dataProvider } from "@/providers/data";
+import { CustomBreadcrumb } from "@/components/breadcrumb";
 
 // Define proper types for the form data
 interface LibraryFormData {
@@ -43,6 +44,12 @@ interface EmailRules {
 }
 
 const Page = () => {
+
+  const breadcrumbItems = [ 
+    { label: "Configuration", href: "/Config-page" },
+    { label: "Library Configuration", href: "/Config-page/Library-Config" },
+  ];
+
   const [isEditable, setIsEditable] = useState(false);
   const [formData, setFormData] = useState<LibraryFormData>({
     maxBooks: "02",
@@ -225,6 +232,7 @@ const Page = () => {
   return (
     <div className="p-6">
       <Header heading="Library Configuration" subheading="" />
+      <CustomBreadcrumb items={breadcrumbItems}/>
 
       {/* Library Rules Section */}
       <div className="mt-6">

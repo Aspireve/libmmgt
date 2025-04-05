@@ -17,6 +17,7 @@ import { useOne } from "@refinedev/core";
 import { toast } from "sonner";
 import { dataProvider } from "@/providers/data";
 import { toggleTabsVisibility } from "@/redux/tabSlice";
+import { CustomBreadcrumb } from "@/components/breadcrumb";
 
 
 const HARD_CODED_ID = "TCA2025"; // Hardcoded ID
@@ -50,6 +51,12 @@ const Page = () => {
   const showDashboardCards = useSelector(
     (state: RootState) => state.dashboard.showDashboardCards
   );
+
+  const breadcrumbItems=[
+    { label: "Configuration", href: "/Config-page" },
+    { label: "Institute Configuration", href: "/Config-page/Institute-Config" },
+    
+  ]
 
   const { data, isLoading } = useOne({
     id: `institute_id=${HARD_CODED_ID}`,
@@ -98,6 +105,7 @@ const Page = () => {
   return (
     <>
       <Header heading="Institute Configuration" subheading="Tanvir Chavan" />
+      <CustomBreadcrumb items={breadcrumbItems} />
       <div className="p-8">
         <h1 className="text-xl font-semibold mb-6">Institute Info</h1>
 
