@@ -31,6 +31,7 @@ const FeesPenaltiesPage = () => {
     setDateRange(range);
   };
 
+
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <>
@@ -83,7 +84,7 @@ const FeesPenaltiesPage = () => {
             <MasterTable
               title="Fees&Penalties"
               columns={() => PenaltiesColumns}
-              resource="book_v2/get_full_feelist_student"
+              resource="fees-penalties/get-student-fee"
               AddedOptions={[]}
             />
           </div>

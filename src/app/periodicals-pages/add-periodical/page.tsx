@@ -57,15 +57,17 @@ const AddJournal = () => {
     const formattedData: AddPeriodicalType = {
       ...data,
       subscription_price: parseInt(data.subscription_price.toString(), 10),
-      institute_uuid: institute_uuid ?? " ",
-      institute_name: institute_name ?? " ",
+      //TODO FIXED
+      institute_uuid: institute_uuid ?? "4a9af0a7-76f2-4cfb-bdfb-2949844ca077",
+      institute_name: institute_name ?? "Thakur College of Engineering",
+      institute_abbr:"TCE"
     };
     mutate(
       { resource: "journals/create-new-journal", values: formattedData },
       {
         onSuccess: () => {
           toast.success("Journal added successfully!");
-          router.push("/periodicals-pages/periodicals-page");
+          router.back();
         },
         onError: (error) =>
           toast.error("Error adding Journal: " + error.message),
