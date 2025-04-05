@@ -25,9 +25,9 @@ export default function StudentDirectory() {
 
           AddedOptions={[
             DeleteStudent,
-            // ({ setFilters }) => (
-            //   <Filter setFilters={setFilters} />
-            // ),
+            ({ setFilters }) => (
+              <Filter setFilters={setFilters} />
+            ),
             AddStudents,
             ImportStudentButton,
             ExportStudent,
