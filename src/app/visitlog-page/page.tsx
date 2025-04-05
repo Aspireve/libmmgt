@@ -60,15 +60,15 @@ const Page = () => {
     filters: [
       ...(dateRange?.from && dateRange?.to
         ? [
-            {
-              field: "date",
-              operator: "between" as const,
-              value: [
-                format(dateRange.from, "yyyy-MM-dd"),
-                format(dateRange.to, "yyyy-MM-dd"),
-              ],
-            },
-          ]
+          {
+            field: "date",
+            operator: "between" as const,
+            value: [
+              format(dateRange.from, "yyyy-MM-dd"),
+              format(dateRange.to, "yyyy-MM-dd"),
+            ],
+          },
+        ]
         : []),
       ...(timeFrom
         ? [{ field: "in_time", operator: "gte" as const, value: timeFrom }]
@@ -78,12 +78,12 @@ const Page = () => {
         : []),
       ...(searchTerm.trim()
         ? [
-            {
-              field: "visitor_name",
-              operator: "contains" as const,
-              value: searchTerm.trim(),
-            },
-          ]
+          {
+            field: "visitor_name",
+            operator: "contains" as const,
+            value: searchTerm.trim(),
+          },
+        ]
         : []),
     ],
     queryOptions: {
@@ -123,9 +123,9 @@ const Page = () => {
                 >
                   {dateRange?.from && dateRange?.to
                     ? `${format(dateRange.from, "MMM dd, yyyy")} - ${format(
-                        dateRange.to,
-                        "MMM dd, yyyy"
-                      )}`
+                      dateRange.to,
+                      "MMM dd, yyyy"
+                    )}`
                     : "Select date range"}
                 </Button>
               </PopoverTrigger>
@@ -200,6 +200,7 @@ const Page = () => {
           columns={() => visitLogColumns}
           resource="student/all_visit_log"
           AddedOptions={[]}
+          isSelectable={false}
         />
       </section>
     </>
