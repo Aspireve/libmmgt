@@ -1,1 +1,1 @@
-export const options = [5, 10, 15, 20, 25];
+export const options = [50, 75 , 100, 150, 200];
