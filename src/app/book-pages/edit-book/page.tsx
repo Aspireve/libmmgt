@@ -6,7 +6,6 @@ import { useForm } from "@refinedev/react-hook-form";
 import { useOne } from "@refinedev/core";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import Header from "@/app/Header/header";
 import { dataProvider } from "@/providers/data";
 import { InputField } from "@/components/custom/inputfield";
 import { Loader2 } from "lucide-react";
@@ -82,7 +81,6 @@ const EditBook = () => {
     <Suspense fallback={<div>Loading...</div>}>
       <>
         <EditBookBC />
-        <Header heading={BookTitle} subheading="Tanvir Chavan" />
 
         <section className="p-10">
           <div className="container">
