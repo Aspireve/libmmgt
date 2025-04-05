@@ -1,87 +1,173 @@
-"use client";
+"use client"
 
-import React from "react";
-import Link from "next/link";
-import Image from "next/image";
-import { usePathname, useRouter } from "next/navigation";
-import Images from "@/images";
-import { menuItems } from "@/constants/menu";
-import { MenuItem } from "@/types/menu";
-import { RootState } from "@/redux/store/store";
-import { useDispatch } from "react-redux";
-import { addTab, setActiveTab } from "@/redux/tabSlice";
+import { useState, useEffect } from "react"
+import Link from "next/link"
+import Image from "next/image"
+import { usePathname, useRouter } from "next/navigation"
+import { Phone, LogOut } from "lucide-react"
+import type { MenuItem } from "@/types/menu"
+import { menuItems } from "@/constants/menu"
+import Images from "@/images"
+import { useDispatch } from "react-redux" // Import useDispatch here
+import { HugeiconsIcon } from "@hugeicons/react"
 
-const SidebarLink = ({ item }: { item: MenuItem }) => {
-  const pathname = usePathname();
-  const dispatch = useDispatch();
-  const router = useRouter();
+// Custom hook to detect screen size
+const useWindowSize = () => {
+  const [windowSize, setWindowSize] = useState({
+    width: typeof window !== "undefined" ? window.innerWidth : 0,
+    height: typeof window !== "undefined" ? window.innerHeight : 0,
+  })
 
-  const isActive =
-    item.id === "dashboard"
-      ? pathname === item.route
-      : pathname.startsWith(item.route);
+  useEffect(() => {
+    // Handler to call on window resize
+    function handleResize() {
+      setWindowSize({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      })
+    }
 
+    // Add event listener
+    window.addEventListener("resize", handleResize)
 
-      const handleClick = () => {
-        dispatch(addTab({ title: item.title, route: item.route })); // ✅ Add tab
-        dispatch(setActiveTab(item.route)); // ✅ Set active tab
-        router.push(item.route); // ✅ Navigate to the route
-      };
+    // Call handler right away so state gets updated with initial window size
+    handleResize()
+
+    // Remove event listener on cleanup
+    return () => window.removeEventListener("resize", handleResize)
+  }, []) // Empty array ensures that effect is only run on mount and unmount
+
+  return windowSize
+}
+
+const SidebarLink = ({ item, collapsed }: { item: MenuItem; collapsed: boolean }) => {
+  const pathname = usePathname()
+  const router = useRouter()
+
+  // Use useDispatch hook
+  const dispatch = useDispatch()
+
+  const isActive = item.id === "dashboard" ? pathname === item.route : pathname.startsWith(item.route)
+
+  const handleClick = () => {
+    try {
+      const { addTab, setActiveTab } = require("@/redux/tabSlice")
+      dispatch(addTab({ title: item.title, route: item.route }))
+      dispatch(setActiveTab(item.route))
+    } catch (error) {
+      console.log("Redux actions not available")
+    }
+
+    // Always navigate to the route
+    router.push(item.route)
+  }
+
   return (
     <Link
       key={item.id}
       href={item.route}
       onClick={(e) => {
-        e.preventDefault(); 
-        handleClick();
-      }
-      }
+        e.preventDefault()
+        handleClick()
+      }}
       className={`flex items-center gap-3 cursor-pointer rounded-[8px] p-2 text-[#1E40AF] group relative transition-all duration-300
-      ${isActive ? "bg-blue-300" : "hover:bg-[#EDF1FF]"}`}
+      ${isActive ? "bg-blue-300" : "hover:bg-[#EDF1FF]"}
+      ${collapsed ? "justify-center" : ""}`}
+      title={collapsed ? item.title : ""}
     >
-      <Image src={item.icon} alt="" width={20} height={20} />
-      <span>{item.title}</span>
+      <HugeiconsIcon
+        icon={item.icon}
+        size={24}
+        color="#000000"
+        strokeWidth={1.5}
+      />
+      {/* <Image src={item.icon || "/placeholder.svg"} alt={item.title} width={20} height={20} /> */}
+      {!collapsed && <span>{item.title}</span>}
     </Link>
-  );
-};
+  )
+}
 
 const Sidebar = () => {
+  const { width } = useWindowSize()
+  const [collapsed, setCollapsed] = useState(false)
+
+  // Automatically collapse sidebar on smaller screens
+  useEffect(() => {
+    if (width < 1024) {
+      setCollapsed(true)
+    } else {
+      setCollapsed(false)
+    }
+  }, [width])
+
+  // Toggle sidebar collapse state manually
+  // const toggleSidebar = () => {
+  //   setCollapsed(!collapsed)
+  // }
+
   return (
-    <div className="w-[15%] shadow-md border-r border-[#d9d9d9] flex flex-col justify-between font-josefin h-screen">
+    <div
+      className={`shadow-md border-r border-[#d9d9d9] flex flex-col justify-between font-josefin h-screen transition-all duration-300 relative
+      ${collapsed ? "w-[70px]" : "w-[15vw]"}`}
+    >
+
+
       {/* Logo Section */}
-      <div className="p-4">
+      <div className={`p-4 ${collapsed ? "flex justify-center" : ""}`}>
         <Link href="/">
-          <Image
-            src={Images.Logo}
-            alt="VighnoTech Logo"
-            className="w-full h-auto"
-            priority
-          />
+          {collapsed ? (
+            // Show a smaller logo or icon when collapsed
+            <div className="w-8 h-8 flex items-center justify-center">
+              <Image
+                src={Images.Logo}
+                alt="VighnoTech Logo"
+                className="w-full h-auto"
+                width={32}
+                height={32}
+                priority
+              />
+            </div>
+          ) : (
+            <Image src={Images.Logo} alt="VighnoTech Logo" className="w-full h-auto" priority />
+          )}
         </Link>
       </div>
 
       {/* Menu Items */}
-      <div className="p-4 space-y-2 flex-1">
+      <div className={`p-2 space-y-2 flex-1 ${collapsed ? "px-1" : "p-4"}`}>
         {menuItems.map((item) => (
-          <SidebarLink key={item.id} item={item} />
+          <SidebarLink key={item.id} item={item} collapsed={collapsed} />
         ))}
       </div>
 
       {/* Footer Section */}
-      <div className="p-4">
-        <div className="flex justify-between mb-3 cursor-pointer p-2 rounded-md text-[#333333] group relative">
-          <span>Contact</span>
-          <Image src={Images.Telephone} alt="telephone" />
+      <div className={`p-2 ${collapsed ? "px-1" : "p-4"}`}>
+        <div
+          className={`flex ${collapsed ? "justify-center" : "justify-between"} mb-3 cursor-pointer p-2 rounded-md text-[#333333] group relative`}
+          title={collapsed ? "Contact" : ""}
+        >
+          {!collapsed && <span>Contact</span>}
+          {collapsed ? (
+            <Phone size={20} />
+          ) : (
+            <Phone size={20} />
+          )}
         </div>
-        <div className="flex justify-between cursor-pointer p-2 rounded-md text-[#333333] group relative">
-          <span>Sign out</span>
-          <Image src={Images.Logout} alt="logout" />
+        <div
+          className={`flex ${collapsed ? "justify-center" : "justify-between"} cursor-pointer p-2 rounded-md text-[#333333] group relative`}
+          title={collapsed ? "Sign out" : ""}
+        >
+          {!collapsed && <span>Sign out</span>}
+          {collapsed ? (
+            <LogOut size={20} />
+          ) : (
+            <LogOut size={20} />
+          )}
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Sidebar;
-
+export default Sidebar
 

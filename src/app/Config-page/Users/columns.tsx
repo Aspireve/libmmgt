@@ -20,13 +20,14 @@ export const UserActions = ({
     <div className="flex gap-2">
       <Button
         className="p-0 shadow-none"
+        onClick={()=> {
+          setIsModalOpen(true); 
+          console.log("working")}}
       >
         <HugeiconsIcon
           icon={ViewIcon}
           color="#1E40AF"
-          onClick={()=> {
-            setIsModalOpen(true); 
-            console.log("working")}}
+          
         />
       </Button>
     </div>

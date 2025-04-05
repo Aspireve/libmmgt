@@ -1,37 +1,51 @@
 import { MenuItem } from "@/types/menu";
-import Images from "@/images";
+
+import {
+  AnalyticsUpIcon,
+  BookOpen02Icon,
+  Configuration01Icon,
+  DashboardCircleEditFreeIcons,
+  LayersLogoIcon,
+  MoneyBag02Icon,
+  SearchList02Icon,
+} from "@hugeicons/core-free-icons";
 
 export const menuItems: MenuItem[] = [
-  { id: "dashboard", title: "Dashboard", icon: Images.DashLogo, route: "/" },
+  {
+    id: "dashboard",
+    title: "Dashboard",
+    icon: DashboardCircleEditFreeIcons,
+    route: "/",
+  },
   {
     id: "all-books",
     title: "All Books",
-    icon: Images.PenIcon,
+    icon: BookOpen02Icon,
     route: "/book-pages/all-books",
   },
   {
     id: "student-page",
     title: "Student Directory",
-    icon: Images.IssuedBooks,
+    icon: SearchList02Icon,
     route: "/student-page",
   },
   {
     id: "fees-penalties-page",
     title: "Fees & Penalties",
-    icon: Images.FeesPenalties,
+    icon: MoneyBag02Icon,
     route: "/fees-penalties-page",
   },
   {
     id: "visitlog-page",
     title: "Visit Log",
-    icon: Images.VisitLogo,
+    icon: LayersLogoIcon,
     route: "/visitlog-page",
   },
-  { id: "Reports", title: "Reports", icon: Images.Reports, route: "/Reports" },
+  { id: "Reports", title: "Reports", icon: AnalyticsUpIcon, route: "/Reports" },
   {
     id: "Config-page",
     title: "Configuration",
-    icon: Images.config,
+    icon: Configuration01Icon,
     route: "/Config-page",
-  }
+  },
 ];
