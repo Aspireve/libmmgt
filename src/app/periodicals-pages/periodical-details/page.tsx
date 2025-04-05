@@ -1,13 +1,9 @@
 'use client';
 import React, { useState } from 'react'
-
-import Header from '@/app/Header/header'
 import { useRouter, useSearchParams } from "next/navigation";
 import MasterTable from '@/app/test/table-page';
 import DeleteJournal from '@/components/periodicals/delete-button';
 import { getActonsColumns, getPeriodicalCopyColumns } from './columns';
-import Tabbing from '@/components/custom/tabbing';
-import PeriodicalDetailsActivites from '../periodical-details-activities/page';
 import { JournalData } from '../types/data';
 import { PeriodicalProfileBC } from '@/components/breadcrumb/constant';
 import PeriodicalTitleDetails from '../periodical-title-details/page';
@@ -31,7 +27,6 @@ const Periodical_details = () => {
     return (
         <>
             <PeriodicalProfileBC />
-            <Header heading={periodicalTitle} subheading={periodicalID} />
             <section>
                 <div className="mx-[40px]">
                     <PeriodicalTitleDetails />
