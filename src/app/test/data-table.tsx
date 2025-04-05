@@ -39,7 +39,7 @@ export function Datatable<TData extends BaseRecord>({
 
   const SkeletonRow = ({ index }: { index: number }) => (
     <TableRow
-      className="animate-fade-in"
+      className="animate-fade-in border border-gray-100"
       style={{ animationDelay: `${index * 100}ms` }}
     >
       {columns.map((_, colIndex) => (

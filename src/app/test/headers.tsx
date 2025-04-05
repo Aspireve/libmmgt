@@ -26,12 +26,12 @@ const Headers = <TData,>({
       <div className="flex items-center gap-4 my-4 ">
         <span className="font-medium text-lg">{title}</span>
         <span className="rounded-full bg-[#F9F5FF] px-2 py-1 font-medium text-[#6941C6] text-sm">
-          {total} Enteries
+          {total} Entries
         </span>
       </div>
       <div className="flex  gap-4 items-center">
         {AddedOptions && AddedOptions.map((Component: any, index: any) => (
-          <Component filters={filters} setFilters={setFilters} key={index} data={selectedData} refetch={refetch} resource={resource}/>
+          <Component filters={filters} setFilters={setFilters} key={index} data={selectedData} refetch={refetch} resource={resource} />
         ))}
         {/* <div className="relative w-72">
           <Image
