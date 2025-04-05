@@ -8,8 +8,10 @@ import { Phone, LogOut } from "lucide-react";
 import type { MenuItem } from "@/types/menu";
 import { menuItems } from "@/constants/menu";
 import Images from "@/images";
-import { useDispatch } from "react-redux"; // Import useDispatch here
+import { useDispatch } from "react-redux";
 import { HugeiconsIcon } from "@hugeicons/react";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store/store";
 
 // Custom hook to detect screen size
 const useWindowSize = () => {
@@ -19,7 +21,6 @@ const useWindowSize = () => {
   });
 
   useEffect(() => {
-    // Handler to call on window resize
     function handleResize() {
       setWindowSize({
         width: window.innerWidth,
@@ -27,15 +28,11 @@ const useWindowSize = () => {
       });
     }
 
-    // Add event listener
     window.addEventListener("resize", handleResize);
-
-    // Call handler right away so state gets updated with initial window size
     handleResize();
 
-    // Remove event listener on cleanup
     return () => window.removeEventListener("resize", handleResize);
-  }, []); // Empty array ensures that effect is only run on mount and unmount
+  }, []);
 
   return windowSize;
 };
@@ -49,8 +46,6 @@ const SidebarLink = ({
 }) => {
   const pathname = usePathname();
   const router = useRouter();
-
-  // Use useDispatch hook
   const dispatch = useDispatch();
 
   const isActive =
@@ -66,8 +61,6 @@ const SidebarLink = ({
     } catch (error) {
       console.log("Redux actions not available");
     }
-
-    // Always navigate to the route
     router.push(item.route);
   };
 
@@ -91,7 +84,6 @@ const SidebarLink = ({
         strokeWidth={1.5}
         className="shrink-0"
       />
-      {/* <Image src={item.icon || "/placeholder.svg"} alt={item.title} width={20} height={20} /> */}
       {!collapsed && <span className="text-nowrap">{item.title}</span>}
     </Link>
   );
@@ -100,8 +92,11 @@ const SidebarLink = ({
 const Sidebar = () => {
   const { width } = useWindowSize();
   const [collapsed, setCollapsed] = useState(false);
+  // adjust if needed
+  const showReportCards = useSelector(
+    (state: RootState) => state.reportCard.showReportCards
+  );
 
-  // Automatically collapse sidebar on smaller screens
   useEffect(() => {
     if (width < 1024) {
       setCollapsed(true);
@@ -109,11 +104,6 @@ const Sidebar = () => {
       setCollapsed(false);
     }
   }, [width]);
-
-  // Toggle sidebar collapse state manually
-  // const toggleSidebar = () => {
-  //   setCollapsed(!collapsed)
-  // }
 
   return (
     <div
@@ -124,7 +114,6 @@ const Sidebar = () => {
       <div className={`p-4 ${collapsed ? "flex justify-center" : ""}`}>
         <Link href="/">
           {collapsed ? (
-            // Show a smaller logo or icon when collapsed
             <div className="w-8 h-8 flex items-center justify-center">
               <Image
                 src={Images.Logo}
@@ -147,10 +136,16 @@ const Sidebar = () => {
       </div>
 
       {/* Menu Items */}
-      <div className={`p-2 space-y-2 flex-1 ${collapsed ? "px-1" : "p-4"}`}>
-        {menuItems.map((item) => (
-          <SidebarLink key={item.id} item={item} collapsed={collapsed} />
-        ))}
+      <div
+        className={`flex-1 space-y-2 ${
+          collapsed ? "px-1" : "p-4"
+        } transition-all duration-300`}
+      >
+        {menuItems
+          .filter((item) => item.id !== "Reports" || showReportCards)
+          .map((item) => (
+            <SidebarLink key={item.id} item={item} collapsed={collapsed} />
+          ))}
       </div>
 
       {/* Footer Section */}
@@ -162,7 +157,7 @@ const Sidebar = () => {
           title={collapsed ? "Contact" : ""}
         >
           {!collapsed && <span>Contact</span>}
-          {collapsed ? <Phone size={20} /> : <Phone size={20} />}
+          <Phone size={20} />
         </div>
         <div
           className={`flex ${
@@ -171,7 +166,7 @@ const Sidebar = () => {
           title={collapsed ? "Sign out" : ""}
         >
           {!collapsed && <span>Sign out</span>}
-          {collapsed ? <LogOut size={20} /> : <LogOut size={20} />}
+          <LogOut size={20} />
         </div>
       </div>
     </div>
