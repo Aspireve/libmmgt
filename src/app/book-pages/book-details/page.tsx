@@ -1,7 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
 
-import Header from "@/app/Header/header";
 import { useRouter, useSearchParams } from "next/navigation";
 import { getBookCopyColumns } from "./columns";
 import MasterTable from "@/app/test/table-page";
@@ -41,7 +40,6 @@ const Book_details = () => {
   return (
     <>
       <BookProfileBC />
-      <Header heading={bookTitle} subheading={bookID} />
       <section>
         <div className="mx-[40px] mt-10">
           <BookTitleDetails />
