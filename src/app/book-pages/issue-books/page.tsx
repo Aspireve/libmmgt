@@ -3,8 +3,6 @@
 import { Issue_Books, columns, issueBooksData } from './columns';
 // import { DataTable } from '@/components/data-tables/data-table';
 import React, { Suspense, useEffect, useState } from 'react';
-import { useList } from '@refinedev/core';
-import Header from '@/app/Header/header';
 import { MainTable } from '@/components/data-tables/main-table';
 
 
@@ -21,7 +19,6 @@ const IssueBook = () => {
   return (
     <Suspense fallback={<div>Loading...</div>}>
     <>
-          <Header heading="Issue Books" subheading="Tanvir Chavan"/>
     
 
     <section className='border border-[#E0E2E7] rounded-[10px] m-10'>
