@@ -16,6 +16,9 @@ import AllUsers from "../Users/page";
 import { useOne } from "@refinedev/core";
 import { toast } from "sonner";
 import { dataProvider } from "@/providers/data";
+import { toggleTabsVisibility } from "@/redux/tabSlice";
+import { CustomBreadcrumb } from "@/components/breadcrumb";
+
 
 const HARD_CODED_ID = "TCA2025"; // Hardcoded ID
 
@@ -38,6 +41,9 @@ const Page = () => {
   const [isEditable, setIsEditable] = useState(false);
   const dispatch = useDispatch();
   const [showReportCards, setShowReportCards] = useState(true);
+  const showTabs = useSelector((state: RootState) => state.tabs.tabsVisible);
+
+
 
   const isDarkMode = useSelector(
     (state: RootState) => state.darkMode.isDarkMode
@@ -46,20 +52,24 @@ const Page = () => {
     (state: RootState) => state.dashboard.showDashboardCards
   );
 
-  // Fetch institute details
+  const breadcrumbItems=[
+    { label: "Configuration", href: "/Config-page" },
+    { label: "Institute Configuration", href: "/Config-page/Institute-Config" },
+    
+  ]
+
   const { data, isLoading } = useOne({
     id: `institute_id=${HARD_CODED_ID}`,
     resource: `config/get-institutebyid`,
     queryOptions: {
       enabled: true,
-      // In your onSuccess handler, change the field names to match:
       onSuccess: (response) => {
         if (response?.data?.length > 0) {
           const institute = response.data[0];
           reset({
             instituteName: institute.institute_name || "",
-            email: institute.institute_email || "", // This is correct
-            phoneNumber: institute.mobile || "", // This is correct
+            email: institute.institute_email || "",
+            phoneNumber: institute.mobile || "",
             author: institute.author || "",
           });
         }
@@ -70,14 +80,13 @@ const Page = () => {
     },
   });
 
-  // Handle update
   const handleSaveChanges = async (formData: Partial<FormFields>) => {
     try {
       const apiData = {
         institute_id: HARD_CODED_ID,
         institute_name: formData.instituteName,
-        institute_email: formData.email, // Convert to API field name
-        mobile: formData.phoneNumber, // Convert to API field name
+        institute_email: formData.email,
+        mobile: formData.phoneNumber,
         author: formData.author,
       };
 
@@ -96,11 +105,11 @@ const Page = () => {
   return (
     <>
       <Header heading="Institute Configuration" subheading="Tanvir Chavan" />
+      <CustomBreadcrumb items={breadcrumbItems} />
       <div className="p-8">
         <h1 className="text-xl font-semibold mb-6">Institute Info</h1>
 
         <div className="flex flex-col md:flex-row gap-6">
-          {/* Logo Section */}
           <div className="flex-shrink-0">
             <div className="relative">
               <Image
@@ -118,7 +127,6 @@ const Page = () => {
             </div>
           </div>
 
-          {/* Form Section */}
           <div className="flex-grow">
             {isLoading ? (
               <p>Loading...</p>
@@ -156,12 +164,13 @@ const Page = () => {
           </div>
         </div>
 
-        {/* Toggles */}
+        {/* Toggles Section */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
           {/* Visualization Section */}
           <div className="border border-[#cdcdd5] rounded-[12px] p-4 bg-white">
             <h2 className="font-medium mb-4">Visualization</h2>
             <div className="flex flex-col space-y-4">
+              {/* Dashboard Cards */}
               <div className="border border-[#cdcdd5] rounded-[12px] p-3 bg-white flex items-center justify-between w-full">
                 <Label htmlFor="dashboardCard" className="w-full">
                   Dashboard Card
@@ -181,6 +190,7 @@ const Page = () => {
                 </button>
               </div>
 
+              {/* Report Cards */}
               <div className="border border-[#cdcdd5] rounded-[12px] p-3 bg-white flex items-center justify-between w-full">
                 <Label htmlFor="reportCards" className="w-full">
                   Report Cards
@@ -195,6 +205,26 @@ const Page = () => {
                   <div
                     className={`w-4 h-4 bg-white rounded-full shadow-md transform transition-transform ${
                       showReportCards ? "translate-x-6" : "translate-x-0"
+                    }`}
+                  />
+                </button>
+              </div>
+
+              {/* Tabs - NEW TOGGLE */}
+              <div className="border border-[#cdcdd5] rounded-[12px] p-3 bg-white flex items-center justify-between w-full">
+                <Label htmlFor="tabsToggle" className="w-full">
+                  Tabs
+                </Label>
+                <button
+                  id="tabsToggle"
+                  onClick={() => dispatch(toggleTabsVisibility())}
+                  className={`w-12 h-6 flex items-center rounded-full p-1 transition-colors ${
+                    showTabs ? "bg-blue-600" : "bg-gray-300"
+                  }`}
+                >
+                  <div
+                    className={`w-4 h-4 bg-white rounded-full shadow-md transform transition-transform ${
+                      showTabs ? "translate-x-6" : "translate-x-0"
                     }`}
                   />
                 </button>

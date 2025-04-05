@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import React from "react";
 import Header from "../Header/header";
@@ -84,7 +84,7 @@ const ReportPage = () => {
       { name: "Issued", value: statusCount.Issued },
       { name: "Lost", value: statusCount.Lost },
       { name: "Available", value: statusCount.Available },
-    ].filter(entry => entry.value > 0);
+    ].filter((entry) => entry.value > 0);
   }, [booksData]);
 
   const {
@@ -120,8 +120,18 @@ const ReportPage = () => {
     if (!activitiesData?.data) return fakeLineChartData; // Use fake data if no real data
 
     const months = [
-      "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-      "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
     ];
 
     const monthlyCount: Record<number, number> = {};
@@ -142,6 +152,7 @@ const ReportPage = () => {
       <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6 w-[95%] ml-5">
         <div className="border rounded-md p-4 shadow-sm">
           <h2 className="text-lg font-semibold mb-4">Books</h2>
+          <hr className="-mx-4 mb-4 w-[calc(100%+2rem)]" />
           {isBooksLoading && <div>Loading pie chart...</div>}
           {isBooksError && <div>Error loading books data.</div>}
           {!isBooksLoading && !isBooksError && (
@@ -162,7 +173,11 @@ const ReportPage = () => {
                       />
                     ))}
                   </Pie>
-                  <Legend verticalAlign="middle" align="right" layout="vertical" />
+                  <Legend
+                    verticalAlign="middle"
+                    align="right"
+                    layout="vertical"
+                  />
                   <Tooltip />
                 </PieChart>
               </ResponsiveContainer>
@@ -172,6 +187,7 @@ const ReportPage = () => {
 
         <div className="border rounded-md p-4 shadow-sm w-[95%] ml-5">
           <h2 className="text-lg font-semibold mb-4">Activities</h2>
+          <hr className="-mx-4 mb-4 w-[calc(100%+2rem)]" />
           {isActivitiesLoading && <div>Loading line chart...</div>}
           {isActivitiesError && <div>Error loading activities data.</div>}
           {!isActivitiesLoading && !isActivitiesError && (
@@ -204,7 +220,12 @@ const ReportPage = () => {
             className="border p-4 rounded-md shadow-sm hover:shadow-md transition flex justify-between items-center text-sm" // Reduced text size
           >
             <span>{report.label}</span>
-            <Image src={ArrowUpRight} alt="arrow-up-right" height={20} width={20} />
+            <Image
+              src={ArrowUpRight}
+              alt="arrow-up-right"
+              height={20}
+              width={20}
+            />
           </a>
         ))}
       </div>

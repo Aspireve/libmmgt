@@ -12,7 +12,6 @@ const DeleteStudent = <TData extends StudentFromDatabase>({
   refetch: () => void;
 }) => {
   const { isOpen, open, close } = useDisclosure();
-  console.log(data);
   if (data.length === 0) {
     return <></>;
   }

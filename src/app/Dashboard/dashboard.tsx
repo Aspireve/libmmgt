@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { useCreate } from "@refinedev/core"; // Import useCreate
+import { useCreate, useUpdate } from "@refinedev/core"; // Import useCreate and useUpdate
 import { toast } from "sonner"; // Import toast for notifications
 import Header from "@/components/custom/header";
 import IssueBook from "@/components/dashboard/issue-book";
@@ -23,35 +23,75 @@ const TABS = [
 const Dashboard = () => {
   const [refresh, setRefresh] = useState(0);
 
-  const { mutate, isLoading } = useCreate(); // Using Refine's useCreate
+  const { mutate: createMutate, isLoading: isCreateLoading } = useCreate(); 
+  const { mutate: updateMutate, isLoading: isUpdateLoading } = useUpdate();
 
   // Handle Accept & Decline Actions
-  const handleRequestAction = async (requestId: string, status: "approved" | "rejected") => {
-    mutate(
-      {
-        resource: "book_v2/request_booklog_issue_ar",
-        values: {
-          request_id: requestId,
-          status: status,
+  const handleRequestAction = async (
+    requestId: string,
+    status: "approved" | "rejected",
+    requestType: "issue" | "re-issue"
+  ) => {
+    if (requestType === "issue") {
+      // For issue requests, use POST method
+      const endpoint = "book_v2/request_booklog_issue_ar";
+      
+      createMutate(
+        {
+          resource: endpoint,
+          values: {
+            request_id: requestId,
+            status: status,
+          },
         },
-      },
-      {
-        onSuccess: () => {
-          toast.success(`Request ${status === "approved" ? "approved" : "declined"} successfully!`);
-          setRefresh((prev) => prev + 1); // Refresh table after action
+        {
+          onSuccess: () => {
+            toast.success(`Request ${status === "approved" ? "approved" : "declined"} successfully!`);
+            setRefresh((prev) => prev + 1);
+          },
+          onError: (error) => {
+            toast.error(error?.message || "An error occurred while processing the request.");
+          },
+        }
+      );
+    } else {
+      // For re-issue requests, use PUT method
+      const endpoint = "book_v2/request_booklog_reissue_ar";
+      
+      updateMutate(
+        {
+          resource: endpoint,
+          id: "", // Even if empty, this is needed for the useUpdate hook
+          values: {
+            request_id: requestId,
+            status: status,
+          },
+          meta: {
+            method: "PUT" // Explicitly set the method to PUT
+          }
         },
-        onError: (error) => {
-          toast.error(error?.message || "An error occurred while processing the request.");
-        },
-      }
-    );
+        {
+          onSuccess: () => {
+            toast.success(`Request ${status === "approved" ? "approved" : "declined"} successfully!`);
+            setRefresh((prev) => prev + 1);
+          },
+          onError: (error) => {
+            console.error("Update Error:", error);
+            toast.error(error?.message || "An error occurred while processing the request.");
+          },
+        }
+      );
+    }
   };
+
+  const isLoading = isCreateLoading || isUpdateLoading;
 
   const columns = [
     { accessorKey: "book_copy_id", header: "Book ID" },
     { accessorKey: "book_title", header: "Name of Book" },
     { accessorKey: "book_author", header: "Name of Author" },
     { accessorKey: "edition", header: "Edition" },
+    { accessorKey: "request_type", header: "Action Type" },
     {
       accessorKey: "request_created_at",
       header: "Date",
@@ -62,17 +102,18 @@ const Dashboard = () => {
       },
     },
     {
-      accessorKey: "request_id", // Ensure this exists in API response
+      accessorKey: "request_id",
       header: "Action",
       cell: ({ row }: any) => {
         const requestId = row.getValue("request_id");
-
+        const requestType = row.getValue("request_type"); // "issue" or "re-issue"
+    
         return (
           <div className="flex gap-2 justify-center items-center">
             <Button
               variant="ghost"
               className="text-[#0D894F]"
-              onClick={() => handleRequestAction(requestId, "approved")}
+              onClick={() => handleRequestAction(requestId, "approved", requestType)}
               disabled={isLoading}
             >
               Accept
@@ -80,7 +121,7 @@ const Dashboard = () => {
             <Button
               variant="ghost"
               className="text-[#F04438]"
-              onClick={() => handleRequestAction(requestId, "rejected")}
+              onClick={() => handleRequestAction(requestId, "rejected", requestType)}
               disabled={isLoading}
             >
               Decline
@@ -88,7 +129,7 @@ const Dashboard = () => {
           </div>
         );
       },
-    },
+    }
   ];
 
   return (
@@ -100,7 +141,7 @@ const Dashboard = () => {
           content={{
             [LibraryTabs.ISSUE]: (
               <>
-                <DashboardData  refresh={refresh}/>
+                <DashboardData refresh={refresh}/>
                 <IssueBook setRefreshAction={setRefresh} />
                 <Activities refresh={refresh}/>
               </>
@@ -110,9 +151,8 @@ const Dashboard = () => {
                 title="Requests"
                 AddedOptions={[]}
                 columns={() => columns}
-                isSelectable={false}
+                isSelectable={true}
                 resource="book_v2/request_booklog"
-                // refresh={refresh} // Refresh the table on action
               />
             ),
           }}

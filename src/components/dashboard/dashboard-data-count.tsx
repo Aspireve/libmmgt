@@ -35,6 +35,9 @@ export default function DashboardData({ refresh }: { refresh: number }) {
   const showDashboardCards = useSelector(
     (state: RootState) => state.dashboard.showDashboardCards
   );
+  if (!showDashboardCards) {
+    return null;
+  }
 
   if (isLoading) {
     return (
@@ -50,9 +53,6 @@ export default function DashboardData({ refresh }: { refresh: number }) {
   }
 
   // If the toggle is OFF, do not render the dashboard cards
-  if (!showDashboardCards) {
-    return null;
-  }
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 my-6">
@@ -80,7 +80,7 @@ export default function DashboardData({ refresh }: { refresh: number }) {
           // @ts-ignore
           value: dashboardStats?.newBooks ?? "0",
           icon: Cash02Icon,
-          downloadUrl: `https://lms-807p.onrender.com/csv/new-bookss?institute_id=${institute_uuid}`,
+          downloadUrl: `https://lms-807p.onrender.com/csv/new-books?institute_id=${institute_uuid}`,
           iconBgColor: "bg-[#DCFCE7]",
           accent: "#4AD991",
         },
@@ -107,7 +107,7 @@ export default function DashboardData({ refresh }: { refresh: number }) {
           // @ts-ignore
           value: dashboardStats?.todayReturned ?? "0",
           icon: ArrowDown03Icon,
-          downloadUrl: `https://lms-807p.onrender.com/csv/ntoday-returned?institute_id=${institute_uuid}`,
+          downloadUrl: `https://lms-807p.onrender.com/csv/today-returned?institute_id=${institute_uuid}`,
           iconBgColor: "bg-[#FFF4DE]",
           accent: "#FEA40D",
         },
@@ -125,7 +125,7 @@ export default function DashboardData({ refresh }: { refresh: number }) {
           // @ts-ignore
           value: dashboardStats?.trending ?? "0",
           icon: UserMultiple02Icon,
-          downloadUrl: ``,
+          downloadUrl: `https://lms-807p.onrender.com/csv/new-books?institute_id=${institute_uuid}`,
           iconBgColor: "bg-[#E0F2FE]",
           accent: "#5FC5FF",
         },

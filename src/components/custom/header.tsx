@@ -36,10 +36,10 @@ const Header: React.FC<HeadersProps> = ({
         </div>
       )}
       <div className="mr-5 cursor-pointer">
-      <HugeiconsIcon
-        icon={QrCodeIcon}
-        onClick={() => router.push("/Qr-scanner")}
-      />
+        <HugeiconsIcon
+          icon={QrCodeIcon}
+          onClick={() => router.push("/Qr-scanner")}
+        />
       </div>
       <InstituteSelector />
     </div>

@@ -38,13 +38,14 @@ export const DataTableControls: React.FC<DataTableControlsProps> = ({
   setYearFilterAction,
   onFilterApplyAction,
 }) => {
-  const router = useRouter(); 
+  const router = useRouter();
   const [showFilterDropdown, setShowFilterDropdown] = React.useState(false);
 
   return (
     <div className="border-b border-gray-300 pb-4 mb-4">
       {/* Heading & Entry Count */}
       <div className="flex items-center justify-between">
+
         <div className="flex items-center gap-4">
           <p className="text-md font-semibold ml-4">{heading}</p>
           <span className="rounded-full bg-[#F9F5FF] px-3 py-1 text-sm font-medium text-[#6941C6]">
@@ -124,6 +125,7 @@ export const DataTableControls: React.FC<DataTableControlsProps> = ({
           </Button>
         </div>
       </div>
+
     </div>
   );
 };

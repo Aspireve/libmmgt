@@ -24,7 +24,7 @@ const Header: React.FC<HeadersProps> = ({
   // const searchParams = useSearchParams();
 
   // ✅ Get Redux data safely
-  const { header_image, logo } =
+  const { header_image, logo, first_name } =
     useSelector((state: RootState) => state.auth) || {};
 
   // useEffect(() => {
@@ -81,7 +81,7 @@ const Header: React.FC<HeadersProps> = ({
               {heading}
             </h1>
             <p className="ml-[22px] text-gray-500 mt-[5px] font-medium text-lg">
-              {subheading}
+              {first_name}
             </p>
           </div>
         )}
