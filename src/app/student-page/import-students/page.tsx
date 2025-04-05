@@ -97,11 +97,11 @@ const ImportStudents = () => {
               }
               return value;
             })
-            .setField("gender", (value) => {
+            .setField("gender", (value: string) => {
               if (!value) {
                 throw new Error(`Gender is required`);
               }
-              return value;
+              return (value || "").toLowerCase();
             })
             .setField("address", (value) => value || null)
             .setField("year_of_admission", (value) => value || null)
