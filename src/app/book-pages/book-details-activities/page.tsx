@@ -107,7 +107,7 @@ const BookDetailsActivites = () => {
               <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="Filter by date" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className='bg-white'>
                 <SelectItem value="all">All Dates</SelectItem>
                 <SelectItem value="today">Today</SelectItem>
                 <SelectItem value="yesterday">Yesterday</SelectItem>

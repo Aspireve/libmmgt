@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store/store";
 import { addTab, closeTab, setActiveTab } from "@/redux/tabSlice";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { Home03Icon} from "@hugeicons/core-free-icons";
+import { Home03Icon } from "@hugeicons/core-free-icons";
 
 const Navbar: React.FC = () => {
   const dispatch = useDispatch();
@@ -51,9 +51,8 @@ const Navbar: React.FC = () => {
       {tabs.map((tab) => (
         <div
           key={tab.id}
-          className={`px-4 py-2 flex items-center rounded-[10px] cursor-pointer my-4 text-[#1E40AF] ${
-            activeTab === tab.id ? "bg-blue-300" : "hover:bg-[#EDF1FF]"
-          }`}
+          className={`px-4 py-2 flex items-center rounded-[10px] cursor-pointer my-4 text-[#1E40AF] ${activeTab === tab.id ? "bg-blue-300" : "hover:bg-[#EDF1FF]"
+            }`}
           onClick={() => {
             dispatch(setActiveTab(tab.id));
             router.push(tab.route);
@@ -61,7 +60,7 @@ const Navbar: React.FC = () => {
           onMouseEnter={() => setHoveredTab(tab.id)}
           onMouseLeave={() => setHoveredTab(null)}
         >
-          <span>{tab.title}</span>
+          <span className="text-md max-[852px]:text-[10px] max-[975px]:text-[13px] ">{tab.title}</span>
           {hoveredTab === tab.id && (
             <button
               className=" border-none text-[#4b4a4a] pl-2 py-1 text-sm"

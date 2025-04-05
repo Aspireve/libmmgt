@@ -11,7 +11,7 @@ const initialState: StateType = {
   page: 1,
   totalPages: 0,
   total: 0,
-  limit: 15,
+  limit: 50,
 };
 
 const paginationSlice = createSlice({
