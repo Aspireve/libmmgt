@@ -6,6 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { ArrowUpRight } from "lucide-react";
 import React from "react";
 import { useRouter } from "next/navigation";
+import { CustomBreadcrumb } from "@/components/breadcrumb";
 
 const configurations = [
   {
@@ -22,6 +23,8 @@ const configurations = [
 
 const Page = () => {
   const router = useRouter();
+
+
 
   const handleClick = (path: string) => {
     router.push(path);
