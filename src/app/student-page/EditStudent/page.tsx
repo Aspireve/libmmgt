@@ -47,7 +47,7 @@ const EditStudent: React.FC = () => {
     watch,
     setValue,
     isFormInitialized,
-    clearErrors
+    clearErrors,
   } = useEditStudentForm(student_id || "", setProfileImage);
 
   const {
@@ -131,7 +131,7 @@ const EditStudent: React.FC = () => {
                 />
                 <Button
                   type="button"
-                  className="cursor-pointer bg-[#0066FF3D] text-[#1E40AF] px-6 py-2 rounded-[5px] text-sm"
+                  className="cursor-pointer bg-[#0066FF3D] hover:bg-[#0066ff59] text-[#1E40AF] px-6 py-2 rounded-[5px] text-sm"
                   onClick={() => fileInputRef.current?.click()}
                 >
                   {profileImage ? "Change Image" : "Add Image"}
@@ -251,7 +251,7 @@ const EditStudent: React.FC = () => {
                       {...register("year_of_admission")}
                       type="text"
                       placeholder="Enter Year of Admission"
-                       className="text-[#000] placeholder:text-[#aaa]"
+                      className="text-[#000] placeholder:text-[#aaa]"
                     />
                   </div>
 
@@ -288,7 +288,7 @@ const EditStudent: React.FC = () => {
                       })}
                       type="date"
                       placeholder="dd-mm-yyyy"
-                       className="text-[#000] placeholder:text-[#aaa]"
+                      className="text-[#000] placeholder:text-[#aaa]"
                       max={today} // Restrict future dates
                     />
                   </div>

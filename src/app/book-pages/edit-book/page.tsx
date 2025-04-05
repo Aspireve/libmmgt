@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "@refinedev/react-hook-form";
 import { useOne } from "@refinedev/core";
 import { Button } from "@/components/ui/button";
-import { toast } from 'sonner';
+import { toast } from "sonner";
 import Header from "@/app/Header/header";
 import { dataProvider } from "@/providers/data";
 import { InputField } from "@/components/custom/inputfield";
@@ -17,31 +17,32 @@ const EditBook = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const book_uuid = searchParams.get("book_uuid");
-  const [isLoadingInput, setIsLoadingInput] = useState(true)
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoadingInput, setIsLoadingInput] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
-  
   const { data: bookData } = useOne<EditBookData>({
     resource: "book_v2/get_book_title_details",
-    id: `_book_uuid=${book_uuid}` || ""
+    id: `_book_uuid=${book_uuid}` || "",
   });
-  const BookTitle = "Edit Book"
+  const BookTitle = "Edit Book";
 
   const {
     register,
     handleSubmit,
     setValue,
-    formState: { errors }
+    formState: { errors },
   } = useForm<EditBookData>();
-
-
 
   useEffect(() => {
     if (Array.isArray(bookData?.data) && bookData.data.length > 0) {
       const book = bookData.data[0];
       Object.keys(book).forEach((key) => {
         let value = book[key as keyof EditBookData];
-        if (key === "year_of_publication" || key === "updated_at" || key === "created_at") {
+        if (
+          key === "year_of_publication" ||
+          key === "updated_at" ||
+          key === "created_at"
+        ) {
           value = value ? new Date(value).toISOString().split("T")[0] : "";
         }
         setValue(key as keyof EditBookData, value as never);
@@ -51,7 +52,7 @@ const EditBook = () => {
   }, [bookData, setValue]);
 
   const onSubmit = async (data: any) => {
-    setIsLoading(true)
+    setIsLoading(true);
     const formatDate = (dateString: string | undefined) => {
       if (!dateString) return null;
       const date = new Date(dateString);
@@ -66,9 +67,9 @@ const EditBook = () => {
     };
     try {
       const response = await dataProvider.patchUpdate({
-        resource: 'book_v2/update_book_title',
+        resource: "book_v2/update_book_title",
         value: formattedData,
-      })
+      });
 
       toast.success("Book title updated successfully!");
       window.history.back();
@@ -80,13 +81,12 @@ const EditBook = () => {
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <>
-      <EditBookBC/>
+        <EditBookBC />
         <Header heading={BookTitle} subheading="Tanvir Chavan" />
 
         <section className="p-10">
           <div className="container">
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-
               <div>
                 <h2>Cataloging</h2>
                 <div className="grid grid-cols-4 gap-4 p-4">
@@ -113,7 +113,6 @@ const EditBook = () => {
                     }}
                     placeholder="Enter Book Author"
                     loading={isLoadingInput}
-                    
                   />
 
                   <InputField
@@ -127,7 +126,6 @@ const EditBook = () => {
                     }}
                     placeholder="Enter Name of Publisher"
                     loading={isLoadingInput}
-
                   />
                   <InputField
                     label="Place of publication"
@@ -140,7 +138,6 @@ const EditBook = () => {
                     }}
                     placeholder="Enter Place of publication"
                     loading={isLoadingInput}
-
                   />
                   <InputField
                     label="Year of publication"
@@ -153,7 +150,6 @@ const EditBook = () => {
                     }}
                     placeholder="Enter Place of publication"
                     loading={isLoadingInput}
-
                   />
                   <InputField
                     label="Edition"
@@ -166,7 +162,6 @@ const EditBook = () => {
                     }}
                     placeholder="Enter Edition"
                     loading={isLoadingInput}
-
                   />
                   <InputField
                     label="ISBN"
@@ -179,7 +174,6 @@ const EditBook = () => {
                     }}
                     placeholder="Enter ISBN"
                     loading={isLoadingInput}
-
                   />
                   <InputField
                     label="No. of Pages"
@@ -192,7 +186,6 @@ const EditBook = () => {
                     }}
                     placeholder="Enter No. of Pages"
                     loading={isLoadingInput}
-
                   />
                   <InputField
                     label="No. of Preliminary Pages"
@@ -205,7 +198,6 @@ const EditBook = () => {
                     }}
                     placeholder="Enter No. of Preliminary Pages"
                     loading={isLoadingInput}
-
                   />
                   <InputField
                     label="Subject"
@@ -218,7 +210,6 @@ const EditBook = () => {
                     }}
                     placeholder="Enter Subject"
                     loading={isLoadingInput}
-
                   />
                   <InputField
                     label="Department"
@@ -231,7 +222,6 @@ const EditBook = () => {
                     }}
                     placeholder="Enter Department"
                     loading={isLoadingInput}
-
                   />
                 </div>
 
@@ -248,7 +238,6 @@ const EditBook = () => {
                     }}
                     placeholder="Enter Call Number"
                     loading={isLoadingInput}
-
                   />
 
                   <InputField
@@ -262,23 +251,23 @@ const EditBook = () => {
                     }}
                     placeholder="Enter Author Mark"
                     loading={isLoadingInput}
-
                   />
-
                 </div>
               </div>
 
               {/* Action Buttons */}
               <div className="flex justify-center gap-4">
                 <Button
-                type="button"
-                className="shadow-none text-[#1E40AF] rounded-[10px]"
-                onClick={() => router.back()}>
+                  variant="outline"
+                  type="button"
+                  className="shadow-none text-[#1E40AF] rounded-[10px]"
+                  onClick={() => router.back()}
+                >
                   Cancel
                 </Button>
                 <Button
                   type="submit"
-                  className="bg-[#1E40AF] text-white rounded-[10px] hover:bg-[#1E40AF]"
+                  className="bg-[#1E40AF] text-white rounded-[10px] hover:bg-[#1E40AF]/90"
                   disabled={isLoading}
                 >
                   {isLoading ? (
@@ -294,7 +283,8 @@ const EditBook = () => {
             </form>
           </div>
         </section>
-      </></Suspense>
+      </>
+    </Suspense>
   );
 };
 
