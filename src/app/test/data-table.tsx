@@ -52,7 +52,9 @@ export function Datatable<TData extends BaseRecord>({
 
   return (
     <div className="rounded-md flex flex-col gap-4">
-      <Table className="font-inter w-full">
+       <div className="max-h-[400px] overflow-x-scroll w-full">
+      <Table className="font-inter">
+      
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow
@@ -77,10 +79,11 @@ export function Datatable<TData extends BaseRecord>({
             </TableRow>
           ))}
         </TableHeader>
-
+       
         <TableBody>
           {isLoading ? (
             Array(5)
+            
               .fill(null)
               .map((_, index) => <SkeletonRow key={index} index={index} />)
           ) : table.getRowModel().rows.length ? (
@@ -123,7 +126,9 @@ export function Datatable<TData extends BaseRecord>({
             </TableRow>
           )}
         </TableBody>
+
       </Table>
+        </div>
     </div>
   );
 }

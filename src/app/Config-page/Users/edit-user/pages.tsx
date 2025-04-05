@@ -3,7 +3,7 @@
 import React, { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "@refinedev/react-hook-form";
-import { useOne } from "@refinedev/core";
+import { useOne, useUpdate } from "@refinedev/core";
 import { Button } from "@/components/ui/button";
 import { toast } from 'sonner';
 import { dataProvider } from "@/providers/data";
@@ -18,6 +18,7 @@ const EditUserPage = () => {
     const searchParams = useSearchParams();
     const user_id = searchParams.get("user_id");
     const [designation, setDesignation] = useState<string>("")
+    const { mutate, isLoading } = useUpdate();
 
 
     const { data: UserData } = useOne<EditUser>({
@@ -48,17 +49,26 @@ const EditUserPage = () => {
 
     const onSubmit = async (data: any) => {
         // setIsLoading(true)
-        try {
-            await dataProvider.patchUpdate({
-                resource: 'user/update',
-                value: data,
-            })
 
-            toast.success("Book title updated successfully!");
-            window.history.back();
-        } catch (error: any) {
-            toast.error(error.message);
-        }
+        mutate(
+              {
+                resource: "user/edit",
+                values: data
+              },
+              {
+                onSuccess: () => {
+                  toast.success("User updated successfully!");
+                  
+                },
+                onError: (error: any) => {
+                  toast.error(
+                    `Error updating user: ${
+                      error.message || "Please try again later."
+                    }`
+                  );
+                },
+              }
+            );
     };
 
     return (
@@ -148,7 +158,7 @@ const EditUserPage = () => {
                                     type="submit"
                                     className="bg-[#1E40AF] text-white rounded-[10px] hover:bg-[#1E40AF]"
                                 >
-                                    Add User
+                                    Update User
                                 </Button>
                             </div>
                         </form>
