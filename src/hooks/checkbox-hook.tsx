@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { ColumnDef } from "@tanstack/react-table";
-
+import { useDispatch, useSelector } from "react-redux";
+import { setShow } from "@/redux/selectAllSlice";
+import { RootState } from "@/redux/store/store";
 export function useRowSelection<T>(
   getRowId: (row: T) => string | number,
   isSelectable: boolean,
@@ -8,7 +10,9 @@ export function useRowSelection<T>(
   tableData: T[],
   priorColumns?: ColumnDef<T>[]
 ) {
+  const dispatch = useDispatch();
   const [selectedData, setSelectedData] = useState<T[]>([]);
+  // const { show } = useSelector((state: RootState) => state.selectAll);
 
   const isRowSelected = (row: T): boolean => {
     const rowId = getRowId(row);
@@ -39,7 +43,11 @@ export function useRowSelection<T>(
                 selectedData.length === tableData?.length &&
                 (tableData?.length || 0) > 0
               }
-              onChange={(e) => toggleAllRows(e.target.checked, tableData)}
+              onChange={(e) => {
+                toggleAllRows(e.target.checked, tableData)
+                e.target.checked ? dispatch(setShow(true)) : dispatch(setShow(false))
+              }
+              }
             />
           </div>
         ),
@@ -48,7 +56,12 @@ export function useRowSelection<T>(
             <input
               type="checkbox"
               checked={isRowSelected(row.original)}
-              onChange={() => toggleRowSelection(row.original)}
+              onChange={(e) => {
+                if (!e.target.checked) {
+                  dispatch(setShow(false))
+                }
+                toggleRowSelection(row.original)
+              }}
             />
           </div>
         ),
