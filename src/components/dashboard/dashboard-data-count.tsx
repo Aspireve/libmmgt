@@ -22,7 +22,14 @@ export default function DashboardData({ refresh }: { refresh: number }) {
   );
 
   const { data, isLoading, refetch } = useList<{ totalBooks: string }>({
-    resource: "/student/admin-dashboard",
+    resource: `/student/admin-dashboard`,
+    filters: [
+      {
+        field: "_institute_uuid",
+        operator: "eq",
+        value: JSON.stringify([institute_uuid]),
+      },
+    ],
   });
 
   const dashboardStats = data?.data?.[0] || data?.data || [];
@@ -133,11 +140,7 @@ export default function DashboardData({ refresh }: { refresh: number }) {
         <a
           key={`stat-${idx}`}
           href={stat.downloadUrl}
-          className="group flex justify-between items-center bg-white rounded-[15px] p-4 h-[100px] cursor-pointer shadow-[0_0_8px_rgba(0,0,0,0.1)] hover:shadow-xl"
-          // style={{ boxShadow: "0 0 8px rgba(0, 0, 0, 0.1)" }}
-
-          // onMouseEnter={() => setHoveredIndex(idx)}
-          // onMouseLeave={() => setHoveredIndex(null)}
+          className="group flex justify-between items-center bg-white rounded-[15px] p-4 h-[100px] cursor-pointer shadow-[0_0_8px_rgba(0,0,0,0.1)] hover:shadow-xl transition-all duration-200"
         >
           <div className="flex flex-col">
             <p className="text-sm text-gray-500">{stat.title}</p>

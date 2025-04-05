@@ -80,7 +80,7 @@ export function Activities({
   const sortedDates = Object.keys(groupedActivities).sort((a, b) => new Date(b).getTime() - new Date(a).getTime())
 
   return (
-    <div className="container my-6 py-6 rounded-[10px] bg-[#fff] overflow-auto">
+    <div className="my-6 py-6 rounded-[10px] bg-[#fff] overflow-auto">
 
 
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">

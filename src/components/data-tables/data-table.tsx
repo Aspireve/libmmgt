@@ -59,9 +59,9 @@ export function DataTable<TData extends BaseRecord>({
       <div className="rounded-md flex flex-col gap-4">
         <Table className="font-inter w-full">
           <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
+            {table.getHeaderGroups().map((headerGroup, idx) => (
               <TableRow
-                key={headerGroup.id}
+                key={`${headerGroup.id}-${idx}`}
                 className="border-b border-gray-300"
               >
                 {headerGroup.headers.map((header) => (

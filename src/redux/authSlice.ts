@@ -74,8 +74,14 @@ const authSlice = createSlice({
     setUser: (state, action: PayloadAction<Partial<AuthStates>>) => {
       state.token.accessToken = action.payload.token?.accessToken;
       state.user = action.payload.user;
+      console.log(action.payload.user)
       state.currentInstitute =
-        action.payload.user?.institute_details[0]?.institute_uuid;
+        action.payload.user!.institute_details?.find(
+          (inst) =>
+            inst.institute_uuid === state.currentInstitute?.institute_uuid
+        ) ||
+        action.payload.user!.institute_details?.[0] ||
+        state.currentInstitute;
     },
     // clearUser: () => initialState,
     clearUser: (state) => {

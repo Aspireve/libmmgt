@@ -19,16 +19,21 @@ const persistDashboardConfig = {
   key: "dashboard",
   storage,
 };
+
+const persistAuth = {
+  key: "auth",
+  storage,
+}
 const persistedDashboardReducer = persistReducer(
   persistDashboardConfig,
   dashboardReducer
 );
-
+const persistedAuth = persistReducer(persistAuth, authReducer);
 const persistedReducer = persistReducer(persistConfig, tabReducer);
 
 export const store = configureStore({
   reducer: {
-    auth: authReducer,
+    auth: persistedAuth,
     pagination: paginationReducer,
     tabs: persistedReducer,
     darkMode: darkModeReducer,

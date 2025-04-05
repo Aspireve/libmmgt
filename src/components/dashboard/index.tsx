@@ -12,6 +12,7 @@ import { Activities } from "./modified-activity-feed";
 
 // Move from App Router
 import MasterTable from "@/app/test/table-page";
+import { SearchFilter } from "../students/search-student";
 
 enum LibraryTabs {
   ISSUE = "issue",
@@ -33,7 +34,7 @@ const Dashboard = () => {
   const handleRequestAction = async (
     requestId: string,
     status: "approved" | "rejected",
-    requestType: "issue" | "re-issue"
+    requestType: "issue" | "re-issue" | "return"
   ) => {
     if (requestType === "issue") {
       // For issue requests, use POST method
@@ -54,7 +55,34 @@ const Dashboard = () => {
                 status === "approved" ? "approved" : "declined"
               } successfully!`
             );
-            setRefresh((prev) => prev + 1);
+          },
+          onError: (error) => {
+            toast.error(
+              error?.message ||
+                "An error occurred while processing the request."
+            );
+          },
+        }
+      );
+    } else if (requestType === "return") {
+      // For issue requests, use POST method
+      const endpoint = "book_v2/request_booklog_return_ar";
+
+      createMutate(
+        {
+          resource: endpoint,
+          values: {
+            request_id: requestId,
+            status: status,
+          },
+        },
+        {
+          onSuccess: () => {
+            toast.success(
+              `Request ${
+                status === "approved" ? "approved" : "declined"
+              } successfully!`
+            );
           },
           onError: (error) => {
             toast.error(
@@ -87,7 +115,6 @@ const Dashboard = () => {
                 status === "approved" ? "approved" : "declined"
               } successfully!`
             );
-            setRefresh((prev) => prev + 1);
           },
           onError: (error) => {
             console.error("Update Error:", error);
@@ -103,12 +130,35 @@ const Dashboard = () => {
 
   const isLoading = isCreateLoading || isUpdateLoading;
 
-  const columns = [
+  const columns = ({ refetch }: { refetch: () => Promise<unknown> }) => [
+    {
+      accessorKey: "request_id",
+      header: "Request ID",
+      cell: ({ row }: any) => (
+        <span className="font-bold">{row.getValue("request_id")}</span>
+      ),
+    },
     { accessorKey: "book_copy_id", header: "Book ID" },
+    { accessorKey: "student_id", header: "Student ID" },
     { accessorKey: "book_title", header: "Name of Book" },
-    { accessorKey: "book_author", header: "Name of Author" },
+    // { accessorKey: "book_author", header: "Name of Author" },
     { accessorKey: "edition", header: "Edition" },
-    { accessorKey: "request_type", header: "Action Type" },
+    {
+      accessorKey: "request_type",
+      header: "Action Type",
+      cell: ({ row }: any) => {
+        const request_type = row.getValue("request_type");
+        return (
+          <span>
+            {request_type === "issue"
+              ? "Issue"
+              : request_type === "re-issue"
+              ? "ReIssue"
+              : "Return"}
+          </span>
+        );
+      },
+    },
     {
       accessorKey: "request_created_at",
       header: "Date",
@@ -123,16 +173,16 @@ const Dashboard = () => {
       header: "Action",
       cell: ({ row }: any) => {
         const requestId = row.getValue("request_id");
-        const requestType = row.getValue("request_type"); // "issue" or "re-issue"
-
+        const requestType = row.getValue("request_type");
         return (
           <div className="flex gap-2 justify-center items-center">
             <Button
               variant="ghost"
               className="text-[#0D894F]"
-              onClick={() =>
-                handleRequestAction(requestId, "approved", requestType)
-              }
+              onClick={async () => {
+                await handleRequestAction(requestId, "approved", requestType);
+                refetch();
+              }}
               disabled={isLoading}
             >
               Accept
@@ -140,9 +190,10 @@ const Dashboard = () => {
             <Button
               variant="ghost"
               className="text-[#F04438]"
-              onClick={() =>
-                handleRequestAction(requestId, "rejected", requestType)
-              }
+              onClick={async () => {
+                await handleRequestAction(requestId, "rejected", requestType);
+                refetch();
+              }}
               disabled={isLoading}
             >
               Decline
@@ -170,10 +221,21 @@ const Dashboard = () => {
             [LibraryTabs.REQUEST]: (
               <MasterTable
                 title="Requests"
-                AddedOptions={[]}
-                columns={() => columns}
+                columns={columns}
                 isSelectable={true}
                 resource="book_v2/request_booklog"
+                AddedOptions={[
+                  ({ setFilters }) =>
+                    SearchFilter({
+                      setFilters,
+                      options: [
+                        { label: "Request ID", value: "rb.request_id" },
+                        { label: "Book ID", value: "bc.book_copy_id" },
+                        { label: "Student ID", value: "rb.student_id" },
+                      ],
+                      placeholder: "Search",
+                    }),
+                ]}
               />
             ),
           }}
