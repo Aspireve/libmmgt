@@ -29,9 +29,10 @@ export function useRowSelection<T>(
 
   const columnsWithCheckbox: ColumnDef<T>[] = isSelectable
     ? [
-        {
-          id: "select",
-          header: () => (
+      {
+        id: "select",
+        header: () => (
+          <div className="ml-4 mr-2">
             <input
               type="checkbox"
               checked={
@@ -40,17 +41,20 @@ export function useRowSelection<T>(
               }
               onChange={(e) => toggleAllRows(e.target.checked, tableData)}
             />
-          ),
-          cell: ({ row }) => (
+          </div>
+        ),
+        cell: ({ row }) => (
+          <div className="ml-4 mr-2">
             <input
               type="checkbox"
               checked={isRowSelected(row.original)}
               onChange={() => toggleRowSelection(row.original)}
             />
-          ),
-        },
-        ...columns,
-      ]
+          </div>
+        ),
+      },
+      ...columns,
+    ]
     : columns;
   const columnsWithPrior =
     priorColumns && priorColumns.length > 0

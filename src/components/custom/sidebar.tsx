@@ -10,7 +10,6 @@ import { menuItems } from "@/constants/menu"
 import Images from "@/images"
 import { useDispatch } from "react-redux" // Import useDispatch here
 import { HugeiconsIcon } from "@hugeicons/react"
-import { DashboardCircleEditFreeIcons } from "@hugeicons/core-free-icons"
 
 // Custom hook to detect screen size
 const useWindowSize = () => {
@@ -151,7 +150,7 @@ const Sidebar = () => {
           {collapsed ? (
             <Phone size={20} />
           ) : (
-            <Image src={Images.Telephone || "/placeholder.svg"} alt="telephone" width={20} height={20} />
+            <Phone size={20} />
           )}
         </div>
         <div
@@ -162,7 +161,7 @@ const Sidebar = () => {
           {collapsed ? (
             <LogOut size={20} />
           ) : (
-            <Image src={Images.Logout || "/placeholder.svg"} alt="logout" width={20} height={20} />
+            <LogOut size={20} />
           )}
         </div>
       </div>

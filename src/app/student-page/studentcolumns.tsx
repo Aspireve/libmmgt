@@ -104,6 +104,7 @@ export const useStudentColumns = ({
     id: "select",
     header: () => (
       <input
+
         type="checkbox"
         ref={headerCheckboxRef}
         checked={isAllSelected}
@@ -115,6 +116,7 @@ export const useStudentColumns = ({
       const isSelected = selectedStudents.includes(student.student_uuid);
       return (
         <input
+
           type="checkbox"
           checked={isSelected}
           onChange={() => onToggleStudentAction(student.student_uuid)}
