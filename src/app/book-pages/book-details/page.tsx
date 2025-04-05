@@ -11,6 +11,7 @@ import { BookProfileBC } from "@/components/breadcrumb/constant";
 import { BookCopiesData, EditBookData } from "@/types/book";
 import BookTitleDetails from "../book-title-details/page";
 import { useOne } from "@refinedev/core";
+import Header from "@/components/custom/header";
 
 enum LibraryTabs {
   BOOKDETAILS = "Book Details",
@@ -40,6 +41,7 @@ const Book_details = () => {
   return (
     <>
       <BookProfileBC />
+      <Header heading={bookTitle} subheading={bookID}/>
       <section>
         <div className="mx-[40px] mt-10">
           <BookTitleDetails />

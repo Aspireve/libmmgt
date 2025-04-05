@@ -77,7 +77,7 @@ const BookDetailsActivites = () => {
 
 
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
-        <Tabs defaultValue="all" className="w-full" onValueChange={setFilter}>
+        <Tabs defaultValue="all" className="w-full max-w-lg" onValueChange={setFilter}>
           <TabsList className="grid grid-cols-5 w-full bg-gray-200">
             <TabsTrigger value="all" className="flex items-center gap-1">
               <Calendar className="h-4 w-4" />

@@ -53,7 +53,7 @@ console.log(filters)
           <select
             value={selectedDept}
             onChange={(e) => setSelectedDept(e.target.value)}
-            className="w-full mt-1 border rounded p-2 border-[#1E40AF] text-[#1E40AF]"
+            className="w-full mt-1 rounded p-2 border border-[#1E40AF] text-[#1E40AF]"
           >
             <option value="">Select Department</option>
             {departments.map((dept: any) => (

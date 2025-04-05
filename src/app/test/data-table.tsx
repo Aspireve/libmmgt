@@ -52,7 +52,7 @@ export function Datatable<TData extends BaseRecord>({
 
   return (
     <div className="rounded-md flex flex-col gap-4">
-       <div className="max-h-[400px] overflow-x-scroll w-full">
+       <div className="max-h-[400px] overflow-x-scroll w-full scrollbar-none">
       <Table className="font-inter">
       
         <TableHeader>
