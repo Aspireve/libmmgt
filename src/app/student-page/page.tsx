@@ -10,6 +10,7 @@ import DeleteStudent from "@/components/students/delete-student";
 import ExportStudent from "@/components/students/export-students-button";
 import { StudentFromDatabase } from "@/types/student";
 import { SearchFilter } from "@/components/students/search-student";
+import Filter from "@/components/students/filter-student";
 
 export default function StudentDirectory() {
   return (
@@ -24,6 +25,9 @@ export default function StudentDirectory() {
 
           AddedOptions={[
             DeleteStudent,
+            ({ setFilters }) => (
+              <Filter setFilters={setFilters} />
+            ),
             AddStudents,
             ImportStudentButton,
             ExportStudent,
@@ -36,6 +40,7 @@ export default function StudentDirectory() {
                 ],
                 placeholder: "Search",
               }), // Pass the setFilters function to SearchFilter,
+              
           ]}
         />
       </div>
