@@ -1,16 +1,11 @@
 import { useEffect, useState } from "react"; // Add useState
-import { useForm, FieldValues } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { useOne } from "@refinedev/core";
 import { toast } from "sonner";
 import {
-  StudentCompleteData,
-  StudentData,
-  StudentFromDatabase,
   StudentUpdateWithId,
 } from "@/types/student";
 import { useRouter } from "next/navigation";
-import { useSelector } from "react-redux";
-import { RootState } from "@/redux/store/store";
 import { isValidPhoneNumber } from "react-phone-number-input";
 
 export const useEditStudentForm = (
@@ -19,9 +14,9 @@ export const useEditStudentForm = (
 ) => {
   const router = useRouter();
 
-  const institute_id = useSelector(
-    (state: RootState) => state.auth.institute_uuid
-  );
+  // const institute_id = useSelector(
+  //   (state: RootState) => state.auth.institute_uuid
+  // );
   const [isFormInitialized, setIsFormInitialized] = useState(false); // Define the state
 
   const {
