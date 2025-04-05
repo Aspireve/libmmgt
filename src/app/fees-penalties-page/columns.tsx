@@ -34,7 +34,7 @@ const CustomCell = () => {
 };
 
 
-export const priorColumns: ColumnDef<Penalties>[] = [
+export const PenaltiesColumns: ColumnDef<Penalties>[] = [
   {
     accessorKey: "action",
     header: () => (
@@ -42,9 +42,6 @@ export const priorColumns: ColumnDef<Penalties>[] = [
     ),
     cell: () => <CustomCell />,
   },
-];
-
-export const PenaltiesColumns: ColumnDef<Penalties>[] = [
   {
     accessorKey: "student_id",
     header: "Student ID",

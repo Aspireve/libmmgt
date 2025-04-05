@@ -45,7 +45,7 @@ const Navbar: React.FC = () => {
 
   return (
     <div className="w-full shadow-sm h-16 flex border-b border-gray-300 px-6 bg-white font-josefin">
-      <div className="flex items-center gap-6 cursor-pointer">
+      <div className="flex items-center gap-6 cursor-pointer mr-4">
         <HugeiconsIcon icon={Home03Icon} onClick={() => router.push("/")}/>
       </div>
       {tabs.map((tab) => (
