@@ -19,8 +19,6 @@ import {
 import MasterTable from "../test/table-page";
 import ExportStudent from "@/components/students/export-students-button";
 
-
-
 interface Department {
   id: string;
   name: string;
@@ -94,7 +92,6 @@ const FeesPenaltiesPage = () => {
                     onSelect={handleDateSelect}
                     numberOfMonths={2}
                     disabled={(day) => isAfter(day, today)}
-                    
                   />
                 </PopoverContent>
               </Popover>
@@ -113,7 +110,10 @@ const FeesPenaltiesPage = () => {
                 </option>
               ))}
             </select>
-            <Button className="border border-[#1E40AF] text-[#1E40AF] rounded-[10px] w-[100px] flex items-center justify-center">
+            <Button
+              variant="outline"
+              className="border border-[#1E40AF] text-[#1E40AF] rounded-[10px] w-[100px] flex items-center justify-center"
+            >
               <Image src={filter} height={19} width={19} alt="filter" />
               Filter
             </Button>
@@ -126,7 +126,7 @@ const FeesPenaltiesPage = () => {
               columns={() => PenaltiesColumns}
               resource="book_v2/get_full_feelist_student"
               AddedOptions={[ExportStudent]}
-              priorColumns={()=> priorColumns}
+              priorColumns={() => priorColumns}
             />
           </div>
         </section>

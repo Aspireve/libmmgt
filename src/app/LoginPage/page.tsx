@@ -23,19 +23,20 @@ const LoginPage = () => {
   const dispatch = useDispatch();
   const { mutate } = useCreate();
 
-
-  const handleLogin = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
+  const handleLogin = async (
+    e: React.FormEvent<HTMLFormElement>
+  ): Promise<void> => {
     e.preventDefault();
     if (!email || !password) {
       setError("Email and password are required");
       return;
     }
     setError("");
-    const data = { email, password }
+    const data = { email, password };
     mutate(
       {
         resource: "user/login",
-        values: data
+        values: data,
       },
       {
         onSuccess: (response) => {
@@ -45,15 +46,13 @@ const LoginPage = () => {
           const userData = response.data.user ?? null;
           const instituteList = response.data.user.institute_list ?? [];
 
-
           if (!accessToken || !userData) {
             toast.error("Server Error.");
             return;
           }
 
-
-          router.push("/")
-          toast.success("Login successfully!")
+          router.push("/");
+          toast.success("Login successfully!");
 
           const userPayload = {
             token: accessToken,
@@ -63,7 +62,8 @@ const LoginPage = () => {
             phone: userData.phone_no,
             logo: userData.institute_image,
             instituteList, // ✅ Store the instituteList in Redux
-            currentInstitute: instituteList.length > 0 ? instituteList[0] : null,
+            currentInstitute:
+              instituteList.length > 0 ? instituteList[0] : null,
           };
           // Save token to localStorage
           localStorage.setItem("token", accessToken);
@@ -71,9 +71,9 @@ const LoginPage = () => {
           dispatch(setUser(userPayload));
         },
         onError: () => {
-          toast.error("Wrong Credentional")
+          toast.error("Wrong Credentional");
           // {"statusCode":403,"message":"Invalid Credential"}
-        }
+        },
       }
     );
   };
@@ -83,8 +83,15 @@ const LoginPage = () => {
       <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-indigo-50 via-white to-blue-50">
         <Card className="w-full max-w-md shadow-xl rounded-xl bg-white border border-gray-100">
           <CardHeader className="text-center pt-8 pb-6 flex justify-center">
-            <Image src={images.VighnotechLogo} alt="Collage Logo" height={500} width={500} />
-            <p className="text-sm text-gray-500 mt-2 font-medium">Login to your account</p>
+            <Image
+              src={images.VighnotechLogo}
+              alt="Collage Logo"
+              height={500}
+              width={500}
+            />
+            <p className="text-sm text-gray-500 mt-2 font-medium">
+              Login to your account
+            </p>
           </CardHeader>
           <CardContent className="px-8 pb-8">
             <form onSubmit={handleLogin} className="space-y-6">

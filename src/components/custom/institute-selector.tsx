@@ -60,7 +60,10 @@ const InstituteSelector = () => {
     <>
       <DropdownMenu>
         <DropdownMenuTrigger asChild className="shadow-none w-fit">
-          <Button className="border-2 border-blue-500 rounded-xl overflow-hidden w-fit h-[57px] flex items-center justify-between p-2 px-4 mt-2 transition-all duration-300 hover:shadow-lg cursor-pointer">
+          <Button
+            variant="outline"
+            className="border-2 border-blue-500 rounded-xl overflow-hidden w-fit h-[54px] flex items-center justify-between p-2 px-4 transition-all duration-300 hover:shadow-lg cursor-pointer"
+          >
             <Image
               src={currentInstitute?.logo || Images.TIA}
               alt="logo"

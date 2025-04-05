@@ -21,14 +21,13 @@ import type { PaginationProps } from "@/types/table";
 
 export function Pagination({ isLoading }: PaginationProps) {
   const dispatch = useDispatch();
-  const {
-    page,
-    limit,
-    totalPages,
-  } = useSelector((state: RootState) => state.pagination);
+  const { page, limit, totalPages } = useSelector(
+    (state: RootState) => state.pagination
+  );
   return (
     <div className="flex items-center justify-between py-4 cursor-pointer border-t border-[#cdcecf] px-10">
       <Button
+        variant="outline"
         onClick={() => dispatch(prevPage())}
         disabled={page === 1 || isLoading}
         className="transition-all duration-200 disabled:opacity-50 border-2 border-[#D5D7DA] shadow-none rounded-xl text-[#414651]"
@@ -63,6 +62,7 @@ export function Pagination({ isLoading }: PaginationProps) {
       </div>
 
       <Button
+        variant="outline"
         onClick={() => dispatch(nextPage())}
         disabled={page >= totalPages || isLoading}
         className="transition-all duration-200 disabled:opacity-50 border-2 border-[#D5D7DA] shadow-none rounded-xl text-[#414651]"

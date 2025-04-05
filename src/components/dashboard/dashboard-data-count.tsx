@@ -16,20 +16,20 @@ import {
   UserMultiple02Icon,
 } from "@hugeicons/core-free-icons";
 
-export default function DashboardData({refresh}:{refresh:number}) {
+export default function DashboardData({ refresh }: { refresh: number }) {
   const { institute_uuid } = useSelector(
     (state: RootState) => state.auth.currentInstitute
   );
 
-  const { data, isLoading, refetch} = useList<{ totalBooks: string }>({
+  const { data, isLoading, refetch } = useList<{ totalBooks: string }>({
     resource: "/student/admin-dashboard",
   });
 
   const dashboardStats = data?.data?.[0] || data?.data || [];
 
-  useEffect(()=>{
+  useEffect(() => {
     refetch();
-  },[refresh])
+  }, [refresh]);
 
   // Get Redux state for dashboard card visibility
   const showDashboardCards = useSelector(
@@ -40,7 +40,10 @@ export default function DashboardData({refresh}:{refresh:number}) {
     return (
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 my-6">
         {Array.from({ length: 8 }).map((_, idx) => (
-          <Skeleton key={`load-${idx}`} className="h-[100px] rounded-xl w-full animate-pulse bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 bg-[length:200%_100%]" />
+          <Skeleton
+            key={`load-${idx}`}
+            className="h-[100px] rounded-xl w-full animate-pulse bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 bg-[length:200%_100%]"
+          />
         ))}
       </div>
     );
@@ -130,9 +133,9 @@ export default function DashboardData({refresh}:{refresh:number}) {
         <a
           key={`stat-${idx}`}
           href={stat.downloadUrl}
-          className="group flex justify-between items-center bg-white rounded-[15px] p-4 h-[100px] cursor-pointer"
-          style={{ boxShadow: "0 0 8px rgba(0, 0, 0, 0.1)" }}
-          
+          className="group flex justify-between items-center bg-white rounded-[15px] p-4 h-[100px] cursor-pointer shadow-[0_0_8px_rgba(0,0,0,0.1)] hover:shadow-xl"
+          // style={{ boxShadow: "0 0 8px rgba(0, 0, 0, 0.1)" }}
+
           // onMouseEnter={() => setHoveredIndex(idx)}
           // onMouseLeave={() => setHoveredIndex(null)}
         >

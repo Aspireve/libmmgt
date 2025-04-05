@@ -1,11 +1,7 @@
 {
   "compilerOptions": {
     "target": "es5",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -23,15 +19,9 @@
       }
     ],
     "paths": {
-      "@/*": [
-        "./src/*"
-      ],
-      "@pages/*": [
-        "./pages/*"
-      ],
-      "@styles/*": [
-        "./src/styles/*"
-      ]
+      "@/*": ["./src/*"],
+      "@pages/*": ["./pages/*"],
+      "@styles/*": ["./src/styles/*"]
     },
     "incremental": true
   },
@@ -40,9 +30,9 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "next-env.d.ts",
-    "dist/types/**/*.ts"
-, "src/app/periodicals-pages/editperiodicalCopy"  ],
-  "exclude": [
-    "node_modules"
-  ]
+    "dist/types/**/*.ts",
+    "src/app/periodicals-pages/editperiodicalCopy",
+    "postcss.config.js"
+  ],
+  "exclude": ["node_modules"]
 }
