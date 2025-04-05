@@ -1,17 +1,15 @@
 "use client";
 
-import { FC, useEffect, useState } from "react";
+import { FC, useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useList } from "@refinedev/core";
 
-interface OptionType {
-  label: string;
-  value: string;
-}
-
 interface FilterProps {
-  setFilters: (filters: { filter: any[] }) => void;
+  setFilters: (filters: {
+    filter?: { field: string; operator: string; value: string }[];
+    search?: { field: string; value: string }[];
+  }) => void;
 }
 
 const Filter: FC<FilterProps> = ({ setFilters }) => {
@@ -20,32 +18,25 @@ const Filter: FC<FilterProps> = ({ setFilters }) => {
   const [selectedYear, setSelectedYear] = useState("");
 
   const { data: deptData } = useList({ resource: "student/departments" });
-//   const { data: yearData } = useList({ resource: "years" });
+  const { data: yearData } = useList({ resource: "years" });
 
   const departments = deptData?.data || [];
-//   const years = yearData?.data || [];
+  const years = yearData?.data || [];
 
-  const handleChange = (dept: string) => {
-    const newFilter: any[] = [];
+  useEffect(() => {
+    const filters: { field: string; operator: string; value: string }[] = [];
 
-    if (dept) {
-      newFilter.push({
+    if (selectedDept) {
+      filters.push({
         field: "department",
         operator: "eq",
-        value: dept,
+        value: selectedDept,
       });
     }
 
-    // if (year) {
-    //   newFilter.push({
-    //     field: "year",
-    //     operator: "eq",
-    //     value: year,
-    //   });
-    // }
-
-    setFilters({ filter: newFilter });
-  };
+console.log(filters)
+    setFilters({ filter: filters });
+  }, [selectedDept, selectedYear]);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -58,31 +49,23 @@ const Filter: FC<FilterProps> = ({ setFilters }) => {
           <label className="block text-sm font-medium">Department</label>
           <select
             value={selectedDept}
-            onChange={(e) => {
-              const value = e.target.value;
-              setSelectedDept(value);
-              handleChange(value);
-            }}
+            onChange={(e) => setSelectedDept(e.target.value)}
             className="w-full mt-1 border rounded p-2"
           >
             <option value="">Select Department</option>
             {departments.map((dept: any) => (
-              <option key={dept} value={dept} className="text-blue-950">
+              <option key={dept} value={dept}>
                 {dept}
               </option>
             ))}
           </select>
         </div>
 
-        {/* <div>
+        <div>
           <label className="block text-sm font-medium">Year</label>
           <select
             value={selectedYear}
-            onChange={(e) => {
-              const value = e.target.value;
-              setSelectedYear(value);
-              handleChange(selectedDept, value);
-            }}
+            onChange={(e) => setSelectedYear(e.target.value)}
             className="w-full mt-1 border rounded p-2"
           >
             <option value="">Select Year</option>
@@ -92,7 +75,7 @@ const Filter: FC<FilterProps> = ({ setFilters }) => {
               </option>
             ))}
           </select>
-        </div> */}
+        </div>
       </PopoverContent>
     </Popover>
   );
