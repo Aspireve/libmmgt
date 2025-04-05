@@ -10,8 +10,8 @@ interface TabsProps<T extends string> {
   onTabChange?: (tab: T) => void;
 }
 
-export const Tabbing = <T extends string>({ 
-  tabs, 
+export const Tabbing = <T extends string>({
+  tabs,
   content,
   activeTab: externalActiveTab,
   onTabChange,
@@ -26,7 +26,7 @@ export const Tabbing = <T extends string>({
       setInternalActiveTab(tab); // Otherwise, use internal state
     }
   };
-  
+
   const paddingClasses =
     "transition-all duration-300 py-[5px] px-[10px] text-[11px] sm:py-[6px] sm:px-[12px] sm:text-[14px] md:py-[10px] md:px-[10px] md:text-[16px]";
   const activeClasses =
@@ -39,10 +39,13 @@ export const Tabbing = <T extends string>({
         {tabs.map((tab) => (
           <Button
             key={tab.key}
-            className={`rounded-[6px] transition-colors shadow-none ${paddingClasses} ${
+            className={`rounded-[6px] transition-colors shadow-none hover:bg-accent ${paddingClasses} ${
               activeTab === tab.key ? activeClasses : inactiveClasses
             }`}
-            onClick={() => {setActiveTab(tab.key);handleTabChange(tab.key)}}
+            onClick={() => {
+              setActiveTab(tab.key);
+              handleTabChange(tab.key);
+            }}
           >
             {tab.label}
           </Button>

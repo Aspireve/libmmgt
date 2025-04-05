@@ -146,7 +146,10 @@ const Page = () => {
             <label className="text-sm font-medium mb-1 text-black">
               From Time
             </label>
-            <Select value={timeFrom} onValueChange={(value) => setTimeFrom(value)}>
+            <Select
+              value={timeFrom}
+              onValueChange={(value) => setTimeFrom(value)}
+            >
               <SelectTrigger className="w-full border border-gray-300">
                 <SelectValue placeholder="Select time" />
               </SelectTrigger>
@@ -162,7 +165,9 @@ const Page = () => {
 
           {/* To Time (Select) */}
           <div>
-            <label className="text-sm font-medium mb-1 text-black">To Time</label>
+            <label className="text-sm font-medium mb-1 text-black">
+              To Time
+            </label>
             <Select value={timeTo} onValueChange={(value) => setTimeTo(value)}>
               <SelectTrigger className="w-full border border-gray-300">
                 <SelectValue placeholder="Select time" />
@@ -179,6 +184,7 @@ const Page = () => {
 
           {/* Filter Button */}
           <Button
+            variant="outline"
             onClick={handleRefetch}
             className="shadow-none border border-[#1E40AF] text-[#1E40AF] rounded-[10px] w-[100px] flex items-center justify-center mt-6"
           >

@@ -53,13 +53,13 @@ const DeleteStudentModal = ({
             : "Are you sure you want to delete these students?"}
         </p>
         <div className="flex justify-end gap-4">
-          <Button onClick={close} className="shadow-none">
+          <Button variant="outline" onClick={close} className="shadow-none">
             Cancel
           </Button>
           <Button
             onClick={handleDelete}
             disabled={isLoading}
-            className="bg-red-600 text-white hover:bg-red-700 rounded-xl w-full"
+            className="bg-red-600 text-white hover:bg-red-700"
           >
             {isLoading ? (
               <>

@@ -35,7 +35,7 @@ const Tabbing: React.FC<TabbingProps> = ({ routes, className }) => {
         return (
           <Link key={key} href={path} passHref>
             <Button
-              className={`rounded-[6px] shadow-none ${paddingClasses} ${
+              className={`rounded-[6px] shadow-none hover:bg-accent ${paddingClasses} ${
                 isActive ? activeClasses : inactiveClasses
               }`}
             >

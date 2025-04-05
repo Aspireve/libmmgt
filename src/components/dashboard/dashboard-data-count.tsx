@@ -17,8 +17,8 @@ import {
 } from "@hugeicons/core-free-icons";
 
 export default function DashboardData({ refresh }: { refresh: number }) {
-  const { institute_uuid } = useSelector(
-    (state: RootState) => state.auth.currentInstitute
+  const institute_uuid = useSelector(
+    (state: RootState) => state.auth.user?.institute_details[0].institute_uuid
   );
 
   const { data, isLoading, refetch } = useList<{ totalBooks: string }>({

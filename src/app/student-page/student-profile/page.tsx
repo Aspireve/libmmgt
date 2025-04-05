@@ -11,9 +11,7 @@ import { useOne } from "@refinedev/core";
 import Tabbing from "@/components/custom/tabbing";
 import { ProfileSkeleton } from "@/components/students/skeletons";
 import MasterTable from "@/app/test/table-page";
-import {
-  borrowedBooksColumns
-} from "../student-profile/studentprofile";
+import { borrowedBooksColumns } from "../student-profile/studentprofile";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { StudentProfileBC } from "@/components/breadcrumb/constant";
@@ -232,6 +230,7 @@ const Page = () => {
               />
             </div>
             <Button
+              variant="outline"
               onClick={() =>
                 router.push(
                   `/student-page/EditStudent?student_id=${student_id}`
@@ -264,9 +263,7 @@ const Page = () => {
                 AddedOptions={[]}
               />
             ),
-            [LibraryTabs.ACTIVITY]: (
-              <StudentDetailActivities/>
-            ),
+            [LibraryTabs.ACTIVITY]: <StudentDetailActivities />,
           }}
         />
       </div>

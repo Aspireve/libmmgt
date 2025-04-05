@@ -146,7 +146,7 @@ const AddStudent: React.FC = () => {
             />
             <Button
               type="button"
-              className="cursor-pointer bg-[#0066FF22] text-[#1E40AF] px-6 py-2 rounded-[5px] text-sm"
+              className="cursor-pointer bg-[#0066FF22] hover:bg-[#0066ff59] text-[#1E40AF] px-6 py-2 rounded-[5px] text-sm"
               onClick={() => fileInputRef.current?.click()}
             >
               {profileImage ? "Change Image" : "Add Image"}
@@ -303,6 +303,7 @@ const AddStudent: React.FC = () => {
 
         <div className="flex justify-end gap-4 mt-6">
           <Button
+            variant="outline"
             className="shadow-none bg-white text-gray-700"
             type="button"
             onClick={() => router.push("/student-page")}
