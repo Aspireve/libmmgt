@@ -14,6 +14,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { toast } from "sonner";
+import { dataProvider } from "@/providers/data";
 
 // Define proper types for the form data
 interface LibraryFormData {
@@ -47,7 +49,7 @@ const Page = () => {
     borrowDays: "7",
     lateFees: "2",
     openingTime: "08:00",
-    closingTime: "08:00",
+    closingTime: "20:00",
   });
 
   // Track initial form data to detect changes
@@ -89,9 +91,16 @@ const Page = () => {
 
   const timeOptions = generateTimeOptions();
 
-  function handleUpdateClick() {
+  function formatTo12Hour(time: string): string {
+    const [hourStr, minute] = time.split(":");
+    let hour = parseInt(hourStr, 10);
+    const ampm = hour >= 12 ? "pm" : "am";
+    hour = hour % 12 || 12;
+    return `${hour}:${minute} ${ampm}`;
+  }
+
+  async function handleUpdateClick() {
     if (isEditable) {
-      // Save changes - only send changed fields
       const changedFields: Partial<LibraryFormData> = {};
 
       (Object.keys(formData) as Array<keyof LibraryFormData>).forEach((key) => {
@@ -100,13 +109,51 @@ const Page = () => {
         }
       });
 
-      // Here you would normally send the changed fields to an API
-      console.log("Sending only changed fields:", changedFields);
+      if (Object.keys(changedFields).length > 0) {
+        // Transform time into formatted string if needed
+        const payload = {
+          ...changedFields,
+          ...(changedFields.openingTime || changedFields.closingTime
+            ? {
+                operating_hours: {
+                  ...(changedFields.openingTime && {
+                    starting_time: formatTo12Hour(changedFields.openingTime),
+                  }),
+                  ...(changedFields.closingTime && {
+                    closing_time: formatTo12Hour(changedFields.closingTime),
+                  }),
+                },
+              }
+            : {}),
+        };
 
-      // Update the initial data to match current data
-      setInitialFormData({ ...formData });
+        // Remove raw times from root if present
+        delete payload.openingTime;
+        delete payload.closingTime;
+
+        try {
+          const response = await dataProvider.patchUpdate({
+            resource: "config/update-rule",
+            value: {
+              library_rule_id: "TCA2025-001",
+              institute_uuid:"ad2032fd-12b4-4a82-9845-07d93f39961e",
+               // <-- Replace or dynamically fetch if needed
+              ...payload,
+            },
+          });
+
+          toast.success("Library rules updated successfully!");
+          setInitialFormData({ ...formData }); // update baseline
+        } catch (error: any) {
+          console.error("Update error:", error);
+          toast.error(error?.message || "Failed to update rules.");
+        }
+      } else {
+        toast.info("No changes detected.");
+      }
     }
-    setIsEditable(!isEditable);
+
+    setIsEditable((prev) => !prev);
   }
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
@@ -229,7 +276,7 @@ const Page = () => {
                 <SelectTrigger className="w-32 border border-gray-300">
                   <SelectValue placeholder="Opening" />
                 </SelectTrigger>
-                <SelectContent  className="max-h-60 bg-white">
+                <SelectContent className="max-h-60 bg-white">
                   {timeOptions.map((time) => (
                     <SelectItem key={time.value} value={time.value}>
                       {time.display}
@@ -250,9 +297,9 @@ const Page = () => {
                 <SelectTrigger className="w-32 border border-gray-300">
                   <SelectValue placeholder="Closing" />
                 </SelectTrigger>
-                <SelectContent  className="max-h-60 bg-white">
+                <SelectContent className="max-h-60 bg-white">
                   {timeOptions.map((time) => (
-                    <SelectItem  key={time.value} value={time.value}>
+                    <SelectItem key={time.value} value={time.value}>
                       {time.display}
                     </SelectItem>
                   ))}
