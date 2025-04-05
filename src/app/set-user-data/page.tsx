@@ -10,7 +10,7 @@ export default function SetUserDataPage() {
   const user = useSelector((state: RootState) => state.auth);
 
   const mockUserData = {
-    token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+    token: { accessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." },
     institute_uuid: "828f0d33-258f-4a92-a235-9c1b30d8882b",
     employee_uuid: "dc7af337-673f-494d-8389-fdc4e9279951",
     first_name: "Arvind",
