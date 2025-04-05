@@ -70,6 +70,7 @@ export const fetchWrapper = async (url: string, options: RequestInit) => {
     return response;
   } catch (error) {
     console.error("🚨 FetchWrapper Error:", error);
+    // return {error: true, message: "An error Occured"}; // Return an object with error status and message
     throw error;
   }
 };

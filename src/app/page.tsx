@@ -1,6 +1,6 @@
 "use client";
 
-import Dashboard from "../app/Dashboard/dashboard";
+import Dashboard from "@/components/dashboard";
 
 export default function IndexPage() {
   return <Dashboard />;

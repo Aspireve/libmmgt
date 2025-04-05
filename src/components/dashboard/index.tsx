@@ -1,14 +1,17 @@
 "use client";
+
 import React, { useState } from "react";
 import { useCreate, useUpdate } from "@refinedev/core"; // Import useCreate and useUpdate
 import { toast } from "sonner"; // Import toast for notifications
 import Header from "@/components/custom/header";
-import IssueBook from "@/components/dashboard/issue-book";
+import IssueBook from "./issue-book";
 import Tabbing from "@/components/custom/tabbing";
-import MasterTable from "../test/table-page";
 import { Button } from "@/components/ui/button";
-import DashboardData from "@/components/dashboard/dashboard-data-count";
-import { Activities } from "@/components/dashboard/modified-activity-feed";
+import DashboardData from "./dashboard-data-count";
+import { Activities } from "./modified-activity-feed";
+
+// Move from App Router
+import MasterTable from "@/app/test/table-page";
 
 enum LibraryTabs {
   ISSUE = "issue",
@@ -23,7 +26,7 @@ const TABS = [
 const Dashboard = () => {
   const [refresh, setRefresh] = useState(0);
 
-  const { mutate: createMutate, isLoading: isCreateLoading } = useCreate(); 
+  const { mutate: createMutate, isLoading: isCreateLoading } = useCreate();
   const { mutate: updateMutate, isLoading: isUpdateLoading } = useUpdate();
 
   // Handle Accept & Decline Actions
@@ -35,7 +38,7 @@ const Dashboard = () => {
     if (requestType === "issue") {
       // For issue requests, use POST method
       const endpoint = "book_v2/request_booklog_issue_ar";
-      
+
       createMutate(
         {
           resource: endpoint,
@@ -46,18 +49,25 @@ const Dashboard = () => {
         },
         {
           onSuccess: () => {
-            toast.success(`Request ${status === "approved" ? "approved" : "declined"} successfully!`);
+            toast.success(
+              `Request ${
+                status === "approved" ? "approved" : "declined"
+              } successfully!`
+            );
             setRefresh((prev) => prev + 1);
           },
           onError: (error) => {
-            toast.error(error?.message || "An error occurred while processing the request.");
+            toast.error(
+              error?.message ||
+                "An error occurred while processing the request."
+            );
           },
         }
       );
     } else {
       // For re-issue requests, use PUT method
       const endpoint = "book_v2/request_booklog_reissue_ar";
-      
+
       updateMutate(
         {
           resource: endpoint,
@@ -67,17 +77,24 @@ const Dashboard = () => {
             status: status,
           },
           meta: {
-            method: "PUT" // Explicitly set the method to PUT
-          }
+            method: "PUT", // Explicitly set the method to PUT
+          },
         },
         {
           onSuccess: () => {
-            toast.success(`Request ${status === "approved" ? "approved" : "declined"} successfully!`);
+            toast.success(
+              `Request ${
+                status === "approved" ? "approved" : "declined"
+              } successfully!`
+            );
             setRefresh((prev) => prev + 1);
           },
           onError: (error) => {
             console.error("Update Error:", error);
-            toast.error(error?.message || "An error occurred while processing the request.");
+            toast.error(
+              error?.message ||
+                "An error occurred while processing the request."
+            );
           },
         }
       );
@@ -107,13 +124,15 @@ const Dashboard = () => {
       cell: ({ row }: any) => {
         const requestId = row.getValue("request_id");
         const requestType = row.getValue("request_type"); // "issue" or "re-issue"
-    
+
         return (
           <div className="flex gap-2 justify-center items-center">
             <Button
               variant="ghost"
               className="text-[#0D894F]"
-              onClick={() => handleRequestAction(requestId, "approved", requestType)}
+              onClick={() =>
+                handleRequestAction(requestId, "approved", requestType)
+              }
               disabled={isLoading}
             >
               Accept
@@ -121,7 +140,9 @@ const Dashboard = () => {
             <Button
               variant="ghost"
               className="text-[#F04438]"
-              onClick={() => handleRequestAction(requestId, "rejected", requestType)}
+              onClick={() =>
+                handleRequestAction(requestId, "rejected", requestType)
+              }
               disabled={isLoading}
             >
               Decline
@@ -129,7 +150,7 @@ const Dashboard = () => {
           </div>
         );
       },
-    }
+    },
   ];
 
   return (
@@ -141,9 +162,9 @@ const Dashboard = () => {
           content={{
             [LibraryTabs.ISSUE]: (
               <>
-                <DashboardData refresh={refresh}/>
+                <DashboardData refresh={refresh} />
                 <IssueBook setRefreshAction={setRefresh} />
-                <Activities refresh={refresh}/>
+                <Activities refresh={refresh} />
               </>
             ),
             [LibraryTabs.REQUEST]: (
