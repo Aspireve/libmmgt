@@ -1,7 +1,6 @@
 "use client";
 
 import React, { Suspense, useEffect, useState } from "react";
-import Header from '@/app/Header/header';
 import { InputField } from '@/components/custom/inputfield';
 import { Button } from '@/components/ui/button';
 import { Loader2 } from 'lucide-react';
@@ -75,7 +74,6 @@ const EditPeriodicalcopy = () => {
     <Suspense fallback={<div>Loading...</div>}>
     <>
       <EditPeriodicalCopyBC/>
-      <Header heading="Edit Periodical Copy" subheading="Tanvir Chavan" />
 
       <section className="p-10">
         <div className="container">

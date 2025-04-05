@@ -3,10 +3,7 @@
 import React, { Suspense, useState } from "react";
 import Header from "@/components/custom/header";
 import { PenaltiesColumns } from "./columns";
-import { useList } from "@refinedev/core";
 import { Button } from "@/components/ui/button";
-import filter from "../../images/filter.png";
-import Image from "next/image";
 import { DateRange } from "react-day-picker";
 import { format, isAfter } from "date-fns";
 import { CalendarIcon } from "lucide-react";

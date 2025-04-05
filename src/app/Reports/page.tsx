@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import Header from "../Header/header";
 import { useList, BaseRecord } from "@refinedev/core";
 import ArrowUpRight from "@/images/arrow-up-right.png";
 import Image from "next/image";
@@ -148,7 +147,6 @@ const ReportPage = () => {
 
   return (
     <div className="p-4">
-      <Header heading="Reports" subheading="Tanvir Chavan" />
       <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6 w-[95%] ml-5">
         <div className="border rounded-md p-4 shadow-sm">
           <h2 className="text-lg font-semibold mb-4">Books</h2>

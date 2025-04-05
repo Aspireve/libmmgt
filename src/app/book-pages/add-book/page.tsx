@@ -8,7 +8,7 @@ import { useForm } from "@refinedev/react-hook-form";
 import { useCreate, useOne } from "@refinedev/core";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import Header from "@/app/Header/header";
+import Header from "@/components/custom/header";
 import isbn3 from "isbn3";
 import { InputField } from "@/components/custom/inputfield";
 import { Loader2 } from "lucide-react";
@@ -147,7 +147,6 @@ const AddBook = () => {
     <Suspense fallback={<div>Loading...</div>}>
       <>
         <AddBookBC />
-        <Header heading="Add Book" subheading="Tanvir Chavan" />
         <Tabbing routes={addbookRoutes} className="w-[23%]" />
         <section className="p-10 pt-0">
           <div className="container">

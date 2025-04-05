@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import { BookData } from "../types/data";
 
 import { useRouter } from "next/navigation";
-// import Header from "@/app/Header/header";
 import { getBookColumns } from "./columns";
 import MasterTable from "@/app/test/table-page";
 
@@ -39,12 +38,6 @@ const BooksPage = () => {
 
   return (
     <>
-      {/* <Header
-        heading={
-          activeTab === LibraryTabs.PERIODICALS ? "Periodicals" : "Book List"
-        }
-        subheading="Tanvir Chavan"
-      /> */}
       <Header
         heading={
           activeTab === LibraryTabs.PERIODICALS ? "Periodicals" : "Book List"
