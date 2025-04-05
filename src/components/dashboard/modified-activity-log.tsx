@@ -137,7 +137,7 @@ export function ActivityItem({ activity }: ActivityItemProps) {
 
 
   const handleStudent = () =>{
-    const url = `/book-pages/book-details?book_uuid=${activity.student_id}`;
+    const url = `student-page/student-profile?student_id=${activity.student_id}`;
     window.open(url, "_blank"); 
   }
   const handleBook = () =>{
@@ -232,9 +232,6 @@ export function ActivityItem({ activity }: ActivityItemProps) {
                 View Book
               </Button>
             )}
-            <Button size="sm" variant="outline" className="h-8">
-              Report
-            </Button>
             {/* <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button size="sm" variant="outline" className="h-8">
