@@ -6,6 +6,8 @@ import InstituteSelector from "./institute-selector";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { QrCodeIcon } from "@hugeicons/core-free-icons";
 import { useRouter } from "next/navigation";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store/store";
 
 interface HeadersProps {
   heading: string;
@@ -19,7 +21,7 @@ const Header: React.FC<HeadersProps> = ({
   isLoading = false,
 }) => {
   const router = useRouter();
-
+  const { first_name } = useSelector((state: RootState) => state.auth)
   return (
     <div className="flex items-center justify-between mx-[40px] font-josefin mt-7">
       {isLoading ? (
@@ -31,15 +33,15 @@ const Header: React.FC<HeadersProps> = ({
         <div className="flex-1 cursor-default">
           <h1 className="text-black text-3xl font-bold">{heading}</h1>
           <p className="text-gray-500 mt-[5px] font-medium text-lg">
-            {subheading}
+            {first_name}
           </p>
         </div>
       )}
       <div className="mr-5 cursor-pointer">
-      <HugeiconsIcon
-        icon={QrCodeIcon}
-        onClick={() => router.push("/Qr-scanner")}
-      />
+        <HugeiconsIcon
+          icon={QrCodeIcon}
+          onClick={() => router.push("/Qr-scanner")}
+        />
       </div>
       <InstituteSelector />
     </div>
