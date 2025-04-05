@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useForm, Path } from "react-hook-form";
 import Image from "next/image";
 import { InputField } from "@/components/custom/inputfield";
@@ -13,33 +13,27 @@ import { RootState } from "@/redux/store/store";
 import { toggleDarkMode } from "@/redux/darkModeSlice";
 import { toggleDashboardCards } from "@/redux/dashboardSlice";
 import AllUsers from "../Users/page";
-import { useOne, useUpdate } from "@refinedev/core";
+import { useOne } from "@refinedev/core";
 import { toast } from "sonner";
 import { dataProvider } from "@/providers/data";
 
+const HARD_CODED_ID = "TCA2025"; // Hardcoded ID
+
 type FormFields = {
-  institute_name: string;
-  institute_email: string;
-  mobile: string;
+  instituteName: string;
+  email: string;
+  phoneNumber: string;
   author: string;
 };
-
-const HARD_CODED_ID = "TCA2025"; // Hardcoded ID for fetching/updating institute
 
 const Page = () => {
   const {
     register,
     handleSubmit,
-    setValue, // Used to update form values with API response
+    setValue,
+    reset,
     formState: { errors },
-  } = useForm<FormFields>({
-    defaultValues: {
-      institute_name: "Tanvir R Chavan",
-      institute_email: "tanvirchavan@gmail.com",
-      mobile: "89xxxxxxx",
-      author: "01",
-    },
-  });
+  } = useForm<FormFields>();
 
   const [isEditable, setIsEditable] = useState(false);
   const dispatch = useDispatch();
@@ -48,24 +42,26 @@ const Page = () => {
   const isDarkMode = useSelector(
     (state: RootState) => state.darkMode.isDarkMode
   );
-
   const showDashboardCards = useSelector(
     (state: RootState) => state.dashboard.showDashboardCards
   );
 
-  // Fetch institute details using the hardcoded ID
-  const { data, isLoading, isError } = useOne({
+  // Fetch institute details
+  const { data, isLoading } = useOne({
     id: `institute_id=${HARD_CODED_ID}`,
-    resource: `config/get-institutebyid`, // Correct query parameter format
+    resource: `config/get-institutebyid`,
     queryOptions: {
       enabled: true,
+      // In your onSuccess handler, change the field names to match:
       onSuccess: (response) => {
         if (response?.data?.length > 0) {
-          const institute = response.data[0]; // Assuming response is an array
-          setValue("institute_name", institute.institute_name || "");
-          setValue("institute_email", institute.institute_email || "");
-          setValue("mobile", institute.mobile || "");
-          setValue("author", institute.author || "");
+          const institute = response.data[0];
+          reset({
+            instituteName: institute.institute_name || "",
+            email: institute.institute_email || "", // This is correct
+            phoneNumber: institute.mobile || "", // This is correct
+            author: institute.author || "",
+          });
         }
       },
       onError: () => {
@@ -74,28 +70,28 @@ const Page = () => {
     },
   });
 
-  // Update institute details using the hardcoded ID
-  const { mutate, isLoading: isUpdating } = useUpdate();
+  // Handle update
+  const handleSaveChanges = async (formData: Partial<FormFields>) => {
+    try {
+      const apiData = {
+        institute_id: HARD_CODED_ID,
+        institute_name: formData.instituteName,
+        institute_email: formData.email, // Convert to API field name
+        mobile: formData.phoneNumber, // Convert to API field name
+        author: formData.author,
+      };
 
-const handleSaveChanges = async (data: Partial<FormFields>) => {
-  console.log("Attempting update with data:", data); // Debugging log
+      const response = await dataProvider.patchUpdate({
+        resource: "config/update-institute",
+        value: apiData,
+      });
 
-  try {
-    const response = await dataProvider.patchUpdate({
-      resource: "config/update-institute", // API endpoint
-      value: {
-        institute_id: HARD_CODED_ID, // Include the hardcoded ID in the body
-        ...data, // Spread the optional fields
-      },
-    });
-
-    toast.success("Institute Data updated successfully!");
-  } catch (error: any) {
-    console.error("Update API Error:", error); // Debugging log
-    toast.error(error.message || "Failed to update data.");
-  }
-};
-
+      toast.success("Institute Data updated successfully!");
+    } catch (error: any) {
+      console.error("Update API Error:", error);
+      toast.error(error.message || "Failed to update data.");
+    }
+  };
 
   return (
     <>
@@ -122,7 +118,7 @@ const handleSaveChanges = async (data: Partial<FormFields>) => {
             </div>
           </div>
 
-          {/* Main Input Fields */}
+          {/* Form Section */}
           <div className="flex-grow">
             {isLoading ? (
               <p>Loading...</p>
@@ -151,8 +147,8 @@ const handleSaveChanges = async (data: Partial<FormFields>) => {
                 </div>
 
                 {isEditable && (
-                  <Button type="submit" className="mt-4" disabled={isUpdating}>
-                    {isUpdating ? "Saving..." : "Save Changes"}
+                  <Button type="submit" className="mt-4">
+                    Save Changes
                   </Button>
                 )}
               </form>
@@ -160,7 +156,7 @@ const handleSaveChanges = async (data: Partial<FormFields>) => {
           </div>
         </div>
 
-        {/* Toggle Sections */}
+        {/* Toggles */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
           {/* Visualization Section */}
           <div className="border border-[#cdcdd5] rounded-[12px] p-4 bg-white">

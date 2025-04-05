@@ -9,175 +9,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { ActivityItem } from "./modified-activity-log"
 import { useList } from "@refinedev/core"
 
-// Sample data for demonstration
-// const activities = [
-//   {
-//     id: "1",
-//     type: "inTime",
-//     student: {
-//       name: "Alex Johnson",
-//       id: "STU001",
-//       avatar: "AJ",
-//     },
-//     timestamp: "2025-03-29T09:15:00",
-//     date: "2025-03-29",
-//   },
-//   {
-//     id: "2",
-//     type: "borrowed",
-//     student: {
-//       name: "Alex Johnson",
-//       id: "STU001",
-//       avatar: "AJ",
-//     },
-//     book: {
-//       title: "The Great Gatsby",
-//       author: "F. Scott Fitzgerald",
-//       id: "BK001",
-//     },
-//     timestamp: "2025-03-29T09:25:00",
-//     date: "2025-03-29",
-//     dueDate: "2025-04-12",
-//   },
-//   {
-//     id: "3",
-//     type: "inTime",
-//     student: {
-//       name: "Sam Wilson",
-//       id: "STU002",
-//       avatar: "SW",
-//     },
-//     timestamp: "2025-03-29T10:05:00",
-//     date: "2025-03-29",
-//   },
-//   {
-//     id: "4",
-//     type: "outTime",
-//     student: {
-//       name: "Alex Johnson",
-//       id: "STU001",
-//       avatar: "AJ",
-//     },
-//     timestamp: "2025-03-29T11:30:00",
-//     date: "2025-03-29",
-//     duration: "2h 15m",
-//   },
-//   {
-//     id: "5",
-//     type: "return",
-//     student: {
-//       name: "Taylor Brown",
-//       id: "STU003",
-//       avatar: "TB",
-//     },
-//     book: {
-//       title: "Pride and Prejudice",
-//       author: "Jane Austen",
-//       id: "BK002",
-//     },
-//     timestamp: "2025-03-29T13:45:00",
-//     date: "2025-03-29",
-//     borrowDate: "2025-03-15",
-//   },
-//   {
-//     id: "6",
-//     type: "inTime",
-//     student: {
-//       name: "Jamie Smith",
-//       id: "STU004",
-//       avatar: "JS",
-//     },
-//     timestamp: "2025-03-29T14:20:00",
-//     date: "2025-03-29",
-//   },
-//   {
-//     id: "7",
-//     type: "borrowed",
-//     student: {
-//       name: "Jamie Smith",
-//       id: "STU004",
-//       avatar: "JS",
-//     },
-//     book: {
-//       title: "1984",
-//       author: "George Orwell",
-//       id: "BK003",
-//     },
-//     timestamp: "2025-03-29T14:35:00",
-//     date: "2025-03-29",
-//     dueDate: "2025-04-12",
-//   },
-//   {
-//     id: "8",
-//     type: "outTime",
-//     student: {
-//       name: "Sam Wilson",
-//       id: "STU002",
-//       avatar: "SW",
-//     },
-//     timestamp: "2025-03-29T15:10:00",
-//     date: "2025-03-29",
-//     duration: "5h 05m",
-//   },
-//   {
-//     id: "9",
-//     type: "inTime",
-//     student: {
-//       name: "Morgan Lee",
-//       id: "STU005",
-//       avatar: "ML",
-//     },
-//     timestamp: "2025-03-28T09:30:00",
-//     date: "2025-03-28",
-//   },
-//   {
-//     id: "10",
-//     type: "borrowed",
-//     student: {
-//       name: "Morgan Lee",
-//       id: "STU005",
-//       avatar: "ML",
-//     },
-//     book: {
-//       title: "The Hobbit",
-//       author: "J.R.R. Tolkien",
-//       id: "BK004",
-//     },
-//     timestamp: "2025-03-28T09:45:00",
-//     date: "2025-03-28",
-//     dueDate: "2025-04-11",
-//   },
-//   {
-//     id: "11",
-//     type: "outTime",
-//     student: {
-//       name: "Morgan Lee",
-//       id: "STU005",
-//       avatar: "ML",
-//     },
-//     timestamp: "2025-03-28T11:15:00",
-//     date: "2025-03-28",
-//     duration: "1h 45m",
-//   },
-//   {
-//     id: "12",
-//     type: "return",
-//     student: {
-//       name: "Jordan Black",
-//       id: "STU006",
-//       avatar: "JB",
-//     },
-//     book: {
-//       title: "The Catcher in the Rye",
-//       author: "J.D. Salinger",
-//       id: "BK005",
-//     },
-//     timestamp: "2025-03-28T14:30:00",
-//     date: "2025-03-28",
-//     borrowDate: "2025-03-14",
-//   },
-// ]
-
 // Group activities by date
 const groupActivitiesByDate = (activities: any[]) => {
   const grouped: Record<string, any[]> = {};
@@ -211,15 +42,15 @@ export function Activities({
   const [filter, setFilter] = useState("all")
   const [dateFilter, setDateFilter] = useState("all")
 
-  const {data, isLoading, refetch} = useList({
-    resource:"/student/alllog"
+  const { data, isLoading, refetch } = useList({
+    resource: "/student/alllog"
   })
 
   const activities = data?.data || []
 
-  useEffect(()=>{
+  useEffect(() => {
     refetch()
-  },[refresh])
+  }, [refresh])
 
   // Filter activities based on search query and type filter
 
@@ -253,8 +84,8 @@ export function Activities({
 
 
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
-        <Tabs defaultValue="all" className="w-full max-w-md" onValueChange={setFilter}>
-          <TabsList className="grid grid-cols-5 w-full">
+        <Tabs defaultValue="all" className="w-full max-w-lg " onValueChange={setFilter}>
+          <TabsList className="grid grid-cols-5 w-full bg-gray-200">
             <TabsTrigger value="all" className="flex items-center gap-1">
               <Calendar className="h-4 w-4" />
               <span className="hidden sm:inline">All</span>
@@ -263,7 +94,7 @@ export function Activities({
               <Clock className="h-4 w-4" />
               <span className="hidden sm:inline">In Time</span>
             </TabsTrigger>
-            <TabsTrigger value="exit" className="flex items-center gap-1">
+            <TabsTrigger value="exit" className="flex items-center gap-1 ">
               <LogOut className="h-4 w-4" />
               <span className="hidden sm:inline">Out Time</span>
             </TabsTrigger>
@@ -291,10 +122,6 @@ export function Activities({
             </SelectContent>
           </Select>
 
-          <Button variant="outline" size="sm">
-            <Download className="h-4 w-4 mr-2" />
-            Export
-          </Button>
         </div>
       </div>
 
@@ -314,8 +141,8 @@ export function Activities({
               <div className="h-px bg-border mt-2"></div>
             </div>
 
-            <div className="rounded-md border border-[#E9EAEB]" 
-            style={{ boxShadow: "0 0 8px rgba(0, 0, 0, 0.1)" }}
+            <div className="rounded-md border border-[#E9EAEB]"
+              style={{ boxShadow: "0 0 8px rgba(0, 0, 0, 0.1)" }}
             >
               <div className="divide-y divide-[#E9EAEB]">
                 {groupedActivities[date].map((activity) => (

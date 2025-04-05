@@ -70,30 +70,30 @@ const StudentDetailActivities = () => {
   return (
     <div className="container my-6 py-6 rounded-[10px] bg-[#fff] overflow-auto">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
-            <Tabs defaultValue="all" className="w-full max-w-md" onValueChange={setFilter}>
-              <TabsList className="grid grid-cols-5 w-full">
-                <TabsTrigger value="all" className="flex items-center gap-1">
-                  <Calendar className="h-4 w-4" />
-                  <span className="hidden sm:inline">All</span>
-                </TabsTrigger>
-                <TabsTrigger value="entry" className="flex items-center gap-1">
-                  <Clock className="h-4 w-4" />
-                  <span className="hidden sm:inline">In Time</span>
-                </TabsTrigger>
-                <TabsTrigger value="exit" className="flex items-center gap-1">
-                  <LogOut className="h-4 w-4" />
-                  <span className="hidden sm:inline">Out Time</span>
-                </TabsTrigger>
-                <TabsTrigger value="borrowed" className="flex items-center gap-1">
-                  <BookUp className="h-4 w-4" />
-                  <span className="hidden sm:inline">Borrowed</span>
-                </TabsTrigger>
-                <TabsTrigger value="returned" className="flex items-center gap-1">
-                  <BookOpen className="h-4 w-4" />
-                  <span className="hidden sm:inline">Return</span>
-                </TabsTrigger>
-              </TabsList>
-            </Tabs>
+             <Tabs defaultValue="all" className="w-full max-w-lg " onValueChange={setFilter}>
+                      <TabsList className="grid grid-cols-5 w-full bg-gray-200">
+                        <TabsTrigger value="all" className="flex items-center gap-1">
+                          <Calendar className="h-4 w-4" />
+                          <span className="hidden sm:inline">All</span>
+                        </TabsTrigger>
+                        <TabsTrigger value="entry" className="flex items-center gap-1">
+                          <Clock className="h-4 w-4" />
+                          <span className="hidden sm:inline">In Time</span>
+                        </TabsTrigger>
+                        <TabsTrigger value="exit" className="flex items-center gap-1 ">
+                          <LogOut className="h-4 w-4" />
+                          <span className="hidden sm:inline">Out Time</span>
+                        </TabsTrigger>
+                        <TabsTrigger value="borrowed" className="flex items-center gap-1">
+                          <BookUp className="h-4 w-4" />
+                          <span className="hidden sm:inline">Borrowed</span>
+                        </TabsTrigger>
+                        <TabsTrigger value="returned" className="flex items-center gap-1">
+                          <BookOpen className="h-4 w-4" />
+                          <span className="hidden sm:inline">Return</span>
+                        </TabsTrigger>
+                      </TabsList>
+                    </Tabs>
     
             <div className="flex items-center gap-2 w-full md:w-auto">
               <Select defaultValue="all" onValueChange={setDateFilter}>
@@ -107,11 +107,6 @@ const StudentDetailActivities = () => {
                   <SelectItem value="thisWeek">This Week</SelectItem>
                 </SelectContent>
               </Select>
-    
-              <Button variant="outline" size="sm">
-                <Download className="h-4 w-4 mr-2" />
-                Export
-              </Button>
             </div>
           </div>
     

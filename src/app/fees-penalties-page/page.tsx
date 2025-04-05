@@ -2,7 +2,7 @@
 
 import React, { Suspense, useState } from "react";
 import Header from "@/components/custom/header";
-import { PenaltiesColumns, priorColumns } from "./columns";
+import { PenaltiesColumns } from "./columns";
 import { useList } from "@refinedev/core";
 import { Button } from "@/components/ui/button";
 import filter from "../../images/filter.png";
@@ -17,7 +17,6 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import MasterTable from "../test/table-page";
-import ExportStudent from "@/components/students/export-students-button";
 
 interface Department {
   id: string;
@@ -125,8 +124,7 @@ const FeesPenaltiesPage = () => {
               title="Fees&Penalties"
               columns={() => PenaltiesColumns}
               resource="book_v2/get_full_feelist_student"
-              AddedOptions={[ExportStudent]}
-              priorColumns={() => priorColumns}
+              AddedOptions={[]}
             />
           </div>
         </section>
