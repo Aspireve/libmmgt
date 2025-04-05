@@ -7,6 +7,7 @@ import DeleteStudentModal from "@/components/students/delete-student-modal";
 import { Button } from "@/components/ui/button";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Delete02Icon, Edit02Icon } from "@hugeicons/core-free-icons";
+import TooltipToggle from "@/components/custom/tooltip-toggle";
 
 export const StudentIDCell = ({
   student,
@@ -64,25 +65,31 @@ export const StudentActions = ({
   const { isOpen, close, open } = useDisclosure();
   return (
     <div className="flex gap-2 items-center">
-      <HugeiconsIcon
-        icon={Edit02Icon}
-        size={24}
-        color="#3957B8"
-        strokeWidth={1.5}
-        className="p-0 shadow-none cursor-pointer  "
-        onClick={() => {
-          router.push(`/student-page/EditStudent?student_id=${student.student_id}`);
-        }}
-        aria-label="Edit student"
-      />
-      <HugeiconsIcon
-        icon={Delete02Icon}
-        size={24}
-        color="#3957B8"
-        strokeWidth={1.5}
-        className="p-0 shadow-none cursor-pointer "
-        onClick={open}
-      />
+      <TooltipToggle content="Edit Student">
+        <HugeiconsIcon
+          icon={Edit02Icon}
+          size={24}
+          color="#3957B8"
+          strokeWidth={1.5}
+          className="p-0 shadow-none cursor-pointer  "
+          onClick={() => {
+            router.push(
+              `/student-page/EditStudent?student_id=${student.student_id}`
+            );
+          }}
+          aria-label="Edit student"
+        />
+      </TooltipToggle>
+      <TooltipToggle content="Delete">
+        <HugeiconsIcon
+          icon={Delete02Icon}
+          size={24}
+          color="#3957B8"
+          strokeWidth={1.5}
+          className="p-0 shadow-none cursor-pointer "
+          onClick={open}
+        />
+      </TooltipToggle>
 
       <DeleteStudentModal
         data={[student]}

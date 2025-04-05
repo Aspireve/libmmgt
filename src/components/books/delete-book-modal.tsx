@@ -18,7 +18,6 @@ const DeleteBookModal = ({
   const { mutate, isLoading } = useDeleteMany();
 
   const handleDelete = async () => {
-    
     mutate({
       resource: "book_v2/bulk-delete",
       ids: data.map((item) => item.book_copy_uuid),
@@ -53,14 +52,14 @@ const DeleteBookModal = ({
             ? "Are you sure you want to delete this book?"
             : "Are you sure you want to delete these books?"}
         </p>
-        <div className="flex justify-end gap-4">
-          <Button onClick={close} className="shadow-none">
+        <div className="flex justify-end gap-2">
+          <Button variant="outline" onClick={close} className="shadow-none">
             Cancel
           </Button>
           <Button
             onClick={handleDelete}
             disabled={isLoading}
-            className="bg-red-600 text-white hover:bg-red-700 rounded-xl w-full"
+            className="bg-red-600 text-white hover:bg-red-700"
           >
             {isLoading ? (
               <>
@@ -78,4 +77,3 @@ const DeleteBookModal = ({
 };
 
 export default DeleteBookModal;
-

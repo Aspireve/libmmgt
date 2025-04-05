@@ -25,8 +25,11 @@ import { toast } from "sonner";
 import { useCreate } from "@refinedev/core";
 
 const InstituteSelector = () => {
-  const { currentInstitute, instituteList } =
-    useSelector((state: RootState) => state.auth) || {};
+  // const { currentInstitute } =
+  //   useSelector((state: RootState) => state.auth.user?.institute_details) || {};
+  const instituteList =
+    useSelector((state: RootState) => state.auth.user?.institute_details) || [];
+
   const dispatch = useDispatch();
   const [newInstituteName, setNewInstituteName] = useState("");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -55,6 +58,7 @@ const InstituteSelector = () => {
       );
     });
   };
+  console.log(instituteList);
 
   return (
     <>
@@ -65,14 +69,14 @@ const InstituteSelector = () => {
             className="border-2 border-blue-500 rounded-xl overflow-hidden w-fit h-[54px] flex items-center justify-between p-2 px-4 transition-all duration-300 hover:shadow-lg cursor-pointer"
           >
             <Image
-              src={currentInstitute?.logo || Images.TIA}
+              src={instituteList[0]?.institute_logo || Images.TIA}
               alt="logo"
               width={40}
               height={40}
             />
             <div className="w-[2px] h-[30px] bg-[#1F2937]" />
             <span className="text-[blue] font-bold text-[16px]">
-              {currentInstitute?.institute_name.match(/[A-Z]/g)?.join("") || ""}
+              {instituteList[0]?.institute_name.match(/[A-Z]/g)?.join("") || ""}
             </span>
             <Image
               src={Images.Dropper}
@@ -82,7 +86,7 @@ const InstituteSelector = () => {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="border-2 border-blue-500 w-full mt-2 bg-white rounded-xl cursor-pointer">
-          {instituteList.map((institute, idx) => (
+          {instituteList?.map((institute, idx) => (
             <DropdownMenuItem
               key={`institute-dropdown-${idx}`}
               className="hover:bg-[#aaaaaa66] transition-all duration-300"
@@ -96,7 +100,7 @@ const InstituteSelector = () => {
             >
               <div className="flex items-center w-full gap-3">
                 <Image
-                  src={institute?.logo || Images.TIA}
+                  src={institute?.institute_logo || Images.TIA}
                   alt="logo"
                   width={15}
                   height={15}

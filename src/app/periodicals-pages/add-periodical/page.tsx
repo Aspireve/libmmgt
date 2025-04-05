@@ -1,61 +1,74 @@
 "use client";
 
-import React, { Suspense, useEffect, useState } from 'react'
+import React, { Suspense, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Label } from '@/components/ui/label';
+import { Label } from "@/components/ui/label";
 import { useForm } from "@refinedev/react-hook-form";
-import { useCreate } from '@refinedev/core';
-import { useRouter } from 'next/navigation';
-import { toast } from 'sonner';
-import Header from '@/app/Header/header';
-import Tabbing from '@/app/Tab/Tab';
-import { Loader2 } from 'lucide-react';
-import { InputField } from '@/components/custom/inputfield';
-import { addbookRoutes } from '@/app/book-pages/types/routes';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { RootState } from '@/redux/store/store';
-import { useSelector } from 'react-redux';
-import { AddPeriodicalBC } from '@/components/breadcrumb/constant';
-import { AddPeriodicalType } from '@/types/periodical';
+import { useCreate } from "@refinedev/core";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import Header from "@/app/Header/header";
+import Tabbing from "@/app/Tab/Tab";
+import { Loader2 } from "lucide-react";
+import { InputField } from "@/components/custom/inputfield";
+import { addbookRoutes } from "@/app/book-pages/types/routes";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { RootState } from "@/redux/store/store";
+import { useSelector } from "react-redux";
+import { AddPeriodicalBC } from "@/components/breadcrumb/constant";
+import { AddPeriodicalType } from "@/types/periodical";
 
 const AddJournal = () => {
-
   const router = useRouter();
   const { mutate, isLoading: createLoading } = useCreate();
   const [category, setCategory] = useState("");
   const [frequency, setFrequency] = useState("");
 
   const frequencyArr = [
-    "DAILY", "WEEKLY", "BIWEEKLY", "MONTHLY", "BIMONTHLY", "QUARTERLY", "SEMIANNUAL", "ANNUAL", "BIENNIAL"
-  ]
+    "DAILY",
+    "WEEKLY",
+    "BIWEEKLY",
+    "MONTHLY",
+    "BIMONTHLY",
+    "QUARTERLY",
+    "SEMIANNUAL",
+    "ANNUAL",
+    "BIENNIAL",
+  ];
 
-  const { institute_uuid, institute_name } = useSelector((state: RootState) => state.auth.currentInstitute)
-
-
+  const { institute_uuid, institute_name } = useSelector(
+    (state: RootState) => state.auth.currentInstitute
+  );
 
   const {
     register,
     handleSubmit,
     setValue,
-    formState: { errors }
+    formState: { errors },
   } = useForm();
 
   const onSubmit = (data: any) => {
-
     const formattedData: AddPeriodicalType = {
       ...data,
       subscription_price: parseInt(data.subscription_price.toString(), 10),
       institute_uuid: institute_uuid ?? " ",
       institute_name: institute_name ?? " ",
-    }
+    };
     mutate(
       { resource: "journals/create-new-journal", values: formattedData },
       {
         onSuccess: () => {
-          toast.success("Journal added successfully!")
-          router.push("/periodicals-pages/periodicals-page")
+          toast.success("Journal added successfully!");
+          router.push("/periodicals-pages/periodicals-page");
         },
-        onError: (error) => toast.error("Error adding Journal: " + error.message),
+        onError: (error) =>
+          toast.error("Error adding Journal: " + error.message),
       }
     );
   };
@@ -66,8 +79,8 @@ const AddJournal = () => {
         <AddPeriodicalBC />
         <Header heading="Add Journal" subheading="Tanvir Chavan" />
 
-        <Tabbing routes={addbookRoutes} className='w-[20%]' />
-        <section className='p-10 pt-0'>
+        <Tabbing routes={addbookRoutes} className="w-[23%]" />
+        <section className="p-10 pt-0">
           <div className="container">
             {/* Dropdown  */}
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -170,7 +183,6 @@ const AddJournal = () => {
                 </div>
                 <h2>Volume & Issue Details</h2>
                 <div className="grid grid-cols-4 gap-4 p-4">
-
                   <InputField
                     label="Volume Number"
                     name="volume_no"
@@ -196,7 +208,7 @@ const AddJournal = () => {
                 </div>
                 <h2>Publication & Classification</h2>
                 <div className="grid grid-cols-4 gap-4 p-4">
-                  <div className='text-[#717680]'>
+                  <div className="text-[#717680]">
                     <Label>Frequency</Label>
                     <Select
                       onValueChange={(value) => {
@@ -210,7 +222,9 @@ const AddJournal = () => {
                       </SelectTrigger>
                       <SelectContent className="bg-white">
                         {frequencyArr.map((freq) => (
-                          <SelectItem key={freq} value={freq}>{freq}</SelectItem>
+                          <SelectItem key={freq} value={freq}>
+                            {freq}
+                          </SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
@@ -252,28 +266,28 @@ const AddJournal = () => {
                 <h2>Acquisition & Library Information</h2>
                 <div className="grid grid-cols-4 gap-4 p-4">
                   <InputField
-                    label='Vendor Name'
+                    label="Vendor Name"
                     name="vendor_name"
                     register={register}
                     errors={errors}
-                    type='text'
+                    type="text"
                     validation={{
                       required: "Vendor Name is required",
                     }}
                     placeholder="Enter Vendor Name"
                   />
                   <InputField
-                    label='Library Name'
+                    label="Library Name"
                     name="library_name"
                     register={register}
                     errors={errors}
-                    type='text'
+                    type="text"
                     validation={{
                       required: "Library Name is required",
                     }}
                     placeholder="Enter Library Name"
                   />
-                  <div className='text-[#717680]'>
+                  <div className="text-[#717680]">
                     <Label>Category</Label>
                     <Select
                       onValueChange={(value) => {
@@ -292,29 +306,32 @@ const AddJournal = () => {
                     </Select>
                   </div>
                   <InputField
-                    label='Barcode'
+                    label="Barcode"
                     name="barcode"
                     register={register}
                     errors={errors}
-                    type='text'
+                    type="text"
                     validation={{
                       required: "Barcode is required",
                     }}
                     placeholder="Enter Barcode"
                   />
-
                 </div>
-
-
               </div>
-              <div className='flex justify-center gap-6'>
+              <div className="flex justify-center gap-6">
                 <Button
-                  className='shadow-none text-[#1E40AF] rounded-[10px]'
-                  type='button'
-                  onClick={() => router.push("/periodicals-pages/periodicals-page")}>Cancel</Button>
+                  variant="outline"
+                  className="shadow-none text-[#1E40AF] border-[#1E40AF] rounded-[10px]"
+                  type="button"
+                  onClick={() =>
+                    router.push("/periodicals-pages/periodicals-page")
+                  }
+                >
+                  Cancel
+                </Button>
                 <Button
                   type="submit"
-                  className="bg-[#1E40AF] text-white rounded-[10px] hover:bg-[#1E40AF]"
+                  className="bg-[#1E40AF] text-white rounded-[10px] hover:bg-[#1E40AF]/90"
                   disabled={createLoading}
                 >
                   {createLoading ? (
@@ -328,12 +345,11 @@ const AddJournal = () => {
                 </Button>
               </div>
             </form>
-
           </div>
         </section>
       </>
     </Suspense>
-  )
-}
+  );
+};
 
-export default AddJournal
+export default AddJournal;

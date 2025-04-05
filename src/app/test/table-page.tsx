@@ -71,6 +71,11 @@ export default function MasterTable<TData extends BaseRecord>({
         operator: "eq",
         value: JSON.stringify(filters.search),
       },
+      {
+        field: "filter",
+        operator: "eq",
+        value: JSON.stringify(filters.filter),
+      },
       ...query,
     ],
   });

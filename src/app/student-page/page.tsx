@@ -25,9 +25,9 @@ export default function StudentDirectory() {
 
           AddedOptions={[
             DeleteStudent,
-            ({ setFilters }) => (
-              <Filter setFilters={setFilters} />
-            ),
+              ({ setFilters }) => (
+                <Filter setFilters={setFilters} />
+              ),
             AddStudents,
             ImportStudentButton,
             ExportStudent,
@@ -37,10 +37,11 @@ export default function StudentDirectory() {
                 options: [
                   { label: "Student Id", value: "student_id" },
                   { label: "Name", value: "student_name" },
+                  { label: "Email", value: "student_email" },
                 ],
                 placeholder: "Search",
               }), // Pass the setFilters function to SearchFilter,
-              
+
           ]}
         />
       </div>

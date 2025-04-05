@@ -190,14 +190,6 @@ const ImportBooks = () => {
               fieldKey={"year_of_publication"}
             />
             <MappingDropdown<AddBookType>
-              label="Year of Publication"
-              importData={importData}
-              isRequired={true}
-              mapping={mapping}
-              setMapping={setMapping}
-              fieldKey={"year_of_publication"}
-            />
-            <MappingDropdown<AddBookType>
               label="Language"
               importData={importData}
               isRequired={true}
@@ -268,14 +260,6 @@ const ImportBooks = () => {
               mapping={mapping}
               setMapping={setMapping}
               fieldKey={"author_mark"}
-            />
-            <MappingDropdown<AddBookType>
-              label="Source of Acquisition"
-              importData={importData}
-              isRequired={true}
-              mapping={mapping}
-              setMapping={setMapping}
-              fieldKey={"source_of_acquisition"}
             />
             <MappingDropdown<AddBookType>
               label="Source of Acquisition"

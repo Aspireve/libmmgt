@@ -13,6 +13,7 @@ import Image from "next/image";
 import images from "@/images";
 import { useCreate } from "@refinedev/core";
 import { toast } from "sonner";
+import type { AuthStates } from "@/types/auth";
 
 const LoginPage = () => {
   const [email, setEmail] = useState<string>("");
@@ -40,6 +41,8 @@ const LoginPage = () => {
       },
       {
         onSuccess: (response) => {
+          console.log(response.data);
+
           const accessToken = response.data.token.accessToken ?? null;
 
           // Check if user exists in response
@@ -54,21 +57,21 @@ const LoginPage = () => {
           router.push("/");
           toast.success("Login successfully!");
 
-          const userPayload = {
-            token: accessToken,
-            employee_uuid: userData.user_uuid,
-            first_name: userData.name,
-            email: userData.email,
-            phone: userData.phone_no,
-            logo: userData.institute_image,
-            instituteList, // ✅ Store the instituteList in Redux
-            currentInstitute:
-              instituteList.length > 0 ? instituteList[0] : null,
-          };
+          // const userPayload = {
+          //   token: accessToken,
+          //   employee_uuid: userData.user_uuid,
+          //   first_name: userData.name,
+          //   email: userData.email,
+          //   phone: userData.phone_no,
+          //   logo: userData.institute_image,
+          //   instituteList, // ✅ Store the instituteList in Redux
+          //   currentInstitute:
+          //     instituteList.length > 0 ? instituteList[0] : null,
+          // };
           // Save token to localStorage
           localStorage.setItem("token", accessToken);
 
-          dispatch(setUser(userPayload));
+          dispatch(setUser(response.data as AuthStates));
         },
         onError: () => {
           toast.error("Wrong Credentional");
