@@ -58,12 +58,18 @@ export default function MasterTable<TData extends BaseRecord>({
   const dispatch = useDispatch();
   const { page, limit } = useSelector((state: RootState) => state.pagination);
 
+  const { institute_uuid } = useSelector(
+    (state: RootState) => state.auth.currentInstitute
+  );
+
   const {
     data: listData,
     isLoading,
     refetch,
   } = useList<TData>({
-    resource,
+    resource: resource.includes("?")
+      ? resource + `&institute_uuid=${JSON.stringify([institute_uuid])}`
+      : `${resource}?institute_uuid=${JSON.stringify([institute_uuid])}`,
     pagination: { current: page, pageSize: limit },
     filters: [
       {
@@ -80,14 +86,18 @@ export default function MasterTable<TData extends BaseRecord>({
     ],
   });
 
-  const { selectedData, columnsWithCheckbox, setSelectedData, columnsWithPrior } =
-    useRowSelection<TData>(
-      (row) => row?.[idField] as string | number,
-      isSelectable,
-      columns({ refetch }),
-      listData?.data || [],
-      priorColumns?.({ refetch })
-    );
+  const {
+    selectedData,
+    columnsWithCheckbox,
+    setSelectedData,
+    columnsWithPrior,
+  } = useRowSelection<TData>(
+    (row) => row?.[idField] as string | number,
+    isSelectable,
+    columns({ refetch }),
+    listData?.data || [],
+    priorColumns?.({ refetch })
+  );
 
   useEffect(() => {
     if (listData?.pagination) {
@@ -111,7 +121,7 @@ export default function MasterTable<TData extends BaseRecord>({
       dispatch(resetValues());
       setSelectedData([]);
     };
-  }, [listData, resource, onDataFetched,dispatch, setSelectedData]);
+  }, [listData, resource, onDataFetched, dispatch, setSelectedData]);
 
   return (
     <div className="my-6 border-2 border-[#E9EAEB] rounded-xl shadow-sm cursor-default">

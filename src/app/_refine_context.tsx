@@ -3,7 +3,7 @@
 import { Refine, type AuthProvider } from "@refinedev/core";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { RefineKbar, RefineKbarProvider } from "@refinedev/kbar";
-import { SessionProvider, signIn, signOut, useSession } from "next-auth/react";
+// import { SessionProvider, signIn, signOut, useSession } from "next-auth/react";
 import { usePathname } from "next/navigation";
 import React, { Suspense } from "react";
 
@@ -28,113 +28,112 @@ export const RefineContext = (
   props: React.PropsWithChildren<RefineContextProps>
 ) => {
   return (
-    <SessionProvider>
+    // <SessionProvider>
       <App {...props} />
-    </SessionProvider>
+    // </SessionProvider>
   );
 };
 
 type AppProps = {};
 
 const App = (props: React.PropsWithChildren<AppProps>) => {
-  const { data, status } = useSession();
+  // const { data, status } = useSession();
   const to = usePathname();
 
-  const authProvider: AuthProvider = {
-    login: async () => {
-      signIn("auth0", {
-        callbackUrl: to ? to.toString() : "/",
-        redirect: true,
-      });
+  // const authProvider: AuthProvider = {
+  //   login: async () => {
+  //     signIn("auth0", {
+  //       callbackUrl: to ? to.toString() : "/",
+  //       redirect: true,
+  //     });
 
-      return {
-        success: true,
-      };
-    },
-    logout: async () => {
-      signOut({
-        redirect: true,
-        callbackUrl: "/login",
-      });
+  //     return {
+  //       success: true,
+  //     };
+  //   },
+  //   logout: async () => {
+  //     signOut({
+  //       redirect: true,
+  //       callbackUrl: "/login",
+  //     });
 
-      return {
-        success: true,
-      };
-    },
-    onError: async (error) => {
-      if (error.response?.status === 401) {
-        return {
-          logout: true,
-        };
-      }
+  //     return {
+  //       success: true,
+  //     };
+  //   },
+  //   onError: async (error) => {
+  //     if (error.response?.status === 401) {
+  //       return {
+  //         logout: true,
+  //       };
+  //     }
 
-      return {
-        error,
-      };
-    },
-    check: async () => {
-      if (status === "unauthenticated") {
-        return {
-          authenticated: false,
-          redirectTo: "/login",
-        };
-      }
+  //     return {
+  //       error,
+  //     };
+  //   },
+  //   check: async () => {
+  //     if (status === "unauthenticated") {
+  //       return {
+  //         authenticated: false,
+  //         redirectTo: "/login",
+  //       };
+  //     }
 
-      return {
-        authenticated: true,
-      };
-    },
-    getPermissions: async () => {
-      return null;
-    },
-    getIdentity: async () => {
-      if (data?.user) {
-        const { user } = data;
-        return {
-          name: user.name,
-          avatar: user.image,
-        };
-      }
+  //     return {
+  //       authenticated: true,
+  //     };
+  //   },
+  //   getPermissions: async () => {
+  //     return null;
+  //   },
+  //   getIdentity: async () => {
+  //     if (data?.user) {
+  //       const { user } = data;
+  //       return {
+  //         name: user.name,
+  //         avatar: user.image,
+  //       };
+  //     }
 
-      return null;
-    },
-  };
+  //     return null;
+  //   },
+  // };
 
   return (
-    <>
+    // <>
       <Suspense fallback={<> loding...</>}>
-        <QueryClientProvider client={queryClient}>
-          <RefineKbarProvider>
+        {/* <QueryClientProvider client={queryClient}> */}
+          {/* <RefineKbarProvider> */}
             <Refine
               routerProvider={routerProvider}
               dataProvider={dataProvider}
-              authProvider={authProvider}
+              // authProvider={authProvider}
               options={{
                 syncWithLocation: true,
                 warnWhenUnsavedChanges: true,
                 useNewQueryKeys: true,
               }}
-              resources={[
-                {
-                  name: "all-books",
-                  list: BooksPage,
-                  meta: { label: "All Books" },
-                },
-                {
-                  name: "issue-books",
-                  list: IssueBooks,
-                  meta: { label: "Issue Books" },
-                },
-              ]}
+              // resources={[
+              //   {
+              //     name: "all-books",
+              //     list: BooksPage,
+              //     meta: { label: "All Books" },
+              //   },
+              //   {
+              //     name: "issue-books",
+              //     list: IssueBooks,
+              //     meta: { label: "Issue Books" },
+              //   },
+              // ]}
             >
               {/* <LoginPage/> */}
               {props.children}
-              <RefineKbar />
+              {/* <RefineKbar /> */}
             </Refine>
-          </RefineKbarProvider>
-        </QueryClientProvider>
+          {/* </RefineKbarProvider> */}
+        {/* </QueryClientProvider> */}
       </Suspense>
-    </>
   );
 };
 
