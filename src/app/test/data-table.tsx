@@ -52,7 +52,7 @@ export function Datatable<TData extends BaseRecord>({
 
   return (
     <div className="rounded-md flex flex-col gap-4">
-       <div className="max-h-[400px] overflow-x-scroll w-full scrollbar-none">
+       <div className=" overflow-x-scroll w-full scrollbar-none">
       <Table className="font-inter">
       
         <TableHeader>
@@ -61,9 +61,9 @@ export function Datatable<TData extends BaseRecord>({
               key={headerGroup.id}
               className="border-b border-[#E9EAEB] bg-[#FAFAFA]"
             >
-              {headerGroup.headers.map((header) => (
+              {headerGroup.headers.map((header, ind) => (
                 <TableHead
-                  key={header.id}
+                  key={`${header.id}-head-${ind}`}
                   className="text-sm py-2 text-[#535862] text-left bg-[#F0F1F3]"
                 >
                   {isLoading ? (

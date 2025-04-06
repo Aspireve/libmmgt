@@ -124,7 +124,7 @@ export default function MasterTable<TData extends BaseRecord>({
   }, [listData, resource, onDataFetched, dispatch, setSelectedData]);
 
   return (
-    <div className="my-6 border-2 border-[#E9EAEB] rounded-xl shadow-sm cursor-default">
+    <div className="my-6 border-2 border-[#E9EAEB] rounded-xl shadow-sm cursor-default w-full overflow-x-scroll">
       <Headers
         title={title}
         search={search}

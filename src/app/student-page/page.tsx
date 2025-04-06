@@ -17,7 +17,7 @@ export default function StudentDirectory() {
     <>
       <Header heading="Student Directory" subheading="Tanvir Chavan" />
 
-      <div className="mx-[40px]">
+      <div className="mx-[40px] overflow-x-scroll">
         <MasterTable<StudentFromDatabase>
           title="Students"
           resource="student/all"
@@ -37,6 +37,7 @@ export default function StudentDirectory() {
                 options: [
                   { label: "Student Id", value: "student_id" },
                   { label: "Name", value: "student_name" },
+                  { label: "Phone Number", value: "phone_no" },
                   { label: "Email", value: "email" },
                 ],
                 placeholder: "Search",
