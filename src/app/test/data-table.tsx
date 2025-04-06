@@ -52,13 +52,13 @@ export function Datatable<TData extends BaseRecord>({
 
   return (
     <div className="rounded-md flex flex-col gap-4">
-       <div className=" overflow-x-scroll w-full scrollbar-none">
+       <div className=" w-full scrollbar-none">
       <Table className="font-inter">
       
         <TableHeader>
-          {table.getHeaderGroups().map((headerGroup) => (
+          {table.getHeaderGroups().map((headerGroup, idex) => (
             <TableRow
-              key={headerGroup.id}
+              key={`${headerGroup.id}-head-${idex}`}
               className="border-b border-[#E9EAEB] bg-[#FAFAFA]"
             >
               {headerGroup.headers.map((header, ind) => (
@@ -87,14 +87,14 @@ export function Datatable<TData extends BaseRecord>({
               .fill(null)
               .map((_, index) => <SkeletonRow key={index} index={index} />)
           ) : table.getRowModel().rows.length ? (
-            table.getRowModel().rows.map((row) => (
+            table.getRowModel().rows.map((row, idx) => (
               <TableRow
-                key={row.id}
+                key={`${row.id}-${idx}-ind`}
                 className="border-b border-gray-300 text-left transition-opacity duration-300 hover:bg-gray-50"
               >
-                {row.getVisibleCells().map((cell) => (
+                {row.getVisibleCells().map((cell, ide) => (
                   <TableCell
-                    key={cell.id}
+                    key={`${cell.id}-${ide}-tab`}
                     className="py-4 text-[#535862]  font-medium"
                   >
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}

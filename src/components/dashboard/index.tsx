@@ -183,14 +183,24 @@ const Dashboard = () => {
       header: "Action Type",
       cell: ({ row }: any) => {
         const request_type = row.getValue("request_type");
-        return (
-          <span>
-            {request_type === "issue"
-              ? "Issue"
-              : request_type === "re-issue"
-              ? "ReIssue"
-              : "Return"}
+        return request_type === "issue" ? (
+          <span className="bg-[#faf6e8] border border-[#d2a61e] text-[#d2a61e] px-2 py-1 rounded-full">
+            Issue
           </span>
+        ) : request_type === "re-issue" ? (
+          <span className="bg-[#e9e8f6] border border-[#392fb2] text-[#392fb2] px-2 py-1 rounded-full">
+            Reissue
+          </span>
+        ) : request_type === "return" ? (
+          <span className="bg-[#e9f0e9] border border-[#2a6f23] text-[#2a6f23] px-2 py-1 rounded-full">
+            Return
+          </span>
+        ) : request_type === "notes" ? (
+          <span className="bg-[#cdcdcd] border border-[#313131] text-[#313131] px-2 py-1 rounded-full">
+            Notes
+          </span>
+        ) : (
+          request_type
         );
       },
     },
