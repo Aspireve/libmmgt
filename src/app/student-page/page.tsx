@@ -17,7 +17,7 @@ export default function StudentDirectory() {
     <>
       <Header heading="Student Directory" subheading="Tanvir Chavan" />
 
-      <div className="mx-[40px] overflow-x-scroll">
+      <div className="mx-[40px]">
         <MasterTable<StudentFromDatabase>
           title="Students"
           resource="student/all"

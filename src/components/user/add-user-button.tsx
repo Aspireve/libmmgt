@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/dialog";
 import AddUser from "@/app/Config-page/Users/add-user/page";
 
-const AddUserButton = () => {
+const AddUserButton = ({refetch} : {refetch: any}) => {
   const [open, setOpen] = useState(false);
 
   return (
@@ -28,7 +28,7 @@ const AddUserButton = () => {
         <DialogHeader>
           <DialogTitle>Add New User</DialogTitle>
         </DialogHeader>
-        <AddUser />
+        <AddUser refetch={refetch} setOpen={setOpen}/>
       </DialogContent>
     </Dialog>
   );

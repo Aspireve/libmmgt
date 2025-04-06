@@ -97,12 +97,15 @@ const Dashboard = () => {
     } else if (requestType === "notes") {
       // For issue requests, use POST method
       const method = status === "approved" ? "PATCH" : "DELETE";
-      const endpoint = `notes?_notes_uuid=${notesId}`;
+      const endpoint = `notes?_notes_uuid=${requestId}`;
+
+      console.log({endpoint})
 
       updateMutate(
         {
           resource: endpoint,
           id: "",
+          values: {},
           meta: { method },
         },
         {

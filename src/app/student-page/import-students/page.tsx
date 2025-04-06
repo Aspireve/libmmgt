@@ -27,7 +27,7 @@ const ImportStudents = () => {
   const { mutate } = useCreate();
   const router = useRouter();
   const { processFile, importData, clearData } = useFileProcessor();
-  const {isOpen, open, close} = useDisclosure()
+  const { isOpen, open, close } = useDisclosure();
 
   const { institute_name, institute_uuid } = useSelector(
     (state: RootState) => state.auth.currentInstitute
@@ -53,53 +53,55 @@ const ImportStudents = () => {
   }, [importData]);
 
   const steps: StepFunction<AddStudentType[]>[] = [
-    async () =>  {
-      open()
+    async () => {
+      open();
       return [];
     },
     async () => {
       const mapped: AddStudentType[] = importData.data
-        .map((row: any) =>
+        .map((row: any, index) =>
           new StudentDataBuilder(row, mapping, importData.headers)
             .setField("date_of_birth", (value) => {
-              if (!value) return null;
+              if (!value)
+                throw new Error(`Provide date of birth at line ${index + 1}`);
               const parsedDate = new Date(value);
               return !isNaN(parsedDate.getTime())
                 ? parsedDate.toISOString().split("T")[0]
                 : null;
             })
             .setField("roll_no", (value) => {
-              if (!value) return null;
+              if (!value || isNaN(Number(value)))
+                throw new Error(`Provide roll No at line ${index + 1}`);
               const num = Number(value);
-              return isNaN(num) ? null : num;
+              return isNaN(num) ? 0 : num;
             })
             .setField("student_name", (value) => {
               if (!value) {
-                throw new Error(`Student name is required`);
+                throw new Error(`Student name is required at line ${index + 1}`);
               }
               return value;
             })
             .setField("department", (value) => {
               if (!value) {
-                throw new Error(`Department is required`);
+                throw new Error(`Department is required at line ${index + 1}`);
               }
               return value;
             })
             .setField("email", (value) => {
               if (!value || !/\S+@\S+\.\S+/.test(value)) {
-                throw new Error(`Valid email is required`);
+                throw new Error(`Valid email is required at line ${index + 1}`);
               }
               return value;
             })
             .setField("phone_no", (value) => {
               if (!value) {
-                throw new Error(`Phone number is required`);
+                throw new Error(`Phone number is required at line ${index + 1}`);
               }
               return value;
             })
             .setField("gender", (value: string) => {
               if (!value) {
-                throw new Error(`Gender is required`);
+                throw new Error(`Gender is required at line ${index + 1}`);
               }
               return (value || "").toLowerCase();
             })
@@ -156,9 +158,10 @@ const ImportStudents = () => {
       <div className="container mx-auto p-6">
         <h2 className="text-xl font-semibold mb-4">Select Your Data File</h2>
         <p className="text-gray-600 text-sm mb-4">
-          Upload a CSV or Excel file containing your data. We&apos;ll help you map the columns to our system fields.
+          Upload a CSV or Excel file containing your data. We&apos;ll help you
+          map the columns to our system fields.
         </p>
-        
+
         <div className="border-2 border-dashed border-gray-300 p-6 rounded-[10px] bg-white shadow-sm flex flex-col items-center justify-center text-center">
           <Dropzone
             processFile={processFile}
@@ -166,18 +169,23 @@ const ImportStudents = () => {
             clearSelectedFile={clearData}
           />
         </div>
-  
+
         <div className="bg-blue-50 p-4 rounded-[10px] mt-4 border border-blue-200">
-          <h3 className="text-blue-700 font-medium mb-2">Data Import Guidelines</h3>
+          <h3 className="text-blue-700 font-medium mb-2">
+            Data Import Guidelines
+          </h3>
           <ul className="text-sm text-blue-600 list-disc pl-5">
             <li>Ensure the first row contains column headers</li>
             <li>Remove any blank rows or columns</li>
             <li>For dates, use YYYY-MM-DD format</li>
             <li>For best results, limit file size to under 10MB</li>
-            <li>Phone numbers must include country code (e.g., +91) and digits only.</li>
+            <li>
+              Phone numbers must include country code (e.g., +91) and digits
+              only.
+            </li>
           </ul>
         </div>
-  
+
         {importData.title && importData.headers.length > 0 && (
           <form onSubmit={handleMapData} className="mt-6">
             <h3 className="text-lg font-medium mb-4">Map Columns</h3>
@@ -272,21 +280,20 @@ const ImportStudents = () => {
             </Button>
           </form>
         )}
-  
+
         {isOpen && (
           <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50">
             <MultiStepLoader
               loading={isLoading}
               currentStep={currentStep}
               errorMessage={errorMessage}
-              close = {close}
+              close={close}
             />
           </div>
-        )} 
+        )}
       </div>
     </>
   );
-  
 };
 
 export default ImportStudents;

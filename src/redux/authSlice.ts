@@ -1,5 +1,6 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import type { AuthState, AuthStates, User } from "@/types/auth";
+import { API_URL } from "@/providers/data/fetch-wrapper";
 
 // const initialState: AuthState = {
 //   token: null,
@@ -74,7 +75,7 @@ const authSlice = createSlice({
     setUser: (state, action: PayloadAction<Partial<AuthStates>>) => {
       state.token.accessToken = action.payload.token?.accessToken;
       state.user = action.payload.user;
-      console.log(action.payload.user)
+      console.log(action.payload.user);
       state.currentInstitute =
         action.payload.user!.institute_details?.find(
           (inst) =>
@@ -83,6 +84,7 @@ const authSlice = createSlice({
         action.payload.user!.institute_details?.[0] ||
         state.currentInstitute;
     },
+
     // clearUser: () => initialState,
     clearUser: (state) => {
       state.token.accessToken = "";
@@ -94,13 +96,29 @@ const authSlice = createSlice({
       action: PayloadAction<{ institute_uuid: string }>
     ) => {
       const { institute_uuid } = action.payload;
-      state.currentInstitute =
-        state.user?.institute_details.find(
-          (inst) => inst.institute_uuid === institute_uuid
-        ) || state.user?.institute_details[0].institute_uuid;
+      const match = state.user?.institute_details.find(
+        (inst) => inst.institute_uuid === institute_uuid
+      );
+      state.currentInstitute = match
+        ? {...match}
+        : state.user?.institute_details?.[0]?.institute_uuid || null;
     },
   },
+  extraReducers: (builder) => {
+    builder.addCase(getAllInstitutes.fulfilled, (state, action) => {
+      state.user!.institute_details = action.payload;
+    });
+  },
 });
+
+export const getAllInstitutes = createAsyncThunk(
+  "auth/getAllInstitutes",
+  async () => {
+    const response = await fetch(`${API_URL}/config/get-institute`);
+    const data = await response.json();
+    return data;
+  }
+);
 
 export const { setUser, clearUser, setCurrentInstitute } = authSlice.actions;
 export default authSlice.reducer;
