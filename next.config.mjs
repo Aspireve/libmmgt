@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: "standalone",
-  // distDir: "dist",
+  distDir: "dist",
   images: {
     domains: ["admissionuploads.s3.amazonaws.com", "res.cloudinary.com"], // Add your S3 domain here
   },
