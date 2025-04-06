@@ -85,7 +85,7 @@ export const dataProvider: CustomDataProvider = {
   update: async ({ resource, id, variables, meta }) => {
     const url = `${resource}/${encodeURIComponent(id)}`;
     const response = await fetchWrapper(url, {
-      method: "PUT",
+      method: meta?.method ?? "PUT",
       body: JSON.stringify(variables),
     });
     return {

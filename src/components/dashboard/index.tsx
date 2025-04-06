@@ -13,6 +13,7 @@ import { Activities } from "./modified-activity-feed";
 // Move from App Router
 import MasterTable from "@/app/test/table-page";
 import { SearchFilter } from "../students/search-student";
+import { access } from "fs";
 
 enum LibraryTabs {
   ISSUE = "issue",
@@ -34,7 +35,8 @@ const Dashboard = () => {
   const handleRequestAction = async (
     requestId: string,
     status: "approved" | "rejected",
-    requestType: "issue" | "re-issue" | "return"
+    requestType: "issue" | "re-issue" | "return" | "notes",
+    notesId: string
   ) => {
     if (requestType === "issue") {
       // For issue requests, use POST method
@@ -92,6 +94,33 @@ const Dashboard = () => {
           },
         }
       );
+    } else if (requestType === "notes") {
+      // For issue requests, use POST method
+      const method = status === "approved" ? "PATCH" : "DELETE";
+      const endpoint = `notes?_notes_uuid=${notesId}`;
+
+      updateMutate(
+        {
+          resource: endpoint,
+          id: "",
+          meta: { method },
+        },
+        {
+          onSuccess: () => {
+            toast.success(
+              `Notes ${
+                status === "approved" ? "approved" : "declined"
+              } successfully!`
+            );
+          },
+          onError: (error) => {
+            toast.error(
+              error?.message ||
+                "An error occurred while processing the request."
+            );
+          },
+        }
+      );
     } else {
       // For re-issue requests, use PUT method
       const endpoint = "book_v2/request_booklog_reissue_ar";
@@ -135,14 +164,20 @@ const Dashboard = () => {
       accessorKey: "request_id",
       header: "Request ID",
       cell: ({ row }: any) => (
-        <span className="font-bold">{row.getValue("request_id")}</span>
+        <span className="font-bold">
+          {row.getValue("request_id").slice(0, 10)}
+        </span>
       ),
     },
     { accessorKey: "book_copy_id", header: "Book ID" },
     { accessorKey: "student_id", header: "Student ID" },
     { accessorKey: "book_title", header: "Name of Book" },
     // { accessorKey: "book_author", header: "Name of Author" },
-    { accessorKey: "edition", header: "Edition" },
+    {
+      accessorKey: "edition",
+      header: "Edition",
+      accessorFn: (data: any) => data.edition ?? "Not Provided",
+    },
     {
       accessorKey: "request_type",
       header: "Action Type",
@@ -160,10 +195,10 @@ const Dashboard = () => {
       },
     },
     {
-      accessorKey: "request_created_at",
+      accessorKey: "created_at",
       header: "Date",
       cell: ({ row }: any) => {
-        const rawDate = row.getValue("request_created_at");
+        const rawDate = row.getValue("created_at");
         const formattedDate = new Date(rawDate).toLocaleDateString("en-GB"); // Converts to dd/mm/yyyy
         return <span>{formattedDate}</span>;
       },
@@ -174,13 +209,19 @@ const Dashboard = () => {
       cell: ({ row }: any) => {
         const requestId = row.getValue("request_id");
         const requestType = row.getValue("request_type");
+        const notesId = row.getValue("request_type");
         return (
           <div className="flex gap-2 justify-center items-center">
             <Button
               variant="ghost"
               className="text-[#0D894F]"
               onClick={async () => {
-                await handleRequestAction(requestId, "approved", requestType);
+                await handleRequestAction(
+                  requestId,
+                  "approved",
+                  requestType,
+                  notesId
+                );
                 refetch();
               }}
               disabled={isLoading}
@@ -191,7 +232,12 @@ const Dashboard = () => {
               variant="ghost"
               className="text-[#F04438]"
               onClick={async () => {
-                await handleRequestAction(requestId, "rejected", requestType);
+                await handleRequestAction(
+                  requestId,
+                  "rejected",
+                  requestType,
+                  notesId
+                );
                 refetch();
               }}
               disabled={isLoading}
@@ -229,9 +275,9 @@ const Dashboard = () => {
                     SearchFilter({
                       setFilters,
                       options: [
-                        { label: "Request ID", value: "rb.request_id" },
-                        { label: "Book ID", value: "bc.book_copy_id" },
-                        { label: "Student ID", value: "rb.student_id" },
+                        { label: "Request ID", value: "cr.request_id" },
+                        { label: "Book ID", value: "cr.book_copy_id" },
+                        { label: "Student ID", value: "cr.student_id" },
                       ],
                       placeholder: "Search",
                     }),

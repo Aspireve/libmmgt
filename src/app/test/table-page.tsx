@@ -68,8 +68,8 @@ export default function MasterTable<TData extends BaseRecord>({
     refetch,
   } = useList<TData>({
     resource: resource.includes("?")
-      ? resource + `&institute_uuid=${JSON.stringify([institute_uuid])}`
-      : `${resource}?institute_uuid=${JSON.stringify([institute_uuid])}`,
+      ? resource + `&_institute_uuid=${JSON.stringify([institute_uuid])}`
+      : `${resource}?_institute_uuid=${JSON.stringify([institute_uuid])}`,
     pagination: { current: page, pageSize: limit },
     filters: [
       {
