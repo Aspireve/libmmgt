@@ -9,7 +9,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import AddUser from "@/app/Config-page/Users/add-user/page";
+import AddUser from "@/app/Config-page/Users/add-user/page2";
 
 const AddUserButton = ({refetch} : {refetch: any}) => {
   const [open, setOpen] = useState(false);
