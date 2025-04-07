@@ -1,47 +1,33 @@
+"use client";
+
 import React, { useEffect } from "react";
-import { useList } from "@refinedev/core";
+import { useOne } from "@refinedev/core";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store/store";
-import images from "@/images/index";
 import Image from "next/image";
 import arrowdownload from "@/images/arrow-download.png";
 import { Skeleton } from "../ui/skeleton";
 import { HugeiconsIcon } from "@hugeicons/react";
-import {
-  ArrowDown03Icon,
-  ArrowUp03Icon,
-  Bookshelf03Icon,
-  BookUploadIcon,
-  Cash02Icon,
-  UserMultiple02Icon,
-} from "@hugeicons/core-free-icons";
+import { DashboardCardtypes, dataCards } from "./constants";
 
 export default function DashboardData({ refresh }: { refresh: number }) {
-  const institute_uuid = useSelector(
-    (state: RootState) => state.auth.user?.institute_details[0]?.institute_uuid
+  const institute = useSelector(
+    (state: RootState) => state.auth.currentInstitute
+  );
+  const showDashboardCards = useSelector(
+    (state: RootState) => state.dashboard.showDashboardCards
   );
 
-  const { data, isLoading, refetch } = useList<{ totalBooks: string }>({
+  const { data, isLoading, refetch } = useOne<{ data: DashboardCardtypes }>({
     resource: `/student/admin-dashboard`,
-    filters: [
-      {
-        field: "_institute_uuid",
-        operator: "eq",
-        value: JSON.stringify([institute_uuid]),
-      },
-    ],
+    id: `_institute_uuid=${JSON.stringify([institute?.institute_uuid])}`,
   });
 
-  const dashboardStats = data?.data?.[0] || data?.data || [];
-
-  useEffect(() => {
+  const dashboardStats = useEffect(() => {
     refetch();
   }, [refresh]);
 
   // Get Redux state for dashboard card visibility
-  const showDashboardCards = useSelector(
-    (state: RootState) => state.dashboard.showDashboardCards
-  );
   if (!showDashboardCards) {
     return null;
   }
@@ -59,84 +45,12 @@ export default function DashboardData({ refresh }: { refresh: number }) {
     );
   }
 
-  // If the toggle is OFF, do not render the dashboard cards
-
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 my-6">
-      {[
-        {
-          title: "Total Books",
-          // @ts-ignore
-          value: dashboardStats?.totalBooks ?? "0",
-          icon: Bookshelf03Icon,
-          downloadUrl: `https://lms-807p.onrender.com/csv/total-books?institute_id=${institute_uuid}`,
-          iconBgColor: "bg-[#E8E7FF]",
-          accent: "#8155FF",
-        },
-        {
-          title: "Total Borrowed Books",
-          // @ts-ignore
-          value: dashboardStats?.totalBorrowedBooks ?? "0",
-          icon: BookUploadIcon,
-          downloadUrl: `https://lms-807p.onrender.com/csv/borrowed-books?institute_id=${institute_uuid}`,
-          iconBgColor: "bg-[#FFF4DE]",
-          accent: "#FEA40D",
-        },
-        {
-          title: "New Books",
-          // @ts-ignore
-          value: dashboardStats?.newBooks ?? "0",
-          icon: Cash02Icon,
-          downloadUrl: `https://lms-807p.onrender.com/csv/new-books?institute_id=${institute_uuid}`,
-          iconBgColor: "bg-[#DCFCE7]",
-          accent: "#4AD991",
-        },
-        {
-          title: "Total Members",
-          // @ts-ignore
-          value: dashboardStats?.totalMembers ?? "0",
-          icon: UserMultiple02Icon,
-          downloadUrl: `https://lms-807p.onrender.com/csv/total-members?institute_id=${institute_uuid}`,
-          iconBgColor: "bg-[#E0F2FE]",
-          accent: "#5FC5FF",
-        },
-        {
-          title: "Today Issue",
-          // @ts-ignore
-          value: dashboardStats?.todayIssues ?? "0",
-          icon: ArrowUp03Icon,
-          downloadUrl: `https://lms-807p.onrender.com/csv/today-issues?institute_id=${institute_uuid}`,
-          iconBgColor: "bg-[#E8E7FF]",
-          accent: "#8155FF",
-        },
-        {
-          title: "Today Return",
-          // @ts-ignore
-          value: dashboardStats?.todayReturned ?? "0",
-          icon: ArrowDown03Icon,
-          downloadUrl: `https://lms-807p.onrender.com/csv/today-returned?institute_id=${institute_uuid}`,
-          iconBgColor: "bg-[#FFF4DE]",
-          accent: "#FEA40D",
-        },
-        {
-          title: "Overdues",
-          // @ts-ignore
-          value: dashboardStats?.overdue ?? "0",
-          icon: Cash02Icon,
-          downloadUrl: `https://lms-807p.onrender.com/csv/overdue?institute_id=${institute_uuid}`,
-          iconBgColor: "bg-[#DCFCE7]",
-          accent: "#4AD991",
-        },
-        {
-          title: "Trending Books",
-          // @ts-ignore
-          value: dashboardStats?.trending ?? "0",
-          icon: UserMultiple02Icon,
-          downloadUrl: `https://lms-807p.onrender.com/csv/new-books?institute_id=${institute_uuid}`,
-          iconBgColor: "bg-[#E0F2FE]",
-          accent: "#5FC5FF",
-        },
-      ].map((stat, idx) => (
+      {dataCards({
+        institute_uuid: institute?.institute_uuid || "",
+        dashboardStats: data?.data?.data || {},
+      }).map((stat, idx) => (
         <a
           key={`stat-${idx}`}
           href={stat.downloadUrl}

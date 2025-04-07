@@ -24,6 +24,8 @@ import useDisclosure from "@/hooks/disclosure-hook";
 const ImportStudents = () => {
   const [mapping, setMapping] =
     useState<Partial<StudentImportField>>(initialMapping);
+  const [responseSummary, setResponseSummary] = useState<any>(null);
+
   const { mutate } = useCreate();
   const router = useRouter();
   const { processFile, importData, clearData } = useFileProcessor();
@@ -62,6 +64,7 @@ const ImportStudents = () => {
         .map((row: any, index) =>
           new StudentDataBuilder(row, mapping, importData.headers)
             .setField("date_of_birth", (value) => {
+              value = value?.toString().trim();
               if (!value)
                 throw new Error(`Provide date of birth at line ${index + 1}`);
               const parsedDate = new Date(value);
@@ -70,44 +73,58 @@ const ImportStudents = () => {
                 : null;
             })
             .setField("roll_no", (value) => {
+              value = value?.toString().trim();
               if (!value || isNaN(Number(value)))
                 throw new Error(`Provide roll No at line ${index + 1}`);
               const num = Number(value);
               return isNaN(num) ? 0 : num;
             })
             .setField("student_name", (value) => {
+              value = value?.toString().trim();
               if (!value) {
-                throw new Error(`Student name is required at line ${index + 1}`);
+                throw new Error(
+                  `Student name is required at line ${index + 1}`
+                );
               }
               return value;
             })
             .setField("department", (value) => {
+              value = value?.toString().trim();
               if (!value) {
                 throw new Error(`Department is required at line ${index + 1}`);
               }
               return value;
             })
             .setField("email", (value) => {
+              value = value?.toString().trim();
               if (!value || !/\S+@\S+\.\S+/.test(value)) {
                 throw new Error(`Valid email is required at line ${index + 1}`);
               }
               return value;
             })
             .setField("phone_no", (value) => {
+              value = value?.toString().trim();
               if (!value) {
-                throw new Error(`Phone number is required at line ${index + 1}`);
+                throw new Error(
+                  `Phone number is required at line ${index + 1}`
+                );
               }
               return value;
             })
             .setField("gender", (value: string) => {
+              value = value?.toString().trim();
               if (!value) {
                 throw new Error(`Gender is required at line ${index + 1}`);
               }
-              return (value || "").toLowerCase();
+              return value.toLowerCase();
             })
-            .setField("address", (value) => value || null)
-            .setField("year_of_admission", (value) => value || null)
-            .setField("password", (value) => value || null)
+            .setField("address", (value) => value?.toString().trim() || null)
+            .setField(
+              "year_of_admission",
+              (value) => value?.toString().trim() || null
+            )
+            .setField("password", (value) => value?.toString().trim() || null)
+
             .setCustomField("institute_uuid", institute_uuid || null)
             .setCustomField("institute_name", institute_name || null)
             .build()
@@ -124,10 +141,16 @@ const ImportStudents = () => {
         mutate(
           { resource: "student/bulk-create", values: mappedData }, // Directly use mapped data
           {
-            onSuccess: () => {
+            onSuccess: (data) => {
               toast.success("Students Added Successfully");
-              resolve([]);
+              setResponseSummary(data); // Save response
+              if ((data as any).inserted_data === 0) {
+                reject(new Error("All rows were either invalid or duplicates"));
+              } else {
+                resolve([]);
+              }
             },
+
             onError: () => {
               toast.error("Import Failed");
               reject(new Error("Failed to import students"));
@@ -138,8 +161,7 @@ const ImportStudents = () => {
     },
     async () => {
       clearData();
-      close();
-      return [];
+      return Promise.resolve([]); // no auto-close, just resolve
     },
   ];
 
@@ -287,6 +309,7 @@ const ImportStudents = () => {
               loading={isLoading}
               currentStep={currentStep}
               errorMessage={errorMessage}
+              summary={responseSummary}
               close={close}
             />
           </div>
