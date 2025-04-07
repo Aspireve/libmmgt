@@ -27,11 +27,25 @@ export interface ImportData {
   data: any[];
 }
 
-interface InstituteDetails {
-  institute_logo: string | null;
-  institute_name: string;
+export interface InstituteDetails {
   institute_uuid: string;
+  institute_id: string;
+  institute_name: string;
+  institute_abbr: string;
+  institute_contact_person: string;
+  landline: string;
+  institute_email: string;
+  mobile: string;
+  institute_address: string | null;
+  pincode: string;
+  state: string;
+  city: string;
+  website_url: string;
+  author: string;
+  created_date: string;
+  institute_logo: string | null;
   institute_header: string | null;
+  is_archived: boolean;
 }
 
 interface EmailNotifications {
