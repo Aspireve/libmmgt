@@ -43,14 +43,13 @@ export default function RootLayout({
                         </div>
                       </div>
                     )}
-                    <Toaster richColors position="top-center" />
                   </DarkModeWrapper>
                 </TooltipProvider>
               </RefineContext>
             </PersistGate>
           </Provider>
         </Suspense>
-        <Toaster />
+        <Toaster theme="light" richColors position="top-center" />
       </body>
     </html>
   );

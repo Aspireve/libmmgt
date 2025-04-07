@@ -12,6 +12,7 @@ import { useDispatch } from "react-redux";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store/store";
+import { clearUser } from "@/redux/authSlice";
 
 // Custom hook to detect screen size
 const useWindowSize = () => {
@@ -92,6 +93,8 @@ const SidebarLink = ({
 const Sidebar = () => {
   const { width } = useWindowSize();
   const [collapsed, setCollapsed] = useState(false);
+  const router = useRouter();
+  const dispatch = useDispatch();
   // adjust if needed
   const showReportCards = useSelector(
     (state: RootState) => state.reportCard.showReportCards
@@ -105,10 +108,15 @@ const Sidebar = () => {
     }
   }, [width]);
 
+  const handleLogout = () => {
+    dispatch(clearUser());
+    router.push("/LoginPage");
+  };
+
   return (
     <div
       className={`shadow-md border-r border-[#d9d9d9] flex flex-col justify-between font-josefin h-screen transition-all duration-300 relative
-      ${collapsed ? "w-[70px]" : "w-[15vw]"}`}
+      ${collapsed ? "w-[70px]" : "w-[15rem]"}`}
     >
       {/* Logo Section */}
       <div className={`p-4 ${collapsed ? "flex justify-center" : ""}`}>
@@ -116,11 +124,12 @@ const Sidebar = () => {
           {collapsed ? (
             <div className="w-8 h-8 flex items-center justify-center">
               <Image
-                src={Images.Logo}
+                src={Images.VighnoLogo}
                 alt="VighnoTech Logo"
                 className="w-full h-auto"
                 width={32}
                 height={32}
+                quality={100}
                 priority
               />
             </div>
@@ -138,7 +147,7 @@ const Sidebar = () => {
       {/* Menu Items */}
       <div
         className={`flex-1 space-y-2 ${
-          collapsed ? "px-1" : "p-4"
+          collapsed ? "px-3.5" : "p-4"
         } transition-all duration-300`}
       >
         {menuItems
@@ -150,7 +159,7 @@ const Sidebar = () => {
 
       {/* Footer Section */}
       <div className={`p-2 ${collapsed ? "px-1" : "p-4"}`}>
-        <div
+        {/* <div
           className={`flex ${
             collapsed ? "justify-center" : "justify-between"
           } mb-3 cursor-pointer p-2 rounded-md text-[#333333] group relative`}
@@ -158,12 +167,13 @@ const Sidebar = () => {
         >
           {!collapsed && <span>Contact</span>}
           <Phone size={20} />
-        </div>
+        </div> */}
         <div
           className={`flex ${
             collapsed ? "justify-center" : "justify-between"
-          } cursor-pointer p-2 rounded-md text-[#333333] group relative`}
+          } cursor-pointer p-2 rounded-md text-[#333333] group relative hover:bg-red-100 duration-150`}
           title={collapsed ? "Sign out" : ""}
+          onClick={handleLogout}
         >
           {!collapsed && <span>Sign out</span>}
           <LogOut size={20} />

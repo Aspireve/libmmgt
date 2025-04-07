@@ -31,7 +31,7 @@ interface ActionsCellProps {
 }
 
 const ActionsCell: React.FC<ActionsCellProps> = ({ book, handleEdit }) => (
-  <TooltipToggle content="View Book">
+  <TooltipToggle content="Edit Book">
     <div className="flex gap-2 cursor-pointer">
       <HugeiconsIcon
         icon={Edit02Icon}

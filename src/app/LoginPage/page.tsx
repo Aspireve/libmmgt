@@ -6,7 +6,7 @@ import { useDispatch } from "react-redux";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { setUser } from "@/redux/authSlice";
+import { getAllInstitutes, setUser } from "@/redux/authSlice";
 import Image from "next/image";
 import images from "@/images";
 import { useCreate } from "@refinedev/core";
@@ -19,12 +19,13 @@ import {
   ViewOffSlashIcon,
 } from "@hugeicons/core-free-icons";
 import { FieldValues, useForm } from "react-hook-form";
+import type { AppDispatch } from "@/redux/store/store";
 
 const LoginPage = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
   const router = useRouter();
-  const dispatch = useDispatch();
+  const dispatch: AppDispatch = useDispatch();
   const { mutate, isLoading } = useCreate();
   const {
     register,
@@ -45,6 +46,7 @@ const LoginPage = () => {
           router.push("/");
           toast.success("Login successfully!");
           dispatch(setUser(response.data as AuthStates));
+          dispatch(getAllInstitutes());
         },
         onError: () => {
           toast.error("Incorrect email or password.");

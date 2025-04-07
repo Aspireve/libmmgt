@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import type { AuthState, AuthStates, User } from "@/types/auth";
+import type { AuthState, AuthStates, InstituteList, User } from "@/types/auth";
 import { API_URL } from "@/providers/data/fetch-wrapper";
 
 // const initialState: AuthState = {
@@ -93,15 +93,22 @@ const authSlice = createSlice({
     },
     setCurrentInstitute: (
       state,
-      action: PayloadAction<{ institute_uuid: string }>
+      action: PayloadAction<{
+        institute_uuid: string | InstituteList;
+        override?: boolean;
+      }>
     ) => {
-      const { institute_uuid } = action.payload;
-      const match = state.user?.institute_details.find(
-        (inst) => inst.institute_uuid === institute_uuid
-      );
-      state.currentInstitute = match
-        ? {...match}
-        : state.user?.institute_details?.[0]?.institute_uuid || null;
+      const { institute_uuid, override } = action.payload;
+      if (override) {
+        state.currentInstitute = institute_uuid;
+      } else {
+        const match = state.user?.institute_details.find(
+          (inst) => inst.institute_uuid === institute_uuid
+        );
+        state.currentInstitute = match
+          ? { ...match }
+          : state.user?.institute_details?.[0]?.institute_uuid || null;
+      }
     },
   },
   extraReducers: (builder) => {
