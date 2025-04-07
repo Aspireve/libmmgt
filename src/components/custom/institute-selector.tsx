@@ -30,6 +30,8 @@ const InstituteSelector = () => {
     useSelector((state: RootState) => state.auth.currentInstitute) || {};
   const instituteList: InstituteDetails[] =
     useSelector((state: RootState) => state.auth.user?.institute_details) || [];
+  const user_uuid =
+    useSelector((state: RootState) => state.auth.user?.user_uuid)
 
   const dispatch = useDispatch<AppDispatch>();
   const [newInstituteName, setNewInstituteName] = useState("");
@@ -42,7 +44,11 @@ const InstituteSelector = () => {
       mutate(
         {
           resource: "config/create-institute",
-          values: { institute_name: newInstituteName },
+          values: {
+            institute_name: newInstituteName,
+
+            user_uuid: user_uuid
+          },
         },
         {
           onSuccess: (data: any) => {

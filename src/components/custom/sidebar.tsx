@@ -109,8 +109,8 @@ const Sidebar = () => {
   }, [width]);
 
   const handleLogout = () => {
-    dispatch(clearUser());
-    router.push("/LoginPage");
+    localStorage.clear();
+    router.push("/LoginPage")
   };
 
   return (
@@ -146,9 +146,8 @@ const Sidebar = () => {
 
       {/* Menu Items */}
       <div
-        className={`flex-1 space-y-2 ${
-          collapsed ? "px-3.5" : "p-4"
-        } transition-all duration-300`}
+        className={`flex-1 space-y-2 ${collapsed ? "px-3.5" : "p-4"
+          } transition-all duration-300`}
       >
         {menuItems
           .filter((item) => item.id !== "Reports" || showReportCards)
@@ -169,9 +168,8 @@ const Sidebar = () => {
           <Phone size={20} />
         </div> */}
         <div
-          className={`flex ${
-            collapsed ? "justify-center" : "justify-between"
-          } cursor-pointer p-2 rounded-md text-[#333333] group relative hover:bg-red-100 duration-150`}
+          className={`flex ${collapsed ? "justify-center" : "justify-between"
+            } cursor-pointer p-2 rounded-md text-[#333333] group relative duration-150`}
           title={collapsed ? "Sign out" : ""}
           onClick={handleLogout}
         >

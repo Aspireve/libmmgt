@@ -25,7 +25,7 @@ const FeesPenaltiesModal: React.FC<FeesPenaltiesModalProps> = ({ isOpen, onClose
                 <span>
                   <Image height={40} width={30} src={UpdateModal} alt="UpdateModal" />
                 </span>
-                Update
+                Pay
               </DialogTitle>
             </DialogHeader>
           </div>

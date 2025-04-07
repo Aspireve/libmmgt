@@ -23,13 +23,10 @@ const PeriodicalPage = () => {
   const columns = getJournalColumns(handleEdit)
 
 
-
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <>
         <section>
-
-
           <MasterTable
             title='Periodicals'
             columns={() => columns}

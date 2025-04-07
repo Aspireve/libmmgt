@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/popover";
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 import { format } from "date-fns";
+import { useOne } from "@refinedev/core";
 
 interface PaymentModalProps {
   isOpen: boolean;
@@ -28,6 +29,10 @@ interface PaymentModalProps {
 export default function PaymentModal({ isOpen, onClose }: PaymentModalProps) {
   const [date, setDate] = useState<Date | undefined>();
   const [paymentMethod, setPaymentMethod] = useState("cash");
+
+  const { data } = useOne({
+    resource: ""
+  })
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>

@@ -57,9 +57,9 @@ const AddJournal = () => {
       ...data,
       subscription_price: parseInt(data.subscription_price.toString(), 10),
       //TODO FIXED
-      institute_uuid: institute_uuid ?? "4a9af0a7-76f2-4cfb-bdfb-2949844ca077",
-      institute_name: institute_name ?? "Thakur College of Engineering",
-      institute_abbr:"TCE"
+      institute_uuid: institute_uuid,
+      institute_name: institute_name
+
     };
     mutate(
       { resource: "journals/create-new-journal", values: formattedData },
@@ -324,7 +324,7 @@ const AddJournal = () => {
                   className="shadow-none text-[#1E40AF] border-[#1E40AF] rounded-[10px]"
                   type="button"
                   onClick={() =>
-                    router.push("/periodicals-pages/periodicals-page")
+                    router.back()
                   }
                 >
                   Cancel
