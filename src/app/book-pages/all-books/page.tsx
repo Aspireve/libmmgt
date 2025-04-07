@@ -65,7 +65,7 @@ const BooksPage = () => {
                         SearchFilter({
                           setFilters,
                           options: [
-                            { label: "Book Id", value: "book_title_id" },
+                            { label: "Id", value: "book_title_id" },
                             { label: "Name", value: "book_title_name" },
                           ],
                           placeholder: "Search",

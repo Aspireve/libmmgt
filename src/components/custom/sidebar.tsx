@@ -15,6 +15,7 @@ import { RootState } from "@/redux/store/store";
 
 // Custom hook to detect screen size
 const useWindowSize = () => {
+
   const [windowSize, setWindowSize] = useState({
     width: typeof window !== "undefined" ? window.innerWidth : 0,
     height: typeof window !== "undefined" ? window.innerHeight : 0,
@@ -93,6 +94,7 @@ const Sidebar = () => {
   const { width } = useWindowSize();
   const [collapsed, setCollapsed] = useState(false);
   // adjust if needed
+  const router = useRouter();
   const showReportCards = useSelector(
     (state: RootState) => state.reportCard.showReportCards
   );
@@ -157,14 +159,22 @@ const Sidebar = () => {
           {!collapsed && <span>Contact</span>}
           <Phone size={20} />
         </div>
-        <div
-          className={`flex ${collapsed ? "justify-center" : "justify-between"
-            } cursor-pointer p-2 rounded-md text-[#333333] group relative`}
-          title={collapsed ? "Sign out" : ""}
-        >
-          {!collapsed && <span>Sign out</span>}
-          <LogOut size={20} />
-        </div>
+        <Link href={"/LoginPage"} onClick={(e) => {
+          e.preventDefault();  // Prevent default navigation
+          localStorage.clear();
+          router.push('/LoginPage');  // Navigate to the root route manually
+        }}>
+          <div
+            className={`flex ${collapsed ? "justify-center" : "justify-between"
+              } cursor-pointer p-2 rounded-md text-[#333333] group relative`}
+            title={collapsed ? "Sign out" : ""}
+          >
+
+            {!collapsed && <span>Sign out</span>}
+
+            <LogOut size={20} />
+          </div>
+        </Link>
       </div>
     </div>
   );

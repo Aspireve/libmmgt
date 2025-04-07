@@ -73,8 +73,6 @@ export function Activities({ refresh }: { refresh: number }) {
     ],
   });
 
-  console.log({ lmas: data?.data });
-
   const activities = data?.data || [];
 
   useEffect(() => {
