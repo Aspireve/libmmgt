@@ -12,7 +12,6 @@ import { Toaster } from "@/components/ui/sonner";
 import DarkModeWrapper from "@/components/custom/DarkModeWrapper";
 import { usePathname } from "next/navigation";
 import { TooltipProvider } from "@/components/ui/tooltip";
-
 export default function RootLayout({
   children,
 }: {
@@ -51,6 +50,7 @@ export default function RootLayout({
             </PersistGate>
           </Provider>
         </Suspense>
+        <Toaster />
       </body>
     </html>
   );

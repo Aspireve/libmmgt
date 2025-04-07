@@ -6,7 +6,7 @@ import { Scanner } from "@yudiel/react-qr-scanner";
 import { useOne } from "@refinedev/core";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-
+// import toast, { Toaster } from 'react-hot-toast';
 const Page = () => {
   const router = useRouter();
   const [scanActive, setScanActive] = useState(false);
@@ -121,8 +121,9 @@ const Page = () => {
                   error instanceof Error
                     ? error.message
                     : "⚠️ No QR code detected or camera not accessible.";
-                router.push("/")
+                // toast.error(errMsg)
                 toast(errMsg)
+                router.push("/")
               }}
               constraints={{
                 facingMode: "environment",
@@ -151,6 +152,7 @@ const Page = () => {
           </div>
         )}
       </div>
+      {/* <Toaster /> */}
     </div>
   );
 };
