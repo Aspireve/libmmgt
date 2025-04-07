@@ -64,7 +64,7 @@ export default function RootLayout({
             </PersistGate>
           </Provider>
         </Suspense>
-        <Toaster />
+     
       </body>
     </html>
   );
