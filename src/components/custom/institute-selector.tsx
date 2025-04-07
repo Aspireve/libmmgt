@@ -23,11 +23,12 @@ import { AppDispatch, RootState } from "@/redux/store/store";
 import { getAllInstitutes, setCurrentInstitute } from "@/redux/authSlice";
 import { toast } from "sonner";
 import { useCreate } from "@refinedev/core";
+import type { InstituteDetails } from "@/types/auth";
 
 const InstituteSelector = () => {
   const currentInstitute =
     useSelector((state: RootState) => state.auth.currentInstitute) || {};
-  const instituteList =
+  const instituteList: InstituteDetails[] =
     useSelector((state: RootState) => state.auth.user?.institute_details) || [];
     const user_uuid =
     useSelector((state: RootState) => state.auth.user?.user_uuid) || "";
@@ -64,9 +65,12 @@ const InstituteSelector = () => {
       );
     });
   };
-  const instituteUuids = instituteList
-    .map((institute) => institute.institute_uuid)
-    .join(",");
+  console.log(instituteList);
+  console.log("typeof instituteList:", typeof instituteList);
+  const instituteUuids =
+    (Array.isArray(instituteList) &&
+      instituteList.map((institute) => institute.institute_uuid).join(",")) ||
+    "";
 
   return (
     <>
@@ -125,33 +129,34 @@ const InstituteSelector = () => {
               </span>
             </div>
           </DropdownMenuItem>
-          {instituteList?.map((institute, idx) => (
-            <DropdownMenuItem
-              key={`institute-dropdown-${idx}`}
-              className="hover:bg-[#aaaaaa66] transition-all duration-300"
-              onClick={() =>
-                dispatch(
-                  setCurrentInstitute({
-                    institute_uuid: institute.institute_uuid,
-                  })
-                )
-              }
-            >
-              <div className="flex items-center w-full gap-3">
-                <Image
-                  src={institute?.institute_logo || Images.TIA}
-                  alt="logo"
-                  width={24}
-                  height={24}
-                  className="h-6 w-6"
-                  quality={90}
-                />
-                <span className="text-[blue] font-semibold text-[16px]">
-                  {institute?.institute_name.match(/[A-Z]/g)?.join("") || ""}
-                </span>
-              </div>
-            </DropdownMenuItem>
-          ))}
+          {Array.isArray(instituteList) &&
+            instituteList.map((institute, idx) => (
+              <DropdownMenuItem
+                key={`institute-dropdown-${idx}`}
+                className="hover:bg-[#aaaaaa66] transition-all duration-300"
+                onClick={() =>
+                  dispatch(
+                    setCurrentInstitute({
+                      institute_uuid: institute.institute_uuid,
+                    })
+                  )
+                }
+              >
+                <div className="flex items-center w-full gap-3">
+                  <Image
+                    src={institute?.institute_logo || Images.TIA}
+                    alt="logo"
+                    width={24}
+                    height={24}
+                    className="h-6 w-6"
+                    quality={90}
+                  />
+                  <span className="text-[blue] font-semibold text-[16px]">
+                    {institute?.institute_name.match(/[A-Z]/g)?.join("") || ""}
+                  </span>
+                </div>
+              </DropdownMenuItem>
+            ))}
           <hr className="border-t border-slate-300" />
           <DropdownMenuItem
             className="text-gray-700 text-[16px] hover:bg-gray-200 rounded-b-xl"

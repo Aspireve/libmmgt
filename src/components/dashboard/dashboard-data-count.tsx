@@ -18,7 +18,7 @@ import {
 
 export default function DashboardData({ refresh }: { refresh: number }) {
   const institute_uuid = useSelector(
-    (state: RootState) => state.auth.user?.institute_details[0].institute_uuid
+    (state: RootState) => state.auth.user?.institute_details[0]?.institute_uuid
   );
 
   const { data, isLoading, refetch } = useList<{ totalBooks: string }>({
