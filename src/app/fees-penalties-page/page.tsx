@@ -81,7 +81,7 @@ const FeesPenaltiesPage = () => {
             <MasterTable
               title="Fees&Penalties"
               columns={() => PenaltiesColumns}
-              resource="fees-penalties/get-student-fee"
+              resource="fees-penalties/get-full-feelist"
               AddedOptions={[]}
             />
           </div>

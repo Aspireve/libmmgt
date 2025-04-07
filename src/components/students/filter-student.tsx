@@ -25,10 +25,15 @@ const Filter: FC<FilterProps> = ({ filtersConfig, setFilters }) => {
   const [selectedValues, setSelectedValues] = useState<Record<string, string[]>>({});
 
   // Store loaded options per resource
-  const listData = filtersConfig.reduce((acc, { resource }) => {
-    acc[resource] = useList({ resource });
-    return acc;
-  }, {} as Record<string, ReturnType<typeof useList>>);
+  // const listData = filtersConfig.reduce((acc, { resource }) => {
+  //   console.log(resource)
+  //   acc[resource] = useList({ resource });
+  //   return acc;
+  // }, {} as Record<string, ReturnType<typeof useList>>);
+
+  const departmentData = useList({
+    resource: "student/departments"
+  })
 
   const applyFilters = useCallback(
     debounce((values: Record<string, string[]>) => {
@@ -90,7 +95,7 @@ const Filter: FC<FilterProps> = ({ filtersConfig, setFilters }) => {
 
       <PopoverContent className="p-4 space-y-4 w-64">
         {filtersConfig.map(({ label, field, resource }) => {
-          const { data, isLoading } = listData[resource];
+          const { data, isLoading } = departmentData;
           const options = data?.data || [];
           const dropdownOpen = dropdownStates[field];
           const selected = selectedValues[field] || [];

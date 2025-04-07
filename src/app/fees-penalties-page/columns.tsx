@@ -15,6 +15,7 @@ export interface Penalties {
   return_date: Date;
   penalty_amount: string;
   student_uuid?: string;
+
 }
 
 const CustomCell = () => {
@@ -22,13 +23,15 @@ const CustomCell = () => {
 
   return (
     <>
-      <Button
-        className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded"
-        onClick={() => setModalOpen(true)}
-      >
-        Update
-      </Button>
-      <FeesPenaltiesModal isOpen={isModalOpen} onClose={() => setModalOpen(false)} />
+      {/* {is_penalised && (
+        <Button
+          variant="outline"
+          onClick={() => setModalOpen(true)}
+        >
+          Pay
+        </Button>
+      )}
+      <FeesPenaltiesModal isOpen={isModalOpen} onClose={() => setModalOpen(false)} /> */}
     </>
   );
 };
@@ -38,7 +41,7 @@ export const PenaltiesColumns: ColumnDef<Penalties>[] = [
   {
     accessorKey: "action",
     header: () => (
-      <div style={{ marginLeft: "10px" }}>Action</div> 
+      <div style={{ marginLeft: "10px" }}>Action</div>
     ),
     cell: () => <CustomCell />,
   },

@@ -16,9 +16,9 @@ const EditBook = () => {
     const searchParams = useSearchParams();
     const book_uuid = searchParams.get("book_copy_uuid");
     const [isLoading, setIsLoading] = useState(false)
-    
 
-    const { data: bookData, isLoading:LoadingDetails } = useOne<BookEditCopiesData>({
+
+    const { data: bookData, isLoading: LoadingDetails } = useOne<BookEditCopiesData>({
         resource: "book_v2/get_book_copy",
         id: `_identifier=${book_uuid}` || ""
     });
@@ -61,7 +61,7 @@ const EditBook = () => {
             date_of_acquisition: formatDate(data.date_of_acquisition),
         };
         try {
-                await dataProvider.patchUpdate({
+            await dataProvider.patchUpdate({
                 resource: 'book_v2/update_book_copy',
                 value: formattedData,
             })
@@ -186,10 +186,11 @@ const EditBook = () => {
                             {/* Action Buttons */}
                             <div className="flex justify-center gap-4">
                                 <Button
-                                type="button"
-                                className="shadow-none text-[#1E40AF] rounded-[10px]"
-                                onClick={() => window.history.back()}>
-                                Cancel
+                                    variant="outline"
+                                    type="button"
+                                    className="shadow-none text-[#1E40AF] rounded-[10px]"
+                                    onClick={() => window.history.back()}>
+                                    Cancel
                                 </Button>
 
                                 <Button

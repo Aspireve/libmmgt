@@ -79,10 +79,6 @@ const ImportBooks = () => {
             .setCustomField("institute_name", institute_name || null)
             .build()
         )
-        // .map((entry) => ({
-        //   ...entry,
-        //   institute_uuid: institute_uuid ?? undefined,
-        // }))
         .filter((entry) => {
           const isValidISBN = entry.isbn && isbn3.parse(entry.isbn)?.isValid;
           if (!isValidISBN) {
