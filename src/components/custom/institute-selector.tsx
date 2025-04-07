@@ -150,7 +150,7 @@ const InstituteSelector = () => {
                   quality={90}
                 />
                 <span className="text-[blue] font-semibold text-[16px]">
-                  {institute?.institute_name.match(/[A-Z]/g)?.join("") || ""}
+                  {institute?.institute_name?.match(/[A-Z]/g)?.join("") || ""}
                 </span>
               </div>
             </DropdownMenuItem>

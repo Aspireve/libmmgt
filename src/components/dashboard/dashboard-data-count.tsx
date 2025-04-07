@@ -23,7 +23,7 @@ export default function DashboardData({ refresh }: { refresh: number }) {
     id: `_institute_uuid=${JSON.stringify([institute?.institute_uuid])}`,
   });
 
-  const dashboardStats = useEffect(() => {
+  useEffect(() => {
     refetch();
   }, [refresh]);
 
