@@ -23,12 +23,11 @@ import { AppDispatch, RootState } from "@/redux/store/store";
 import { getAllInstitutes, setCurrentInstitute } from "@/redux/authSlice";
 import { toast } from "sonner";
 import { useCreate } from "@refinedev/core";
-import type { InstituteDetails } from "@/types/auth";
 
 const InstituteSelector = () => {
   const currentInstitute =
     useSelector((state: RootState) => state.auth.currentInstitute) || {};
-  const instituteList: InstituteDetails[] =
+  const instituteList =
     useSelector((state: RootState) => state.auth.user?.institute_details) || [];
 
   const dispatch = useDispatch<AppDispatch>();
@@ -60,8 +59,7 @@ const InstituteSelector = () => {
       );
     });
   };
-  console.log(instituteList);
-  console.log("typeof instituteList:", typeof instituteList);
+
   const instituteUuids =
     (Array.isArray(instituteList) &&
       instituteList.map((institute) => institute.institute_uuid).join(",")) ||
@@ -73,13 +71,14 @@ const InstituteSelector = () => {
         <DropdownMenuTrigger asChild className="shadow-none w-fit">
           <Button
             variant="outline"
-            className="border-2 border-blue-500 rounded-xl overflow-hidden w-fit h-[54px] flex items-center justify-between p-2 px-4 transition-all duration-300 hover:shadow-lg cursor-pointer"
+            className="border-2 border-blue-500 rounded-xl overflow-hidden w-40 h-[54px] flex items-center justify-between p-2 px-4 transition-all duration-300 hover:shadow-lg cursor-pointer"
           >
             <Image
-              src={currentInstitute?.institute_logo || Images.TIA}
+              src={currentInstitute?.institute_logo || Images.VighnoLogo}
               alt="logo"
-              width={40}
-              height={40}
+              width={36}
+              height={36}
+              className="size-9"
             />
             <div className="w-[2px] h-[30px] bg-[#1F2937]" />
             <span className="text-[blue] font-bold text-[16px]">
@@ -124,34 +123,33 @@ const InstituteSelector = () => {
               </span>
             </div>
           </DropdownMenuItem>
-          {Array.isArray(instituteList) &&
-            instituteList.map((institute, idx) => (
-              <DropdownMenuItem
-                key={`institute-dropdown-${idx}`}
-                className="hover:bg-[#aaaaaa66] transition-all duration-300"
-                onClick={() =>
-                  dispatch(
-                    setCurrentInstitute({
-                      institute_uuid: institute.institute_uuid,
-                    })
-                  )
-                }
-              >
-                <div className="flex items-center w-full gap-3">
-                  <Image
-                    src={institute?.institute_logo || Images.TIA}
-                    alt="logo"
-                    width={24}
-                    height={24}
-                    className="h-6 w-6"
-                    quality={90}
-                  />
-                  <span className="text-[blue] font-semibold text-[16px]">
-                    {institute?.institute_name.match(/[A-Z]/g)?.join("") || ""}
-                  </span>
-                </div>
-              </DropdownMenuItem>
-            ))}
+          {instituteList.map((institute, idx) => (
+            <DropdownMenuItem
+              key={`institute-dropdown-${idx}`}
+              className="hover:bg-[#aaaaaa66] transition-all duration-300"
+              onClick={() =>
+                dispatch(
+                  setCurrentInstitute({
+                    institute_uuid: institute.institute_uuid,
+                  })
+                )
+              }
+            >
+              <div className="flex items-center w-full gap-3">
+                <Image
+                  src={institute?.institute_logo || Images.TIA}
+                  alt="logo"
+                  width={24}
+                  height={24}
+                  className="h-6 w-6"
+                  quality={90}
+                />
+                <span className="text-[blue] font-semibold text-[16px]">
+                  {institute?.institute_name.match(/[A-Z]/g)?.join("") || ""}
+                </span>
+              </div>
+            </DropdownMenuItem>
+          ))}
           <hr className="border-t border-slate-300" />
           <DropdownMenuItem
             className="text-gray-700 text-[16px] hover:bg-gray-200 rounded-b-xl"
