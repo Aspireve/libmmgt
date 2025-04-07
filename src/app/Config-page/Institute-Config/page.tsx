@@ -1,5 +1,5 @@
 "use client";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import { useForm, Path } from "react-hook-form";
 import Image from "next/image";
 import { InputField } from "@/components/custom/inputfield";
@@ -11,7 +11,10 @@ import Header from "@/components/custom/header";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@/redux/store/store";
 import { toggleDarkMode, setDarkMode } from "@/redux/darkModeSlice";
-import { toggleDashboardCards, setDashboardCards } from "@/redux/dashboardSlice";
+import {
+  toggleDashboardCards,
+  setDashboardCards,
+} from "@/redux/dashboardSlice";
 import AllUsers from "../Users/page";
 import { useOne } from "@refinedev/core";
 import { toast } from "sonner";
@@ -58,12 +61,12 @@ const Page = () => {
   } = useForm<FormFields>({
     resolver: async (data) => {
       const errors: any = {};
-    
+
       if (!data.instituteName)
         errors.instituteName = { message: "Institute Name is required" };
       if (!data.institute_abbr)
         errors.institute_abbr = { message: "Abbreviation is required" };
-    
+
       return {
         values: Object.keys(errors).length === 0 ? data : {},
         errors,
@@ -79,7 +82,7 @@ const Page = () => {
   const dispatch = useDispatch();
   const logoFileInputRef = useRef<HTMLInputElement>(null);
   const headerFileInputRef = useRef<HTMLInputElement>(null);
-  
+
   const logoImage = watch("institute_logo");
   const headerImage = watch("institute_header");
   const darkMode = watch("dark_mode");
@@ -115,7 +118,7 @@ const Page = () => {
       onSuccess: (response) => {
         if (response?.data?.length > 0) {
           const institute = response.data[0];
-          
+
           // Update form with institute data
           reset({
             instituteName: institute.institute_name || "",
@@ -139,12 +142,16 @@ const Page = () => {
             dashboard_card: institute.visualization?.dashboard_card === true,
             report_cards: institute.visualization?.report_cards === true,
           });
-          
+
           // Also update Redux state to match API values
           dispatch(setDarkMode(institute.dark_mode === true));
           dispatch(setTabsVisibility(institute.enable_tabs === true));
-          dispatch(setDashboardCards(institute.visualization?.dashboard_card === true));
-          dispatch(setReportCards(institute.visualization?.report_cards === true));
+          dispatch(
+            setDashboardCards(institute.visualization?.dashboard_card === true)
+          );
+          dispatch(
+            setReportCards(institute.visualization?.report_cards === true)
+          );
         }
       },
       onError: () => {
@@ -155,8 +162,8 @@ const Page = () => {
 
   // Helper function to convert base64 to file
   const base64ToFile = (base64: string, filename: string): File => {
-    const arr = base64.split(',');
-    const mime = arr[0].match(/:(.*?);/)?.[1] || '';
+    const arr = base64.split(",");
+    const mime = arr[0].match(/:(.*?);/)?.[1] || "";
     const bstr = atob(arr[1]);
     let n = bstr.length;
     const u8arr = new Uint8Array(n);
@@ -166,7 +173,9 @@ const Page = () => {
     return new File([u8arr], filename, { type: mime });
   };
 
-  const handleLogoUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleLogoUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     if (event.target.files && event.target.files[0]) {
       const reader = new FileReader();
       reader.onload = (e) => {
@@ -180,7 +189,9 @@ const Page = () => {
   };
 
   // Add function for handling header upload
-  const handleHeaderUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleHeaderUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     if (event.target.files && event.target.files[0]) {
       const reader = new FileReader();
       reader.onload = (e) => {
@@ -200,49 +211,51 @@ const Page = () => {
       const apiData: any = {
         institute_id: institute.institute_id,
       };
-      
+
       // Handle visualization nested structure
-      if (settingName === 'dashboard_card' || settingName === 'report_cards') {
+      if (settingName === "dashboard_card" || settingName === "report_cards") {
         apiData.visualization = {
-          [settingName]: value
+          [settingName]: value,
         };
       } else {
         apiData[settingName] = value;
       }
-      
+
       await dataProvider.patchUpdate({
         resource: "config/update-institute",
         value: apiData,
       });
-      
+
       // Update form state
-      if (settingName === 'dashboard_card') {
-        setValue('dashboard_card', value);
+      if (settingName === "dashboard_card") {
+        setValue("dashboard_card", value);
         dispatch(setDashboardCards(value));
-      } else if (settingName === 'report_cards') {
-        setValue('report_cards', value);
+      } else if (settingName === "report_cards") {
+        setValue("report_cards", value);
         dispatch(setReportCards(value));
-      } else if (settingName === 'dark_mode') {
-        setValue('dark_mode', value);
+      } else if (settingName === "dark_mode") {
+        setValue("dark_mode", value);
         dispatch(setDarkMode(value));
-      } else if (settingName === 'enable_tabs') {
-        setValue('enable_tabs', value);
+      } else if (settingName === "enable_tabs") {
+        setValue("enable_tabs", value);
         dispatch(setTabsVisibility(value));
       }
-      
-      toast.success(`${settingName.replace('_', ' ')} setting updated successfully!`);
+
+      toast.success(
+        `${settingName.replace("_", " ")} setting updated successfully!`
+      );
     } catch (error: any) {
       console.error("Toggle update error:", error);
       toast.error(error.message || "Failed to update setting.");
-      
+
       // Revert Redux state on failure
-      if (settingName === 'dashboard_card') {
+      if (settingName === "dashboard_card") {
         dispatch(setDashboardCards(!value));
-      } else if (settingName === 'report_cards') {
+      } else if (settingName === "report_cards") {
         dispatch(setReportCards(!value));
-      } else if (settingName === 'dark_mode') {
+      } else if (settingName === "dark_mode") {
         dispatch(setDarkMode(!value));
-      } else if (settingName === 'enable_tabs') {
+      } else if (settingName === "enable_tabs") {
         dispatch(setTabsVisibility(!value));
       }
     } finally {
@@ -254,25 +267,29 @@ const Page = () => {
   const handleDashboardCardsToggle = () => {
     const newValue = !showDashboardCards;
     dispatch(toggleDashboardCards());
-    updateToggleSetting('dashboard_card', newValue);
+
+    updateToggleSetting("dashboard_card", newValue);
   };
-  
+
   const handleReportCardsToggle = () => {
     const newValue = !showReportCards;
     dispatch(toggleReportCards());
-    updateToggleSetting('report_cards', newValue);
+
+    updateToggleSetting("report_cards", newValue);
   };
-  
+
   const handleTabsToggle = () => {
     const newValue = !showTabs;
     dispatch(toggleTabsVisibility());
-    updateToggleSetting('enable_tabs', newValue);
+
+    updateToggleSetting("enable_tabs", newValue);
   };
-  
+
   const handleDarkModeToggle = () => {
     const newValue = !isDarkMode;
     dispatch(toggleDarkMode());
-    updateToggleSetting('dark_mode', newValue);
+
+    updateToggleSetting("dark_mode", newValue);
   };
 
   const handleSaveChanges = async (formData: Partial<FormFields>) => {
@@ -281,19 +298,25 @@ const Page = () => {
       let logoUrl = formData.institute_logo;
       let headerUrl = formData.institute_header;
       const uploader = UploaderFactory.createUploader("cloudinary");
-      
+
       // Upload logo to Cloudinary if it's a base64 string (newly uploaded)
-      if (formData.institute_logo && formData.institute_logo.startsWith('data:image')) {
+      if (
+        formData.institute_logo &&
+        formData.institute_logo.startsWith("data:image")
+      ) {
         setLogoUploading(true);
-        const file = base64ToFile(formData.institute_logo, 'logo.png');
+        const file = base64ToFile(formData.institute_logo, "logo.png");
         logoUrl = await uploader.uploadFile(file);
         setLogoUploading(false);
       }
 
       // Upload header to Cloudinary if it's a base64 string (newly uploaded)
-      if (formData.institute_header && formData.institute_header.startsWith('data:image')) {
+      if (
+        formData.institute_header &&
+        formData.institute_header.startsWith("data:image")
+      ) {
         setHeaderUploading(true);
-        const file = base64ToFile(formData.institute_header, 'header.png');
+        const file = base64ToFile(formData.institute_header, "header.png");
         headerUrl = await uploader.uploadFile(file);
         setHeaderUploading(false);
       }
@@ -318,8 +341,8 @@ const Page = () => {
         enable_tabs: formData.enable_tabs,
         visualization: {
           dashboard_card: formData.dashboard_card,
-          report_cards: formData.report_cards
-        }
+          report_cards: formData.report_cards,
+        },
       };
 
       const response = await dataProvider.patchUpdate({
@@ -331,7 +354,7 @@ const Page = () => {
       setPatchLoading(false);
 
       toast.success("Institute Data updated successfully!");
-      
+
       // Refresh data
       refetch();
     } catch (error: any) {
