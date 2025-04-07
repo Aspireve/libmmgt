@@ -1,20 +1,21 @@
-"use client";
-
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-  showDashboardCards: true, 
+  showDashboardCards: false,
 };
 
-const dashboardSlice = createSlice({
-  name: "dashboard",
+export const dashboardSlice = createSlice({
+  name: 'dashboard',
   initialState,
   reducers: {
     toggleDashboardCards: (state) => {
       state.showDashboardCards = !state.showDashboardCards;
     },
+    setDashboardCards: (state, action) => {
+      state.showDashboardCards = action.payload;
+    },
   },
 });
 
-export const { toggleDashboardCards } = dashboardSlice.actions;
+export const { toggleDashboardCards, setDashboardCards } = dashboardSlice.actions;
 export default dashboardSlice.reducer;

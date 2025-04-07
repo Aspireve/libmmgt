@@ -9,13 +9,13 @@ type Tab = {
 interface TabState {
   tabs: Tab[];
   activeTab: string;
-  tabsVisible: boolean; // ✅ NEW
+  tabsVisible: boolean;
 }
 
 const initialState: TabState = {
   tabs: [],
   activeTab: "",
-  tabsVisible: true, // ✅ default ON
+  tabsVisible: false, // Using your current default value (false)
 };
 
 const tabSlice = createSlice({
@@ -25,7 +25,7 @@ const tabSlice = createSlice({
     addTab: (state, action: PayloadAction<{ title: string; route: string }>) => {
       const { title, route } = action.payload;
       const existingTab = state.tabs.find((tab) => tab.id === route);
-
+      
       if (!existingTab) {
         state.tabs.push({ id: route, title, route });
       }
@@ -46,8 +46,18 @@ const tabSlice = createSlice({
     toggleTabsVisibility: (state) => {
       state.tabsVisible = !state.tabsVisible;
     },
+    setTabsVisibility: (state, action: PayloadAction<boolean>) => {
+      state.tabsVisible = action.payload;
+    },
   },
 });
 
-export const { addTab, closeTab, setActiveTab, toggleTabsVisibility } = tabSlice.actions;
+export const { 
+  addTab, 
+  closeTab, 
+  setActiveTab, 
+  toggleTabsVisibility,
+  setTabsVisibility 
+} = tabSlice.actions;
+
 export default tabSlice.reducer;
