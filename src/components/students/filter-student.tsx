@@ -36,17 +36,22 @@ const Filter: FC<FilterProps> = ({ filtersConfig, setFilters }) => {
         .filter(([_, val]) => val.length > 0)
         .map(([field, val]) => ({
           field,
-          operator: "eq",
+          operator: "IN",
           value: val,
         }));
 
-      // setFilters((prev: any) => ({ ...prev, filter: [...prev.filter, ...filters] }));
-      setFilters((prev) => {
-        console.log({ ...prev, filter: [...prev.filter, ...filters] })
-        return { ...prev, filter: [...prev.filter, ...filters] }
-      })
-      console.log(filters)
-      // setFilters({ filter: filters })
+      setFilters((prev: any) => {
+        // Remove any existing filters for fields that are in the new filters
+        const fieldsToUpdate = new Set(filters.map(f => f.field));
+        const existingFilters = prev.filter?.filter((f: any) => 
+          !fieldsToUpdate.has(f.field)
+        ) || [];
+
+        return {
+          ...prev,
+          filter: [...existingFilters, ...filters]
+        };
+      });
     }, 300),
     [setFilters]
   );
