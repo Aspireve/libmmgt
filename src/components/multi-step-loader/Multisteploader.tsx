@@ -19,7 +19,7 @@ const MultiStepLoader = ({
   const [steps, setSteps] = useState([
     { label: "Validating Data", completed: false },
     { label: "Match Columns to Fields", completed: false },
-    { label: "Importing Students", completed: false },
+    { label: "Importing Data", completed: false },
     { label: "Import Complete!", completed: false },
   ]);
 
@@ -28,7 +28,7 @@ const MultiStepLoader = ({
       setSteps([
         { label: "Validating Data", completed: false },
         { label: "Match Columns to Fields", completed: false },
-        { label: "Importing Students", completed: false },
+        { label: "Importing Data", completed: false },
         { label: "Import Complete!", completed: false },
       ]);
       return;

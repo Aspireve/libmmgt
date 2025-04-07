@@ -14,6 +14,7 @@ import { SearchFilter } from "@/components/students/search-student";
 import Tabbing from "@/components/custom/tabbing";
 import PeriodicalPage from "@/app/periodicals-pages/periodicals-page/page";
 import Header from "@/components/custom/header";
+import Filter from "@/components/students/filter-student";
 
 enum LibraryTabs {
   ALLBOOKS = "All Books",
