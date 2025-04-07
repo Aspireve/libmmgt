@@ -25,7 +25,7 @@ export default function IssueBook({
   const [action, setAction] = useState<ActionType>(ActionType.CHECK_IN);
   const { mutate, isLoading } = useCreate();
 
-  const handleSubmit = (e: any) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     mutate(
       {
@@ -48,7 +48,7 @@ export default function IssueBook({
           form.reset();
           setRefreshAction((prev: number) => prev + 1);
         },
-        onError: (error: any) => {
+        onError: (error) => {
           const errorMessage =
             error?.response?.data?.message ||
             error?.message ||
@@ -129,22 +129,6 @@ export default function IssueBook({
           )}
         </form.Field>
 
-        {/* <form.Field name="barcode">
-          {(field) => (
-            <div className="flex-1 min-w-[200px]">
-              <Label className="text-[#1F2937] mb-1">Barcode of Book</Label>
-              <Input
-                id="barcode"
-                placeholder="Enter Book Barcode"
-                value={field.state.value}
-                onChange={(e) => field.handleChange(e.target.value)}
-                className="bg-white border border-[#D5D7DA] rounded-[8px] text-[#1F2937]"
-                required
-              />
-            </div>
-          )}
-        </form.Field> */}
-
         <div className="flex items-center gap-2 ml-auto">
           <Button
             type="button"
@@ -161,7 +145,7 @@ export default function IssueBook({
             {isLoading ? (
               <>
                 <Loader2 className="animate-spin h-5 w-5 mr-2" />
-                Loading...
+                Submitting...
               </>
             ) : (
               "Submit"
