@@ -47,7 +47,7 @@ const Page = () => {
                   onClick={() => handleClick(config.path)}
                   className="flex items-center gap-2 bg-[#1E40AF] text-white rounded-md px-4 py-2 hover:bg-blue-900"
                 >
-                  Primary <ArrowUpRight size={16} />
+                  Config <ArrowUpRight size={16} />
                 </Button>
               </div>
             </CardContent>
