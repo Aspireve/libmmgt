@@ -14,6 +14,8 @@ import { Activities } from "./modified-activity-feed";
 import MasterTable from "@/app/test/table-page";
 import { SearchFilter } from "../students/search-student";
 import { access } from "fs";
+import { BookCheckIcon, CircleXIcon } from "lucide-react";
+import TooltipToggle from "../custom/tooltip-toggle";
 
 enum LibraryTabs {
   ISSUE = "issue",
@@ -99,7 +101,7 @@ const Dashboard = () => {
       const method = status === "approved" ? "PATCH" : "DELETE";
       const endpoint = `notes?_notes_uuid=${requestId}`;
 
-      console.log({endpoint})
+      console.log({ endpoint });
 
       updateMutate(
         {
@@ -224,39 +226,45 @@ const Dashboard = () => {
         const requestType = row.getValue("request_type");
         const notesId = row.getValue("request_type");
         return (
-          <div className="flex gap-2 justify-center items-center">
-            <Button
-              variant="ghost"
-              className="text-[#0D894F]"
-              onClick={async () => {
-                await handleRequestAction(
-                  requestId,
-                  "approved",
-                  requestType,
-                  notesId
-                );
-                refetch();
-              }}
-              disabled={isLoading}
-            >
-              Accept
-            </Button>
-            <Button
-              variant="ghost"
-              className="text-[#F04438]"
-              onClick={async () => {
-                await handleRequestAction(
-                  requestId,
-                  "rejected",
-                  requestType,
-                  notesId
-                );
-                refetch();
-              }}
-              disabled={isLoading}
-            >
-              Decline
-            </Button>
+          <div className="flex gap-2 items-center">
+            <TooltipToggle content="Accept">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="text-[#0D894F]"
+                onClick={async () => {
+                  await handleRequestAction(
+                    requestId,
+                    "approved",
+                    requestType,
+                    notesId
+                  );
+                  refetch();
+                }}
+                disabled={isLoading}
+              >
+                <BookCheckIcon />
+              </Button>
+            </TooltipToggle>
+            <TooltipToggle content="Decline">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="text-[#F04438]"
+                onClick={async () => {
+                  await handleRequestAction(
+                    requestId,
+                    "rejected",
+                    requestType,
+                    notesId
+                  );
+                  refetch();
+                }}
+                disabled={isLoading}
+              >
+                <CircleXIcon />
+              </Button>
+            </TooltipToggle>
           </div>
         );
       },
