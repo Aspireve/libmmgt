@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import type { AuthState, AuthStates, InstituteList, User } from "@/types/auth";
+import type { AuthStates, InstituteDetails, User } from "@/types/auth";
 import { API_URL } from "@/providers/data/fetch-wrapper";
 
 // const initialState: AuthState = {
@@ -48,13 +48,6 @@ const initialState: AuthStates = {
   currentInstitute: "",
 };
 
-interface LoginPayload {
-  token: {
-    accessToken: string;
-  };
-  user: User;
-}
-
 const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -94,7 +87,10 @@ const authSlice = createSlice({
     setCurrentInstitute: (
       state,
       action: PayloadAction<{
-        institute_uuid: string | InstituteList;
+        institute_uuid:
+          | string
+          | InstituteDetails
+          | { institute_uuid: string; institute_name: string };
         override?: boolean;
       }>
     ) => {
@@ -111,16 +107,18 @@ const authSlice = createSlice({
       }
     },
   },
-  extraReducers: (builder) => {
-    builder.addCase(getAllInstitutes.fulfilled, (state, action) => {
-      state.user!.institute_details = action.payload;
-    });
-  },
+  // extraReducers: (builder) => {
+  //   builder.addCase(getAllInstitutes.fulfilled, (state, action) => {
+  //     state.user!.institute_details = action.payload;
+  //   });
+  // },
 });
 
 export const getAllInstitutes = createAsyncThunk(
   "auth/getAllInstitutes",
+
   async () => {
+    console.log("working");
     const response = await fetch(`${API_URL}/config/get-institute`);
     const data = await response.json();
     return data;
