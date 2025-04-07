@@ -49,7 +49,7 @@ const InstituteSelector = () => {
             resolve(data.data);
             setIsDialogOpen(false);
             setNewInstituteName("");
-            dispatch(getAllInstitutes())
+            dispatch(getAllInstitutes());
           },
           onError: (error: any) => {
             toast.error("Error adding institute: " + error.message);
@@ -60,6 +60,9 @@ const InstituteSelector = () => {
     });
   };
   console.log(instituteList);
+  const instituteUuids = instituteList
+    .map((institute) => institute.institute_uuid)
+    .join(",");
 
   return (
     <>
@@ -77,7 +80,8 @@ const InstituteSelector = () => {
             />
             <div className="w-[2px] h-[30px] bg-[#1F2937]" />
             <span className="text-[blue] font-bold text-[16px]">
-              {currentInstitute?.institute_name.match(/[A-Z]/g)?.join("") || ""}
+              {currentInstitute?.institute_name?.match(/[A-Z]/g)?.join("") ||
+                ""}
             </span>
             <Image
               src={Images.Dropper}
@@ -86,7 +90,37 @@ const InstituteSelector = () => {
             />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent className="border-2 border-blue-500 w-full mt-2 bg-white rounded-xl cursor-pointer">
+        <DropdownMenuContent className="border-2 border-blue-300 w-full mt-2 bg-white rounded-xl cursor-pointer">
+          <DropdownMenuItem
+            className="hover:bg-[#aaaaaa66] transition-all duration-300"
+            onClick={() =>
+              dispatch(
+                setCurrentInstitute({
+                  institute_uuid: {
+                    institute_name: "All Institutes",
+                    institute_uuid: instituteUuids,
+                    institute_logo: "",
+                    institute_header: "",
+                  },
+                  override: true,
+                })
+              )
+            }
+          >
+            <div className="flex items-center w-full gap-3">
+              <Image
+                src={Images.VighnoLogo}
+                alt="All instituites logo"
+                width={24}
+                height={24}
+                className="h-6 w-6"
+                quality={90}
+              />
+              <span className="text-[blue] font-semibold text-[16px]">
+                All Institutes
+              </span>
+            </div>
+          </DropdownMenuItem>
           {instituteList?.map((institute, idx) => (
             <DropdownMenuItem
               key={`institute-dropdown-${idx}`}
@@ -103,9 +137,10 @@ const InstituteSelector = () => {
                 <Image
                   src={institute?.institute_logo || Images.TIA}
                   alt="logo"
-                  width={15}
-                  height={15}
-                  className="h-6 w-8"
+                  width={24}
+                  height={24}
+                  className="h-6 w-6"
+                  quality={90}
                 />
                 <span className="text-[blue] font-semibold text-[16px]">
                   {institute?.institute_name.match(/[A-Z]/g)?.join("") || ""}

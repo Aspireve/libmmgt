@@ -25,7 +25,7 @@ const images = {
   Filter: require("./filter.png"),
   HomeIcon: require("./HomeIcon.png"),
   Import: require("./import.png"),
-  ImportDrop: require('./importdrop.png'),
+  ImportDrop: require("./importdrop.png"),
   IssuedBooks: require("./IssuedBooks.png"),
   IssuedBooksLogo: require("./IssuedBooksLogo.png"),
   Logo: require("./Logo.png"),
@@ -46,11 +46,12 @@ const images = {
   BookShelf: require("./bookshelf.png"),
   TotalIssuedBooks: require("./TotalIssuedBooks.png"),
   Overdues: require("./Overdues.png"),
-  TotalMembers:require("./TotalMembers.png"),
-  Cancel:require("./cancel-01-stroke-rounded.svg"),
-  config:require("./config.png"),
-  TodayIssue:require("./TodayIssue.png"),
-  TodayReturn:require("./TodayReturn.png")
+  TotalMembers: require("./TotalMembers.png"),
+  Cancel: require("./cancel-01-stroke-rounded.svg"),
+  config: require("./config.png"),
+  TodayIssue: require("./TodayIssue.png"),
+  TodayReturn: require("./TodayReturn.png"),
+  VighnoLogo: require("./vighno-logo.png"),
 };
 
 export default images;

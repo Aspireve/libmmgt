@@ -64,10 +64,10 @@ const Headers = <TData,>({
 
       </div>
       <div className={`${show ? "flex" : "hidden"}  justify-center items-center mb-1 gap-3`}>
-        <div>
+        {/* <div>
           All {selectedData.length} conversations on this page are selected.
         </div>
-        <div className="  hover:bg-blue-200  bg-blue-100 text-black p-1 cursor-pointer rounded-md">Select all {total} {title}</div>
+        <div className="  hover:bg-blue-200  bg-blue-100 text-black p-1 cursor-pointer rounded-md">Select all {total} {title}</div> */}
       </div>
 
     </div>

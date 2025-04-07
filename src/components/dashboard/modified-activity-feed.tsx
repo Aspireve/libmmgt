@@ -75,7 +75,7 @@ export function Activities({ refresh }: { refresh: number }) {
 
   console.log({ lmas: data?.data });
 
-  const activities = data?.data || [];
+  const activities = Array.isArray(data?.data) ? data.data : [];
 
   useEffect(() => {
     refetch();
@@ -83,7 +83,7 @@ export function Activities({ refresh }: { refresh: number }) {
 
   // Filter activities based on search query and type filter
 
-  const filteredActivities = activities.filter((activity) => {
+  const filteredActivities = activities?.filter((activity) => {
     const matchesSearch =
       activity.student_id.toLowerCase().includes(searchQuery.toLowerCase()) ||
       activity.book_title?.book_title
@@ -124,23 +124,23 @@ export function Activities({ refresh }: { refresh: number }) {
         >
           <TabsList className="grid grid-cols-5 w-full bg-gray-200">
             <TabsTrigger value="all" className="flex items-center gap-1">
-              <Calendar className="h-4 w-4" />
+              <Calendar className="h-4 w-4 shrink-0" />
               <span className="hidden sm:inline">All</span>
             </TabsTrigger>
             <TabsTrigger value="entry" className="flex items-center gap-1">
-              <Clock className="h-4 w-4" />
+              <Clock className="h-4 w-4 shrink-0" />
               <span className="hidden sm:inline">In Time</span>
             </TabsTrigger>
             <TabsTrigger value="exit" className="flex items-center gap-1 ">
-              <LogOut className="h-4 w-4" />
+              <LogOut className="h-4 w-4 shrink-0" />
               <span className="hidden sm:inline">Out Time</span>
             </TabsTrigger>
             <TabsTrigger value="borrowed" className="flex items-center gap-1">
-              <BookUp className="h-4 w-4" />
+              <BookUp className="h-4 w-4 shrink-0" />
               <span className="hidden sm:inline">Borrowed</span>
             </TabsTrigger>
             <TabsTrigger value="returned" className="flex items-center gap-1">
-              <BookOpen className="h-4 w-4" />
+              <BookOpen className="h-4 w-4 shrink-0" />
               <span className="hidden sm:inline">Return</span>
             </TabsTrigger>
           </TabsList>

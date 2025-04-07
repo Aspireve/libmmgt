@@ -21,19 +21,18 @@ export const API_URL = "https://librarybackend-0hv5.onrender.com"
 const customFetch = async (url: string, options: RequestInit) => {
   const fullUrl = url.startsWith("https")
     ? url
-    : `${API_URL}${url.startsWith("/") ? url : `/${url}`}`
+    : `${API_URL}${url.startsWith("/") ? url : `/${url}`}`;
 
   // return fetch(fullUrl, options);
   return fetch(fullUrl, {
     ...options,
-    mode: 'cors',
+    mode: "cors",
     headers: {
       ...(options.headers || {}),
       "Content-Type": "application/json",
     },
   });
 };
-
 
 export const fetchWrapper = async (url: string, options: RequestInit) => {
   try {
@@ -56,14 +55,14 @@ export const fetchWrapper = async (url: string, options: RequestInit) => {
 
       throw new Error(errorMessage);
     }
-   
+
     const contentType = response.headers.get("content-type");
     if (contentType && contentType.includes("application/json")) {
       try {
         return await response.json();
       } catch (jsonError) {
         console.warn(`⚠️ Empty JSON response from ${url}`);
-        return null; 
+        return null;
       }
     }
 

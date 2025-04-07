@@ -1,8 +1,8 @@
 export interface InstituteList {
   institute_uuid: string;
   institute_name: string;
-  logo: string;
-  header: string;
+  institute_logo: string;
+  institute_header: string;
 }
 
 export interface AuthState {
@@ -85,5 +85,5 @@ export interface AuthStates {
     accessToken: string | undefined;
   };
   user: User | undefined;
-  currentInstitute: string | any | undefined;
+  currentInstitute: string | InstituteList | any | undefined;
 }

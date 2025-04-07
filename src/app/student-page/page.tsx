@@ -22,12 +22,16 @@ export default function StudentDirectory() {
           title="Students"
           resource="student/all"
           columns={StudentListTable}
-
           AddedOptions={[
             DeleteStudent,
-              ({ setFilters }) => (
-                <Filter setFilters={setFilters} />
-              ),
+            ({ setFilters }) => (
+              <Filter
+                filtersConfig={[
+                  { label: "Departments", field: "department", resource: "student/departments" },
+                ]}
+                setFilters={setFilters}
+              />
+            ),
             AddStudents,
             ImportStudentButton,
             ExportStudent,
