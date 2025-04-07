@@ -59,11 +59,11 @@ const InstituteSelector = () => {
       );
     });
   };
-  console.log(instituteList);
-  const instituteUuids = instituteList
+  console.log("Instisture array", instituteList);
+  const instituteUuids: string = instituteList
     .map((institute) => institute.institute_uuid)
     .join(",");
-
+  console.log("Institute uuids", instituteUuids)
   return (
     <>
       <DropdownMenu>

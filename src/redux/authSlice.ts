@@ -120,7 +120,9 @@ const authSlice = createSlice({
 
 export const getAllInstitutes = createAsyncThunk(
   "auth/getAllInstitutes",
+
   async () => {
+    console.log("working");
     const response = await fetch(`${API_URL}/config/get-institute`);
     const data = await response.json();
     return data;
