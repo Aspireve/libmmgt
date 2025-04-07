@@ -1,5 +1,5 @@
 "use client";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useForm, Path } from "react-hook-form";
 import Image from "next/image";
 import { InputField } from "@/components/custom/inputfield";
@@ -10,15 +10,15 @@ import ThakurTrustLogo from "@/images/ThakurTrustLogo.png";
 import Header from "@/components/custom/header";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@/redux/store/store";
-import { toggleDarkMode } from "@/redux/darkModeSlice";
-import { toggleDashboardCards } from "@/redux/dashboardSlice";
+import { toggleDarkMode, setDarkMode } from "@/redux/darkModeSlice";
+import { toggleDashboardCards, setDashboardCards } from "@/redux/dashboardSlice";
 import AllUsers from "../Users/page";
 import { useOne } from "@refinedev/core";
 import { toast } from "sonner";
 import { dataProvider } from "@/providers/data";
-import { toggleTabsVisibility } from "@/redux/tabSlice";
+import { toggleTabsVisibility, setTabsVisibility } from "@/redux/tabSlice";
 import { CustomBreadcrumb } from "@/components/breadcrumb";
-import { toggleReportCards } from "@/redux/reportCardSlice";
+import { toggleReportCards, setReportCards } from "@/redux/reportCardSlice";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ReloadIcon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
@@ -40,6 +40,11 @@ type FormFields = {
   website_url: string;
   institute_logo: string;
   institute_header: string;
+  // Add new fields for toggle states
+  dark_mode: boolean;
+  enable_tabs: boolean;
+  dashboard_card: boolean;
+  report_cards: boolean;
 };
 
 const Page = () => {
@@ -70,22 +75,22 @@ const Page = () => {
   const [patchLoading, setPatchLoading] = useState(false);
   const [logoUploading, setLogoUploading] = useState(false);
   const [headerUploading, setHeaderUploading] = useState(false);
+  const [isSavingToggles, setIsSavingToggles] = useState(false);
   const dispatch = useDispatch();
   const logoFileInputRef = useRef<HTMLInputElement>(null);
   const headerFileInputRef = useRef<HTMLInputElement>(null);
   
   const logoImage = watch("institute_logo");
   const headerImage = watch("institute_header");
+  const darkMode = watch("dark_mode");
+  const enableTabs = watch("enable_tabs");
+  const dashboardCard = watch("dashboard_card");
+  const reportCards = watch("report_cards");
 
   const showReportCards = useSelector(
     (state: RootState) => state.reportCard.showReportCards
   );
   const showTabs = useSelector((state: RootState) => state.tabs.tabsVisible);
-
-  const institute = useSelector(
-    (state: RootState) => state.auth.currentInstitute
-  );
-
   const isDarkMode = useSelector(
     (state: RootState) => state.darkMode.isDarkMode
   );
@@ -93,12 +98,16 @@ const Page = () => {
     (state: RootState) => state.dashboard.showDashboardCards
   );
 
+  const institute = useSelector(
+    (state: RootState) => state.auth.currentInstitute
+  );
+
   const breadcrumbItems = [
     { label: "Configuration", href: "/Config-page" },
     { label: "Institute Configuration", href: "/Config-page/Institute-Config" },
   ];
 
-  const { data, isLoading } = useOne({
+  const { data, isLoading, refetch } = useOne({
     id: `institute_id=${institute.institute_id}`,
     resource: `config/get-institutebyid`,
     queryOptions: {
@@ -106,6 +115,8 @@ const Page = () => {
       onSuccess: (response) => {
         if (response?.data?.length > 0) {
           const institute = response.data[0];
+          
+          // Update form with institute data
           reset({
             instituteName: institute.institute_name || "",
             email: institute.institute_email || "",
@@ -122,7 +133,18 @@ const Page = () => {
             website_url: institute.website_url || "",
             institute_logo: institute.institute_logo || "",
             institute_header: institute.institute_header || "",
+            // Set toggle states from API
+            dark_mode: institute.dark_mode === true,
+            enable_tabs: institute.enable_tabs === true,
+            dashboard_card: institute.visualization?.dashboard_card === true,
+            report_cards: institute.visualization?.report_cards === true,
           });
+          
+          // Also update Redux state to match API values
+          dispatch(setDarkMode(institute.dark_mode === true));
+          dispatch(setTabsVisibility(institute.enable_tabs === true));
+          dispatch(setDashboardCards(institute.visualization?.dashboard_card === true));
+          dispatch(setReportCards(institute.visualization?.report_cards === true));
         }
       },
       onError: () => {
@@ -171,6 +193,88 @@ const Page = () => {
     }
   };
 
+  // Function to update a single toggle setting
+  const updateToggleSetting = async (settingName: string, value: boolean) => {
+    setIsSavingToggles(true);
+    try {
+      const apiData: any = {
+        institute_id: institute.institute_id,
+      };
+      
+      // Handle visualization nested structure
+      if (settingName === 'dashboard_card' || settingName === 'report_cards') {
+        apiData.visualization = {
+          [settingName]: value
+        };
+      } else {
+        apiData[settingName] = value;
+      }
+      
+      await dataProvider.patchUpdate({
+        resource: "config/update-institute",
+        value: apiData,
+      });
+      
+      // Update form state
+      if (settingName === 'dashboard_card') {
+        setValue('dashboard_card', value);
+        dispatch(setDashboardCards(value));
+      } else if (settingName === 'report_cards') {
+        setValue('report_cards', value);
+        dispatch(setReportCards(value));
+      } else if (settingName === 'dark_mode') {
+        setValue('dark_mode', value);
+        dispatch(setDarkMode(value));
+      } else if (settingName === 'enable_tabs') {
+        setValue('enable_tabs', value);
+        dispatch(setTabsVisibility(value));
+      }
+      
+      toast.success(`${settingName.replace('_', ' ')} setting updated successfully!`);
+    } catch (error: any) {
+      console.error("Toggle update error:", error);
+      toast.error(error.message || "Failed to update setting.");
+      
+      // Revert Redux state on failure
+      if (settingName === 'dashboard_card') {
+        dispatch(setDashboardCards(!value));
+      } else if (settingName === 'report_cards') {
+        dispatch(setReportCards(!value));
+      } else if (settingName === 'dark_mode') {
+        dispatch(setDarkMode(!value));
+      } else if (settingName === 'enable_tabs') {
+        dispatch(setTabsVisibility(!value));
+      }
+    } finally {
+      setIsSavingToggles(false);
+    }
+  };
+
+  // Handle toggle button clicks
+  const handleDashboardCardsToggle = () => {
+    const newValue = !showDashboardCards;
+    dispatch(toggleDashboardCards());
+    updateToggleSetting('dashboard_card', newValue);
+  };
+  
+  const handleReportCardsToggle = () => {
+    const newValue = !showReportCards;
+    dispatch(toggleReportCards());
+    updateToggleSetting('report_cards', newValue);
+  };
+  
+  const handleTabsToggle = () => {
+    const newValue = !showTabs;
+    dispatch(toggleTabsVisibility());
+    updateToggleSetting('enable_tabs', newValue);
+  };
+  
+  const handleDarkModeToggle = () => {
+    const newValue = !isDarkMode;
+    dispatch(toggleDarkMode());
+    updateToggleSetting('dark_mode', newValue);
+  };
+
   const handleSaveChanges = async (formData: Partial<FormFields>) => {
     setPatchLoading(true);
     try {
@@ -209,6 +313,13 @@ const Page = () => {
         website_url: formData.website_url,
         institute_logo: logoUrl,
         institute_header: headerUrl,
+        // Include toggle states in the API request
+        dark_mode: formData.dark_mode,
+        enable_tabs: formData.enable_tabs,
+        visualization: {
+          dashboard_card: formData.dashboard_card,
+          report_cards: formData.report_cards
+        }
       };
 
       const response = await dataProvider.patchUpdate({
@@ -220,6 +331,9 @@ const Page = () => {
       setPatchLoading(false);
 
       toast.success("Institute Data updated successfully!");
+      
+      // Refresh data
+      refetch();
     } catch (error: any) {
       console.error("Update API Error:", error);
       toast.error(error.message || "Failed to update data.");
@@ -421,10 +535,11 @@ const Page = () => {
                 </Label>
                 <button
                   id="dashboardCard"
-                  onClick={() => dispatch(toggleDashboardCards())}
+                  disabled={isSavingToggles}
+                  onClick={handleDashboardCardsToggle}
                   className={`w-12 h-6 flex items-center rounded-full p-1 transition-colors ${
                     showDashboardCards ? "bg-blue-600" : "bg-gray-300"
-                  }`}
+                  } ${isSavingToggles ? "opacity-50 cursor-not-allowed" : ""}`}
                 >
                   <div
                     className={`w-4 h-4 bg-white rounded-full shadow-md transform transition-transform ${
@@ -441,10 +556,11 @@ const Page = () => {
                 </Label>
                 <button
                   id="reportCards"
-                  onClick={() => dispatch(toggleReportCards())}
+                  disabled={isSavingToggles}
+                  onClick={handleReportCardsToggle}
                   className={`w-12 h-6 flex items-center rounded-full p-1 transition-colors ${
                     showReportCards ? "bg-blue-600" : "bg-gray-300"
-                  }`}
+                  } ${isSavingToggles ? "opacity-50 cursor-not-allowed" : ""}`}
                 >
                   <div
                     className={`w-4 h-4 bg-white rounded-full shadow-md transform transition-transform ${
@@ -454,17 +570,18 @@ const Page = () => {
                 </button>
               </div>
 
-              {/* Tabs - NEW TOGGLE */}
+              {/* Tabs */}
               <div className="border border-[#cdcdd5] rounded-[12px] p-3 bg-white flex items-center justify-between w-full">
                 <Label htmlFor="tabsToggle" className="w-full">
                   Tabs
                 </Label>
                 <button
                   id="tabsToggle"
-                  onClick={() => dispatch(toggleTabsVisibility())}
+                  disabled={isSavingToggles}
+                  onClick={handleTabsToggle}
                   className={`w-12 h-6 flex items-center rounded-full p-1 transition-colors ${
                     showTabs ? "bg-blue-600" : "bg-gray-300"
-                  }`}
+                  } ${isSavingToggles ? "opacity-50 cursor-not-allowed" : ""}`}
                 >
                   <div
                     className={`w-4 h-4 bg-white rounded-full shadow-md transform transition-transform ${
@@ -486,10 +603,11 @@ const Page = () => {
                 </Label>
                 <button
                   id="darkMode"
-                  onClick={() => dispatch(toggleDarkMode())}
+                  disabled={isSavingToggles}
+                  onClick={handleDarkModeToggle}
                   className={`w-12 h-6 flex items-center rounded-full p-1 transition-colors ${
                     isDarkMode ? "bg-blue-600" : "bg-gray-300"
-                  }`}
+                  } ${isSavingToggles ? "opacity-50 cursor-not-allowed" : ""}`}
                 >
                   <div
                     className={`w-4 h-4 bg-white rounded-full shadow-md transform transition-transform ${

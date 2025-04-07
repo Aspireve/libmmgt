@@ -1,23 +1,17 @@
-"use client";
+import { createSlice } from '@reduxjs/toolkit';
 
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-
-interface DarkModeState {
-  isDarkMode: boolean;
-}
-
-const initialState: DarkModeState = {
-  isDarkMode: false, // Default to light mode
+const initialState = {
+  isDarkMode: false,
 };
 
-const darkModeSlice = createSlice({
-  name: "darkMode",
+export const darkModeSlice = createSlice({
+  name: 'darkMode',
   initialState,
   reducers: {
     toggleDarkMode: (state) => {
       state.isDarkMode = !state.isDarkMode;
     },
-    setDarkMode: (state, action: PayloadAction<boolean>) => {
+    setDarkMode: (state, action) => {
       state.isDarkMode = action.payload;
     },
   },

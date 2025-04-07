@@ -1,16 +1,11 @@
-// redux/reportCardSlice.ts
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice } from '@reduxjs/toolkit';
 
-interface ReportCardState {
-  showReportCards: boolean;
-}
-
-const initialState: ReportCardState = {
-  showReportCards: true,
+const initialState = {
+  showReportCards: false,
 };
 
-const reportCardSlice = createSlice({
-  name: "reportCard",
+export const reportCardSlice = createSlice({
+  name: 'reportCard',
   initialState,
   reducers: {
     toggleReportCards: (state) => {
