@@ -45,7 +45,7 @@ const InstituteSelector = () => {
           resource: "config/create-institute",
           values: {
             institute_name: newInstituteName,
-            user_uuid: user_uuid
+            user_uuid: user_uuid,
           },
         },
         {

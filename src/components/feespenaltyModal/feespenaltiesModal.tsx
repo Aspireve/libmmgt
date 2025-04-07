@@ -1,7 +1,13 @@
 "use client";
 
 import React, { useState } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import UpdateModal from "@/images/UpdateModal.png";
@@ -12,7 +18,10 @@ interface FeesPenaltiesModalProps {
   onClose: () => void;
 }
 
-const FeesPenaltiesModal: React.FC<FeesPenaltiesModalProps> = ({ isOpen, onClose }) => {
+const FeesPenaltiesModal: React.FC<FeesPenaltiesModalProps> = ({
+  isOpen,
+  onClose,
+}) => {
   const [isPaymentModalOpen, setPaymentModalOpen] = useState(false);
 
   return (
@@ -23,17 +32,26 @@ const FeesPenaltiesModal: React.FC<FeesPenaltiesModalProps> = ({ isOpen, onClose
             <DialogHeader>
               <DialogTitle className="text-[#FEA40D] flex items-center gap-2 ml-20">
                 <span>
-                  <Image height={40} width={30} src={UpdateModal} alt="UpdateModal" />
+                  <Image
+                    height={40}
+                    width={30}
+                    src={UpdateModal}
+                    alt="UpdateModal"
+                  />
                 </span>
                 Pay
               </DialogTitle>
             </DialogHeader>
           </div>
           <DialogDescription className="text-[#6B7280] text-sm text-center mt-2">
-            Update status of Fees & penalties <br /> by checking the student Receipt
+            Update status of Fees & penalties <br /> by checking the student
+            Receipt
           </DialogDescription>
           <div className="mt-4 space-y-3">
-            <Button variant="outline" className="w-full border border-blue-500 text-blue-500 rounded-[8px]">
+            <Button
+              variant="outline"
+              className="w-full border border-blue-500 text-blue-500 rounded-[8px]"
+            >
               Waive off
             </Button>
             <Button
@@ -47,7 +65,10 @@ const FeesPenaltiesModal: React.FC<FeesPenaltiesModalProps> = ({ isOpen, onClose
       </Dialog>
 
       {/* Render PaymentModal */}
-      <PaymentModal isOpen={isPaymentModalOpen} onClose={() => setPaymentModalOpen(false)} />
+      <PaymentModal
+        isOpen={isPaymentModalOpen}
+        onClose={() => setPaymentModalOpen(false)}
+      />
     </>
   );
 };

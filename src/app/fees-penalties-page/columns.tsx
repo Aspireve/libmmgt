@@ -15,7 +15,6 @@ export interface Penalties {
   return_date: Date;
   penalty_amount: string;
   student_uuid?: string;
-
 }
 
 const CustomCell = () => {
@@ -23,26 +22,23 @@ const CustomCell = () => {
 
   return (
     <>
-      {/* {is_penalised && (
-        <Button
-          variant="outline"
-          onClick={() => setModalOpen(true)}
-        >
+      {true && (
+        <Button variant="outline" onClick={() => setModalOpen(true)}>
           Pay
         </Button>
       )}
-      <FeesPenaltiesModal isOpen={isModalOpen} onClose={() => setModalOpen(false)} /> */}
+      <FeesPenaltiesModal
+        isOpen={isModalOpen}
+        onClose={() => setModalOpen(false)}
+      />
     </>
   );
 };
 
-
 export const PenaltiesColumns: ColumnDef<Penalties>[] = [
   {
     accessorKey: "action",
-    header: () => (
-      <div style={{ marginLeft: "10px" }}>Action</div>
-    ),
+    header: () => <div style={{ marginLeft: "10px" }}>Action</div>,
     cell: () => <CustomCell />,
   },
   {
@@ -73,7 +69,9 @@ export const PenaltiesColumns: ColumnDef<Penalties>[] = [
       if (!dateValue) return "";
       const date =
         typeof dateValue === "string" ? new Date(dateValue) : dateValue;
-      return date instanceof Date && !isNaN(date.getTime()) ? date.toLocaleDateString() : "";
+      return date instanceof Date && !isNaN(date.getTime())
+        ? date.toLocaleDateString()
+        : "";
     },
   },
   {
@@ -84,7 +82,9 @@ export const PenaltiesColumns: ColumnDef<Penalties>[] = [
       if (!dateValue) return "";
       const date =
         typeof dateValue === "string" ? new Date(dateValue) : dateValue;
-      return date instanceof Date && !isNaN(date.getTime()) ? date.toLocaleDateString() : "";
+      return date instanceof Date && !isNaN(date.getTime())
+        ? date.toLocaleDateString()
+        : "";
     },
   },
   {
@@ -151,4 +151,3 @@ export const fallbackData: Penalties[] = [
     student_uuid: "uuid-3062",
   },
 ];
-
