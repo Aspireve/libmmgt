@@ -30,7 +30,7 @@ export function useRowSelection<T>(
   const toggleAllRows = (isChecked: boolean, listData: T[]): void => {
     setSelectedData(isChecked ? [...listData] : []);
   };
-
+  console.log("Selected Data", selectedData)
   const columnsWithCheckbox: ColumnDef<T>[] = isSelectable
     ? [
       {

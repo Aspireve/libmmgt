@@ -18,6 +18,7 @@ const DeleteStudentModal = ({
   const { mutate, isLoading } = useDeleteMany();
 
   const handleDelete = async () => {
+    // console.log("Data", data);
     mutate({
       resource: "student/bulk-delete",
       ids: data.map((item) => item.student_uuid),

@@ -77,7 +77,7 @@ const InstituteSelector = () => {
             />
             <div className="w-[2px] h-[30px] bg-[#1F2937]" />
             <span className="text-[blue] font-bold text-[16px]">
-              {currentInstitute?.institute_name.match(/[A-Z]/g)?.join("") || ""}
+              {currentInstitute?.institute_name?.match(/[A-Z]/g)?.join("") || ""}
             </span>
             <Image
               src={Images.Dropper}
