@@ -22,6 +22,13 @@ export default function RootLayout({
   const authPages = ["/LoginPage"];
   const isAuthPage = authPages.includes(pathname);
 
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token && !isAuthPage) {
+      router.push("/LoginPage");
+    }
+  }, [pathname]);
+
 
   useEffect(() => {
     const token = localStorage.getItem("token");

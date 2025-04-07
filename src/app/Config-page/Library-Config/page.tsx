@@ -26,7 +26,6 @@ interface LibraryFormData {
   maxBooks: number;
   borrowDays: number;
   late_fees_per_day: number;
-
   openingTime: string;
   closingTime: string;
 }
@@ -50,18 +49,23 @@ interface EmailRules {
 interface LibraryRuleResponse {
   library_rule_id: string;
   max_books: string;
-  borrow_days: string;
-  late_fees_fees_per_day: string;
+  max_days: string; // Note: Changed from borrow_days to match API
+  late_fees_per_day: string;
   operating_hours: {
     starting_time: string;
     closing_time: string;
   };
-  notification_rules?: {
-    bookBorrowingRules?: { admin: boolean; student: boolean };
-    returnBooks?: { admin: boolean; student: boolean };
-    checkin?: { admin: boolean; student: boolean };
-    checkout?: { admin: boolean; student: boolean };
-    penalties?: { admin: boolean; student: boolean };
+  email_notifications?: { // Updated structure matching first document
+    borrow_books_admin?: boolean;
+    borrow_books_student?: boolean;
+    return_books_admin?: boolean;
+    return_books_student?: boolean;
+    checkin_admin?: boolean;
+    checkin_student?: boolean;
+    checkout_admin?: boolean;
+    checkout_student?: boolean;
+    penalties_admin?: boolean;
+    penalties_student?: boolean;
   };
 }
 
@@ -75,7 +79,8 @@ const Page = () => {
     (state: RootState) => state.auth.currentInstitute
   );
 
-  const { data, isLoading, refetch } = useOne<LibraryRuleResponse>({
+  // Updated to handle array response
+  const { data, isLoading, refetch } = useOne<LibraryRuleResponse[]>({
     resource: "config/get-rule-by-institute_uuid",
     id: `institute_uuid=${institute.institute_uuid}`,
   });
@@ -104,45 +109,49 @@ const Page = () => {
     penalties: { admin: true, student: true }, // Enabled by default
   });
 
-  // Parse time from "8:00 am" format to "08:00" format
-  const parseTime = (timeStr: string): string => {
+  // Helper function to convert time format
+  function convertTo24HourFormat(timeStr: string): string {
     if (!timeStr) return "";
-
-    const [timePart, period] = timeStr.split(" ");
-    const [hourStr, minute] = timePart.split(":");
-    let hour = parseInt(hourStr, 10);
-
-    // Convert to 24-hour format
-    if (period && period.toLowerCase() === "pm" && hour < 12) {
+    
+    const [time, period] = timeStr.toLowerCase().split(" ");
+    if (!time || !period) {
+      throw new Error("Invalid time format");
+    }
+    const timeParts = time.split(":");
+    if (timeParts.length !== 2) {
+      throw new Error("Invalid time format");
+    }
+    if (timeParts.length !== 2) {
+      throw new Error("Invalid time format");
+    }
+    const [hourStr, minute] = timeParts;
+    let hour: number = parseInt(hourStr, 10);
+    
+    if (period === "pm" && hour < 12) {
       hour += 12;
-    } else if (period && period.toLowerCase() === "am" && hour === 12) {
+    } else if (period === "am" && hour === 12) {
       hour = 0;
     }
-
+    
     return `${hour.toString().padStart(2, "0")}:${minute}`;
-  };
+  }
 
-  // Load data from API response
+  // Load data from API response - updated to handle array response
   useEffect(() => {
-    if (data?.data) {
-      const libraryData = data.data;
+    if (data?.data && Array.isArray(data.data) && data.data.length > 0) {
+      console.log("API Data:", data.data);
+      // Take the first library rule (or implement logic to choose which one)
+      const libraryData = data.data[0];
       setLibraryRuleId(libraryData.library_rule_id);
 
-      // Parse times from API format
-      const openingTime = parseTime(
-        libraryData.operating_hours?.starting_time || ""
-      );
-      const closingTime = parseTime(
-        libraryData.operating_hours?.closing_time || ""
-      );
+      // Parse times from API format - using the converted function
+      const openingTime = convertTo24HourFormat(libraryData.operating_hours?.starting_time || "8:00 am");
+      const closingTime = convertTo24HourFormat(libraryData.operating_hours?.closing_time || "8:00 pm");
 
       const newFormData = {
         maxBooks: parseInt(libraryData.max_books || "2", 10),
-        borrowDays: parseInt(libraryData.borrow_days || "7", 10),
-        late_fees_per_day: parseInt(
-          libraryData.late_fees_fees_per_day || "2",
-          10
-        ),
+        borrowDays: parseInt(libraryData.max_days || "7", 10), // Note this is max_days in API response
+        late_fees_per_day: parseInt(libraryData.late_fees_per_day || "2", 10),
         openingTime: openingTime || "08:00",
         closingTime: closingTime || "20:00",
       };
@@ -150,26 +159,28 @@ const Page = () => {
       setFormData(newFormData);
       setInitialFormData(newFormData);
 
-      // Load notification rules if available
-      if (libraryData.notification_rules) {
+      // Load notification rules if available - updated to handle new structure
+      if (libraryData.email_notifications) {
         setEmailRules({
-          bookBorrowingRules: libraryData.notification_rules
-            .bookBorrowingRules || { admin: false, student: false },
-          returnBooks: libraryData.notification_rules.returnBooks || {
-            admin: false,
-            student: false,
+          bookBorrowingRules: {
+            admin: libraryData.email_notifications.borrow_books_admin || false,
+            student: libraryData.email_notifications.borrow_books_student || false,
           },
-          checkin: libraryData.notification_rules.checkin || {
-            admin: false,
-            student: false,
+          returnBooks: {
+            admin: libraryData.email_notifications.return_books_admin || false,
+            student: libraryData.email_notifications.return_books_student || false,
           },
-          checkout: libraryData.notification_rules.checkout || {
-            admin: false,
-            student: false,
+          checkin: {
+            admin: libraryData.email_notifications.checkin_admin || false,
+            student: libraryData.email_notifications.checkin_student || false,
           },
-          penalties: libraryData.notification_rules.penalties || {
-            admin: true,
-            student: true,
+          checkout: {
+            admin: libraryData.email_notifications.checkout_admin || false,
+            student: libraryData.email_notifications.checkout_student || false,
+          },
+          penalties: {
+            admin: libraryData.email_notifications.penalties_admin || true,
+            student: libraryData.email_notifications.penalties_student || true,
           },
         });
       }
@@ -211,13 +222,12 @@ const Page = () => {
 
   async function handleUpdateClick() {
     if (isEditable) {
-      const changedFields: Partial<
-        Record<keyof LibraryFormData, string | number>
-      > = {};
-
+      const changedFields: Partial<Record<keyof LibraryFormData, string | number>> = {};
+      
+      // Compare current form data to initial form data
       (Object.keys(formData) as Array<keyof LibraryFormData>).forEach((key) => {
         if (formData[key] !== initialFormData[key]) {
-          changedFields[key] = formData[key] as string | number;
+          changedFields[key] = formData[key];
         }
       });
 
@@ -225,39 +235,44 @@ const Page = () => {
       const hasChanges = Object.keys(changedFields).length > 0;
 
       if (hasChanges) {
-        // Transform time into formatted string if needed
+        // Transform the notification rules to match API format
+        const transformedEmailRules = {
+          borrow_books_admin: emailRules.bookBorrowingRules.admin,
+          borrow_books_student: emailRules.bookBorrowingRules.student,
+          return_books_admin: emailRules.returnBooks.admin,
+          return_books_student: emailRules.returnBooks.student,
+          checkin_admin: emailRules.checkin.admin,
+          checkin_student: emailRules.checkin.student,
+          checkout_admin: emailRules.checkout.admin,
+          checkout_student: emailRules.checkout.student,
+          penalties_admin: emailRules.penalties.admin,
+          penalties_student: emailRules.penalties.student,
+        };
+
         const payload = {
           ...(changedFields.maxBooks && { max_books: changedFields.maxBooks }),
-          ...(changedFields.borrowDays && {
-            borrow_days: changedFields.borrowDays,
-          }),
-          ...(changedFields.late_fees_per_day && {
-            late_fees_per_day: changedFields.late_fees_per_day,
-          }),
+          ...(changedFields.borrowDays && { max_days: changedFields.borrowDays }), // Note correct field name
+          ...(changedFields.late_fees_per_day && { late_fees_per_day: changedFields.late_fees_per_day }),
           ...(changedFields.openingTime || changedFields.closingTime
             ? {
                 operating_hours: {
                   ...(changedFields.openingTime && {
-                    starting_time: formatTo12Hour(
-                      String(changedFields.openingTime)
-                    ),
+                    starting_time: formatTo12Hour(String(changedFields.openingTime)),
                   }),
                   ...(changedFields.closingTime && {
-                    closing_time: formatTo12Hour(
-                      String(changedFields.closingTime)
-                    ),
+                    closing_time: formatTo12Hour(String(changedFields.closingTime)),
                   }),
                 },
               }
             : {}),
-          notification_rules: emailRules,
+          email_notifications: transformedEmailRules, // Using correctly formatted email rules
         };
 
         try {
           const response = await dataProvider.patchUpdate({
             resource: "config/update-rule",
             value: {
-              // library_rule_id: libraryRuleId,
+              library_rule_id: libraryRuleId, // Include the rule ID for the update
               institute_uuid: institute.institute_uuid,
               ...payload,
             },
@@ -333,6 +348,7 @@ const Page = () => {
             className={`w-10 h-5 flex items-center rounded-full p-1 transition-colors ${
               emailRules[rule][userType] ? "bg-blue-600" : "bg-gray-300"
             }`}
+            disabled={!isEditable}
           >
             <div
               className={`w-3 h-3 bg-white rounded-full shadow-md transform transition-transform ${

@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import type { AuthState } from "@/types/auth";
+// import type { AuthStates } from "@/types/auth";
 type SelectAllStateType = {
   show: boolean;
 };
