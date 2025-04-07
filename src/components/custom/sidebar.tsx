@@ -137,9 +137,8 @@ const Sidebar = () => {
 
       {/* Menu Items */}
       <div
-        className={`flex-1 space-y-2 ${
-          collapsed ? "px-1" : "p-4"
-        } transition-all duration-300`}
+        className={`flex-1 space-y-2 ${collapsed ? "px-1" : "p-4"
+          } transition-all duration-300`}
       >
         {menuItems
           .filter((item) => item.id !== "Reports" || showReportCards)
@@ -151,18 +150,16 @@ const Sidebar = () => {
       {/* Footer Section */}
       <div className={`p-2 ${collapsed ? "px-1" : "p-4"}`}>
         <div
-          className={`flex ${
-            collapsed ? "justify-center" : "justify-between"
-          } mb-3 cursor-pointer p-2 rounded-md text-[#333333] group relative`}
+          className={`flex ${collapsed ? "justify-center" : "justify-between"
+            } mb-3 cursor-pointer p-2 rounded-md text-[#333333] group relative`}
           title={collapsed ? "Contact" : ""}
         >
           {!collapsed && <span>Contact</span>}
           <Phone size={20} />
         </div>
         <div
-          className={`flex ${
-            collapsed ? "justify-center" : "justify-between"
-          } cursor-pointer p-2 rounded-md text-[#333333] group relative`}
+          className={`flex ${collapsed ? "justify-center" : "justify-between"
+            } cursor-pointer p-2 rounded-md text-[#333333] group relative`}
           title={collapsed ? "Sign out" : ""}
         >
           {!collapsed && <span>Sign out</span>}
