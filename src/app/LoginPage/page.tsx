@@ -7,7 +7,7 @@ import { useDispatch } from "react-redux";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { setUser } from "@/redux/authSlice";
 import Image from "next/image";
 import images from "@/images";
@@ -22,7 +22,7 @@ const LoginPage = () => {
   const [error, setError] = useState<string>("");
   const router = useRouter();
   const dispatch = useDispatch();
-  const { mutate } = useCreate();
+  const { mutate, isLoading } = useCreate();
 
   const handleLogin = async (
     e: React.FormEvent<HTMLFormElement>
@@ -138,9 +138,17 @@ const LoginPage = () => {
               )}
               <Button
                 type="submit"
-                className="w-full bg-gradient-to-r from-indigo-600 to-blue-600 text-white font-semibold py-2.5 rounded-lg hover:from-indigo-700 hover:to-blue-700 transition-all duration-300 shadow-md"
+                className="w-full bg-[#1E40AF] text-white rounded-[10px] hover:bg-[#1E40AF]/90"
+                disabled={isLoading}
               >
-                Login
+                {isLoading ? (
+                  <>
+                    Login...
+                    <Loader2 className="h-5 w-5 animate-spin" />
+                  </>
+                ) : (
+                  "Login"
+                )}
               </Button>
             </form>
           </CardContent>
