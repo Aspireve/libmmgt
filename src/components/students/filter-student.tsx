@@ -1,6 +1,6 @@
 "use client";
 
-import { FC, useState, useEffect, useMemo } from "react";
+import { FC, useState, useEffect, useMemo, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useList } from "@refinedev/core";
@@ -16,9 +16,7 @@ interface DynamicFilter {
 
 interface FilterProps {
   filtersConfig: DynamicFilter[];
-  setFilters: (filters: {
-    filter?: { field: string; operator: string; value: string[] }[];
-  }) => void;
+  setFilters: (filters: any) => void;
 }
 
 const Filter: FC<FilterProps> = ({ filtersConfig, setFilters }) => {
@@ -32,21 +30,29 @@ const Filter: FC<FilterProps> = ({ filtersConfig, setFilters }) => {
     return acc;
   }, {} as Record<string, ReturnType<typeof useList>>);
 
-  const applyFilters = useMemo(
-    () =>
-      debounce((values: Record<string, string[]>) => {
-        const filters = Object.entries(values)
-          .filter(([_, val]) => val.length > 0)
-          .map(([field, val]) => ({
-            field,
-            operator: "eq",
-            value: val,
-          }));
+  const applyFilters = useCallback(
+    debounce((values: Record<string, string[]>) => {
+      const filters = Object.entries(values)
+        .filter(([_, val]) => val.length > 0)
+        .map(([field, val]) => ({
+          field,
+          operator: "IN",
+          value: val,
+        }));
 
-        // setFilters((prev: any)=>({...prev, filter: filters });
+      setFilters((prev: any) => {
+        // Remove any existing filters for fields that are in the new filters
+        const fieldsToUpdate = new Set(filters.map(f => f.field));
+        const existingFilters = prev.filter?.filter((f: any) => 
+          !fieldsToUpdate.has(f.field)
+        ) || [];
 
-        setFilters({filter: filters})
-      }, 300),
+        return {
+          ...prev,
+          filter: [...existingFilters, ...filters]
+        };
+      });
+    }, 300),
     [setFilters]
   );
 

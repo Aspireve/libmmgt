@@ -1,8 +1,8 @@
 "use client";
 
-import React, { Suspense } from "react";
+import React, { Suspense, useEffect } from "react";
 import { Provider } from "react-redux";
-import { store, persistor } from "../redux/store/store";
+import { store, persistor, RootState } from "../redux/store/store";
 import { PersistGate } from "redux-persist/integration/react";
 import { RefineContext } from "./_refine_context";
 import Sidebar from "@/components/custom/sidebar";
@@ -10,17 +10,30 @@ import Navbar from "@/components/custom/navbar";
 import "../styles/global.css";
 import { Toaster } from "@/components/ui/sonner";
 import DarkModeWrapper from "@/components/custom/DarkModeWrapper";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { TooltipProvider } from "@/components/ui/tooltip";
-
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
+  const router = useRouter();
   const authPages = ["/LoginPage"];
   const isAuthPage = authPages.includes(pathname);
+
+
+  const user = localStorage.getItem("token");
+
+  useEffect(() => {
+    console.log("User:", user)
+    if (!user && !isAuthPage) {
+      router.push("/LoginPage");
+    }
+  }, [user, isAuthPage, router]);
+
+
+
   return (
     <html lang="en">
       <body suppressHydrationWarning>
@@ -51,6 +64,7 @@ export default function RootLayout({
             </PersistGate>
           </Provider>
         </Suspense>
+        <Toaster />
       </body>
     </html>
   );

@@ -6,7 +6,7 @@ import { Scanner } from "@yudiel/react-qr-scanner";
 import { useOne } from "@refinedev/core";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-
+// import toast, { Toaster } from 'react-hot-toast';
 const Page = () => {
   const router = useRouter();
   const [scanActive, setScanActive] = useState(true);
@@ -154,6 +154,7 @@ console.log("Data",response.data.meta.student_name)
         {/* {checkStatus && toast(checkStatus)} */}
 
       </div>
+      {/* <Toaster /> */}
     </div>
   );
 };

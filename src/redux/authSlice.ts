@@ -100,7 +100,7 @@ const authSlice = createSlice({
         (inst) => inst.institute_uuid === institute_uuid
       );
       state.currentInstitute = match
-        ? {...match}
+        ? { ...match }
         : state.user?.institute_details?.[0]?.institute_uuid || null;
     },
   },
