@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Header from "@/components/custom/header";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
@@ -17,12 +17,16 @@ import {
 import { toast } from "sonner";
 import { dataProvider } from "@/providers/data";
 import { CustomBreadcrumb } from "@/components/breadcrumb";
+import { useOne } from "@refinedev/core";
+import { RootState } from "@/redux/store/store";
+import { useSelector, useDispatch } from "react-redux";
 
 // Define proper types for the form data
 interface LibraryFormData {
-  maxBooks: string;
-  borrowDays: string;
-  lateFees: string;
+  maxBooks: number;
+  borrowDays: number;
+  late_fees_per_day: number;
+
   openingTime: string;
   closingTime: string;
 }
@@ -43,21 +47,48 @@ interface EmailRules {
   };
 }
 
-const Page = () => {
+interface LibraryRuleResponse {
+  library_rule_id: string;
+  max_books: string;
+  borrow_days: string;
+  late_fees_fees_per_day: string;
+  operating_hours: {
+    starting_time: string;
+    closing_time: string;
+  };
+  notification_rules?: {
+    bookBorrowingRules?: { admin: boolean; student: boolean };
+    returnBooks?: { admin: boolean; student: boolean };
+    checkin?: { admin: boolean; student: boolean };
+    checkout?: { admin: boolean; student: boolean };
+    penalties?: { admin: boolean; student: boolean };
+  };
+}
 
-  const breadcrumbItems = [ 
+const Page = () => {
+  const breadcrumbItems = [
     { label: "Configuration", href: "/Config-page" },
     { label: "Library Configuration", href: "/Config-page/Library-Config" },
   ];
 
+  const institute = useSelector(
+    (state: RootState) => state.auth.currentInstitute
+  );
+
+  const { data, isLoading, refetch } = useOne<LibraryRuleResponse>({
+    resource: "config/get-rule-by-institute_uuid",
+    id: `institute_uuid=${institute.institute_uuid}`,
+  });
+
   const [isEditable, setIsEditable] = useState(false);
   const [formData, setFormData] = useState<LibraryFormData>({
-    maxBooks: "02",
-    borrowDays: "7",
-    lateFees: "2",
+    maxBooks: 2,
+    borrowDays: 7,
+    late_fees_per_day: 2,
     openingTime: "08:00",
     closingTime: "20:00",
   });
+  const [libraryRuleId, setLibraryRuleId] = useState<string>("");
 
   // Track initial form data to detect changes
   const [initialFormData, setInitialFormData] = useState<LibraryFormData>({
@@ -72,6 +103,78 @@ const Page = () => {
     checkout: { admin: false, student: false },
     penalties: { admin: true, student: true }, // Enabled by default
   });
+
+  // Parse time from "8:00 am" format to "08:00" format
+  const parseTime = (timeStr: string): string => {
+    if (!timeStr) return "";
+
+    const [timePart, period] = timeStr.split(" ");
+    const [hourStr, minute] = timePart.split(":");
+    let hour = parseInt(hourStr, 10);
+
+    // Convert to 24-hour format
+    if (period && period.toLowerCase() === "pm" && hour < 12) {
+      hour += 12;
+    } else if (period && period.toLowerCase() === "am" && hour === 12) {
+      hour = 0;
+    }
+
+    return `${hour.toString().padStart(2, "0")}:${minute}`;
+  };
+
+  // Load data from API response
+  useEffect(() => {
+    if (data?.data) {
+      const libraryData = data.data;
+      setLibraryRuleId(libraryData.library_rule_id);
+
+      // Parse times from API format
+      const openingTime = parseTime(
+        libraryData.operating_hours?.starting_time || ""
+      );
+      const closingTime = parseTime(
+        libraryData.operating_hours?.closing_time || ""
+      );
+
+      const newFormData = {
+        maxBooks: parseInt(libraryData.max_books || "2", 10),
+        borrowDays: parseInt(libraryData.borrow_days || "7", 10),
+        late_fees_per_day: parseInt(
+          libraryData.late_fees_fees_per_day || "2",
+          10
+        ),
+        openingTime: openingTime || "08:00",
+        closingTime: closingTime || "20:00",
+      };
+
+      setFormData(newFormData);
+      setInitialFormData(newFormData);
+
+      // Load notification rules if available
+      if (libraryData.notification_rules) {
+        setEmailRules({
+          bookBorrowingRules: libraryData.notification_rules
+            .bookBorrowingRules || { admin: false, student: false },
+          returnBooks: libraryData.notification_rules.returnBooks || {
+            admin: false,
+            student: false,
+          },
+          checkin: libraryData.notification_rules.checkin || {
+            admin: false,
+            student: false,
+          },
+          checkout: libraryData.notification_rules.checkout || {
+            admin: false,
+            student: false,
+          },
+          penalties: libraryData.notification_rules.penalties || {
+            admin: true,
+            student: true,
+          },
+        });
+      }
+    }
+  }, [data]);
 
   const form = useForm();
 
@@ -108,49 +211,61 @@ const Page = () => {
 
   async function handleUpdateClick() {
     if (isEditable) {
-      const changedFields: Partial<LibraryFormData> = {};
+      const changedFields: Partial<
+        Record<keyof LibraryFormData, string | number>
+      > = {};
 
       (Object.keys(formData) as Array<keyof LibraryFormData>).forEach((key) => {
         if (formData[key] !== initialFormData[key]) {
-          changedFields[key] = formData[key];
+          changedFields[key] = formData[key] as string | number;
         }
       });
 
-      if (Object.keys(changedFields).length > 0) {
+      // Check if any changes were made to form data or notification rules
+      const hasChanges = Object.keys(changedFields).length > 0;
+
+      if (hasChanges) {
         // Transform time into formatted string if needed
         const payload = {
-          ...changedFields,
+          ...(changedFields.maxBooks && { max_books: changedFields.maxBooks }),
+          ...(changedFields.borrowDays && {
+            borrow_days: changedFields.borrowDays,
+          }),
+          ...(changedFields.late_fees_per_day && {
+            late_fees_per_day: changedFields.late_fees_per_day,
+          }),
           ...(changedFields.openingTime || changedFields.closingTime
             ? {
                 operating_hours: {
                   ...(changedFields.openingTime && {
-                    starting_time: formatTo12Hour(changedFields.openingTime),
+                    starting_time: formatTo12Hour(
+                      String(changedFields.openingTime)
+                    ),
                   }),
                   ...(changedFields.closingTime && {
-                    closing_time: formatTo12Hour(changedFields.closingTime),
+                    closing_time: formatTo12Hour(
+                      String(changedFields.closingTime)
+                    ),
                   }),
                 },
               }
             : {}),
+          notification_rules: emailRules,
         };
-
-        // Remove raw times from root if present
-        delete payload.openingTime;
-        delete payload.closingTime;
 
         try {
           const response = await dataProvider.patchUpdate({
             resource: "config/update-rule",
             value: {
-              library_rule_id: "TCA2025-006",
-              institute_uuid:"4a9af0a7-76f2-4cfb-bdfb-2949844ca077",
-               // <-- Replace or dynamically fetch if needed
+              // library_rule_id: libraryRuleId,
+              institute_uuid: institute.institute_uuid,
               ...payload,
             },
           });
 
           toast.success("Library rules updated successfully!");
           setInitialFormData({ ...formData }); // update baseline
+          refetch(); // Refresh data from server
         } catch (error: any) {
           console.error("Update error:", error);
           toast.error(error?.message || "Failed to update rules.");
@@ -165,7 +280,20 @@ const Page = () => {
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = event.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+
+    // List of number fields
+    const numericFields: (keyof LibraryFormData)[] = [
+      "maxBooks",
+      "borrowDays",
+      "late_fees_per_day",
+    ];
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: numericFields.includes(name as keyof LibraryFormData)
+        ? Number(value)
+        : value,
+    }));
   }
 
   function handleTimeChange(
@@ -229,10 +357,14 @@ const Page = () => {
     return `${openingDisplay} - ${closingDisplay}`;
   };
 
+  if (isLoading) {
+    return <div className="p-6">Loading library configuration...</div>;
+  }
+
   return (
     <div className="p-6">
       <Header heading="Library Configuration" subheading="" />
-      <CustomBreadcrumb items={breadcrumbItems}/>
+      <CustomBreadcrumb items={breadcrumbItems} />
 
       {/* Library Rules Section */}
       <div className="mt-6">
@@ -250,7 +382,7 @@ const Page = () => {
                 name: "borrowDays",
                 label: "No. of days a student can borrow books",
               },
-              { name: "lateFees", label: "Late Fees per day" },
+              { name: "late_fees_per_day", label: "Late Fees per day" },
             ].map((field) => (
               <div key={field.name}>
                 <label className="block text-sm font-medium mb-1 text-black">

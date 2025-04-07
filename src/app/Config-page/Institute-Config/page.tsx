@@ -1,11 +1,11 @@
 "use client";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useForm, Path } from "react-hook-form";
 import Image from "next/image";
 import { InputField } from "@/components/custom/inputfield";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { Pencil } from "lucide-react";
+import { Pencil, Upload } from "lucide-react";
 import ThakurTrustLogo from "@/images/ThakurTrustLogo.png";
 import Header from "@/components/custom/header";
 import { useSelector, useDispatch } from "react-redux";
@@ -22,8 +22,7 @@ import { toggleReportCards } from "@/redux/reportCardSlice";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ReloadIcon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
-
-// const HARD_CODED_ID = "TCA2025"; // Hardcoded ID
+import UploaderFactory from "@/utilities/file-upload/upload-factory";
 
 type FormFields = {
   instituteName: string;
@@ -39,6 +38,8 @@ type FormFields = {
   pincode: string;
   state: string;
   website_url: string;
+  institute_logo: string;
+  institute_header: string;
 };
 
 const Page = () => {
@@ -47,12 +48,35 @@ const Page = () => {
     handleSubmit,
     setValue,
     reset,
+    watch,
     formState: { errors },
-  } = useForm<FormFields>();
+  } = useForm<FormFields>({
+    resolver: async (data) => {
+      const errors: any = {};
+    
+      if (!data.instituteName)
+        errors.instituteName = { message: "Institute Name is required" };
+      if (!data.institute_abbr)
+        errors.institute_abbr = { message: "Abbreviation is required" };
+    
+      return {
+        values: Object.keys(errors).length === 0 ? data : {},
+        errors,
+      };
+    },
+  });
 
   const [isEditable, setIsEditable] = useState(false);
   const [patchLoading, setPatchLoading] = useState(false);
+  const [logoUploading, setLogoUploading] = useState(false);
+  const [headerUploading, setHeaderUploading] = useState(false);
   const dispatch = useDispatch();
+  const logoFileInputRef = useRef<HTMLInputElement>(null);
+  const headerFileInputRef = useRef<HTMLInputElement>(null);
+  
+  const logoImage = watch("institute_logo");
+  const headerImage = watch("institute_header");
+
   const showReportCards = useSelector(
     (state: RootState) => state.reportCard.showReportCards
   );
@@ -96,6 +120,8 @@ const Page = () => {
             pincode: institute.pincode || "",
             state: institute.state || "",
             website_url: institute.website_url || "",
+            institute_logo: institute.institute_logo || "",
+            institute_header: institute.institute_header || "",
           });
         }
       },
@@ -105,9 +131,69 @@ const Page = () => {
     },
   });
 
+  // Helper function to convert base64 to file
+  const base64ToFile = (base64: string, filename: string): File => {
+    const arr = base64.split(',');
+    const mime = arr[0].match(/:(.*?);/)?.[1] || '';
+    const bstr = atob(arr[1]);
+    let n = bstr.length;
+    const u8arr = new Uint8Array(n);
+    while (n--) {
+      u8arr[n] = bstr.charCodeAt(n);
+    }
+    return new File([u8arr], filename, { type: mime });
+  };
+
+  const handleLogoUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files[0]) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        if (e.target?.result) {
+          // Set the base64 image for preview
+          setValue("institute_logo", e.target.result as string);
+        }
+      };
+      reader.readAsDataURL(event.target.files[0]);
+    }
+  };
+
+  // Add function for handling header upload
+  const handleHeaderUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files[0]) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        if (e.target?.result) {
+          // Set the base64 image for preview
+          setValue("institute_header", e.target.result as string);
+        }
+      };
+      reader.readAsDataURL(event.target.files[0]);
+    }
+  };
+
   const handleSaveChanges = async (formData: Partial<FormFields>) => {
     setPatchLoading(true);
     try {
+      let logoUrl = formData.institute_logo;
+      let headerUrl = formData.institute_header;
+      const uploader = UploaderFactory.createUploader("cloudinary");
+      
+      // Upload logo to Cloudinary if it's a base64 string (newly uploaded)
+      if (formData.institute_logo && formData.institute_logo.startsWith('data:image')) {
+        setLogoUploading(true);
+        const file = base64ToFile(formData.institute_logo, 'logo.png');
+        logoUrl = await uploader.uploadFile(file);
+        setLogoUploading(false);
+      }
+
+      // Upload header to Cloudinary if it's a base64 string (newly uploaded)
+      if (formData.institute_header && formData.institute_header.startsWith('data:image')) {
+        setHeaderUploading(true);
+        const file = base64ToFile(formData.institute_header, 'header.png');
+        headerUrl = await uploader.uploadFile(file);
+        setHeaderUploading(false);
+      }
+
       const apiData = {
         institute_id: institute.institute_id,
         institute_name: formData.instituteName,
@@ -121,6 +207,8 @@ const Page = () => {
         pincode: formData.pincode,
         state: formData.state,
         website_url: formData.website_url,
+        institute_logo: logoUrl,
+        institute_header: headerUrl,
       };
 
       const response = await dataProvider.patchUpdate({
@@ -135,6 +223,9 @@ const Page = () => {
     } catch (error: any) {
       console.error("Update API Error:", error);
       toast.error(error.message || "Failed to update data.");
+      setPatchLoading(false);
+      setLogoUploading(false);
+      setHeaderUploading(false);
     }
   };
 
@@ -143,55 +234,110 @@ const Page = () => {
       <Header heading="Institute Configuration" subheading="Tanvir Chavan" />
       <CustomBreadcrumb items={breadcrumbItems} />
       <div className="p-8">
-        <div className="flex items-center gap-6  mb-6">
+        <div className="flex items-center gap-6 mb-6">
           <h1 className="text-xl font-semibold">Institute Info</h1>
           <Button
             size="icon"
-            className=" h-8 w-8 rounded-full bg-[#93c5fd] border border-gray-200 shadow-sm hover:bg-white mr-4 mt-1"
+            className="h-8 w-8 rounded-full bg-[#93c5fd] border border-gray-200 shadow-sm hover:bg-white mr-4 mt-1"
             onClick={() => setIsEditable(!isEditable)}
           >
             <Pencil className="h-4 w-4 text-[#4740af]" />
           </Button>
         </div>
         <div className="flex items-center justify-between mb-6 gap-6">
-          <div className="flex-shrink-0 bg-[#edf1ff] rounded-xl border border-[#93c5fd]">
-            <div className="relative">
+          <div className="flex-shrink-0 bg-[#edf1ff] rounded-xl border border-[#93c5fd] relative w-44 h-32 flex items-center justify-center">
+            {logoUploading ? (
+              <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30 rounded-xl">
+                <HugeiconsIcon
+                  icon={ReloadIcon}
+                  className="h-8 w-8 text-white animate-spin"
+                  strokeWidth={2}
+                />
+              </div>
+            ) : logoImage ? (
+              <Image
+                src={logoImage}
+                alt="Institute Logo"
+                className="w-44 h-32 object-contain"
+                width={176}
+                height={128}
+              />
+            ) : (
               <Image
                 src={ThakurTrustLogo}
                 alt="Thakur Trust Logo"
                 className="w-44 h-32 object-contain"
               />
-            </div>
+            )}
+            {isEditable && (
+              <>
+                <input
+                  ref={logoFileInputRef}
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handleLogoUpload}
+                />
+                <Button
+                  size="sm"
+                  className="absolute bottom-2 right-2 bg-white border border-gray-200 shadow-sm hover:bg-gray-100 text-gray-700"
+                  onClick={() => logoFileInputRef.current?.click()}
+                >
+                  <Upload className="h-4 w-4 mr-1" />
+                  Logo
+                </Button>
+              </>
+            )}
           </div>
           <div className="flex-1">
-            <div className="relative bg-[#edf1ff] rounded-xl border border-[#93c5fd]">
-              <Image
-                src={ThakurTrustLogo}
-                alt="Thakur Trust Logo"
-                className="w-full h-32 object-contain"
-              />
+            <div className="relative bg-[#edf1ff] rounded-xl border border-[#93c5fd] h-32 flex items-center justify-center">
+              {headerUploading ? (
+                <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30 rounded-xl">
+                  <HugeiconsIcon
+                    icon={ReloadIcon}
+                    className="h-8 w-8 text-white animate-spin"
+                    strokeWidth={2}
+                  />
+                </div>
+              ) : headerImage ? (
+                <Image
+                  src={headerImage}
+                  alt="Institute Header"
+                  className="w-full h-32 object-contain"
+                  width={800}
+                  height={128}
+                />
+              ) : (
+                <Image
+                  src={ThakurTrustLogo}
+                  alt="Thakur Trust Logo"
+                  className="w-full h-32 object-contain"
+                />
+              )}
+              {isEditable && (
+                <>
+                  <input
+                    ref={headerFileInputRef}
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={handleHeaderUpload}
+                  />
+                  <Button
+                    size="sm"
+                    className="absolute bottom-2 right-2 bg-white border border-gray-200 shadow-sm hover:bg-gray-100 text-gray-700"
+                    onClick={() => headerFileInputRef.current?.click()}
+                  >
+                    <Upload className="h-4 w-4 mr-1" />
+                    Header
+                  </Button>
+                </>
+              )}
             </div>
           </div>
         </div>
 
         <div className="flex flex-col md:flex-row gap-6">
-          {/* <div className="flex-shrink-0">
-            <div className="relative">
-              <Image
-                src={ThakurTrustLogo}
-                alt="Thakur Trust Logo"
-                className="w-44 h-32 object-contain"
-              />
-              <Button
-                size="icon"
-                className="absolute bottom-0 right-0 h-8 w-8 rounded-full bg-white border border-gray-200 shadow-sm hover:bg-white mr-4 mt-1"
-                onClick={() => setIsEditable(!isEditable)}
-              >
-                <Pencil className="h-4 w-4" />
-              </Button>
-            </div>
-          </div> */}
-
           <div className="flex-grow">
             {isLoading ? (
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
@@ -239,16 +385,16 @@ const Page = () => {
 
                 {isEditable && (
                   <Button
-                    disabled={patchLoading}
+                    disabled={patchLoading || logoUploading || headerUploading}
                     type="submit"
                     className="mt-4"
                   >
-                    {patchLoading ? (
+                    {patchLoading || logoUploading || headerUploading ? (
                       <>
                         Saving...
                         <HugeiconsIcon
                           icon={ReloadIcon}
-                          className="h-5 w-5 animate-spin"
+                          className="h-5 w-5 animate-spin ml-2"
                           strokeWidth={2}
                         />
                       </>
