@@ -33,13 +33,17 @@ export default function IssueBook({
 
         values: {
           book_copy_id: form.getFieldValue("bookId"),
-          // book_copy_id: form.getFieldValue("bookId"),
           student_id: form.getFieldValue("studentId"),
           action: action === ActionType.CHECK_IN ? "borrow" : "return",
         },
       },
       {
-        onSuccess: () => {
+        onSuccess: (data) => {
+          console.log(data)
+          if(!data.data) {
+            toast.error("Book has already been borrowed");
+            return;
+          }
           toast.success(`Book ${action} Successfully!`);
           form.reset();
           setRefreshAction((prev: number) => prev + 1);
@@ -145,7 +149,7 @@ export default function IssueBook({
           <Button
             type="button"
             onClick={() => form.reset()}
-            className="mt-5 rounded-[5px] border border-[#1E40AF] bg-white text-[#1E40AF]"
+            className="mt-5 rounded-[5px] border border-[#1E40AF] bg-white text-[#1E40AF] hover:bg-accent"
           >
             Cancel
           </Button>

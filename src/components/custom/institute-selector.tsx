@@ -19,18 +19,18 @@ import {
 import Image from "next/image";
 import Images from "@/images";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "@/redux/store/store";
-import { setCurrentInstitute } from "@/redux/authSlice";
+import { AppDispatch, RootState } from "@/redux/store/store";
+import { getAllInstitutes, setCurrentInstitute } from "@/redux/authSlice";
 import { toast } from "sonner";
 import { useCreate } from "@refinedev/core";
 
 const InstituteSelector = () => {
-  // const { currentInstitute } =
-  //   useSelector((state: RootState) => state.auth.user?.institute_details) || {};
+  const currentInstitute =
+    useSelector((state: RootState) => state.auth.currentInstitute) || {};
   const instituteList =
     useSelector((state: RootState) => state.auth.user?.institute_details) || [];
 
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const [newInstituteName, setNewInstituteName] = useState("");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
@@ -49,6 +49,7 @@ const InstituteSelector = () => {
             resolve(data.data);
             setIsDialogOpen(false);
             setNewInstituteName("");
+            dispatch(getAllInstitutes())
           },
           onError: (error: any) => {
             toast.error("Error adding institute: " + error.message);
@@ -69,14 +70,14 @@ const InstituteSelector = () => {
             className="border-2 border-blue-500 rounded-xl overflow-hidden w-fit h-[54px] flex items-center justify-between p-2 px-4 transition-all duration-300 hover:shadow-lg cursor-pointer"
           >
             <Image
-              src={instituteList[0]?.institute_logo || Images.TIA}
+              src={currentInstitute?.institute_logo || Images.TIA}
               alt="logo"
               width={40}
               height={40}
             />
             <div className="w-[2px] h-[30px] bg-[#1F2937]" />
             <span className="text-[blue] font-bold text-[16px]">
-              {instituteList[0]?.institute_name.match(/[A-Z]/g)?.join("") || ""}
+              {currentInstitute?.institute_name.match(/[A-Z]/g)?.join("") || ""}
             </span>
             <Image
               src={Images.Dropper}
@@ -135,7 +136,7 @@ const InstituteSelector = () => {
             placeholder="Enter new institute name"
             value={newInstituteName}
             onChange={(e) => setNewInstituteName(e.target.value)}
-            className="mt-2 p-2 border rounded-md w-full"
+            className="mt-2 p-2 border rounded-md w-full placeholder:text-[#aaa] text-[#000]"
           />
           <Button
             onClick={handleAddInstitute}

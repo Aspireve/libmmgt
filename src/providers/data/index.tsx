@@ -16,7 +16,9 @@ export const dataProvider: CustomDataProvider = {
   getList: async ({ resource, pagination, filters }) => {
     const { current = 1, pageSize = 5 } = pagination ?? {};
 
-    let url = `${resource}?_page=${current}&_limit=${pageSize}`;
+    let url = `${resource}${
+      resource.includes("?") ? "&" : "?"
+    }_page=${current}&_limit=${pageSize}`;
 
     if (filters?.length) {
       const filterParams = filters
@@ -81,9 +83,9 @@ export const dataProvider: CustomDataProvider = {
   },
 
   update: async ({ resource, id, variables, meta }) => {
-    const url = `${resource}/${encodeURIComponent(id)}`;
+    const url = `${resource}${id && `/${encodeURIComponent(id)}`}`;
     const response = await fetchWrapper(url, {
-      method: "PUT",
+      method: meta?.method ?? "PUT",
       body: JSON.stringify(variables),
     });
     return {

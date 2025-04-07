@@ -41,10 +41,10 @@ export default function RootLayout({
                           <div className="flex-1 overflow-y-auto h-0 scrollbar-none">
                             {children}
                           </div>
-                          <Toaster richColors position="top-center" />
                         </div>
                       </div>
                     )}
+                    <Toaster richColors position="top-center" />
                   </DarkModeWrapper>
                 </TooltipProvider>
               </RefineContext>

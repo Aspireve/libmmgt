@@ -36,14 +36,14 @@ const Headers = <TData,>({
   return (
     <div>
 
-      <div className="flex items-center justify-between mx-4">
+      <div className="flex lg:items-center justify-between mx-4 flex-col lg:flex-row">
         <div className="flex items-center gap-4 my-4 ">
           <span className="font-medium text-lg">{title}</span>
           <span className="rounded-full bg-[#F9F5FF] px-2 py-1 font-medium text-[#6941C6] text-sm">
             {total} Entries
           </span>
         </div>
-        <div className="flex  gap-4 items-center">
+        <div className="flex  gap-4 items-center mb-4 lg:mb-0">
           {AddedOptions && AddedOptions.map((Component: any, index: any) => (
             <Component filters={filters} setFilters={setFilters} key={index} data={selectedData} refetch={refetch} resource={resource} />
           ))}

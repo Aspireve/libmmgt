@@ -20,8 +20,9 @@ import { useSelector } from "react-redux";
 import { AddUserType } from "@/types/user";
 import PhoneNumber from "@/components/phone-number.tsx/PhoneNumber";
 import { isPossiblePhoneNumber } from "react-phone-number-input";
+import { set } from "lodash";
 
-const AddUser = () => {
+const AddUser = ({refetch, setOpen}: {refetch: any, setOpen: (e: boolean) => void}) => {
   const { mutate, isLoading: createLoading } = useCreate();
   const [designation, setDesignation] = useState<string>("");
 
@@ -32,8 +33,8 @@ const AddUser = () => {
     {
       institute_uuid,
       institute_name,
-      institute_logo: logo,
-      institute_header: header,
+      institute_logo: logo || "https://vighnotech.com/_next/image?url=%2F_next%2Fstatic%2Fmedia%2FVighnotechLogo.fadcf204.png&w=384&q=10",
+      institute_header: header || "https://vighnotech.com/_next/image?url=%2F_next%2Fstatic%2Fmedia%2FVighnotechLogo.fadcf204.png&w=384&q=10",
     },
   ];
   const {
@@ -54,6 +55,8 @@ const AddUser = () => {
       { resource: "user/create", values: formattedData },
       {
         onSuccess: () => {
+          refetch()
+          setOpen(false)
           toast.success("User added successfully!");
         },
         onError: (error) => toast.error("Error adding User: " + error.message),

@@ -1,15 +1,32 @@
-"use client"
+"use client";
 
-import React, { useEffect, useState } from 'react'
-import { Clock, LogOut, BookOpen, BookUp, Search, Plus, Download, Calendar, User } from "lucide-react"
+import React, { useEffect, useState } from "react";
+import {
+  Clock,
+  LogOut,
+  BookOpen,
+  BookUp,
+  Search,
+  Plus,
+  Download,
+  Calendar,
+  User,
+} from "lucide-react";
 
-import { Button } from "@/components/ui/button"
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Button } from "@/components/ui/button";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
-import { useList } from "@refinedev/core"
-import { ActivityItem } from '@/components/dashboard/modified-activity-log'
-
+import { useList } from "@refinedev/core";
+import { ActivityItem } from "@/components/dashboard/modified-activity-log";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store/store";
 
 const groupActivitiesByDate = (activities: any[]) => {
   const grouped: Record<string, any[]> = {};
@@ -27,57 +44,73 @@ const groupActivitiesByDate = (activities: any[]) => {
 
   // Sort each day's activities by original timestamp
   Object.keys(grouped).forEach((date) => {
-    grouped[date].sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+    grouped[date].sort(
+      (a, b) =>
+        new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+    );
   });
 
   return grouped;
 };
 
 const BookDetailsActivites = () => {
-  const [searchQuery, setSearchQuery] = useState("")
-  const [filter, setFilter] = useState("all")
-  const [dateFilter, setDateFilter] = useState("all")
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filter, setFilter] = useState("all");
+  const [dateFilter, setDateFilter] = useState("all");
+  const { institute_uuid } = useSelector(
+    (state: RootState) => state.auth.currentInstitute
+  );
 
   const { data, isLoading, refetch } = useList({
-    resource: "/student/alllog"
-  })
+    resource: "/student/alllog",
+    filters: [
+      { field: "_institute_uuid", operator: "eq", value: JSON.stringify([institute_uuid]) },
+    ],
+  });
 
-  const activities = data?.data || []
+  const activities = data?.data || [];
 
   // Filter activities based on search query and type filter
-
 
   const filteredActivities = activities.filter((activity) => {
     const matchesSearch =
       activity.student_id.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      activity.book_title?.book_title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      activity.book_title?.book_title
+        ?.toLowerCase()
+        .includes(searchQuery.toLowerCase()) ||
       false ||
-      activity.student_id.toLowerCase().includes(searchQuery.toLowerCase())
+      activity.student_id.toLowerCase().includes(searchQuery.toLowerCase());
 
-    const matchesFilter = filter === "all" || activity.action === filter
+    const matchesFilter = filter === "all" || activity.action === filter;
 
-    const today = new Date().toISOString().split("T")[0]
-    const yesterday = new Date(Date.now() - 86400000).toISOString().split("T")[0]
+    const today = new Date().toISOString().split("T")[0];
+    const yesterday = new Date(Date.now() - 86400000)
+      .toISOString()
+      .split("T")[0];
 
     const matchesDateFilter =
       dateFilter === "all" ||
       (dateFilter === "today" && activity.timestamp === today) ||
       (dateFilter === "yesterday" && activity.timestamp === yesterday) ||
-      (dateFilter === "thisWeek" && new Date(activity.timestamp) >= new Date(Date.now() - 7 * 86400000))
+      (dateFilter === "thisWeek" &&
+        new Date(activity.timestamp) >= new Date(Date.now() - 7 * 86400000));
 
-    return matchesSearch && matchesFilter && matchesDateFilter
-  })
+    return matchesSearch && matchesFilter && matchesDateFilter;
+  });
 
-  const groupedActivities = groupActivitiesByDate(filteredActivities)
-  const sortedDates = Object.keys(groupedActivities).sort((a, b) => new Date(b).getTime() - new Date(a).getTime())
-
+  const groupedActivities = groupActivitiesByDate(filteredActivities);
+  const sortedDates = Object.keys(groupedActivities).sort(
+    (a, b) => new Date(b).getTime() - new Date(a).getTime()
+  );
 
   return (
     <div className="container py-6 rounded-[10px] bg-[#fff] overflow-auto">
-
-
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
-        <Tabs defaultValue="all" className="w-full max-w-lg" onValueChange={setFilter}>
+        <Tabs
+          defaultValue="all"
+          className="w-full max-w-lg"
+          onValueChange={setFilter}
+        >
           <TabsList className="grid grid-cols-5 w-full bg-gray-200">
             <TabsTrigger value="all" className="flex items-center gap-1">
               <Calendar className="h-4 w-4" />
@@ -107,14 +140,13 @@ const BookDetailsActivites = () => {
             <SelectTrigger className="w-[180px]">
               <SelectValue placeholder="Filter by date" />
             </SelectTrigger>
-            <SelectContent className='bg-white'>
+            <SelectContent className="bg-white">
               <SelectItem value="all">All Dates</SelectItem>
               <SelectItem value="today">Today</SelectItem>
               <SelectItem value="yesterday">Yesterday</SelectItem>
               <SelectItem value="thisWeek">This Week</SelectItem>
             </SelectContent>
           </Select>
-
         </div>
       </div>
 
@@ -134,7 +166,8 @@ const BookDetailsActivites = () => {
               <div className="h-px bg-border mt-2"></div>
             </div>
 
-            <div className="rounded-md border border-[#E9EAEB]"
+            <div
+              className="rounded-md border border-[#E9EAEB]"
               style={{ boxShadow: "0 0 8px rgba(0, 0, 0, 0.1)" }}
             >
               <div className="divide-y divide-[#E9EAEB]">
@@ -153,13 +186,14 @@ const BookDetailsActivites = () => {
             </div>
             <h3 className="text-lg font-medium mb-1">No activities found</h3>
             <p className="text-muted-foreground max-w-md">
-              No activities match your current search and filter criteria. Try adjusting your filters or search query.
+              No activities match your current search and filter criteria. Try
+              adjusting your filters or search query.
             </p>
           </div>
         )}
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default BookDetailsActivites 
+export default BookDetailsActivites;

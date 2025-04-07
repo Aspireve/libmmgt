@@ -43,7 +43,9 @@ const Filter: FC<FilterProps> = ({ filtersConfig, setFilters }) => {
             value: val,
           }));
 
-        setFilters({ filter: filters });
+        // setFilters((prev: any)=>({...prev, filter: filters });
+
+        setFilters({filter: filters})
       }, 300),
     [setFilters]
   );

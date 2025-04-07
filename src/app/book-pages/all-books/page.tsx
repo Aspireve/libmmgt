@@ -59,9 +59,6 @@ const BooksPage = () => {
                     columns={() => columns}
                     resource={`book_v2/${url}`}
                     AddedOptions={[
-                      // ({ setFilters }) => (
-                      //   <Filter setFilters={setFilters} />
-                      // ),
                       AddBookButton,
                       ImportBookButton,
                       ({ setFilters }) =>

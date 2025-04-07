@@ -41,7 +41,8 @@ export default function StudentDirectory() {
                 options: [
                   { label: "Student Id", value: "student_id" },
                   { label: "Name", value: "student_name" },
-                  { label: "Email", value: "student_email" },
+                  { label: "Phone Number", value: "phone_no" },
+                  { label: "Email", value: "email" },
                 ],
                 placeholder: "Search",
               }), // Pass the setFilters function to SearchFilter,

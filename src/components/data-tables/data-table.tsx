@@ -59,9 +59,9 @@ export function DataTable<TData extends BaseRecord>({
       <div className="rounded-md flex flex-col gap-4">
         <Table className="font-inter w-full">
           <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
+            {table.getHeaderGroups().map((headerGroup, idx) => (
               <TableRow
-                key={headerGroup.id}
+                key={`${headerGroup.id}-${idx}`}
                 className="border-b border-gray-300"
               >
                 {headerGroup.headers.map((header) => (
@@ -89,14 +89,14 @@ export function DataTable<TData extends BaseRecord>({
                 .fill(null)
                 .map((_, index) => <SkeletonRow key={index} index={index} />)
             ) : table.getRowModel().rows.length ? (
-              table.getRowModel().rows.map((row) => (
+              table.getRowModel().rows.map((row, inde) => (
                 <TableRow
-                  key={row.id}
+                  key={`${row.id}-${inde}-data`}
                   className="border-b border-gray-300 text-center transition-opacity duration-300 hover:bg-gray-50"
                 >
-                  {row.getVisibleCells().map((cell) => (
+                  {row.getVisibleCells().map((cell, ide) => (
                     <TableCell
-                      key={cell.id}
+                      key={`${cell.id}-${ide}-index`}
                       className="py-4 text-[#535862] text-sm"
                     >
                       {flexRender(

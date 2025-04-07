@@ -19,14 +19,26 @@ import { dataProvider } from "@/providers/data";
 import { toggleTabsVisibility } from "@/redux/tabSlice";
 import { CustomBreadcrumb } from "@/components/breadcrumb";
 import { toggleReportCards } from "@/redux/reportCardSlice";
+import { Skeleton } from "@/components/ui/skeleton";
+import { ReloadIcon } from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
 
-const HARD_CODED_ID = "TCA2025"; // Hardcoded ID
+// const HARD_CODED_ID = "TCA2025"; // Hardcoded ID
 
 type FormFields = {
   instituteName: string;
   email: string;
   phoneNumber: string;
   author: string;
+  city: string;
+  institute_abbr: string;
+  institute_contact_person: string;
+  institute_email: string;
+  landline: string;
+  mobile: string;
+  pincode: string;
+  state: string;
+  website_url: string;
 };
 
 const Page = () => {
@@ -39,11 +51,16 @@ const Page = () => {
   } = useForm<FormFields>();
 
   const [isEditable, setIsEditable] = useState(false);
+  const [patchLoading, setPatchLoading] = useState(false);
   const dispatch = useDispatch();
-  const showReportCards = useSelector((state: RootState) => state.reportCard.showReportCards);
+  const showReportCards = useSelector(
+    (state: RootState) => state.reportCard.showReportCards
+  );
   const showTabs = useSelector((state: RootState) => state.tabs.tabsVisible);
-  
- 
+
+  const institute = useSelector(
+    (state: RootState) => state.auth.currentInstitute
+  );
 
   const isDarkMode = useSelector(
     (state: RootState) => state.darkMode.isDarkMode
@@ -52,14 +69,13 @@ const Page = () => {
     (state: RootState) => state.dashboard.showDashboardCards
   );
 
-  const breadcrumbItems=[
+  const breadcrumbItems = [
     { label: "Configuration", href: "/Config-page" },
     { label: "Institute Configuration", href: "/Config-page/Institute-Config" },
-    
-  ]
+  ];
 
   const { data, isLoading } = useOne({
-    id: `institute_id=${HARD_CODED_ID}`,
+    id: `institute_id=${institute.institute_id}`,
     resource: `config/get-institutebyid`,
     queryOptions: {
       enabled: true,
@@ -71,6 +87,15 @@ const Page = () => {
             email: institute.institute_email || "",
             phoneNumber: institute.mobile || "",
             author: institute.author || "",
+            city: institute.city || "",
+            institute_abbr: institute.institute_abbr || "",
+            institute_contact_person: institute.institute_contact_person || "",
+            institute_email: institute.institute_email || "",
+            landline: institute.landline || "",
+            mobile: institute.mobile || "",
+            pincode: institute.pincode || "",
+            state: institute.state || "",
+            website_url: institute.website_url || "",
           });
         }
       },
@@ -81,19 +106,30 @@ const Page = () => {
   });
 
   const handleSaveChanges = async (formData: Partial<FormFields>) => {
+    setPatchLoading(true);
     try {
       const apiData = {
-        institute_id: HARD_CODED_ID,
+        institute_id: institute.institute_id,
         institute_name: formData.instituteName,
         institute_email: formData.email,
         mobile: formData.phoneNumber,
         author: formData.author,
+        city: formData.city,
+        institute_abbr: formData.institute_abbr,
+        institute_contact_person: formData.institute_contact_person,
+        landline: formData.landline,
+        pincode: formData.pincode,
+        state: formData.state,
+        website_url: formData.website_url,
       };
 
       const response = await dataProvider.patchUpdate({
         resource: "config/update-institute",
         value: apiData,
       });
+
+      setIsEditable(false);
+      setPatchLoading(false);
 
       toast.success("Institute Data updated successfully!");
     } catch (error: any) {
@@ -107,10 +143,39 @@ const Page = () => {
       <Header heading="Institute Configuration" subheading="Tanvir Chavan" />
       <CustomBreadcrumb items={breadcrumbItems} />
       <div className="p-8">
-        <h1 className="text-xl font-semibold mb-6">Institute Info</h1>
+        <div className="flex items-center gap-6  mb-6">
+          <h1 className="text-xl font-semibold">Institute Info</h1>
+          <Button
+            size="icon"
+            className=" h-8 w-8 rounded-full bg-[#93c5fd] border border-gray-200 shadow-sm hover:bg-white mr-4 mt-1"
+            onClick={() => setIsEditable(!isEditable)}
+          >
+            <Pencil className="h-4 w-4 text-[#4740af]" />
+          </Button>
+        </div>
+        <div className="flex items-center justify-between mb-6 gap-6">
+          <div className="flex-shrink-0 bg-[#edf1ff] rounded-xl border border-[#93c5fd]">
+            <div className="relative">
+              <Image
+                src={ThakurTrustLogo}
+                alt="Thakur Trust Logo"
+                className="w-44 h-32 object-contain"
+              />
+            </div>
+          </div>
+          <div className="flex-1">
+            <div className="relative bg-[#edf1ff] rounded-xl border border-[#93c5fd]">
+              <Image
+                src={ThakurTrustLogo}
+                alt="Thakur Trust Logo"
+                className="w-full h-32 object-contain"
+              />
+            </div>
+          </div>
+        </div>
 
         <div className="flex flex-col md:flex-row gap-6">
-          <div className="flex-shrink-0">
+          {/* <div className="flex-shrink-0">
             <div className="relative">
               <Image
                 src={ThakurTrustLogo}
@@ -125,20 +190,35 @@ const Page = () => {
                 <Pencil className="h-4 w-4" />
               </Button>
             </div>
-          </div>
+          </div> */}
 
           <div className="flex-grow">
             {isLoading ? (
-              <p>Loading...</p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                {Array.from({ length: 13 }, (_, index) => (
+                  <Skeleton
+                    key={index}
+                    className="h-10 bg-gray-200 rounded animate-pulse"
+                  />
+                ))}
+              </div>
             ) : (
               <form onSubmit={handleSubmit(handleSaveChanges)}>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                   {(
                     Object.entries({
                       instituteName: "Institute Name",
-                      email: "Email",
+                      institute_abbr: "Institute Abbreviation",
+                      institute_email: "Institute Email",
                       phoneNumber: "Phone Number",
+                      mobile: "Mobile",
                       author: "Author",
+                      city: "City",
+                      institute_contact_person: "Contact Person",
+                      landline: "Landline",
+                      pincode: "Pincode",
+                      state: "State",
+                      website_url: "Website URL",
                     }) as Array<[keyof FormFields, string]>
                   ).map(([key, label]) => (
                     <div key={key} className="space-y-2 w-full">
@@ -148,6 +228,9 @@ const Page = () => {
                         register={register}
                         name={key as Path<FormFields>}
                         readonly={!isEditable}
+                        required={["instituteName", "institute_abbr"].includes(
+                          key as keyof FormFields
+                        )}
                         errors={errors}
                       />
                     </div>
@@ -155,8 +238,23 @@ const Page = () => {
                 </div>
 
                 {isEditable && (
-                  <Button type="submit" className="mt-4">
-                    Save Changes
+                  <Button
+                    disabled={patchLoading}
+                    type="submit"
+                    className="mt-4"
+                  >
+                    {patchLoading ? (
+                      <>
+                        Saving...
+                        <HugeiconsIcon
+                          icon={ReloadIcon}
+                          className="h-5 w-5 animate-spin"
+                          strokeWidth={2}
+                        />
+                      </>
+                    ) : (
+                      "Save Changes"
+                    )}
                   </Button>
                 )}
               </form>

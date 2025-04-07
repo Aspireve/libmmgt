@@ -15,6 +15,7 @@ const groupActivitiesByDate = (activities: any[]) => {
   const grouped: Record<string, any[]> = {};
 
   activities.forEach((activity) => {
+    console.log(activity.timestamp)
     const date = new Date(activity.timestamp);
     date.setHours(0, 0, 0, 0);
     const dateKey = date.toISOString();

@@ -36,10 +36,9 @@ const AddBook = () => {
     { key: LibraryTabs.ADDPERIODICAL, label: "Add Periodical" },
   ];
 
-  // const { institute_uuid, institute_name } = useSelector(
-  //   (state: RootState) => state.auth.currentInstitute
-  // );
-  // const institute_uuid = useSelector((state: any) => state.auth.user.institute_list);
+  const { institute_uuid, institute_name } = useSelector(
+    (state: RootState) => state.auth.currentInstitute
+  );
 
 
 
@@ -131,8 +130,8 @@ const AddBook = () => {
       no_of_preliminary: data.no_of_preliminary.toString(),
       year_of_publication: formatDate(data.year_of_publication),
       date_of_acquisition: formatDate(data.date_of_acquisition),
-      // institute_uuid,
-      // institute_name,
+      institute_uuid,
+      institute_name,
     };
     mutate(
       { resource: "book_v2/create", values: formattedData },

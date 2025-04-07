@@ -52,7 +52,7 @@ export const StudentListTable = ({
     },
     {
       accessorKey: "student_id",
-      header: "ID",
+      header: "Student ID",
       cell: ({ row }) => <StudentIDCell student={row.original} />,
     },
     {
@@ -62,6 +62,7 @@ export const StudentListTable = ({
     },
     { accessorKey: "roll_no", header: "Roll no" },
     { accessorKey: "department", header: "Department" },
+    { accessorKey: "phone_no", header: "Phone Number" },
     { accessorKey: "email", header: "Email" },
     {
       accessorFn: (data) => data.year_of_admission ?? "Not Provided",
