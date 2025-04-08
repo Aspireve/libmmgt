@@ -19,7 +19,8 @@ const BookTitleCell: React.FC<BookTitleCellProps> = ({ book }) => {
       onClick={() =>
         router.push(`/book-pages/book-details?book_uuid=${book.book_uuid}`)
       }
-    >{book.book_item_id}
+    >
+      {book.book_item_id}
     </div>
   );
 };
@@ -27,17 +28,25 @@ const BookTitleCell: React.FC<BookTitleCellProps> = ({ book }) => {
 interface PeriodicalTitleCellProps {
   periodical: BookData;
 }
-const JournalTitleCell: React.FC<PeriodicalTitleCellProps> = ({ periodical }) => {
+const JournalTitleCell: React.FC<PeriodicalTitleCellProps> = ({
+  periodical,
+}) => {
   const router = useRouter();
 
   return (
     <div
       className="relative group cursor-pointer font-bold text-[#1E40AF]"
-      onClick={() => router.push(`/periodicals-pages/periodical-details?journal_title_id=${periodical.item_id}`)}
+      onClick={() =>
+        router.push(
+          `/periodicals-pages/periodical-details?journal_title_id=${periodical.item_id}`
+        )
+      }
     >
       {periodical.item_id}
-      <div className="absolute left-1/2 transform -translate-x-1/2 bottom-full mb-2 hidden group-hover:flex items-center justify-center bg-gray-800 text-white text-xs rounded-lg px-3 py-1 shadow-md whitespace-nowrap
-        after:content-[''] after:absolute after:top-full after:left-1/2 after:-translate-x-1/2 after:border-4 after:border-transparent after:border-t-gray-800">
+      <div
+        className="absolute left-1/2 transform -translate-x-1/2 bottom-full mb-2 hidden group-hover:flex items-center justify-center bg-gray-800 text-white text-xs rounded-lg px-3 py-1 shadow-md whitespace-nowrap
+        after:content-[''] after:absolute after:top-full after:left-1/2 after:-translate-x-1/2 after:border-4 after:border-transparent after:border-t-gray-800"
+      >
         Journal Details
       </div>
     </div>
@@ -80,13 +89,12 @@ export const getBookColumns = (
         const book = {
           ...row.original,
           item_id: itemId,
-          book_item_id:itemId
+          book_item_id: itemId,
         };
         if (itemId) {
-         
-          return  <JournalTitleCell periodical={book}/>
+          return <JournalTitleCell periodical={book} />;
         } else {
-          return <BookTitleCell book={book}/>
+          return <BookTitleCell book={book} />;
         }
       },
     },
@@ -95,15 +103,16 @@ export const getBookColumns = (
       header: "Category",
       cell: ({ row }) => {
         const category = row.original.category;
-        
+
         const categoryMap = {
           null: { label: "Book", color: "green" },
           journal: { label: "Journal", color: "purple" },
           magazine: { label: "Magazine", color: "purple" },
         };
-    
-        const { label, color } = categoryMap[category as keyof typeof categoryMap] || categoryMap.null;
-    
+
+        const { label, color } =
+          categoryMap[category as keyof typeof categoryMap] || categoryMap.null;
+
         return (
           <span
             className={`flex justify-center bg-${color}-100 text-${color}-700 border-${color}-200 font-sans px-2 py-1 rounded-[20px]`}
@@ -116,49 +125,55 @@ export const getBookColumns = (
     {
       accessorKey: "book_title",
       header: "Name",
-      cell:({row})=>{
+      cell: ({ row }) => {
         const book_title = row.original.book_title;
-        return <span className="flex justify-center">{book_title ? book_title : "-"}</span>;
-      }
-    },
-    { accessorKey: "book_author",
-       header: "Book Author",
-       cell:({row})=>{
-        const book_author = row.original.book_author;
-        return <span className="text-center">{book_author ? book_author : "-"}</span>;
-      }
+        return <span>{book_title ? book_title : "-"}</span>;
       },
+    },
+    {
+      accessorKey: "book_author",
+      header: "Book Author",
+      cell: ({ row }) => {
+        const book_author = row.original.book_author;
+        return (
+          <span className="text-center">{book_author ? book_author : "-"}</span>
+        );
+      },
+    },
     { accessorKey: "publisher", header: "Publisher" },
     { accessorKey: "available_count", header: "Book Count" },
-    { accessorKey: "isbn", 
+    {
+      accessorKey: "isbn",
       header: "ISBN",
-      cell:({row})=>{
+      cell: ({ row }) => {
         const isbn = row.original.isbn;
-        return <span className="flex justify-center">{isbn ? isbn : "-"}</span>;
-      }
-     },
+        return <span>{isbn ? isbn : "-"}</span>;
+      },
+    },
     {
       accessorKey: "year_of_publication",
       header: "Year of Publication",
       cell: ({ row }) => {
         const date = row.original.year_of_publication;
-        return <span className="flex justify-center">{date ? formatDate(date) : "-"}</span>;
+        return <span>{date ? new Date(date).getFullYear() : "-"}</span>;
       },
     },
-    
-    { accessorKey: "volume_number", 
+
+    {
+      accessorKey: "volume_number",
       header: "Volume Number",
-      cell:({row})=>{
+      cell: ({ row }) => {
         const Volume_No = row.original.volume_number;
-        return <span className="flex justify-center">{Volume_No ? Volume_No : "-"}</span>;
-      }
-     },
-     { accessorKey: "frequency", 
+        return <span>{Volume_No ? Volume_No : "-"}</span>;
+      },
+    },
+    {
+      accessorKey: "frequency",
       header: "Frequency",
-      cell:({row})=>{
+      cell: ({ row }) => {
         const Frequency = row.original.frequency;
-        return <span className="flex justify-center">{Frequency ? Frequency : "-"}</span>;
-      }
-     }
+        return <span>{Frequency ? Frequency : "-"}</span>;
+      },
+    },
   ];
 };
