@@ -34,7 +34,7 @@ export interface BookData {
   call_number: string;
   author_mark: string;
   item_type: string;
-
-  book_title_id: string;
+  book_item_id: string | null;
+  
   book_uuid: string;
 }
