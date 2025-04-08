@@ -214,8 +214,8 @@ const ReportPage = () => {
         {reports.map((report) => (
           <a
             key={report.label}
-            href={report.href}
-            className="border p-4 rounded-md shadow-sm hover:shadow-md transition flex justify-between items-center text-sm" // Reduced text size
+            href={`/Reports/ReportDetail?page=${report.href.split("/").pop()}`}
+            className="border p-4 rounded-md shadow-sm hover:shadow-md transition flex justify-between items-center text-sm"
           >
             <span>{report.label}</span>
             <Image
