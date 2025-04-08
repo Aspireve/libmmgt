@@ -24,6 +24,9 @@ const persistAuth = {
   key: "auth",
   storage,
 }
+
+
+
 const persistedDashboardReducer = persistReducer(
   persistDashboardConfig,
   dashboardReducer

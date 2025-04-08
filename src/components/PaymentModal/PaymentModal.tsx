@@ -18,16 +18,67 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
-import { format } from "date-fns";
+import { format, isAfter } from "date-fns";
+import { useOne } from "@refinedev/core";
 
 interface PaymentModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
+interface FormState {
+  paymentMethod: string;
+  date: Date | undefined;
+  receiptNo: string;
+  transactionId: string;
+  amount: string;
+  remark: string;
+}
+
 export default function PaymentModal({ isOpen, onClose }: PaymentModalProps) {
-  const [date, setDate] = useState<Date | undefined>();
-  const [paymentMethod, setPaymentMethod] = useState("cash");
+  // const [date, setDate] = useState<Date | undefined>();
+  // const [paymentMethod, setPaymentMethod] = useState("cash");
+  const [formState, setFormState] = useState<FormState>({
+    paymentMethod: "cash",
+    date: new Date(),
+    receiptNo: "",
+    transactionId: "",
+    amount: "",
+    remark: "",
+  });
+
+  const { data } = useOne({
+    resource: "",
+  });
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormState((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleSelectChange = (value: string) => {
+    setFormState((prev) => ({
+      ...prev,
+      paymentMethod: value,
+    }));
+  };
+
+  const handleDateChange = (date: Date | undefined) => {
+    setFormState((prev) => ({
+      ...prev,
+      date,
+    }));
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Process payment with formState
+    console.log("Payment submitted:", formState);
+    // You can add your payment processing logic here
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -49,25 +100,23 @@ export default function PaymentModal({ isOpen, onClose }: PaymentModalProps) {
             <h3 className="font-bold text-lg mb-4">FEES SUMMARY</h3>
 
             <div className="mb-4">
-              <h4 className="font-semibold">
-                B.Y Computer Engineering - (2024-2025)
-              </h4>
-              <p className="text-gray-600 text-sm">Thakur Polytechnic</p>
+              <h4 className="font-semibold">The Great Book</h4>
+              <p className="text-gray-600 text-sm">01/04/2025 - 01/05/2025</p>
             </div>
 
             <div className="space-y-1 mb-6">
               <div className="flex justify-between">
-                <span>Tuition Fees:</span>
-                <span>₹34,116</span>
+                <span>Per Day Fees:</span>
+                <span>₹2</span>
               </div>
               <div className="flex justify-between">
-                <span>Development Fees:</span>
-                <span>₹3,000</span>
+                <span>Total Days:</span>
+                <span>5</span>
               </div>
-              <div className="flex justify-between">
+              {/* <div className="flex justify-between">
                 <span>Examination Fee:</span>
                 <span>₹1,000</span>
-              </div>
+              </div> */}
             </div>
 
             <div className="flex justify-between items-center">
@@ -76,98 +125,127 @@ export default function PaymentModal({ isOpen, onClose }: PaymentModalProps) {
                 <div className="text-sm text-gray-600">RAMMOGH GAYYUR ALI</div>
               </div>
               <div className="flex items-center gap-4">
-                <span className="font-bold text-xl">₹38,116.00</span>
-                <Button
+                <span className="font-bold text-xl">₹10</span>
+                {/* <Button
                   variant="ghost"
                   className="h-8 text-xs font-semibold text-gray-700"
                 >
                   REMOVE
-                </Button>
+                </Button> */}
               </div>
             </div>
           </div>
 
           {/* Right side - Payment Form */}
-          <div className="flex-1 space-y-5">
-            <div>
-              <label className="block mb-2 font-medium">Payment Option</label>
-              <Select value={paymentMethod} onValueChange={setPaymentMethod}>
-                <SelectTrigger className="w-full rounded-[5px] relative">
-                  <SelectValue placeholder="Select payment option" />
-                </SelectTrigger>
-                <SelectContent className="z-[9999] absolute top-full left-0 bg-white shadow-lg rounded-md">
-                  <SelectItem value="cash">Cash</SelectItem>
-                  <SelectItem value="online">Online</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div>
-              <label className="block mb-2 font-medium">Payment Date</label>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className="w-full justify-start text-left font-normal rounded-[5px]"
-                  >
-                    {date ? format(date, "PPP") : "Select date"}
-                    <Calendar className="ml-auto h-4 w-4 opacity-50" />
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent
-                  className="w-auto p-0 z-[9999] absolute top-full left-0 bg-white shadow-lg rounded-md"
-                  align="start"
+          <div className="flex-1">
+            <form onSubmit={handleSubmit} className="space-y-5">
+              <div>
+                <label className="block mb-2 font-medium">Payment Option</label>
+                <Select
+                  value={formState.paymentMethod}
+                  onValueChange={handleSelectChange}
                 >
-                  <CalendarComponent
-                    mode="single"
-                    selected={date}
-                    onSelect={setDate}
-                    initialFocus
-                  />
-                </PopoverContent>
-              </Popover>
-            </div>
+                  <SelectTrigger className="w-full rounded-[5px] relative">
+                    <SelectValue placeholder="Select payment option" />
+                  </SelectTrigger>
+                  <SelectContent className="z-[9999] absolute top-full left-0 bg-white shadow-lg rounded-md">
+                    <SelectItem value="cash">Cash</SelectItem>
+                    <SelectItem value="online">Online</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
 
-            {paymentMethod === "cash" ? (
-              <>
-                <div>
-                  <label className="block mb-2 font-medium">Amount</label>
-                  <Input defaultValue="38,116.00" />
-                </div>
+              <div>
+                <label className="block mb-2 font-medium">Payment Date</label>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="w-full justify-start text-left font-normal rounded-[5px]"
+                    >
+                      {formState.date
+                        ? format(formState.date, "PPP")
+                        : "Select date"}
+                      <Calendar className="ml-auto h-4 w-4 opacity-50" />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent
+                    className="w-auto p-0 z-[9999] absolute top-full left-0 bg-white shadow-lg rounded-md"
+                    align="start"
+                  >
+                    <CalendarComponent
+                      mode="single"
+                      selected={formState.date}
+                      onSelect={handleDateChange}
+                      disabled={(date) => isAfter(date, new Date())}
+                      initialFocus
+                    />
+                  </PopoverContent>
+                </Popover>
+              </div>
+
+              {formState.paymentMethod === "cash" ? (
                 <div>
                   <label className="block mb-2 font-medium">Receipt No</label>
-                  <Input placeholder="Enter receipt number" />
+                  <Input
+                    name="receiptNo"
+                    value={formState.receiptNo}
+                    onChange={handleInputChange}
+                    placeholder="Enter receipt number"
+                    required
+                  />
                 </div>
-              </>
-            ) : (
-              <>
-                <div>
-                  <label className="block mb-2 font-medium">Amount</label>
-                  <Input defaultValue="38,116.00" />
-                </div>
+              ) : (
                 <div>
                   <label className="block mb-2 font-medium">
                     Transaction ID
                   </label>
-                  <Input placeholder="Enter transaction ID" />
+                  <Input
+                    name="transactionId"
+                    value={formState.transactionId}
+                    onChange={handleInputChange}
+                    placeholder="Enter transaction ID"
+                    required
+                  />
                 </div>
-              </>
-            )}
+              )}
 
-            {/* <div>
-              <label className="block mb-2 font-medium">Student Id</label>
-              <Input placeholder="Enter student ID" />
-            </div> */}
-
-            <div className="flex justify-between items-center pt-4">
               <div>
-                <label className="block font-medium">Amount Payable</label>
-                <div className="text-2xl font-bold">₹38,116.00</div>
+                <label className="block mb-2 font-medium">Amount</label>
+                <Input
+                  type="number"
+                  name="amount"
+                  inputMode="numeric"
+                  value={formState.amount}
+                  onChange={handleInputChange}
+                  required
+                />
               </div>
-              <Button className="bg-black text-white hover:bg-black/90 px-6">
-                Pay ₹38,116.00
-              </Button>
-            </div>
+
+              <div>
+                <label className="block mb-2 font-medium">Remark</label>
+                <Input
+                  name="remark"
+                  value={formState.remark}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+
+              <div className="flex justify-between items-center pt-4">
+                <div>
+                  <label className="block font-medium">Amount Payable</label>
+                  <div className="text-2xl font-bold">₹{formState.amount}</div>
+                </div>
+                <Button
+                  type="submit"
+                  className="bg-black text-white hover:bg-black/90 px-6"
+                >
+                  Pay ₹{formState.amount}
+                </Button>
+              </div>
+            </form>
           </div>
         </div>
       </DialogContent>

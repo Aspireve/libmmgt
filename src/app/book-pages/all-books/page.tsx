@@ -56,7 +56,7 @@ const BooksPage = () => {
                   <MasterTable
                     title="Books"
                     columns={() => columns}
-                    resource={`book_v2/${url}`}
+                    resource={`journals/get-books`}
                     AddedOptions={[
                       AddBookButton,
                       ImportBookButton,

@@ -29,6 +29,14 @@ export default function RootLayout({
     }
   }, [pathname]);
 
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token && !isAuthPage) {
+      router.push("/LoginPage");
+    }
+  }, [pathname]);
+
   return (
     <html lang="en">
       <body suppressHydrationWarning>

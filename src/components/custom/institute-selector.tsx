@@ -31,7 +31,7 @@ const InstituteSelector = () => {
     useSelector((state: RootState) => state.auth.currentInstitute) || {};
   const instituteList =
     useSelector((state: RootState) => state.auth.user?.institute_details) || [];
-    const user_uuid =
+  const user_uuid =
     useSelector((state: RootState) => state.auth.user?.user_uuid) || "";
 
   const dispatch = useDispatch<AppDispatch>();
@@ -45,9 +45,9 @@ const InstituteSelector = () => {
       mutate(
         {
           resource: "config/create-institute",
-          values: { 
+          values: {
             institute_name: newInstituteName,
-            user_uuid:user_uuid
+            user_uuid: user_uuid,
           },
         },
         {
@@ -152,7 +152,7 @@ const InstituteSelector = () => {
                   quality={90}
                 />
                 <span className="text-[blue] font-semibold text-[16px]">
-                  {institute?.institute_name.match(/[A-Z]/g)?.join("") || ""}
+                  {institute?.institute_name?.match(/[A-Z]/g)?.join("") || ""}
                 </span>
               </div>
             </DropdownMenuItem>
