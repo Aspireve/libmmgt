@@ -83,7 +83,8 @@ const InstituteSelector = () => {
               alt="logo"
               width={36}
               height={36}
-              className="size-9"
+              quality={100}
+              className="size-9 object-contain"
             />
             <div className="w-[2px] h-[30px] bg-[#1F2937]" />
             <span className="text-[blue] font-bold text-[16px]">
@@ -120,7 +121,7 @@ const InstituteSelector = () => {
                 alt="All instituites logo"
                 width={24}
                 height={24}
-                className="h-6 w-6"
+                className="h-6 w-6 object-contain"
                 quality={90}
               />
               <span className="text-[blue] font-semibold text-[16px]">
