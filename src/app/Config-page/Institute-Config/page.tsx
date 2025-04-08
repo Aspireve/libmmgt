@@ -566,7 +566,7 @@ const Page = () => {
                 >
                   <div
                     className={`w-4 h-4 bg-white rounded-full shadow-md transform transition-transform ${
-                      showDashboardCards ? "translate-x-6" : "translate-x-0"
+                      showDashboardCards ? "translate-x-5" : "translate-x-0"
                     }`}
                   />
                 </button>
@@ -587,7 +587,7 @@ const Page = () => {
                 >
                   <div
                     className={`w-4 h-4 bg-white rounded-full shadow-md transform transition-transform ${
-                      showReportCards ? "translate-x-6" : "translate-x-0"
+                      showReportCards ? "translate-x-5" : "translate-x-0"
                     }`}
                   />
                 </button>
@@ -608,7 +608,7 @@ const Page = () => {
                 >
                   <div
                     className={`w-4 h-4 bg-white rounded-full shadow-md transform transition-transform ${
-                      showTabs ? "translate-x-6" : "translate-x-0"
+                      showTabs ? "translate-x-5" : "translate-x-0"
                     }`}
                   />
                 </button>
@@ -634,7 +634,7 @@ const Page = () => {
                 >
                   <div
                     className={`w-4 h-4 bg-white rounded-full shadow-md transform transition-transform ${
-                      isDarkMode ? "translate-x-6" : "translate-x-0"
+                      isDarkMode ? "translate-x-5" : "translate-x-0"
                     }`}
                   />
                 </button>

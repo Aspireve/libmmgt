@@ -1,4 +1,4 @@
-// TODO: Fix TypeScript
+// hooks/add-student-form.ts
 
 import { StudentData } from "@/types/student";
 import UploaderFactory from "@/utilities/file-upload/upload-factory";
@@ -13,10 +13,10 @@ import { isValidPhoneNumber } from "react-phone-number-input";
 export const useAddStudentForm = () => {
   const [imageUpload, setImageUpload] = useState(false);
 
-  const {institute_uuid, institute_name} = useSelector(
+  const { institute_uuid, institute_name } = useSelector(
     (state: RootState) => state.auth.currentInstitute
   );
- 
+
   const {
     register,
     handleSubmit,
@@ -25,7 +25,7 @@ export const useAddStudentForm = () => {
     formState: { errors },
     clearErrors,
     setError,
-    trigger
+    trigger,
   } = useForm<Partial<StudentData>>({
     defaultValues: {
       student_name: "",
@@ -41,9 +41,9 @@ export const useAddStudentForm = () => {
       gender: undefined,
       institute_uuid: undefined,
       image_field: undefined,
+      role: "student", // added role field
     },
-    mode: "onSubmit", // Trigger validation on form submission
-    // Define validation rules for required fields
+    mode: "onSubmit",
     resolver: async (data) => {
       const errors: any = {};
       if (!data.student_name) errors.student_name = { message: "Full Name is required" };
@@ -51,7 +51,9 @@ export const useAddStudentForm = () => {
       if (!data.roll_no) errors.roll_no = { message: "Roll No. is required" };
       if (!data.email) errors.email = { message: "Email is required" };
       if (!data.gender) errors.gender = { message: "Gender is required" };
-      if (!data.phone_no || !isValidPhoneNumber(data.phone_no))  errors.phone_no = { message: "Phone Number is required" };
+      if (!data.role) errors.role = { message: "Role is required" };
+      if (!data.phone_no || !isValidPhoneNumber(data.phone_no))
+        errors.phone_no = { message: "Phone Number is required or invalid" };
 
       return {
         values: Object.keys(errors).length === 0 ? data : {},
@@ -63,7 +65,6 @@ export const useAddStudentForm = () => {
   const { mutate, isLoading } = useCreate();
 
   const onSubmit = async (data: FieldValues) => {
-    // If we reach here, all required fields are valid (handled by resolver)
     if (data.image_field) {
       setImageUpload(true);
       const uploader = UploaderFactory.createUploader("cloudinary");
@@ -71,7 +72,8 @@ export const useAddStudentForm = () => {
       data.image_field = uploadedFileUrl;
       setImageUpload(false);
     }
-    const studentData: Partial<StudentData> = {
+
+    const commonData: Partial<StudentData> = {
       student_id: "",
       student_uuid: "",
       student_name: data.student_name,
@@ -91,16 +93,18 @@ export const useAddStudentForm = () => {
       image_field: data.image_field ?? "",
     };
 
+    const resource = data.role === "staff" ? "staff/create" : "student/create";
+
     return new Promise((resolve, reject) => {
       mutate(
-        { resource: "student/create", values: studentData },
+        { resource, values: commonData },
         {
-          onSuccess: (data) => {
-            toast.success("Student added successfully!");
-            resolve(data.data);
+          onSuccess: (res) => {
+            toast.success(`${data.role === "staff" ? "Staff" : "Student"} added successfully!`);
+            resolve(res.data);
           },
           onError: (error: any) => {
-            toast.error("Error adding student: " + error.message);
+            toast.error("Error adding user: " + error.message);
             reject(error);
           },
         }
@@ -118,6 +122,6 @@ export const useAddStudentForm = () => {
     watch,
     clearErrors,
     setError,
-    trigger
+    trigger,
   };
 };

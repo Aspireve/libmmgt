@@ -12,7 +12,7 @@ const AddStudents = () => {
       className="border border-[#1E40AF] rounded-[8px] text-[#1E40AF]"
       onClick={() => router.push("/student-page/AddStudent")}
     >
-      Add Student
+      Add
     </Button>
   );
 };
