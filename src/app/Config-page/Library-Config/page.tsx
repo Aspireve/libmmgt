@@ -26,6 +26,7 @@ interface LibraryFormData {
   maxBooks: number;
   borrowDays: number;
   late_fees_per_day: number;
+  maxBooksStaff: number;
   openingTime: string;
   closingTime: string;
 }
@@ -51,6 +52,7 @@ interface LibraryRuleResponse {
   max_books: string;
   max_days: string; // Note: Changed from borrow_days to match API
   late_fees_per_day: string;
+  max_books_staff?: string; // Added this property
   operating_hours: {
     starting_time: string;
     closing_time: string;
@@ -90,6 +92,7 @@ const Page = () => {
     maxBooks: 2,
     borrowDays: 7,
     late_fees_per_day: 2,
+    maxBooksStaff: 2,
     openingTime: "08:00",
     closingTime: "20:00",
   });
@@ -152,6 +155,7 @@ const Page = () => {
         maxBooks: parseInt(libraryData.max_books || "2", 10),
         borrowDays: parseInt(libraryData.max_days || "7", 10), // Note this is max_days in API response
         late_fees_per_day: parseInt(libraryData.late_fees_per_day || "2", 10),
+        maxBooksStaff: parseInt(libraryData.max_books_staff || "2", 10),
         openingTime: openingTime || "08:00",
         closingTime: closingTime || "20:00",
       };
@@ -253,6 +257,7 @@ const Page = () => {
           ...(changedFields.maxBooks && { max_books: changedFields.maxBooks }),
           ...(changedFields.borrowDays && { max_days: changedFields.borrowDays }), // Note correct field name
           ...(changedFields.late_fees_per_day && { late_fees_per_day: changedFields.late_fees_per_day }),
+          ...(changedFields.maxBooksStaff && { max_books_staff: changedFields.maxBooksStaff }), // Added max_books_staff
           ...(changedFields.openingTime || changedFields.closingTime
             ? {
                 operating_hours: {
@@ -301,6 +306,7 @@ const Page = () => {
       "maxBooks",
       "borrowDays",
       "late_fees_per_day",
+      "maxBooksStaff", // Added maxBooksStaff to numeric fields
     ];
 
     setFormData((prev) => ({
@@ -393,6 +399,10 @@ const Page = () => {
               {
                 name: "maxBooks",
                 label: "Maximum number of books a student can borrow",
+              },
+              {
+                name: "maxBooksStaff", // Added new field
+                label: "Maximum number of books a staff can borrow",
               },
               {
                 name: "borrowDays",

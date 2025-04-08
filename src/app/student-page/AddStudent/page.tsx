@@ -11,7 +11,6 @@ import { useAddStudentForm } from "@/hooks/add-student-form";
 import PhoneNumber from "@/components/phone-number.tsx/PhoneNumber";
 import { Textarea } from "@/components/ui/textarea";
 import Image from "next/image";
-import JsBarcode from "jsbarcode";
 import { UserRound } from "lucide-react";
 import { InputField } from "@/components/custom/inputfield";
 import { CustomBreadcrumb } from "@/components/breadcrumb";
@@ -66,33 +65,12 @@ const AddStudent: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // const generateBarcode = (phoneNo?: string) => {
-  //   const barcodeValue = phoneNo ? phoneNo : Date.now().toString();
-  //   const canvas = document.createElement("canvas");
-  //   JsBarcode(canvas, barcodeValue, {
-  //     format: "CODE128",
-  //     displayValue: true,
-  //     fontSize: 12,
-  //     height: 50,
-  //     margin: 5,
-  //     textMargin: 2,
-  //   });
-
-  //   const barcodeDataUrl = canvas.toDataURL("image/png");
-  //   const downloadLink = document.createElement("a");
-  //   downloadLink.href = barcodeDataUrl;
-  //   downloadLink.download = `Student_Barcode_${phoneNo || "Unknown"}.png`;
-  //   document.body.appendChild(downloadLink);
-  //   downloadLink.click();
-  //   document.body.removeChild(downloadLink);
-  // };
-
   const handleStudentSubmit = async (data: any) => {
     try {
       await onSubmit(data);
       router.push("/student-page");
     } catch (error) {
-      console.error("Error adding student:", error);
+      console.error("Error adding user:", error);
     }
   };
 
@@ -113,13 +91,12 @@ const AddStudent: React.FC = () => {
   return (
     <>
       <CustomBreadcrumb items={breadcrumbItems} />
-      <Header heading="Add Student" subheading="Student Registration" />
+      <Header heading="Add Member" subheading="Student or Staff Registration" />
 
       <form
         onSubmit={handleSubmit(handleStudentSubmit)}
         className="my-10 mx-[40px] space-y-6"
       >
-        {/* <Label>Profile Image</Label> */}
         <div className="flex gap-6">
           <div className="flex flex-col border gap-4 border-[#E0E2E7] bg-[#F9F9FC] items-center justify-center rounded-xl p-2 px-6">
             {profileImage ? (
@@ -240,16 +217,14 @@ const AddStudent: React.FC = () => {
                 </p>
               )}
             </div>
-
-            <div>
-              <Label>Year of Admission</Label>
-              <Input
-                {...register("year_of_admission")}
-                type="text"
-                placeholder="Enter Year of Admission"
-                className="text-[#000] border-[#D5D7DA] placeholder:text-[#aaa]"
-              />
-            </div>
+            <InputField
+              errors={errors}
+              label="Year of Admission"
+              name="year_of_admission"
+              register={register}
+              type="text"
+              placeholder="Enter Year of Admission"
+            />
 
             <div className="relative">
               <Label>Password</Label>
@@ -286,8 +261,34 @@ const AddStudent: React.FC = () => {
                 type="date"
                 placeholder="dd-mm-yyyy"
                 className="text-[#000] border-[#D5D7DA] placeholder:text-[#aaa]"
-                max={today} // Restrict future dates
+                max={today}
               />
+            </div>
+            {/* Role Dropdown */}
+            <div className="text-[#717680]">
+              <Label>
+                Role <span className="text-red-500"> *</span>
+              </Label>
+              <Select
+                onValueChange={(value) => {
+                  setValue("role", value);
+                  if (value) clearErrors("role");
+                }}
+                defaultValue="student"
+              >
+                <SelectTrigger className="w-full p-2 border border-[#D5D7DA] rounded text-[#000]">
+                  <SelectValue placeholder="Select Role" />
+                </SelectTrigger>
+                <SelectContent className="bg-white border-[#D5D7DA] rounded shadow-md">
+                  <SelectItem value="student">Student</SelectItem>
+                  <SelectItem value="staff">Staff</SelectItem>
+                </SelectContent>
+              </Select>
+              {errors.role && (
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.role.message || "Role is required"}
+                </p>
+              )}
             </div>
           </div>
         </div>
@@ -317,9 +318,11 @@ const AddStudent: React.FC = () => {
           >
             {isLoading ? (
               <>
-                Adding Student
+                {watch("role") === "staff" ? "Adding Staff" : "Adding Student"}
                 <Loader2 className="h-5 w-5 animate-spin ml-2" />
               </>
+            ) : watch("role") === "staff" ? (
+              "Add Staff"
             ) : (
               "Add Student"
             )}

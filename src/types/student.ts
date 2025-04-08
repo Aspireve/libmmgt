@@ -20,6 +20,7 @@ export interface StudentData {
   student_uuid?: string;
   image_field?: string | File | null;
   is_archived?: boolean;
+  role?: string;
 }
 
 export interface StudentFromDatabase extends BaseRecord {
