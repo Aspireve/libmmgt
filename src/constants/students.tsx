@@ -1,7 +1,4 @@
-import type {
-  StudentData,
-  StudentFromDatabase,
-} from "@/types/student";
+import type { StudentData, StudentFromDatabase } from "@/types/student";
 import { ColumnDef } from "@tanstack/react-table";
 import {
   StudentActions,
@@ -24,17 +21,17 @@ export const initialMapping = {
 
 // @ts-ignore
 export const fieldLabels: Record<keyof StudentData, string> = {
-  student_name: "Student Name",
+  firstName: "Student Name",
   department: "Department",
   email: "Email",
-  phone_no: "Phone Number",
+  mobileNumber: "Phone Number",
   address: "Address",
-  roll_no: "Roll no",
-  year_of_admission: "Year Of Admission",
+  rollNo: "Roll no",
+  yearOfAdmission: "Year Of Admission",
   password: "Password",
-  date_of_birth: "Date Of Birth",
+  dateOfBirth: "Date Of Birth",
   gender: "Gender",
-  institute_name: "Institute Name",
+  instituteName: "Institute Name",
 };
 
 export const StudentListTable = ({
@@ -42,33 +39,37 @@ export const StudentListTable = ({
 }: {
   refetch: () => void;
 }): ColumnDef<StudentFromDatabase>[] => [
-    {
-      id: "actions",
-      header: "Actions",
-      cell: ({ row }) => {
-        const student = row.original;
-        return <StudentActions student={student} refetch={refetch} />;
-      },
+  {
+    id: "actions",
+    header: "Actions",
+    cell: ({ row }) => {
+      const student = row.original;
+      return <StudentActions student={student} refetch={refetch} />;
     },
-    {
-      accessorKey: "student_id",
-      header: "Student ID",
-      cell: ({ row }) => <StudentIDCell student={row.original} />,
+  },
+  {
+    accessorKey: "barCode",
+    header: "Student ID",
+    cell: ({ row }) => <StudentIDCell student={row.original} />,
+  },
+  {
+    accessorKey: "firstName",
+    header: "Name",
+    // cell: ({ row }) => <StudentNameCell student={row.original} />,
+    cell: ({ row }) => {
+      const { firstName, middleName, lastName } = row.original;
+      return <div>{`${firstName} ${middleName} ${lastName}`}</div>;
     },
-    {
-      accessorKey: "student_name",
-      header: "Name",
-      cell: ({ row }) => <StudentNameCell student={row.original} />,
-    },
-    { accessorKey: "roll_no", header: "Roll no" },
-    { accessorKey: "department", header: "Department" },
-    { accessorKey: "phone_no", header: "Phone Number" },
-    { accessorKey: "email", header: "Email" },
-    {
-      accessorFn: (data) => data.year_of_admission ?? "Not Provided",
-      header: "Year of Admission",
-    },
-  ];
+  },
+  { accessorKey: "rollNo", header: "Roll no" },
+  { accessorKey: "department", header: "Department" },
+  { accessorKey: "mobileNumber", header: "Phone Number" },
+  { accessorKey: "email", header: "Email" },
+  {
+    accessorFn: (data) => data.yearOfAdmission ?? "Not Provided",
+    header: "Year of Admission",
+  },
+];
 // export const StudentListTableAction = ({
 //   refetch,
 // }: {

@@ -9,14 +9,15 @@ type ErrorResponse = {
 
 //Leon Url
 
-// export const API_URL = "http://localhost:3001";  
- //export const API_URL = "https://lms-807p.onrender.com";
+// export const API_URL = "http://localhost:3001";
+//export const API_URL = "https://lms-807p.onrender.com";
 
 //Jigisha Url
 
 // export const API_URL = "https://lms-8pd1.onrender.com"
-// 
-export const API_URL = "https://librarybackend-0hv5.onrender.com"
+//
+export const API_URL = "http://10.11.1.10:3001";
+// export const API_URL = "https://librarybackend-0hv5.onrender.com"
 
 const customFetch = async (url: string, options: RequestInit) => {
   const fullUrl = url.startsWith("https")

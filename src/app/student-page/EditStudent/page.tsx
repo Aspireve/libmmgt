@@ -143,13 +143,26 @@ const EditStudent: React.FC = () => {
                   <InputField
                     errors={errors}
                     label="Full Name"
-                    name="student_name"
+                    name="firstName"
                     register={register}
                     type="text"
-                    validation={{
-                      required: "Full Name is required",
-                    }}
                     placeholder="Enter Full Name"
+                  />
+                  <InputField
+                    errors={errors}
+                    label="Middle Name"
+                    name="middleName"
+                    register={register}
+                    type="text"
+                    placeholder="Enter Middle Name"
+                  />
+                  <InputField
+                    errors={errors}
+                    label="Last Name"
+                    name="lastName"
+                    register={register}
+                    type="text"
+                    placeholder="Enter Last Name"
                   />
 
                   <InstituteDropdown
@@ -171,11 +184,10 @@ const EditStudent: React.FC = () => {
                   <InputField
                     errors={errors}
                     label="Roll No."
-                    name="roll_no"
+                    name="rollNo"
                     register={register}
-                    type="number"
+                    type="text"
                     validation={{
-                      valueAsNumber: true,
                       required: "Roll No. is required",
                     }}
                     placeholder="Enter Roll No."
@@ -196,12 +208,12 @@ const EditStudent: React.FC = () => {
                   <div>
                     <Label>Phone Number</Label>
                     <PhoneNumber
-                      i_name="phone_no"
-                      value={watch("phone_no") || ""}
+                      i_name="mobileNumber"
+                      value={watch("mobileNumber") || ""}
                       setValue={(name, value) => {
-                        setValue(name, value);
+                        setValue(name, value || "");
                         if (isPossiblePhoneNumber(value as string)) {
-                          clearErrors("phone_no");
+                          clearErrors("mobileNumber");
                         }
                       }}
                       error={errors}
@@ -245,10 +257,79 @@ const EditStudent: React.FC = () => {
                     )}
                   </div>
 
+                  <div className="text-[#717680]">
+                    <Label>
+                      Blood Group <span className="text-red-500"> *</span>
+                    </Label>
+                    <Select
+                      onValueChange={(value) => {
+                        register("bloodGroup").onChange({
+                          target: { name: "bloodGroup", value },
+                        });
+                      }}
+                      value={watch("bloodGroup") || ""}
+                    >
+                      <SelectTrigger className="w-full p-2 border border-[#D5D7DA] rounded text-[#000]">
+                        <SelectValue placeholder="Select Blood Group" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-white border-[#D5D7DA] rounded shadow-md">
+                        <SelectItem value="A+">A+</SelectItem>
+                        <SelectItem value="A-">A-</SelectItem>
+                        <SelectItem value="B+">B+</SelectItem>
+                        <SelectItem value="B-">B-</SelectItem>
+                        <SelectItem value="O+">O+</SelectItem>
+                        <SelectItem value="O-">O-</SelectItem>
+                        <SelectItem value="AB+">AB+</SelectItem>
+                        <SelectItem value="AB-">AB-</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    {errors.role && (
+                      <p className="text-red-500 text-sm mt-1">
+                        {errors.role.message || "Role is required"}
+                      </p>
+                    )}
+                  </div>
+
+                  <div className="text-[#717680]">
+                    <Label>
+                      Role <span className="text-red-500"> *</span>
+                    </Label>
+                    <Select
+                      onValueChange={(value) => {
+                        register("role").onChange({
+                          target: { name: "role", value },
+                        });
+                      }}
+                      value={watch("role") || ""}
+                    >
+                      <SelectTrigger className="w-full p-2 border border-[#D5D7DA] rounded text-[#000]">
+                        <SelectValue placeholder="Select Role" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-white border-[#D5D7DA] rounded shadow-md">
+                        <SelectItem value="student">Student</SelectItem>
+                        <SelectItem value="staff">Staff</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    {errors.role && (
+                      <p className="text-red-500 text-sm mt-1">
+                        {errors.role.message || "Role is required"}
+                      </p>
+                    )}
+                  </div>
+
+                  <InputField
+                    errors={errors}
+                    label="Course Name"
+                    name="courseName"
+                    register={register}
+                    type="text"
+                    placeholder="Enter Course Name"
+                  />
+
                   <div>
                     <Label>Year of Admission</Label>
                     <Input
-                      {...register("year_of_admission")}
+                      {...register("yearOfAdmission")}
                       type="text"
                       placeholder="Enter Year of Admission"
                       className="text-[#000] placeholder:text-[#aaa]"
@@ -280,7 +361,7 @@ const EditStudent: React.FC = () => {
                   <div>
                     <Label>Date of Birth</Label>
                     <Input
-                      {...register("date_of_birth", {
+                      {...register("dateOfBirth", {
                         validate: (value) =>
                           value && value <= today
                             ? true

@@ -111,9 +111,10 @@ const Page = () => {
   ];
 
   const { data, isLoading, refetch } = useOne({
-    id: `institute_id=${institute.institute_id}`,
+    id: `institute_id=${institute?.instituteUuid}`,
     resource: `config/get-institutebyid`,
     queryOptions: {
+      retry: false,
       enabled: true,
       onSuccess: (response) => {
         if (response?.data?.length > 0) {
@@ -209,7 +210,7 @@ const Page = () => {
     setIsSavingToggles(true);
     try {
       const apiData: any = {
-        institute_id: institute.institute_id,
+        institute_id: institute?.instituteUuid,
       };
 
       // Handle visualization nested structure
@@ -322,7 +323,7 @@ const Page = () => {
       }
 
       const apiData = {
-        institute_id: institute.institute_id,
+        institute_id: institute?.instituteUuid,
         institute_name: formData.instituteName,
         institute_email: formData.email,
         mobile: formData.phoneNumber,

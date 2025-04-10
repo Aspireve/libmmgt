@@ -10,7 +10,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
-
 import {
   Dialog,
   DialogContent,
@@ -22,17 +21,18 @@ import Image from "next/image";
 import Images from "@/images";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store/store";
-import { getAllInstitutes, setCurrentInstitute } from "@/redux/authSlice";
+import { setCurrentInstitute } from "@/redux/authSlice";
 import { toast } from "sonner";
 import { useCreate } from "@refinedev/core";
 
 const InstituteSelector = () => {
-  const currentInstitute =
-    useSelector((state: RootState) => state.auth.currentInstitute) || {};
+  const currentInstitute = useSelector(
+    (state: RootState) => state.auth.currentInstitute
+  );
   const instituteList =
-    useSelector((state: RootState) => state.auth.user?.institute_details) || [];
+    useSelector((state: RootState) => state.auth.libraryDetails) || [];
   const user_uuid =
-    useSelector((state: RootState) => state.auth.user?.user_uuid) || "";
+    useSelector((state: RootState) => state.auth.user?.userId) || "";
 
   const dispatch = useDispatch<AppDispatch>();
   const [newInstituteName, setNewInstituteName] = useState("");
@@ -56,7 +56,7 @@ const InstituteSelector = () => {
             resolve(data.data);
             setIsDialogOpen(false);
             setNewInstituteName("");
-            dispatch(getAllInstitutes());
+            // dispatch(getAllInstitutes());
           },
           onError: (error: any) => {
             toast.error("Error adding institute: " + error.message);
@@ -69,7 +69,7 @@ const InstituteSelector = () => {
 
   const instituteUuids =
     (Array.isArray(instituteList) &&
-      instituteList.map((institute) => institute.institute_uuid).join(",")) ||
+      instituteList.map((institute) => institute.instituteUuid).join(",")) ||
     "";
 
   return (
@@ -81,7 +81,7 @@ const InstituteSelector = () => {
             className="border-2 border-blue-500 rounded-xl overflow-hidden w-40 h-[54px] flex items-center justify-between p-2 px-4 transition-all duration-300 hover:shadow-lg cursor-pointer"
           >
             <Image
-              src={currentInstitute?.institute_logo || Images.VighnoLogo}
+              src={currentInstitute?.instituteLogo || Images.VighnoLogo}
               alt="logo"
               width={36}
               height={36}
@@ -90,8 +90,7 @@ const InstituteSelector = () => {
             />
             <div className="w-[2px] h-[30px] bg-[#1F2937]" />
             <span className="text-[blue] font-bold text-[16px]">
-              {currentInstitute?.institute_name?.match(/[A-Z]/g)?.join("") ||
-                ""}
+              {currentInstitute?.instituteName?.match(/[A-Z]/g)?.join("") || ""}
             </span>
             <Image
               src={Images.Dropper}
@@ -101,7 +100,7 @@ const InstituteSelector = () => {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="border-2 border-blue-300 w-full mt-2 bg-white rounded-xl cursor-pointer">
-          <DropdownMenuItem
+          {/* <DropdownMenuItem
             className="hover:bg-[#aaaaaa66] transition-all duration-300"
             onClick={() =>
               dispatch(
@@ -130,7 +129,7 @@ const InstituteSelector = () => {
                 All Institutes
               </span>
             </div>
-          </DropdownMenuItem>
+          </DropdownMenuItem> */}
           {instituteList.map((institute, idx) => (
             <DropdownMenuItem
               key={`institute-dropdown-${idx}`}
@@ -138,14 +137,14 @@ const InstituteSelector = () => {
               onClick={() =>
                 dispatch(
                   setCurrentInstitute({
-                    institute_uuid: institute.institute_uuid,
+                    instituteUuid: institute.instituteUuid,
                   })
                 )
               }
             >
               <div className="flex items-center w-full gap-3">
                 <Image
-                  src={institute?.institute_logo || Images.TIA}
+                  src={institute?.instituteLogo || Images.TIA}
                   alt="logo"
                   width={24}
                   height={24}
@@ -153,7 +152,7 @@ const InstituteSelector = () => {
                   quality={90}
                 />
                 <span className="text-[blue] font-semibold text-[16px]">
-                  {institute?.institute_name?.match(/[A-Z]/g)?.join("") || ""}
+                  {institute?.instituteName?.match(/[A-Z]/g)?.join("") || ""}
                 </span>
               </div>
             </DropdownMenuItem>

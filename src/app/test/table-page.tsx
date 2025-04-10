@@ -58,8 +58,8 @@ export default function MasterTable<TData extends BaseRecord>({
   const dispatch = useDispatch();
   const { page, limit } = useSelector((state: RootState) => state.pagination);
 
-  const { institute_uuid } = useSelector(
-    (state: RootState) => state.auth.currentInstitute
+  const instituteUuid = useSelector(
+    (state: RootState) => state.auth.currentInstitute?.instituteUuid
   );
 
   const {
@@ -68,15 +68,14 @@ export default function MasterTable<TData extends BaseRecord>({
     refetch,
   } = useList<TData>({
     resource: resource.includes("?")
-      ? resource + `&_institute_uuid=${institute_uuid}`
-      : `${resource}?_institute_uuid=${institute_uuid}`,
+      ? resource + `&_institute_uuid=["${instituteUuid}"]`
+      : `${resource}?_institute_uuid=["${instituteUuid}"]`,
     pagination: { current: page, pageSize: limit },
     filters: [
       {
         field: "search",
         operator: "eq",
-        value: JSON.stringify(filters.search)
-
+        value: JSON.stringify(filters.search),
       },
       {
         field: "filter",
@@ -123,6 +122,7 @@ export default function MasterTable<TData extends BaseRecord>({
       setSelectedData([]);
     };
   }, [listData, resource, onDataFetched, dispatch, setSelectedData]);
+  console.log(listData?.data, listData);
 
   return (
     <div className="my-6 border-2 border-[#E9EAEB] rounded-xl shadow-sm cursor-default w-full">

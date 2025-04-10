@@ -2,24 +2,28 @@ import { BaseRecord } from "@refinedev/core";
 import { FieldValues, UseFormRegister } from "react-hook-form";
 
 export interface StudentData {
-  student_name: string;
+  firstName: string;
+  middleName: string;
+  lastName: string;
   department: string;
   email: string;
-  phone_no: string;
+  mobileNumber: string;
   address: string;
-  roll_no: number;
-  year_of_admission: string;
+  rollNo: string;
+  yearOfAdmission: string;
+  bloodGroup: string;
   password: string;
-  confirm_password: string;
-  date_of_birth: string;
+  courseName: string;
+  dateOfBirth: string;
   gender: string;
-  institute_name: string;
-  institute_id: string;
-  institute_uuid: string;
-  student_id: string;
-  student_uuid?: string;
-  image_field?: string | File | null;
-  is_archived?: boolean;
+  instituteName: string;
+  instituteUuid: string;
+  barCode: string;
+  studentUuid?: string;
+  profileImage?: string;
+  secPhoneNumber?: string;
+  terPhoneNumber?: string;
+  isArchived?: boolean;
   role?: string;
 }
 
@@ -61,30 +65,37 @@ export interface InputFieldProps {
 }
 
 export type StudentImportField = {
-  student_name: string;
-  department: string;
+  firstName: string;
+  middleName: string;
+  lastName: string;
+  courseName: string;
+  mobileNumber: string;
   email: string;
-  phone_no: string;
-  address?: string;
-  roll_no: string;
-  year_of_admission?: string;
-  password?: string;
+  dateOfBirth: string;
+  bloodGroup: string;
   gender: string;
-  date_of_birth?: string;
-  image_field?: string;
+  address: string;
+  secPhoneNumber: string;
+  terPhoneNumber: string;
+  password: string;
+  rollNo: string;
+  role: string;
+  department: string;
+  yearOfAdmission: string;
+  profileImage: string;
 };
 
 export interface AddStudentType extends StudentImportField {
-  institute_uuid: string;
-  institute_name: string;
+  instituteName: string;
+  instituteUuid: string;
 }
 
 export interface StudentCompleteData extends StudentImportField {
-  student_id: string;
-  is_archived: boolean;
-  created_at: string;
+  barCode: string;
+  isArchived: boolean;
+  createdAt: string;
 }
 
 export interface StudentUpdateWithId extends StudentImportField {
-  student_id: string
+  studentUuid: string;
 }

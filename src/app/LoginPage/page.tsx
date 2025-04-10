@@ -6,12 +6,12 @@ import { useDispatch } from "react-redux";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { setUser } from "@/redux/authSlice";
+import { setCredentials } from "@/redux/authSlice";
 import Image from "next/image";
 import images from "@/images";
 import { useCreate } from "@refinedev/core";
 import { toast } from "sonner";
-import type { AuthStates } from "@/types/auth";
+import type { AuthState, LoginResponse } from "@/types/auth";
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
   ReloadIcon,
@@ -32,19 +32,20 @@ const LoginPage = () => {
     formState: { errors },
   } = useForm();
 
-  const handleLogin = async ({ email, password }: FieldValues) => {
+  const handleLogin = async ({ workEmail, password }: FieldValues) => {
     mutate(
       {
         resource: "user/login",
-        values: { email, password },
+        values: { workEmail, password },
       },
       {
-        onSuccess: (response) => {
-          const accessToken = response.data.token.accessToken ?? null;
+        onSuccess: ({ data }) => {
+          const accessToken = data.data.accessToken ?? null;
           localStorage.setItem("token", accessToken);
           router.push("/");
           toast.success("Login successfully!");
-          dispatch(setUser(response.data as AuthStates));
+          console.log(data);
+          dispatch(setCredentials(data as LoginResponse));
         },
         onError: () => {
           toast.error("Incorrect email or password.");
@@ -77,13 +78,15 @@ const LoginPage = () => {
                 Email or Employee ID
               </label>
               <Input
+                type="email"
                 placeholder="Enter your email"
-                {...register("email", { required: true })}
+                {...register("workEmail", { required: true })}
                 className="w-full rounded-lg border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 transition-colors text-black placeholder:text-[#aaa]"
               />
-              {errors.email && (
+              {errors.workEmail && (
                 <p className="text-red-500 text-sm mt-1">
-                  {(errors?.email?.message as string) || "Email is required"}
+                  {(errors?.workEmail?.message as string) ||
+                    "Email is required"}
                 </p>
               )}
             </div>

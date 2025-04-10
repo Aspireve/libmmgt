@@ -3,6 +3,16 @@ import { Button } from "../ui/button";
 import { Loader2 } from "lucide-react";
 import { useDeleteMany } from "@refinedev/core";
 import { toast } from "sonner";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 const DeleteStudentModal = ({
   data,
@@ -21,7 +31,7 @@ const DeleteStudentModal = ({
     // console.log("Data", data);
     mutate({
       resource: "student/bulk-delete",
-      ids: data.map((item) => item.student_uuid),
+      ids: data.map((item) => item.barCode),
       invalidates: ["list", "all"],
       successNotification: (data, ids, resource) => {
         close();
@@ -45,18 +55,29 @@ const DeleteStudentModal = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="bg-white p-6 w-80 rounded-xl">
-        <h3 className="text-xl font-semibold mb-4">Confirm Delete</h3>
+    // <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+    <Dialog open={isOpen} onOpenChange={close}>
+      <DialogContent className="bg-white p-6 rounded-xl">
+        <DialogHeader>
+          <DialogTitle>Confirm Delete</DialogTitle>
+          <DialogDescription>
+            {data.length === 1
+              ? "Are you sure you want to delete this student?"
+              : "Are you sure you want to delete these students?"}
+          </DialogDescription>
+        </DialogHeader>
+        {/* <h3 className="text-xl font-semibold mb-4">Confirm Delete</h3>
         <p className="mb-6">
           {data.length === 1
             ? "Are you sure you want to delete this student?"
             : "Are you sure you want to delete these students?"}
-        </p>
-        <div className="flex justify-end gap-4">
-          <Button variant="outline" onClick={close} className="shadow-none">
-            Cancel
-          </Button>
+        </p> */}
+        <DialogFooter className="flex justify-end gap-4">
+          <DialogClose asChild>
+            <Button variant="outline" onClick={close} className="shadow-none">
+              Cancel
+            </Button>
+          </DialogClose>
           <Button
             onClick={handleDelete}
             disabled={isLoading}
@@ -71,9 +92,10 @@ const DeleteStudentModal = ({
               "Confirm"
             )}
           </Button>
-        </div>
-      </div>
-    </div>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+    // </div>
   );
 };
 

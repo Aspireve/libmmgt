@@ -32,8 +32,8 @@ const AddUser = ({
   const { mutate, isLoading: createLoading } = useCreate();
   const [designation, setDesignation] = useState<string>("");
 
-  const { institute_uuid, institute_name, logo, header } = useSelector(
-    (state: RootState) => state.auth.currentInstitute
+  const instituteUuid = useSelector(
+    (state: RootState) => state.auth.currentInstitute?.instituteUuid
   );
   // const institute_details = [
   //   {
@@ -58,7 +58,8 @@ const AddUser = ({
   const onSubmit = (data: any) => {
     const formattedData: AddUserType = {
       ...data,
-      instituteDetails: [institute_uuid],
+      instituteUuid: [instituteUuid],
+      module: "Library",
     };
     console.log(formattedData);
 
@@ -76,81 +77,121 @@ const AddUser = ({
   };
   return (
     <section className="flex justify-center items-center">
-      <div className="w-full bg-white p-6 rounded-lg">
+      <div className="w-full bg-white p-2 sm:p-6 rounded-lg">
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-          {/* <h2 className="text-xl font-semibold text-gray-700">Add New User</h2> */}
-
-          <InputField
-            label="Name of User"
-            name="username"
-            register={register}
-            errors={errors}
-            type="text"
-            validation={{ required: "Name of User is required" }}
-            placeholder="Enter Name of User"
-          />
-
-          <InputField
-            label="Email"
-            name="email"
-            register={register}
-            errors={errors}
-            type="email"
-            validation={{ required: "Email is required" }}
-            placeholder="Enter Email"
-          />
-
-          <InputField
-            label="Password"
-            name="password"
-            register={register}
-            errors={errors}
-            type="password"
-            validation={{ required: "Password is required" }}
-            placeholder="Enter Password"
-          />
-
-          <div className="text-[#717680] space-y-2">
-            <Label>
-              Designation <span className="text-red-500">*</span>
-            </Label>
-            <Select
-              onValueChange={(value) => {
-                setDesignation(value);
-                setValue("designation", value);
-              }}
-              value={designation}
-              required
-            >
-              <SelectTrigger className="w-full p-2 border border-gray-300 rounded-md">
-                <SelectValue placeholder="Select Designation" />
-              </SelectTrigger>
-              <SelectContent className="bg-white z-50">
-                <SelectItem value="librarian">Librarian</SelectItem>
-                <SelectItem value="assistant">Assistant</SelectItem>
-                <SelectItem value="receptionist">Receptionist</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="space-y-2">
-            <Label>
-              Phone Number <span className="text-red-500">*</span>
-            </Label>
-            <PhoneNumber
-              i_name="phoneNo"
-              readOnly={false}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <InputField
+              label="First Name"
+              name="firstName"
               register={register}
-              setValue={(name, value) => {
-                setValue(name, value);
-                if (isPossiblePhoneNumber(value as string)) {
-                  clearErrors("phoneNo");
-                }
-              }}
+              errors={errors}
+              type="text"
+              validation={{ required: "First Name is required" }}
+              placeholder="Enter First Name"
+            />
+            <InputField
+              label="Middle Name"
+              name="middleName"
+              register={register}
+              errors={errors}
+              type="text"
+              validation={{ required: "Middle Name is required" }}
+              placeholder="Enter Middle Name"
+            />
+            <InputField
+              label="Last Name"
+              name="lastName"
+              register={register}
+              errors={errors}
+              type="text"
+              validation={{ required: "Last Name is required" }}
+              placeholder="Enter Last Name"
+            />
+
+            <InputField
+              label="Email"
+              name="workEmail"
+              register={register}
+              errors={errors}
+              type="email"
+              validation={{ required: "Email is required" }}
+              placeholder="Enter Email"
+            />
+
+            <div className="text-[#717680] space-y-1">
+              <Label>
+                Gender <span className="text-red-500">*</span>
+              </Label>
+              <Select
+                onValueChange={(value) => {
+                  setValue("gender", value);
+                }}
+                // value={designation}
+                required
+              >
+                <SelectTrigger className="w-full p-2 border border-gray-300 rounded-md">
+                  <SelectValue placeholder="Select Gender" />
+                </SelectTrigger>
+                <SelectContent className="bg-white z-50">
+                  <SelectItem value="Male">Male</SelectItem>
+                  <SelectItem value="Female">Female</SelectItem>
+                  <SelectItem value="Other">Other</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="text-[#717680] space-y-1">
+              <Label>
+                Designation <span className="text-red-500">*</span>
+              </Label>
+              <Select
+                onValueChange={(value) => {
+                  setDesignation(value);
+                  setValue("designation", value);
+                }}
+                value={designation}
+                required
+              >
+                <SelectTrigger className="w-full p-2 border border-gray-300 rounded-md">
+                  <SelectValue placeholder="Select Designation" />
+                </SelectTrigger>
+                <SelectContent className="bg-white z-50">
+                  <SelectItem value="librarian">Librarian</SelectItem>
+                  <SelectItem value="assistant">Assistant</SelectItem>
+                  <SelectItem value="receptionist">Receptionist</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div>
+              <Label>
+                Phone Number <span className="text-red-500">*</span>
+              </Label>
+              <PhoneNumber
+                i_name="workPhone"
+                readOnly={false}
+                register={register}
+                setValue={(name, value) => {
+                  setValue(name, value);
+                  if (isPossiblePhoneNumber(value as string)) {
+                    clearErrors("workPhone");
+                  }
+                }}
+              />
+            </div>
+
+            <InputField
+              label="Password"
+              name="password"
+              register={register}
+              errors={errors}
+              type="password"
+              validation={{ required: "Password is required" }}
+              placeholder="Enter Password"
             />
           </div>
 
-          <div className="flex justify-center gap-4 pt-4">
+          <div className="flex items-center justify-end gap-4 pt-4">
             <Button
               type="button"
               variant="outline"

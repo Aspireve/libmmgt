@@ -78,3 +78,68 @@ export interface AuthStates {
   user: User | undefined;
   currentInstitute: string | InstituteDetails | any | undefined;
 }
+
+export interface EmailNotification {
+  bookBorrowing: boolean;
+  bookReturning: boolean;
+  checkIn: boolean;
+  checkOut: boolean;
+  penalties: boolean;
+}
+
+// types/auth.ts
+export interface LibraryDetails {
+  libraryRuleId: string;
+  instituteUuid: string;
+  instituteName: string;
+  instituteLogo: string;
+  instituteHeader: string;
+  organisation: string;
+  instituteAbbr: string;
+  maxBooksStudent: number;
+  maxBooksStaff: number;
+  maxDaysStudent: number;
+  maxDaysStaff: number;
+  lateFeesPerDay: number;
+  openingHour: string;
+  closingHour: string;
+  createdAt: string;
+  updatedAt: string;
+  createdByUUID: string;
+  isArchived: boolean;
+  emailNotificationStudent: EmailNotification;
+  emailNotificationAdmin: EmailNotification;
+}
+
+export interface LoginResponse {
+  meta: { accessToken: string };
+  data: {
+    userId: string;
+    employeeId: string;
+    username: string;
+    organization: string;
+    enableTabs: boolean;
+    darkMode: boolean;
+    userPreference: string;
+    userPreferenceUuid: string;
+    accessToken: string;
+    libraryDetails: LibraryDetails[];
+  };
+}
+
+export interface AuthState {
+  token: string | null;
+  user: {
+    accessToken: string;
+    userId: string;
+    employeeId: string;
+    username: string;
+    organization: string;
+    enableTabs: boolean;
+    darkMode: boolean;
+    userPreference: string;
+    userPreferenceUuid: string;
+  } | null;
+  libraryDetails: LibraryDetails[] | null;
+  currentInstitute: LibraryDetails | null;
+}

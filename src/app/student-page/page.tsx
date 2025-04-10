@@ -20,14 +20,19 @@ export default function StudentDirectory() {
       <div className="mx-[40px]">
         <MasterTable<StudentFromDatabase>
           title="Students"
-          resource="student/all"
+          resource="student"
           columns={StudentListTable}
+          idField={"barCode"}
           AddedOptions={[
             DeleteStudent,
             ({ setFilters }) => (
               <Filter
                 filtersConfig={[
-                  { label: "Departments", field: "department", resource: "student/departments" },
+                  {
+                    label: "Departments",
+                    field: "department",
+                    resource: "student/departments",
+                  },
                 ]}
                 setFilters={setFilters}
               />
@@ -39,14 +44,13 @@ export default function StudentDirectory() {
               SearchFilter({
                 setFilters,
                 options: [
-                  { label: "Student Id", value: "student_id" },
-                  { label: "Name", value: "student_name" },
-                  { label: "Phone Number", value: "phone_no" },
+                  { label: "Student Id", value: "barCode" },
+                  { label: "Name", value: "firstName" },
+                  { label: "Phone Number", value: "mobileNumber" },
                   { label: "Email", value: "email" },
                 ],
                 placeholder: "Search",
               }), // Pass the setFilters function to SearchFilter,
-
           ]}
         />
       </div>

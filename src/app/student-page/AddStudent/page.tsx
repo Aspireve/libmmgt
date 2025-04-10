@@ -61,7 +61,7 @@ const AddStudent: React.FC = () => {
       : ["NA"];
   };
 
-  const profileImage = watch("image_field");
+  const profileImage = watch("profileImage");
   const [showPassword, setShowPassword] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -81,7 +81,7 @@ const AddStudent: React.FC = () => {
       const reader = new FileReader();
       reader.onload = (e) => {
         if (e.target?.result) {
-          setValue("image_field", e.target.result as string);
+          setValue("profileImage", e.target.result as string);
         }
       };
       reader.readAsDataURL(event.target.files[0]);
@@ -101,7 +101,7 @@ const AddStudent: React.FC = () => {
           <div className="flex flex-col border gap-4 border-[#E0E2E7] bg-[#F9F9FC] items-center justify-center rounded-xl p-2 px-6">
             {profileImage ? (
               <Image
-                src={profileImage as string}
+                src={profileImage}
                 alt="Profile"
                 width={150}
                 height={150}
@@ -133,11 +133,27 @@ const AddStudent: React.FC = () => {
           <div className="w-full grid grid-cols-3 gap-4">
             <InputField
               errors={errors}
-              label="Full Name"
-              name="student_name"
+              label="First Name"
+              name="firstName"
               register={register}
               type="text"
-              placeholder="Enter Full Name"
+              placeholder="Enter First Name"
+            />
+            <InputField
+              errors={errors}
+              label="Middle Name"
+              name="middleName"
+              register={register}
+              type="text"
+              placeholder="Enter Middle Name"
+            />
+            <InputField
+              errors={errors}
+              label="Last Name"
+              name="lastName"
+              register={register}
+              type="text"
+              placeholder="Enter Last Name"
             />
 
             <InstituteDropdown
@@ -160,7 +176,7 @@ const AddStudent: React.FC = () => {
             <InputField
               errors={errors}
               label="Roll No."
-              name="roll_no"
+              name="rollNo"
               register={register}
               type="number"
               placeholder="Enter Roll No."
@@ -180,14 +196,14 @@ const AddStudent: React.FC = () => {
                 Phone Number <span className="text-red-500"> *</span>
               </Label>
               <PhoneNumber
-                i_name="phone_no"
+                i_name="mobileNumber"
                 readOnly={false}
                 error={errors}
                 register={register}
                 setValue={(name, value) => {
                   setValue(name, value);
                   if (isPossiblePhoneNumber(value as string)) {
-                    clearErrors("phone_no");
+                    clearErrors("mobileNumber");
                   }
                 }}
               />
@@ -220,7 +236,7 @@ const AddStudent: React.FC = () => {
             <InputField
               errors={errors}
               label="Year of Admission"
-              name="year_of_admission"
+              name="yearOfAdmission"
               register={register}
               type="text"
               placeholder="Enter Year of Admission"
@@ -249,15 +265,57 @@ const AddStudent: React.FC = () => {
               </div>
             </div>
 
+            <div className="text-[#717680]">
+              <Label>
+                Blood Group <span className="text-red-500"> *</span>
+              </Label>
+              <Select
+                onValueChange={(value) => {
+                  setValue("bloodGroup", value);
+                  if (value) clearErrors("bloodGroup");
+                }}
+                // defaultValue="student"
+              >
+                <SelectTrigger className="w-full p-2 border border-[#D5D7DA] rounded text-[#000]">
+                  <SelectValue placeholder="Select Blood Group" />
+                </SelectTrigger>
+                <SelectContent className="bg-white border-[#D5D7DA] rounded shadow-md">
+                  <SelectItem value="A+">A+</SelectItem>
+                  <SelectItem value="A-">A-</SelectItem>
+                  <SelectItem value="B+">B+</SelectItem>
+                  <SelectItem value="B-">B-</SelectItem>
+                  <SelectItem value="O+">O+</SelectItem>
+                  <SelectItem value="O-">O-</SelectItem>
+                  <SelectItem value="AB+">AB+</SelectItem>
+                  <SelectItem value="AB-">AB-</SelectItem>
+                </SelectContent>
+              </Select>
+              {errors.role && (
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.role.message || "Role is required"}
+                </p>
+              )}
+            </div>
+
+            <InputField
+              errors={errors}
+              label="Course Name"
+              name="courseName"
+              register={register}
+              type="text"
+              placeholder="Enter Course Name"
+            />
+
             <div>
               <Label>Date of Birth</Label>
               <Input
-                {...register("date_of_birth", {
+                {...register("dateOfBirth", {
                   validate: (value) =>
                     value && value <= today
                       ? true
                       : "Date of Birth cannot be in the future",
                 })}
+                name="dateOfBirth"
                 type="date"
                 placeholder="dd-mm-yyyy"
                 className="text-[#000] border-[#D5D7DA] placeholder:text-[#aaa]"

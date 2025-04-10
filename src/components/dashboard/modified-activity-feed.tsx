@@ -58,8 +58,8 @@ export function Activities({ refresh }: { refresh: number }) {
   const [filter, setFilter] = useState("all");
   const [dateFilter, setDateFilter] = useState("all");
 
-  const { institute_uuid } = useSelector(
-    (state: RootState) => state.auth.currentInstitute
+  const institute_uuid = useSelector(
+    (state: RootState) => state.auth.currentInstitute?.instituteUuid
   );
 
   const { data, isLoading, refetch } = useList({
