@@ -31,8 +31,11 @@ const ImportStudents = () => {
   const { processFile, importData, clearData } = useFileProcessor();
   const { isOpen, open, close } = useDisclosure();
 
-  const { institute_name, institute_uuid } = useSelector(
-    (state: RootState) => state.auth.currentInstitute
+  const instituteName = useSelector(
+    (state: RootState) => state.auth.currentInstitute?.instituteName
+  );
+  const instituteUuid = useSelector(
+    (state: RootState) => state.auth.currentInstitute?.instituteUuid
   );
 
   useEffect(() => {
@@ -63,70 +66,130 @@ const ImportStudents = () => {
       const mapped: AddStudentType[] = importData.data
         .map((row: any, index) =>
           new StudentDataBuilder(row, mapping, importData.headers)
-            .setField("date_of_birth", (value) => {
+            .setField("dateOfBirth", (value) => {
+              console.log(typeof value);
+
               value = value?.toString().trim();
-              if (!value)
-                throw new Error(`Provide date of birth at line ${index + 1}`);
-              const parsedDate = new Date(value);
-              return !isNaN(parsedDate.getTime())
-                ? parsedDate.toISOString().split("T")[0]
-                : null;
+
+              // if (!value)
+              //   throw new Error(`Provide date of birth at line ${index + 1}`);
+              const [month, date, year] = value.split("/");
+              console.log(month, date, year);
+
+              const parsedDate = new Date(`${year}-${month}-${date}`);
+              console.log(parsedDate);
+
+              return parsedDate;
             })
-            .setField("roll_no", (value) => {
-              value = value?.toString().trim();
-              if (!value || isNaN(Number(value)))
-                throw new Error(`Provide roll No at line ${index + 1}`);
-              const num = Number(value);
-              return isNaN(num) ? 0 : num;
+            .setField("rollNo", (value) => {
+              value = value?.toString().trim().replace(/'/g, "‘");
+              return value || 0;
             })
-            .setField("student_name", (value) => {
-              value = value?.toString().trim();
+            .setField("firstName", (value) => {
+              value = value?.toString().trim().replace(/'/g, "‘");
               if (!value) {
-                throw new Error(
-                  `Student name is required at line ${index + 1}`
-                );
+                throw new Error(`First name is required at line ${index + 1}`);
+              }
+              return value;
+            })
+            .setField("middleName", (value) => {
+              value = value?.toString().trim().replace(/'/g, "‘");
+              // if (!value) {
+              //   throw new Error(`Middle name is required at line ${index + 1}`);
+              // }
+              return value;
+            })
+            .setField("lastName", (value) => {
+              value = value?.toString().trim().replace(/'/g, "‘");
+              if (!value) {
+                throw new Error(`Last name is required at line ${index + 1}`);
               }
               return value;
             })
             .setField("department", (value) => {
-              value = value?.toString().trim();
-              if (!value) {
-                throw new Error(`Department is required at line ${index + 1}`);
-              }
+              value = value?.toString().trim().replace(/'/g, "‘");
+              // if (!value) {
+              //   throw new Error(`Department is required at line ${index + 1}`);
+              // }
               return value;
             })
             .setField("email", (value) => {
-              value = value?.toString().trim();
-              if (!value || !/\S+@\S+\.\S+/.test(value)) {
-                throw new Error(`Valid email is required at line ${index + 1}`);
-              }
+              value = value?.toString().trim().replace(/'/g, "‘");
+              // if (!value || !/\S+@\S+\.\S+/.test(value)) {
+              //   throw new Error(`Valid email is required at line ${index + 1}`);
+              // }
               return value;
             })
-            .setField("phone_no", (value) => {
-              value = value?.toString().trim();
-              if (!value) {
-                throw new Error(
-                  `Phone number is required at line ${index + 1}`
-                );
-              }
+            .setField("mobileNumber", (value) => {
+              value = value?.toString().trim().replace(/'/g, "‘");
+              // if (!value) {
+              //   throw new Error(
+              //     `Phone number is required at line ${index + 1}`
+              //   );
+              // }
               return value;
             })
             .setField("gender", (value: string) => {
-              value = value?.toString().trim();
-              if (!value) {
-                throw new Error(`Gender is required at line ${index + 1}`);
-              }
+              value = value?.toString().trim().replace(/'/g, "‘");
+              // if (!value) {
+              //   throw new Error(`Gender is required at line ${index + 1}`);
+              // }
               return value.toLowerCase();
             })
-            .setField("address", (value) => value?.toString().trim() || null)
             .setField(
-              "year_of_admission",
-              (value) => value?.toString().trim() || null
+              "address",
+              (value) => value?.toString().trim().replace(/'/g, "‘") || null
             )
-            .setField("password", (value) => value?.toString().trim() || null)
+            .setField(
+              "yearOfAdmission",
+              (value) => value?.toString().trim().replace(/'/g, "‘") || null
+            )
+            .setField(
+              "password",
+              (value) => value?.toString().trim().replace(/'/g, "‘") || null
+            )
 
-            .setCustomField("institute_uuid", institute_uuid || null)
-            .setCustomField("institute_name", institute_name || null)
+            .setCustomField("instituteUuid", instituteUuid || null)
+            .setCustomField("instituteName", instituteName || null)
+            .setField("role", (value) => {
+              value = value?.toString().trim().replace(/'/g, "‘");
+              // if (!value) {
+              //   throw new Error(`Role is required at line ${index + 1}`);
+              // }
+              return value;
+            })
+            .setField("bloodGroup", (value) => {
+              value = value?.toString().trim().replace(/'/g, "‘");
+              // if (!value) {
+              //   throw new Error(`Blood group is required at line ${index + 1}`);
+              // }
+              return value;
+            })
+            .setField("secPhoneNumber", (value) => {
+              value = value?.toString().trim().replace(/'/g, "‘");
+              // if (!value) {
+              //   throw new Error(
+              //     `Father number is required at line ${index + 1}`
+              //   );
+              // }
+              return value;
+            })
+            .setField("terPhoneNumber", (value) => {
+              value = value?.toString().trim().replace(/'/g, "‘");
+              // if (!value) {
+              //   throw new Error(
+              //     `Mother number is required at line ${index + 1}`
+              //   );
+              // }
+              return value;
+            })
+            .setField("courseName", (value) => {
+              value = value?.toString().trim().replace(/'/g, "‘");
+              // if (!value) {
+              //   throw new Error(`Course name is required at line ${index + 1}`);
+              // }
+              return value;
+            })
             .build()
         )
         .filter((entry: any) => Object.keys(entry).length > 0);
@@ -213,12 +276,28 @@ const ImportStudents = () => {
             <h3 className="text-lg font-medium mb-4">Map Columns</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <MappingDropdown<StudentImportField>
-                label="Student Name"
+                label="First Name"
                 importData={importData}
                 isRequired={true}
                 mapping={mapping}
                 setMapping={setMapping}
-                fieldKey={"student_name"}
+                fieldKey={"firstName"}
+              />
+              <MappingDropdown<StudentImportField>
+                label="Middle Name"
+                importData={importData}
+                isRequired={false}
+                mapping={mapping}
+                setMapping={setMapping}
+                fieldKey={"middleName"}
+              />
+              <MappingDropdown<StudentImportField>
+                label="Last Name"
+                importData={importData}
+                isRequired={true}
+                mapping={mapping}
+                setMapping={setMapping}
+                fieldKey={"lastName"}
               />
               <MappingDropdown<StudentImportField>
                 label="Department"
@@ -234,7 +313,7 @@ const ImportStudents = () => {
                 isRequired={true}
                 mapping={mapping}
                 setMapping={setMapping}
-                fieldKey={"roll_no"}
+                fieldKey={"rollNo"}
               />
               <MappingDropdown<StudentImportField>
                 label="Email"
@@ -250,7 +329,7 @@ const ImportStudents = () => {
                 isRequired={true}
                 mapping={mapping}
                 setMapping={setMapping}
-                fieldKey={"phone_no"}
+                fieldKey={"mobileNumber"}
               />
               <MappingDropdown<StudentImportField>
                 label="Gender"
@@ -266,7 +345,15 @@ const ImportStudents = () => {
                 isRequired={false}
                 mapping={mapping}
                 setMapping={setMapping}
-                fieldKey={"year_of_admission"}
+                fieldKey={"yearOfAdmission"}
+              />
+              <MappingDropdown<StudentImportField>
+                label="Course Name"
+                importData={importData}
+                isRequired={false}
+                mapping={mapping}
+                setMapping={setMapping}
+                fieldKey={"courseName"}
               />
               <MappingDropdown<StudentImportField>
                 label="Password"
@@ -282,7 +369,7 @@ const ImportStudents = () => {
                 isRequired={false}
                 mapping={mapping}
                 setMapping={setMapping}
-                fieldKey={"date_of_birth"}
+                fieldKey={"dateOfBirth"}
               />
               <MappingDropdown<StudentImportField>
                 label="Address"
@@ -291,6 +378,38 @@ const ImportStudents = () => {
                 mapping={mapping}
                 setMapping={setMapping}
                 fieldKey={"address"}
+              />
+              <MappingDropdown<StudentImportField>
+                label="Role"
+                importData={importData}
+                isRequired={false}
+                mapping={mapping}
+                setMapping={setMapping}
+                fieldKey={"role"}
+              />
+              <MappingDropdown<StudentImportField>
+                label="Blood Group"
+                importData={importData}
+                isRequired={false}
+                mapping={mapping}
+                setMapping={setMapping}
+                fieldKey={"bloodGroup"}
+              />
+              <MappingDropdown<StudentImportField>
+                label="Father's Number"
+                importData={importData}
+                isRequired={false}
+                mapping={mapping}
+                setMapping={setMapping}
+                fieldKey={"secPhoneNumber"}
+              />
+              <MappingDropdown<StudentImportField>
+                label="Mother's Number"
+                importData={importData}
+                isRequired={false}
+                mapping={mapping}
+                setMapping={setMapping}
+                fieldKey={"terPhoneNumber"}
               />
             </div>
             <Button

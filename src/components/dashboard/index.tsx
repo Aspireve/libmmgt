@@ -20,7 +20,6 @@ const TABS = [
   { key: LibraryTabs.REQUEST, label: "Request" },
 ];
 
-
 const Dashboard = () => {
   const [refresh, setRefresh] = useState(0);
   return (
@@ -48,9 +47,8 @@ const Dashboard = () => {
                     SearchFilter({
                       setFilters,
                       options: [
-                        { label: "Request ID", value: "cr.request_id" },
-                        { label: "Book ID", value: "cr.book_copy_id" },
-                        { label: "Student ID", value: "cr.student_id" },
+                        { label: "Book ID", value: `cr."bookCopyId"` },
+                        { label: "Request ID", value: `cr."requestId"::text` },
                       ],
                       placeholder: "Search",
                     }),

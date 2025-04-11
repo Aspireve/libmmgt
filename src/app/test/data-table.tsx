@@ -119,8 +119,8 @@ export function Datatable<TData extends BaseRecord>({
                   >
                     {row.getVisibleCells().map((cell, ide) => (
                       <TableCell
-                        // key={`${cell.id}-${ide}-tab`}
-                        key={cell.id}
+                        key={`${cell.id}-${ide}-tab`}
+                        // key={cell.id}
                         className="py-4 text-[#535862]  font-medium"
                       >
                         {flexRender(

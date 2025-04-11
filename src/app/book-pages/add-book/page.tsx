@@ -36,11 +36,12 @@ const AddBook = () => {
     { key: LibraryTabs.ADDPERIODICAL, label: "Add Periodical" },
   ];
 
-  const { institute_uuid, institute_name } = useSelector(
-    (state: RootState) => state.auth.currentInstitute
+  const instituteName = useSelector(
+    (state: RootState) => state.auth.currentInstitute?.instituteName
   );
-
-
+  const instituteUuid = useSelector(
+    (state: RootState) => state.auth.currentInstitute?.instituteUuid
+  );
 
   const { data: bookData, refetch } = useOne<AddBookType>({
     resource: "book_v2/isbn",
@@ -112,29 +113,91 @@ const AddBook = () => {
     }
   }, [isbn, refetch, setValue]);
 
-  const onSubmit = (data: any) => {
-    const formatDate = (dateString: string | undefined) => {
-      if (!dateString) return null;
-      const date = new Date(dateString);
-      return isNaN(date.getTime()) ? null : date.toISOString().split("T")[0];
-    };
-    // if (data?.title_images !== null) delete data.title_images;
-    delete data.title_images;
-    delete data.remarks;
-    delete data.title_additional_fields;
-    delete data.title_description;
+  // const onSubmit = (data: any) => {
+  //   const formatDate = (dateString: string | undefined) => {
+  //     if (!dateString) return null;
+  //     const date = new Date(dateString);
+  //     return isNaN(date.getTime()) ? null : date.toISOString().split("T")[0];
+  //   };
+  //   // if (data?.title_images !== null) delete data.title_images;
+  //   delete data.title_images;
+  //   delete data.remarks;
+  //   delete data.title_additional_fields;
+  //   delete data.title_description;
 
-    const formattedData: AddBookType = {
+  //   const formattedData: AddBookType = {
+  //     ...data,
+  //     no_of_pages: data.no_of_pages.toString(),
+  //     no_of_preliminary: data.no_of_preliminary.toString(),
+  //     year_of_publication: formatDate(data.year_of_publication),
+  //     date_of_acquisition: formatDate(data.date_of_acquisition),
+  //     instituteUuid,
+  //     instituteName,
+  //   };
+  //   mutate(
+  //     { resource: "book_v2/create", values: formattedData },
+  //     {
+  //       onSuccess: () => {
+  //         toast.success("Book added successfully!");
+  //         router.push("/book-pages/all-books");
+  //       },
+  //       onError: () => toast.error("Error adding book"),
+  //     }
+  //   );
+  // };
+  const onSubmit = (data: any) => {
+    const transformedData = {
       ...data,
-      no_of_pages: data.no_of_pages.toString(),
-      no_of_preliminary: data.no_of_preliminary.toString(),
-      year_of_publication: formatDate(data.year_of_publication),
-      date_of_acquisition: formatDate(data.date_of_acquisition),
-      institute_uuid,
-      institute_name,
+      copyRemarks:
+        typeof data.copyRemarks === "string"
+          ? data.copyRemarks
+              .split(",")
+              .map((item: string) => item.trim())
+              .filter(Boolean)
+          : Array.isArray(data.copyRemarks)
+          ? data.copyRemarks
+          : [],
+      keyWords:
+        typeof data.keyWords === "string"
+          ? data.keyWords
+              .split(",")
+              .map((item: string) => item.trim())
+              .filter(Boolean)
+          : Array.isArray(data.keyWords)
+          ? data.keyWords
+          : [],
+      titleRemarks:
+        typeof data.titleRemarks === "string"
+          ? data.titleRemarks
+              .split(",")
+              .map((item: string) => item.trim())
+              .filter(Boolean)
+          : Array.isArray(data.titleRemarks)
+          ? data.titleRemarks
+          : [],
+      // dateReceipt: data.dateReceipt ? new Date(data.dateReceipt) : null,
+      // billDate: data.billDate ? new Date(data.billDate) : null,
+      loanReturnDate: data.loanReturnDate ? data.loanReturnDate : null,
+      isAvailable: !!data.isAvailable,
+      isArchived: !!data.isArchived,
+      loaned: !!data.loaned,
+      donated: !!data.donated,
+      isBound: !!data.isBound,
+      lockStatus: !!data.lockStatus,
+      availableCount: +data.availableCount,
+      totalCount: +data.totalCount,
+      // createdAt: new Date(),
+      // updatedAt: new Date(),
+      instituteUuid,
+      instituteName,
     };
+
+    console.log("Final payload:", transformedData);
+
+    // Call your API or handle the payload here
+    // e.g. await api.saveBookCopy(transformedData);
     mutate(
-      { resource: "book_v2/create", values: formattedData },
+      { resource: "book_v2/create", values: transformedData },
       {
         onSuccess: () => {
           toast.success("Book added successfully!");
@@ -144,7 +207,6 @@ const AddBook = () => {
       }
     );
   };
-
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <>
@@ -171,11 +233,11 @@ const AddBook = () => {
             </div>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
               <div>
-                <h2 className="ml-[15px]">Cataloging</h2>
                 <div className="grid grid-cols-4 gap-4 p-4">
+                  {/* Book Title */}
                   <InputField
                     label="Book Title"
-                    name="book_title"
+                    name="bookTitle"
                     register={register}
                     errors={errors}
                     type="text"
@@ -186,86 +248,176 @@ const AddBook = () => {
                     readonly={isReadable}
                     disabled={isDisable}
                   />
+
+                  {/* Accession Number */}
                   <InputField
-                    label="Book Author"
-                    name="book_author"
+                    label="Accession Number"
+                    name="accessionNumber"
                     register={register}
                     errors={errors}
                     type="text"
-                    validation={{
-                      required: "Book Author is required",
-                    }}
-                    placeholder="Enter Book Author"
+                    placeholder="Enter Accession Number"
                     readonly={isReadable}
                     disabled={isDisable}
                   />
 
+                  {/* Category Name */}
                   <InputField
-                    label="Name of Publisher"
-                    name="name_of_publisher"
+                    label="Category Name"
+                    name="categoryName"
                     register={register}
                     errors={errors}
                     type="text"
-                    validation={{
-                      required: "Name of Publisher is required",
-                    }}
-                    placeholder="Enter Name of Publisher"
+                    placeholder="Enter Category Name"
                     readonly={isReadable}
                     disabled={isDisable}
                   />
+
+                  {/* Classification Number */}
                   <InputField
-                    label="Place of publication"
-                    name="place_of_publication"
+                    label="Classification Number"
+                    name="classificationNumber"
                     register={register}
                     errors={errors}
                     type="text"
-                    validation={{
-                      required: "Place of publication is required",
-                    }}
-                    placeholder="Enter Place of publication"
+                    placeholder="Enter Classification Number"
                     readonly={isReadable}
                     disabled={isDisable}
                   />
+
+                  {/* Author 1 */}
                   <InputField
-                    label="Year of publication"
-                    name="year_of_publication"
+                    label="Author 1"
+                    name="author1"
+                    register={register}
+                    errors={errors}
+                    type="text"
+                    placeholder="Enter Author 1"
+                    readonly={isReadable}
+                    disabled={isDisable}
+                  />
+
+                  {/* Author 2 */}
+                  <InputField
+                    label="Author 2"
+                    name="author2"
+                    register={register}
+                    errors={errors}
+                    type="text"
+                    placeholder="Enter Author 2"
+                    readonly={isReadable}
+                    disabled={isDisable}
+                  />
+
+                  {/* Other Authors */}
+                  <InputField
+                    label="Other Authors"
+                    name="otherAuthors"
+                    register={register}
+                    errors={errors}
+                    type="text"
+                    placeholder="Enter Other Authors"
+                    readonly={isReadable}
+                    disabled={isDisable}
+                  />
+
+                  {/* Author Type 1 */}
+                  <InputField
+                    label="Author Type 1"
+                    name="authorType1"
+                    register={register}
+                    errors={errors}
+                    type="text"
+                    placeholder="Enter Author Type 1"
+                    readonly={isReadable}
+                    disabled={isDisable}
+                  />
+
+                  {/* Author Type 2 */}
+                  <InputField
+                    label="Author Type 2"
+                    name="authorType2"
+                    register={register}
+                    errors={errors}
+                    type="text"
+                    placeholder="Enter Author Type 2"
+                    readonly={isReadable}
+                    disabled={isDisable}
+                  />
+
+                  {/* Other Authors Type */}
+                  <InputField
+                    label="Other Authors Type"
+                    name="otherAuthorsType"
+                    register={register}
+                    errors={errors}
+                    type="text"
+                    placeholder="Enter Other Authors Type"
+                    readonly={isReadable}
+                    disabled={isDisable}
+                  />
+
+                  {/* Publisher */}
+                  <InputField
+                    label="Publisher"
+                    name="publisher"
+                    register={register}
+                    errors={errors}
+                    type="text"
+                    placeholder="Enter Publisher"
+                    readonly={isReadable}
+                    disabled={isDisable}
+                  />
+
+                  {/* Place */}
+                  <InputField
+                    label="Place"
+                    name="place"
+                    register={register}
+                    errors={errors}
+                    type="text"
+                    placeholder="Enter Place"
+                    readonly={isReadable}
+                    disabled={isDisable}
+                  />
+
+                  {/* Year of Publication */}
+                  <InputField
+                    label="Year of Publication"
+                    name="yearOfPublication"
                     register={register}
                     errors={errors}
                     type="date"
-                    validation={{
-                      required: "Year of publication is required",
-                    }}
-                    placeholder="Enter Place of publication"
+                    placeholder="Enter Year of Publication"
                     readonly={isReadable}
                     disabled={isDisable}
-                    disableFuture={true}
                   />
+
+                  {/* Roman Pages */}
                   <InputField
-                    label="Language"
-                    name="language"
+                    label="Roman Pages"
+                    name="romanPages"
                     register={register}
                     errors={errors}
                     type="text"
-                    validation={{
-                      required: "Language is required",
-                    }}
-                    placeholder="Enter Language"
+                    placeholder="Enter Roman Pages"
                     readonly={isReadable}
                     disabled={isDisable}
                   />
+
+                  {/* Numeric Pages */}
                   <InputField
-                    label="Edition"
-                    name="edition"
+                    label="Numeric Pages"
+                    name="numbericPages"
                     register={register}
                     errors={errors}
                     type="text"
-                    validation={{
-                      required: "Edition is required",
-                    }}
-                    placeholder="Enter Edition"
+                    placeholder="Enter Numeric Pages"
                     readonly={isReadable}
                     disabled={isDisable}
                   />
+
+                  {/* ISBN */}
                   <InputField
                     label="ISBN"
                     name="isbn"
@@ -279,156 +431,256 @@ const AddBook = () => {
                     readonly={isReadable}
                     disabled={isDisable}
                   />
+
+                  {/* Key Words */}
                   <InputField
-                    label="No. of Pages"
-                    name="no_of_pages"
+                    label="Key Words"
+                    name="keyWords"
                     register={register}
                     errors={errors}
                     type="text"
-                    validation={{
-                      required: "No. of Pages is required",
-                    }}
-                    placeholder="Enter No. of Pages"
+                    placeholder="Enter Key Words"
                     readonly={isReadable}
                     disabled={isDisable}
                   />
+
+                  {/* Title Remarks */}
                   <InputField
-                    label="No. of Preliminary Pages"
-                    name="no_of_preliminary"
+                    label="Title Remarks"
+                    name="titleRemarks"
                     register={register}
                     errors={errors}
                     type="text"
-                    validation={{
-                      required: "No. of Preliminary Pages is required",
-                    }}
-                    placeholder="Enter No. of Preliminary Pages"
+                    placeholder="Enter Title Remarks"
                     readonly={isReadable}
                     disabled={isDisable}
                   />
+
+                  {/* Subject Name */}
                   <InputField
-                    label="Subject"
-                    name="subject"
+                    label="Subject Name"
+                    name="subjectName"
                     register={register}
                     errors={errors}
                     type="text"
-                    validation={{
-                      required: "Subject is required",
-                    }}
-                    placeholder="Enter Subject"
+                    placeholder="Enter Subject Name"
                     readonly={isReadable}
                     disabled={isDisable}
                   />
+
+                  {/* Sub Subject Name */}
+                  <InputField
+                    label="Sub Subject Name"
+                    name="subSubjectName"
+                    register={register}
+                    errors={errors}
+                    type="text"
+                    placeholder="Enter Sub Subject Name"
+                    readonly={isReadable}
+                    disabled={isDisable}
+                  />
+
+                  {/* Language */}
+                  <InputField
+                    label="Language"
+                    name="language"
+                    register={register}
+                    errors={errors}
+                    type="text"
+                    placeholder="Enter Language"
+                    readonly={isReadable}
+                    disabled={isDisable}
+                  />
+
+                  {/* Book Series */}
+                  <InputField
+                    label="Book Series"
+                    name="bookSeries"
+                    register={register}
+                    errors={errors}
+                    type="text"
+                    placeholder="Enter Book Series"
+                    readonly={isReadable}
+                    disabled={isDisable}
+                  />
+
+                  {/* Department */}
                   <InputField
                     label="Department"
-                    name="department"
+                    name="departent"
                     register={register}
                     errors={errors}
                     type="text"
-                    validation={{
-                      required: "Department is required",
-                    }}
                     placeholder="Enter Department"
                     readonly={isReadable}
                     disabled={isDisable}
                   />
-                </div>
 
-                <h2 className="ml-[15px]">Classification</h2>
-                <div className="grid grid-cols-4 gap-4 p-4">
+                  {/* Edition */}
                   <InputField
-                    label="Author Mark"
-                    name="author_mark"
+                    label="Edition"
+                    name="edition"
                     register={register}
                     errors={errors}
                     type="text"
-                    validation={{
-                      required: "Author Mark is required",
-                    }}
-                    placeholder="Enter Author Mark"
+                    placeholder="Enter Edition"
                     readonly={isReadable}
                     disabled={isDisable}
                   />
+
+                  {/* Title Images */}
                   <InputField
-                    label="Call Number"
-                    name="call_number"
+                    label="Title Images"
+                    name="titleImages"
                     register={register}
                     errors={errors}
                     type="text"
-                    validation={{
-                      required: "Call Number is required",
-                    }}
-                    placeholder="Enter Call Number"
+                    placeholder="Enter Title Images"
                     readonly={isReadable}
                     disabled={isDisable}
                   />
-                </div>
-                <h2 className="ml-[15px]">Acquisition Details</h2>
-                <div className="grid grid-cols-4 gap-4 p-4">
+
+                  {/* Total Count */}
                   <InputField
-                    label="Source of Acquisition"
-                    name="source_of_acquisition"
+                    label="Total Count"
+                    name="totalCount"
+                    register={register}
+                    errors={errors}
+                    type="number"
+                    placeholder="Enter Total Count"
+                    readonly={isReadable}
+                    disabled={isDisable}
+                  />
+
+                  {/* Available Count */}
+                  <InputField
+                    label="Available Count"
+                    name="availableCount"
+                    register={register}
+                    errors={errors}
+                    type="number"
+                    placeholder="Enter Available Count"
+                    readonly={isReadable}
+                    disabled={isDisable}
+                  />
+
+                  <InputField
+                    label="Price"
+                    name="price"
                     register={register}
                     errors={errors}
                     type="text"
-                    validation={{
-                      required: "Source of Acquisition is required",
-                    }}
-                    placeholder="Enter Source of Acquisition"
-                    readonly={isReadable}
-                    disabled={isDisable}
-                  />
-                  <InputField
-                    label="Date of Acquisition"
-                    name="date_of_acquisition"
-                    register={register}
-                    errors={errors}
-                    type="date"
-                    validation={{
-                      required: "Date of Acquisition is required",
-                    }}
-                    placeholder="Enter Date of Acquisition"
-                    readonly={isReadable}
-                    disabled={isDisable}
-                  />
-                  <InputField
-                    label="Bill Number"
-                    name="bill_no"
-                    register={register}
-                    errors={errors}
-                    type="text"
-                    validation={{
-                      required: "Bill Number is required",
-                    }}
-                    placeholder="Enter Bill Number"
-                    readonly={isReadable}
-                    disabled={isDisable}
-                  />
-                </div>
-                <h2 className="ml-[15px]">Inventory and Identification</h2>
-                <div className="grid grid-cols-4 gap-4 p-4">
-                  <InputField
-                    label="Inventory Number"
-                    name="inventory_number"
-                    register={register}
-                    errors={errors}
-                    type="text"
-                    validation={{
-                      required: "Inventory Number is required",
-                    }}
-                    placeholder="Enter Inventory Number"
+                    placeholder="Enter Price"
                     disabled={isDisable}
                     readonly={false}
                   />
                   <InputField
-                    label="Accession Number"
-                    name="accession_number"
+                    label="Supplier Price"
+                    name="supplierPrice"
                     register={register}
                     errors={errors}
                     type="text"
-                    validation={{
-                      required: "Accession Number is required",
-                    }}
-                    placeholder="Enter Accession Number"
+                    placeholder="Enter Supplier Price"
+                    disabled={isDisable}
+                    readonly={false}
+                  />
+                  {/* <InputField
+                    label="Date of Receipt"
+                    name="dateReceipt"
+                    register={register}
+                    errors={errors}
+                    type="date"
+                    placeholder="Enter Date of Receipt"
+                    disabled={isDisable}
+                    readonly={false}
+                  /> */}
+                  <InputField
+                    label="Source of Acquisition"
+                    name="sourceOfAcquisition"
+                    register={register}
+                    errors={errors}
+                    type="text"
+                    placeholder="Enter Source"
+                    disabled={isDisable}
+                    readonly={false}
+                  />
+                  <InputField
+                    label="Bill No."
+                    name="billNo"
+                    register={register}
+                    errors={errors}
+                    type="text"
+                    placeholder="Enter Bill Number"
+                    disabled={isDisable}
+                    readonly={false}
+                  />
+                  {/* <InputField
+                    label="Bill Date"
+                    name="billDate"
+                    register={register}
+                    errors={errors}
+                    type="date"
+                    placeholder="Enter Bill Date"
+                    disabled={isDisable}
+                    readonly={false}
+                  /> */}
+                  <InputField
+                    label="Key Number"
+                    name="keyNo"
+                    register={register}
+                    errors={errors}
+                    type="text"
+                    placeholder="Enter Key Number"
+                    disabled={isDisable}
+                    readonly={false}
+                  />
+                  <InputField
+                    label="Row Number"
+                    name="rowNo"
+                    register={register}
+                    errors={errors}
+                    type="text"
+                    placeholder="Enter Row Number"
+                    disabled={isDisable}
+                    readonly={false}
+                  />
+                  <InputField
+                    label="Copy Remarks"
+                    name="copyRemarks"
+                    register={register}
+                    errors={errors}
+                    type="text"
+                    placeholder="Enter Remarks (comma separated)"
+                    disabled={isDisable}
+                    readonly={false}
+                  />
+                  <InputField
+                    label="Loan Return Date"
+                    name="loanReturnDate"
+                    register={register}
+                    errors={errors}
+                    type="date"
+                    placeholder="Enter Return Date"
+                    disabled={isDisable}
+                    readonly={false}
+                  />
+                  <InputField
+                    label="Book Number"
+                    name="bookNumber"
+                    register={register}
+                    errors={errors}
+                    type="text"
+                    placeholder="Enter Book Number"
+                    disabled={isDisable}
+                    readonly={false}
+                  />
+                  <InputField
+                    label="Book Size"
+                    name="bookSize"
+                    register={register}
+                    errors={errors}
+                    type="text"
+                    placeholder="Enter Book Size"
                     disabled={isDisable}
                     readonly={false}
                   />
@@ -438,23 +690,101 @@ const AddBook = () => {
                     register={register}
                     errors={errors}
                     type="text"
-                    validation={{
-                      required: "Barcode is required",
-                    }}
                     placeholder="Enter Barcode"
                     disabled={isDisable}
                     readonly={false}
                   />
                   <InputField
-                    label="Item Type"
-                    name="item_type"
+                    label="Bind Info"
+                    name="bindInfo"
                     register={register}
                     errors={errors}
                     type="text"
-                    validation={{
-                      required: "Item Type is required",
-                    }}
-                    placeholder="Enter Item Type"
+                    placeholder="Enter Bind Info"
+                    disabled={isDisable}
+                    readonly={false}
+                  />
+                  <InputField
+                    label="Grant Name"
+                    name="grantName"
+                    register={register}
+                    errors={errors}
+                    type="text"
+                    placeholder="Enter Grant Name"
+                    disabled={isDisable}
+                    readonly={false}
+                  />
+                  <InputField
+                    label="Book Condition"
+                    name="bookCondition"
+                    register={register}
+                    errors={errors}
+                    type="text"
+                    placeholder="Enter Book Condition"
+                    disabled={isDisable}
+                    readonly={false}
+                  />
+                  <InputField
+                    label="Copy Image URL"
+                    name="copyImage"
+                    register={register}
+                    errors={errors}
+                    type="text"
+                    placeholder="Enter Image URL"
+                    disabled={isDisable}
+                    readonly={false}
+                  />
+                  <InputField
+                    label="Is Available"
+                    name="isAvailable"
+                    register={register}
+                    errors={errors}
+                    type="checkbox"
+                    disabled={isDisable}
+                    readonly={false}
+                  />
+                  <InputField
+                    label="Is Archived"
+                    name="isArchived"
+                    register={register}
+                    errors={errors}
+                    type="checkbox"
+                    disabled={isDisable}
+                    readonly={false}
+                  />
+                  <InputField
+                    label="Loaned"
+                    name="loaned"
+                    register={register}
+                    errors={errors}
+                    type="checkbox"
+                    disabled={isDisable}
+                    readonly={false}
+                  />
+                  <InputField
+                    label="Donated"
+                    name="donated"
+                    register={register}
+                    errors={errors}
+                    type="checkbox"
+                    disabled={isDisable}
+                    readonly={false}
+                  />
+                  <InputField
+                    label="Is Bound"
+                    name="isBound"
+                    register={register}
+                    errors={errors}
+                    type="checkbox"
+                    disabled={isDisable}
+                    readonly={false}
+                  />
+                  <InputField
+                    label="Lock Status"
+                    name="lockStatus"
+                    register={register}
+                    errors={errors}
+                    type="checkbox"
                     disabled={isDisable}
                     readonly={false}
                   />
@@ -485,7 +815,6 @@ const AddBook = () => {
                     "Add Book"
                   )}
                 </Button>
-               
               </div>
             </form>
           </div>

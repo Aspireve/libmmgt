@@ -103,6 +103,7 @@ export const ApproveRejectButton = ({
                 status === "approved" ? "approved" : "declined"
               } successfully!`
             );
+            refetch();
           },
           onError: (error) => {
             toast.error(

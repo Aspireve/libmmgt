@@ -56,7 +56,7 @@ const BooksPage = () => {
                   <MasterTable
                     title="Books"
                     columns={() => columns}
-                    resource={`journals/get-books`}
+                    resource={`book_v2`}
                     AddedOptions={[
                       AddBookButton,
                       ImportBookButton,
@@ -64,8 +64,8 @@ const BooksPage = () => {
                         SearchFilter({
                           setFilters,
                           options: [
-                            { label: "Id", value: "book_title_id" },
-                            { label: "Name", value: "book_title_name" },
+                            { label: "Book Id", value: "bookTitleId" },
+                            { label: "Book Name", value: "bookTitle" },
                           ],
                           placeholder: "Search",
                         }), // Pass the setFilters function to SearchFilter,

@@ -7,6 +7,7 @@ import {
   UserMultiple02Icon,
 } from "@hugeicons/core-free-icons";
 import { ApproveRejectButton } from "./approve-reject-button";
+import Link from "next/link";
 
 export type DashboardCardtypes = {
   totalBooks?: string;
@@ -25,64 +26,79 @@ export const approveColumns = ({
   refetch: () => Promise<unknown>;
 }) => [
   {
-    accessorKey: "request_id",
+    accessorKey: "requestId",
     header: "Request ID",
     cell: ({ row }: any) => (
-      <span className="font-bold">
-        {row.getValue("request_id").slice(0, 10)}
-      </span>
+      <span className="font-bold">{row.getValue("requestId")}</span>
     ),
   },
-  { accessorKey: "book_copy_id", header: "Book ID" },
-  { accessorKey: "student_id", header: "Student ID" },
-  { accessorKey: "book_title", header: "Name of Book" },
-  // { accessorKey: "book_author", header: "Name of Author" },
+  {
+    accessorKey: "bookCopyId",
+    header: "Book ID",
+    cell: ({ row }: any) => {
+      const requestType = row.getValue("requestType");
+      return requestType === "notes" ? (
+        <Link
+          href={row.original.bookCopyId}
+          target="_blank"
+          className="font-bold"
+        >
+          Open Book
+        </Link>
+      ) : (
+        row.original.bookCopyId
+      );
+    },
+  },
+  // { accessorKey: "studentId", header: "Student ID" },
+  { accessorKey: "bookTitle", header: "Book Title" },
+  { accessorKey: "author", header: "Author" },
   {
     accessorKey: "edition",
     header: "Edition",
     accessorFn: (data: any) => data.edition ?? "Not Provided",
   },
   {
-    accessorKey: "request_type",
-    header: "Action Type",
+    accessorKey: "requestType",
+    header: "Request Type",
     cell: ({ row }: any) => {
-      const request_type = row.getValue("request_type");
-      return request_type === "issue" ? (
+      const requestType = row.getValue("requestType");
+      return requestType === "issue" ? (
         <span className="bg-[#faf6e8] border border-[#d2a61e] text-[#d2a61e] px-2 py-1 rounded-full">
           Issue
         </span>
-      ) : request_type === "re-issue" ? (
+      ) : requestType === "re-issue" ? (
         <span className="bg-[#e9e8f6] border border-[#392fb2] text-[#392fb2] px-2 py-1 rounded-full">
           Reissue
         </span>
-      ) : request_type === "return" ? (
+      ) : requestType === "return" ? (
         <span className="bg-[#e9f0e9] border border-[#2a6f23] text-[#2a6f23] px-2 py-1 rounded-full">
           Return
         </span>
-      ) : request_type === "notes" ? (
+      ) : requestType === "notes" ? (
         <span className="bg-[#cdcdcd] border border-[#313131] text-[#313131] px-2 py-1 rounded-full">
           Notes
         </span>
       ) : (
-        request_type
+        requestType
       );
     },
   },
   {
-    accessorKey: "created_at",
+    accessorKey: "createdAt",
     header: "Date",
     cell: ({ row }: any) => {
-      const rawDate = row.getValue("created_at");
+      const rawDate = row.getValue("createdAt");
       const formattedDate = new Date(rawDate).toLocaleDateString("en-GB"); // Converts to dd/mm/yyyy
       return <span>{formattedDate}</span>;
     },
   },
   {
-    accessorKey: "request_id",
+    accessorKey: "requestId",
     header: "Action",
     cell: ({ row }: any) => {
-      const requestId = row.getValue("request_id");
-      const requestType = row.getValue("request_type");
+      const requestId = row.getValue("requestId");
+      const requestType = row.getValue("requestType");
       return (
         <ApproveRejectButton
           requestId={requestId}
