@@ -85,12 +85,10 @@ export function Activities({ refresh }: { refresh: number }) {
 
   const filteredActivities = activities?.filter((activity) => {
     const matchesSearch =
-      activity.student_id.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      activity.book_title?.book_title
-        ?.toLowerCase()
-        .includes(searchQuery.toLowerCase()) ||
+      activity.studentId?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      activity.bookTitle?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       false ||
-      activity.student_id.toLowerCase().includes(searchQuery.toLowerCase());
+      activity.studentId?.toLowerCase().includes(searchQuery.toLowerCase());
 
     const matchesFilter = filter === "all" || activity.action === filter;
 

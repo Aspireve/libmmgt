@@ -35,6 +35,42 @@ export interface BookData {
   author_mark: string;
   item_type: string;
   book_item_id: string | null;
-  
+
   book_uuid: string;
+}
+
+export interface BookDetails {
+  bookUuid: string;
+  bookTitleId: string;
+  accessionNumber: string;
+  categoryName: string;
+  classificationNumber: string;
+  author1: string;
+  author2: string;
+  otherAuthors: string;
+  authorType1: string;
+  authorType2: string;
+  otherAuthorsType: string;
+  bookTitle: string;
+  publisher: string;
+  place: string;
+  yearOfPublication: string;
+  romanPages: string;
+  numbericPages: string;
+  isbn: string;
+  instituteName: string;
+  instituteUuid: string;
+  keyWords: string[];
+  titleRemarks: string[];
+  subjectName: string;
+  subSubjectName: string;
+  language: string;
+  bookSeries: string;
+  departent: string;
+  edition: string;
+  titleImages: string;
+  totalCount: number;
+  availableCount: number;
+  createdAt: string;
+  updatedAt: string;
 }

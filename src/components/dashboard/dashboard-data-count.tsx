@@ -20,7 +20,7 @@ export default function DashboardData({ refresh }: { refresh: number }) {
 
   const { data, isLoading, refetch } = useOne<{ data: DashboardCardtypes }>({
     resource: `/student/admin-dashboard`,
-    id: `_institute_uuid=${JSON.stringify([institute?.institute_uuid])}`,
+    id: `_institute_uuid=${JSON.stringify([institute?.instituteUuid])}`,
   });
 
   useEffect(() => {
@@ -48,7 +48,7 @@ export default function DashboardData({ refresh }: { refresh: number }) {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 my-6">
       {dataCards({
-        institute_uuid: institute?.institute_uuid || "",
+        institute_uuid: institute?.instituteUuid || "",
         dashboardStats: data?.data?.data || {},
       }).map((stat, idx) => (
         <a

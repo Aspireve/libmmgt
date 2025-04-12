@@ -1,5 +1,5 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { BookData } from "../types/data";
+import { BookDetails } from "../types/data";
 import { useRouter } from "next/navigation";
 import { formatDate } from "../hooks/formatDate";
 import { HugeiconsIcon } from "@hugeicons/react";
@@ -7,7 +7,7 @@ import { Edit02Icon } from "@hugeicons/core-free-icons";
 import TooltipToggle from "@/components/custom/tooltip-toggle";
 
 interface BookTitleCellProps {
-  book: BookData;
+  book: BookDetails;
 }
 
 const BookTitleCell: React.FC<BookTitleCellProps> = ({ book }) => {
@@ -26,7 +26,7 @@ const BookTitleCell: React.FC<BookTitleCellProps> = ({ book }) => {
 };
 
 interface PeriodicalTitleCellProps {
-  periodical: BookData;
+  periodical: BookDetails;
 }
 const JournalTitleCell: React.FC<PeriodicalTitleCellProps> = ({
   periodical,
@@ -53,8 +53,8 @@ const JournalTitleCell: React.FC<PeriodicalTitleCellProps> = ({
   );
 };
 interface ActionsCellProps {
-  book: BookData;
-  handleEdit: (book: BookData) => void;
+  book: BookDetails;
+  handleEdit: (book: BookDetails) => void;
 }
 
 const ActionsCell: React.FC<ActionsCellProps> = ({ book, handleEdit }) => (
@@ -71,8 +71,8 @@ const ActionsCell: React.FC<ActionsCellProps> = ({ book, handleEdit }) => (
 );
 
 export const getBookColumns = (
-  handleEdit: (book: BookData) => void
-): ColumnDef<BookData>[] => {
+  handleEdit: (book: BookDetails) => void
+): ColumnDef<BookDetails>[] => {
   return [
     {
       id: "actions",
@@ -82,10 +82,10 @@ export const getBookColumns = (
       ),
     },
     {
-      accessorKey: "item_id",
+      accessorKey: "bookTitleId",
       header: "ID",
       cell: ({ row }) => {
-        const itemId = row.original.item_id ?? row.original.book_item_id;
+        const itemId = row.original.bookTitleId;
         const book = {
           ...row.original,
           item_id: itemId,
@@ -96,13 +96,24 @@ export const getBookColumns = (
         } else {
           return <BookTitleCell book={book} />;
         }
+        // const itemId = row.original.item_id ?? row.original.book_item_id;
+        // const book = {
+        //   ...row.original,
+        //   item_id: itemId,
+        //   book_item_id: itemId,
+        // };
+        // if (itemId) {
+        //   return <JournalTitleCell periodical={book} />;
+        // } else {
+        //   return <BookTitleCell book={book} />;
+        // }
       },
     },
     {
       accessorKey: "category",
       header: "Category",
       cell: ({ row }) => {
-        const category = row.original.category;
+        const category = row.original.categoryName;
 
         const categoryMap = {
           null: { label: "Book", color: "green" },
@@ -123,25 +134,24 @@ export const getBookColumns = (
       },
     },
     {
-      accessorKey: "book_title",
+      accessorKey: "bookTitle",
       header: "Name",
       cell: ({ row }) => {
-        const book_title = row.original.book_title;
+        const book_title = row.original.bookTitle;
         return <span>{book_title ? book_title : "-"}</span>;
       },
     },
     {
-      accessorKey: "book_author",
-      header: "Book Author",
+      accessorKey: "author1",
+      header: "Author",
       cell: ({ row }) => {
-        const book_author = row.original.book_author;
+        const book_author = row.original.author1;
         return (
           <span className="text-center">{book_author ? book_author : "-"}</span>
         );
       },
     },
     { accessorKey: "publisher", header: "Publisher" },
-    { accessorKey: "available_count", header: "Book Count" },
     {
       accessorKey: "isbn",
       header: "ISBN",
@@ -151,29 +161,30 @@ export const getBookColumns = (
       },
     },
     {
-      accessorKey: "year_of_publication",
+      accessorKey: "yearOfPublication",
       header: "Year of Publication",
       cell: ({ row }) => {
-        const date = row.original.year_of_publication;
+        const date = row.original.yearOfPublication;
         return <span>{date ? new Date(date).getFullYear() : "-"}</span>;
       },
     },
+    { accessorKey: "availableCount", header: "Available Count" },
 
     {
-      accessorKey: "volume_number",
-      header: "Volume Number",
+      accessorKey: "totalCount",
+      header: "Total Number",
       cell: ({ row }) => {
-        const Volume_No = row.original.volume_number;
+        const Volume_No = row.original.totalCount;
         return <span>{Volume_No ? Volume_No : "-"}</span>;
       },
     },
-    {
-      accessorKey: "frequency",
-      header: "Frequency",
-      cell: ({ row }) => {
-        const Frequency = row.original.frequency;
-        return <span>{Frequency ? Frequency : "-"}</span>;
-      },
-    },
+    // {
+    //   accessorKey: "frequency",
+    //   header: "Frequency",
+    //   cell: ({ row }) => {
+    //     const Frequency = row.original.frequency;
+    //     return <span>{Frequency ? Frequency : "-"}</span>;
+    //   },
+    // },
   ];
 };

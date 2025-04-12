@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { BookData } from "../types/data";
+import { BookDetails } from "../types/data";
 
 import { useRouter } from "next/navigation";
 import { getBookColumns } from "./columns";
@@ -31,8 +31,8 @@ const BooksPage = () => {
 
   const router = useRouter();
 
-  const handleEdit = (book: BookData) => {
-    router.push(`/book-pages/edit-book?book_uuid=${book.book_uuid}`);
+  const handleEdit = (book: BookDetails) => {
+    router.push(`/book-pages/edit-book?book_uuid=${book.bookUuid}`);
   };
   const columns = getBookColumns(handleEdit);
 
