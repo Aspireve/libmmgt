@@ -29,12 +29,12 @@ export default function IssueBook({
     e.preventDefault();
     mutate(
       {
-        resource: "/book_v2/update-book-log",
+        resource: "/book_v2/bookAction",
 
         values: {
-          book_copy_id: form.getFieldValue("bookId"),
-          student_id: form.getFieldValue("studentId"),
-          action: action === ActionType.CHECK_IN ? "borrow" : "return",
+          barcode: form.getFieldValue("bookId"),
+          barCode: form.getFieldValue("studentId"),
+          action: action === ActionType.CHECK_IN ? "borrowed" : "returned",
         },
       },
       {
