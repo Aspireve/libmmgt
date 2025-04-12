@@ -32,11 +32,11 @@ interface Student {
 
 interface BookCopy {
   book_copy_id: string;
-  book_title_uuid: string;
+  bookCopyUuid: string;
 }
 interface BookTitle {
-  book_title: string;
-  book_author: string;
+  bookTitle: string;
+  author1: string;
 }
 
 interface Activity {
@@ -44,8 +44,8 @@ interface Activity {
   studentName: string;
   action: "entry" | "exit" | "borrowed" | "returned";
   studentId: string;
-  book_copy?: BookCopy;
-  book_title?: BookTitle;
+  bookCopy?: BookCopy;
+  bookTitle?: BookTitle;
   timestamp: string;
   log_date?: string;
   date?: string;
@@ -135,9 +135,9 @@ export function ActivityItem({ activity }: ActivityItemProps) {
       case "exit":
         return `${activity.studentName} checked out of the library`;
       case "borrowed":
-        return `${activity.studentName} borrowed "${activity.book_title?.book_title}"`;
+        return `${activity.studentName} borrowed "${activity.bookTitle?.bookTitle}"`;
       case "returned":
-        return `${activity.studentName} returned "${activity.book_title?.book_title}"`;
+        return `${activity.studentName} returned "${activity.bookTitle?.bookTitle}"`;
     }
   };
 
@@ -150,11 +150,12 @@ export function ActivityItem({ activity }: ActivityItemProps) {
       case "borrowed":
         return `Due: ${
           activity.dueDate ? formatDate(activity.dueDate) : "N/A"
-        } • Author: ${activity.book_title?.book_author}`;
+        } • Author: ${activity.bookTitle?.author1}`;
       case "returned":
-        return `Borrowed on: ${
-          activity.borrowDate ? formatDate(activity.borrowDate) : "N/A"
-        } • Author: ${activity.book_title?.book_author}`;
+        return `Author: ${activity.bookTitle?.author1}`;
+      // return `Borrowed on: ${
+      //   activity.borrowDate ? formatDate(activity.borrowDate) : "N/A"
+      // } • Author: ${activity.bookTitle?.author1}`;
     }
   };
 
@@ -163,7 +164,7 @@ export function ActivityItem({ activity }: ActivityItemProps) {
     window.open(url, "_blank");
   };
   const handleBook = () => {
-    const url = `/book-pages/book-details?book_uuid=${activity.book_copy?.book_title_uuid}`;
+    const url = `/book-pages/book-details?book_uuid=${activity.bookCopy?.bookCopyUuid}`;
     window.open(url, "_blank");
   };
   return (
@@ -241,13 +242,13 @@ export function ActivityItem({ activity }: ActivityItemProps) {
               <p className="text-xs font-medium text-muted-foreground">Book</p>
               <div>
                 <p className="text-sm font-medium">
-                  {activity.book_title?.book_title}
+                  {activity.bookTitle?.bookTitle}
                 </p>
                 <p className="text-xs text-muted-foreground">
-                  By {activity.book_title?.book_author}
+                  By {activity.bookTitle?.author1}
                 </p>
                 <p className="text-xs text-muted-foreground">
-                  ID: {activity.book_copy?.book_copy_id}
+                  ID: {activity.bookCopy?.book_copy_id}
                 </p>
               </div>
             </div>

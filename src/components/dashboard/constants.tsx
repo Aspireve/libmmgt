@@ -63,7 +63,7 @@ export const approveColumns = ({
     header: "Request Type",
     cell: ({ row }: any) => {
       const requestType = row.getValue("requestType");
-      return requestType === "issue" ? (
+      return requestType === "request" ? (
         <span className="bg-[#faf6e8] border border-[#d2a61e] text-[#d2a61e] px-2 py-1 rounded-full">
           Issue
         </span>

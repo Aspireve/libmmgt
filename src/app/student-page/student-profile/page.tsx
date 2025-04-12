@@ -41,20 +41,21 @@ const Page = () => {
 
   const student_id = searchParams.get("student_id");
 
-  const { data, isLoading } = useOne<StudentCompleteData>({
-    resource: "student/detail",
-    id: `student_id=${student_id}`,
+  const { data, isLoading } = useOne<{ data: StudentCompleteData }>({
+    resource: `student/${student_id}`,
+    id: ``,
     queryOptions: { retry: 1, enabled: !!student_id },
   });
+  // console.log(data.data.data, "Data");
 
   useEffect(() => {
     reset({
-      ...data?.data,
-      gender: data?.data.gender === "male" ? "Male" : "Female",
-      year_of_admission: data?.data.year_of_admission ?? "Not Provided",
-      phone_no: data?.data.phone_no.startsWith("+")
-        ? data?.data.phone_no
-        : `+91${data?.data.phone_no}`,
+      ...data?.data.data,
+      gender: data?.data.data.gender === "male" ? "Male" : "Female",
+      yearOfAdmission: data?.data.data.yearOfAdmission ?? "Not Provided",
+      mobileNumber: data?.data.data.mobileNumber?.startsWith("+")
+        ? data?.data.data.mobileNumber
+        : `+91${data?.data.data.mobileNumber}`,
     });
   }, [data, reset]);
 
@@ -62,8 +63,8 @@ const Page = () => {
     <div>
       <StudentProfileBC />
       <Header
-        heading={data?.data?.student_name ?? "Not Available"}
-        subheading={data?.data?.student_id ?? "Not Available"}
+        heading={data?.data?.data.firstName ?? "Not Available"}
+        subheading={data?.data?.data.barCode ?? "Not Available"}
         isLoading={isLoading}
       />
       <div className="mx-[40px] items-center justify-center py-6">
@@ -77,9 +78,9 @@ const Page = () => {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-x-6 gap-y-4  mt-4">
             {/* Left Side: Profile Image */}
             <div className="md:col-span-1 flex md:justify-start h-[200px] flex-col border border-[#E0E2E7] bg-[#F9F9FC] items-center justify-center rounded-xl">
-              {data?.data?.image_field ? (
+              {data?.data?.data.profileImage ? (
                 <Image
-                  src={data.data.image_field}
+                  src={data.data.data.profileImage}
                   alt="Profile"
                   width={200}
                   height={0}
@@ -99,8 +100,24 @@ const Page = () => {
             <div className="md:col-span-3">
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <InputField
-                  label="Full Name"
-                  name="student_name"
+                  label="First Name"
+                  name="firstName"
+                  type="text"
+                  readonly={true}
+                  register={register}
+                  errors={errors}
+                />
+                <InputField
+                  label="Middle Name"
+                  name="middleName"
+                  type="text"
+                  readonly={true}
+                  register={register}
+                  errors={errors}
+                />
+                <InputField
+                  label="Last Name"
+                  name="lastName"
                   type="text"
                   readonly={true}
                   register={register}
@@ -122,10 +139,17 @@ const Page = () => {
                   register={register}
                   errors={errors}
                 />
-
+                <InputField
+                  label="Course Name"
+                  name="courseName"
+                  type="text"
+                  readonly={true}
+                  register={register}
+                  errors={errors}
+                />
                 <InputField
                   label="Phone No."
-                  name="phone_no"
+                  name="mobileNumber"
                   type="text"
                   readonly={true}
                   register={register}
@@ -133,7 +157,7 @@ const Page = () => {
                 />
                 <InputField
                   label="Roll No."
-                  name="roll_no"
+                  name="rollNo"
                   type="text"
                   readonly={true}
                   register={register}
@@ -141,7 +165,7 @@ const Page = () => {
                 />
                 <InputField
                   label="Date of Birth"
-                  name="date_of_birth"
+                  name="dateOfBirth"
                   type="date"
                   readonly={true}
                   register={register}
@@ -149,7 +173,7 @@ const Page = () => {
                 />
                 <InputField
                   label="Year Of Admission"
-                  name="year_of_admission"
+                  name="yearOfAdmission"
                   type="text"
                   readonly={true}
                   register={register}
@@ -158,6 +182,38 @@ const Page = () => {
                 <InputField
                   label="Gender"
                   name="gender"
+                  type="text"
+                  readonly={true}
+                  register={register}
+                  errors={errors}
+                />
+                <InputField
+                  label="Blood Group"
+                  name="bloodGroup"
+                  type="text"
+                  readonly={true}
+                  register={register}
+                  errors={errors}
+                />
+                <InputField
+                  label="Gender"
+                  name="gender"
+                  type="text"
+                  readonly={true}
+                  register={register}
+                  errors={errors}
+                />
+                <InputField
+                  label="Father's Name"
+                  name="secPhoneNumber"
+                  type="text"
+                  readonly={true}
+                  register={register}
+                  errors={errors}
+                />
+                <InputField
+                  label="Mother's Name"
+                  name="terPhoneNumber"
                   type="text"
                   readonly={true}
                   register={register}

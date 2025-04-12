@@ -5,7 +5,7 @@ import { Button } from "../ui/button";
 import { BookCheckIcon, CircleXIcon } from "lucide-react";
 
 enum RequestType {
-  ISSUE = "issue",
+  REQUEST = "request",
   REISSUE = "re-issue",
   RETURN = "return",
   NOTES = "notes",
@@ -26,11 +26,11 @@ export const ApproveRejectButton = ({
   const handleRequestAction = async (
     requestId: string,
     status: "approved" | "rejected",
-    requestType: "issue" | "re-issue" | "return" | "notes"
+    requestType: "request" | "re-issue" | "return" | "notes"
   ) => {
-    if (requestType === "issue") {
+    if (requestType === "request") {
       // For issue requests, use POST method
-      const endpoint = "book_v2/request_booklog_issue_ar";
+      const endpoint = "book_v2/request_book_action";
 
       createMutate(
         {
@@ -44,7 +44,7 @@ export const ApproveRejectButton = ({
           onSuccess: () => {
             toast.success(
               `Request ${
-                status === "approved" ? "approved" : "declined"
+                status === "approved" ? "approved" : "rejected"
               } successfully!`
             );
           },
@@ -58,7 +58,7 @@ export const ApproveRejectButton = ({
       );
     } else if (requestType === "return") {
       // For issue requests, use POST method
-      const endpoint = "book_v2/request_booklog_return_ar";
+      const endpoint = "book_v2/request_book_action";
 
       createMutate(
         {

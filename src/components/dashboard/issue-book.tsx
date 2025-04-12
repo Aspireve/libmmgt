@@ -39,9 +39,9 @@ export default function IssueBook({
       },
       {
         onSuccess: (data) => {
-          console.log(data)
-          if(!data.data) {
-            toast.error("Book has already been borrowed");
+          console.log(data);
+          if (!data.data) {
+            toast.error("Action failed!");
             return;
           }
           toast.success(`Book ${action} Successfully!`);
@@ -71,7 +71,7 @@ export default function IssueBook({
     <div
       className="transition-all duration-300 shadow-lg  rounded-[12px] my-6 p-6 border border-[#E9EAEB]"
       style={{ boxShadow: "0 0 8px rgba(0, 0, 0, 0.1)" }}
-      >
+    >
       <div className="flex items-center mb-4 gap-6">
         <h2 className="text-2xl font-semibold">
           {action === ActionType.CHECK_IN ? "Issue Book" : "Return a Book"}
